@@ -1,0 +1,15 @@
+server bool hdf_collectbrass = true;
+
+server bool hdf_enablecomments = true;
+server int hdf_feedbacktype = 1;
+
+server int hdf_extrabrass = 0;
+
+server bool hdf_targetuncountable = true;
+
+server int hdf_loadout_446 =  50;
+server int hdf_loadout_776 =  0;
+server int hdf_loadout_bolts =  0;
+server int hdf_loadout_medikits =  0;
+server int hdf_loadout_stimpacks =  0;
+server int hdf_loadout_armor =  0;

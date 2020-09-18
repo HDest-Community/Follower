@@ -1,0 +1,88 @@
+extend class HDFollower
+{
+	private void LookForEnemies()
+	{
+		let TheEye = BlockThingsIterator.Create(self, MaxTargetRange);
+		while (TheEye.Next())
+		{
+			// [Ace] To reiterate,
+			// MTarget = MonsterTarget
+			// PTarget = PlayerTarget
+			// CTarget = CurrentTarget
+			// Remember the prefixes.
+
+			Actor MTarget = TheEye.thing;
+			HDPlayerPawn PTarget = HDPlayerPawn(TheEye.thing);
+
+			if (MTarget && (bFRIENDLY && !MTarget.bFRIENDLY || !bFRIENDLY && MTarget.bFRIENDLY) && MTarget.bISMONSTER && MTarget.bSHOOTABLE && MTarget != self && MTarget.Health > 0 && CheckSight(MTarget, SF_SEEPASTSHOOTABLELINES) && !TargetIsIncapped(MTarget))
+			{
+				if (MTarget is "HERPBot" || MTarget is "DERPBot" || (!hdf_targetuncountable && !MTarget.bCOUNTKILL))
+				{
+					continue;
+				}
+
+				if (MTarget.bBOSS && (CheckTarget() && !CTarget.bBOSS || !CheckTarget()))
+				{
+					EngageTarget(Weapon_Bronto, MTarget);
+				}
+				else if (MTarget is "Necromancer")
+				{
+					EngageTarget(Weapon_ZM, MTarget);
+				}
+				else if (MTarget is "PainLord")
+				{
+					EngageTarget(Weapon_Bronto, MTarget);
+				}
+				else if (MTarget is "PainBringer")
+				{
+					EngageTarget(Weapon_Boss, MTarget);
+				}
+				else if (MTarget is "HDMobBase" && HDMobBase(MTarget).Shields > 150)
+				{
+					EngageTarget(Weapon_Boss, MTarget);
+				}
+				else if (!CheckTarget())
+				{
+					EngageTarget(Distance3D(MTarget) > 2048 ? Weapon_Boss : Weapon_ZM, MTarget);
+				}
+				else // [Ace] In case follower gets interrupted, re-engage old target.
+				{
+					EngageTarget(SelectedWeapon, CTarget);
+				}
+			}
+			else if (!bFRIENDLY && PTarget && PTarget.Health > 0 && CheckSight(PTarget, SF_SEEPASTSHOOTABLELINES))
+			{
+				EngageTarget(Weapon_ZM, PTarget);
+			}
+		}
+	}
+
+	private bool CheckTarget() const
+	{
+		// [Ace] Don't target if:
+		// - Follower is friendly and target is friendly or player;
+		// - Follower is hostile and target is hostile (from player's POV);
+		// - Follower has no sight of target;
+		// - Target is dead;
+		// - Target is incapped;
+
+		if (!CTarget)
+		{
+			return false;
+		}
+
+		bool FriendlyCheck = bFRIENDLY && !CTarget.bFRIENDLY && CTarget != LinkedPlayer;
+		bool HostileCheck = !bFRIENDLY && (CTarget == LinkedPlayer || CTarget.bFRIENDLY);
+		return (FriendlyCheck || HostileCHeck) && CTarget.Health > 0 && CheckSight(CTarget, SF_SEEPASTSHOOTABLELINES) && !TargetIsIncapped(CTarget) && CTarget.bSHOOTABLE;
+	}
+
+	private bool TargetIsIncapped(Actor other) const
+	{
+		return other && other.InStateSequence(other.CurState, other.FindState("Falldown"));
+	}
+
+	private void ClearTarget()
+	{
+		CTarget = null;
+	}
+}

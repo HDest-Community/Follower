@@ -1,0 +1,148 @@
+enum RType
+{
+	Revive_None,
+	Revive_Blues,
+	Revive_Blood
+}
+
+extend class HDFollower
+{
+	bool TryRevive(int type)
+	{
+		if (Distance3D(LinkedPlayer) > radius + MaxReviveDistance)
+		{
+			ThinkMessage(LinkedPlayer, "$REVIVE_FAR_PLR");
+			return false;
+		}
+
+		switch (type)
+		{
+			case Revive_Blues:
+				if (Blues > 0)
+				{
+					ThinkMessage(LinkedPlayer, "$REVIVE_BLUES_ALREADYWORKING_PLR");
+					return true;
+				}
+
+				let Potion = BluePotion(LinkedPlayer.FindInventory("BluePotion"));
+				if (!Potion)
+				{
+					ThinkMessage(LinkedPlayer, "$REVIVE_BLUES_NONE_PLR");
+					return true;
+				}
+
+				int RequiredSips = GetRequiredSips();
+				if (Potion.Mags[Potion.Mags.Size() - 1] < RequiredSips)
+				{
+					ThinkMessage(LinkedPlayer, StringTable.Localize("$REVIVE_BLUES_NOTENOUGH_PLR1").." "..RequiredSips.."/12 "..StringTable.Localize("$REVIVE_BLUES_NOTENOUGH_PLR2"));
+					return false;
+				}
+				Potion.Mags[Potion.Mags.Size() - 1] -= RequiredSips;
+				if (Potion.Mags[Potion.Mags.Size() - 1] == 0)
+				{
+					Potion.TakeMag(false);
+					Actor a = LinkedPlayer.Spawn("SpentBottle",LinkedPlayer.pos + (0, 0, LinkedPlayer.Height - 4), ALLOW_REPLACE);
+					a.angle = LinkedPlayer.angle + 2;
+					a.vel = LinkedPlayer.vel;
+					a.A_ChangeVelocity(3, 1, 4, CVF_RELATIVE);
+
+					a = LinkedPlayer.spawn("SpentCork", LinkedPlayer.pos + (0, 0, LinkedPlayer.height - 4), ALLOW_REPLACE);
+					a.angle=LinkedPlayer.angle + 3;
+					a.vel=LinkedPlayer.vel;
+					a.A_ChangeVelocity(5, 3, 4, CVF_RELATIVE);
+				}
+				Blues = RequiredSips * 12;
+				break;
+
+			case Revive_Blood:
+				HDBleedingWound.Inflict(LinkedPlayer, 22, 17, false, LinkedPlayer);
+				if (LinkedPlayer.woundcount < GetRequiredBlood())
+				{
+					ThinkMessage(LinkedPlayer, "$REVIVE_BLOOD_NOTENOUGH_PLR");
+					return false;
+				}
+				break;
+		}
+
+		return true;
+	}
+
+	private void CheckRevive()
+	{
+		if (Blues > 0)
+		{
+			SpawnReviveParticles("2222FF");
+			if (++AbsorbedBlues >= 105 + GetRequiredSips() * 12 && level.time % 35 == 0)
+			{
+				if (!A_RaiseSelf())
+				{
+					ThinkMessage(LinkedPlayer, "$REVIVE_NOROOM_PLR");
+				}
+				else
+				{
+					Blues = 0;
+					AbsorbedBlues = 0;
+					AbsorbedBlood = 0;
+					BloodReviveTicker = 0;
+					bFRIENDLY = true;
+					PrintMessage(GetResponse("$REVIVE_BLUES_SUCCESS"), "Follower/Revive/Blues/Success");
+				}
+			}
+		}
+		else // [Ace] Always check if player is bleeding if not currently healed by blues.
+		{
+			int RequiredBlood = GetRequiredBlood();
+			if (Distance3D(LinkedPlayer) < radius + MaxReviveDistance && LinkedPlayer.woundcount > RequiredBlood && IsFacedByPlayer() && PlayerIsCrouching())
+			{
+				AbsorbedBlood++;
+				SpawnReviveParticles("FF1111");
+			}
+			else
+			{
+				BloodReviveTicker++;
+			}
+
+			if (AbsorbedBlood >= 105 + RequiredBlood * 8 && level.time % 70 == 0)
+			{
+				if (!A_RaiseSelf())
+				{
+					ThinkMessage(LinkedPlayer, "$REVIVE_NOROOM_PLR");
+				}
+				else
+				{
+					AbsorbedBlood = 0;
+					BloodReviveTicker = 0;
+					LinkedPlayer.AggravatedDamage += RequiredBlood;
+					bFRIENDLY = true;
+					PrintMessage(GetResponse("$REVIVE_BLOOD_SUCCESS"), "Follower/Revive/Blood/Success");
+				}
+			}
+		}
+	}
+
+	private void SpawnReviveParticles(color col)
+	{
+		for (int i = 0; i < 3; ++i)
+		{
+			A_SpawnParticle(col, SPF_RELATIVE, random(15, 35), 4, random(0, 359), frandom(0, Radius), 0, 0, frandom(0.1, 1.0), 0, random(2, 4), 0, 0, -0.2);
+		}
+	}
+
+	private int GetRequiredSips() const
+	{
+		return clamp(BodyDamage / 100, 2, 12);
+	}
+
+	private int GetRequiredBlood() const
+	{
+		return min(BloodReviveTicker / (35 * 4), 30);
+	}
+
+	const MaxReviveDistance = 24;
+
+	private int Blues;
+	private int AbsorbedBlues;
+
+	private int AbsorbedBlood;
+	int BloodReviveTicker;
+}

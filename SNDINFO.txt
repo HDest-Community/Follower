@@ -1,0 +1,93 @@
+// Death sounds.
+Follower/Death1 FLWDETH1
+
+$random Follower/Death
+{
+	Follower/Death1
+}
+
+// Pain sounds.
+Follower/Pain1 FLWPAIN1
+Follower/Pain2 FLWPAIN2
+
+$random Follower/Pain
+{
+	Follower/Pain1
+	Follower/Pain2
+}
+
+// Taunt sounds.
+Follower/See1 FLWSEE1
+Follower/See2 FLWSEE2
+Follower/See3 FLWSEE3
+Follower/See4 FLWSEE4
+Follower/See5 FLWSEE5
+Follower/See6 FLWSEE6
+Follower/See7 FLWSEE7
+Follower/See8 FLWSEE8
+Follower/See9 FLWSEE9
+
+$random Follower/See
+{
+	Follower/See1
+	Follower/See2
+	Follower/See3
+	Follower/See4
+	Follower/See5
+	Follower/See6
+	Follower/See7
+	Follower/See8
+	Follower/See9
+}
+
+Follower/Order/Follow1 FLWFLLW1
+Follower/Order/Follow2 FLWFLLW2
+
+Follower/Order/FollowIgnore1 FLWFLWI1
+Follower/Order/FollowIgnore2 FLWFLWI2
+
+Follower/Order/Cover1 FLWCOVR1
+Follower/Order/Cover2 FLWCOVR2
+
+Follower/Order/GoAndCover1 FLWGCVR1
+Follower/Order/GoAndCover2 FLWGCVR2
+
+Follower/Carry/Success FLWCRYSC
+
+Follower/AmmoGive/ZM/TooMany FLWAZMTM
+Follower/AmmoGive/ZM/Success FLWAZMSC
+
+Follower/AmmoGive/Boss/TooMany FLWABSTM
+Follower/AmmoGive/Boss/Success FLWABSSC
+
+Follower/AmmoGive/Bronto/TooMany FLWABRTM
+Follower/AmmoGive/Bronto/Success FLWABRSC
+
+Follower/NoAmmo/ZM FLWNOAZM
+Follower/NoAmmo/Boss FLWNOABS
+Follower/NoAmmo/Bronto FLWNOABR
+
+Follower/MedGive/TooMany FLWMGVTM
+Follower/MedGive/Success FLWMGVSC
+Follower/Medic/Stimmed FLWMEDST
+
+Follower/StimGive/TooMany FLWSGVTM
+Follower/StimGive/Success FLWSGVSC
+
+Follower/Revive/Blues/Success FLWRVBLS
+Follower/Revive/Blood/Success FLWRVBDS
+
+Follower/ArmorGive/Init1 FLWAGIT1 // [Ace] Only first half.
+Follower/ArmorGive/Init2 FLWAGIT2 // [Ace] Full sound, i.e. line + drop prompt. Unfortunately it has to be two lines that are mostly the same because I don't think there's a reliable way to make the lines modular.
+Follower/ArmorGive/Cancel FLWAGCNL
+Follower/ArmorGive/Strip FLWAGSTR
+Follower/ArmorGive/None FLWAGNON
+Follower/ArmorGive/Upgrade FLWAGUPR
+Follower/ArmorGive/BetterDurability FLWAGBET
+Follower/ArmorGive/NoThanks FLWAGNOT
+Follower/ArmorGive/RanAway FLWAGRAN
+
+Follower/Brass/None FLWBRSNO
+Follower/Brass/Success FLWBRSSC
+
+Follower/ReportPosition FLWRPORT

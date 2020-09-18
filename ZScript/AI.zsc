@@ -1,0 +1,265 @@
+enum FOrder
+{
+	FOrder_Follow,
+	FOrder_FollowIgnore,
+	FOrder_Cover,
+	FOrder_GoAndCover
+}
+
+enum FStatus
+{
+	FStatus_None,
+	FStatus_WaitingForArmor,
+	FStatus_InactiveOrDead
+}
+
+extend class HDFollower
+{
+	private void AiThink()
+	{
+		bool CanSeeGoal = TGoal && CheckSight(TGoal, SF_SEEPASTSHOOTABLELINES); // [Ace] This can be either the player or a specific goal actor. It's for when it doesn't matter.
+		bool CanSeePlayer = CheckSight(LinkedPlayer, SF_SEEPASTSHOOTABLELINES);
+		bool InCombatStates = IsInCombatStates();
+		bool HasTarget = CheckTarget();
+		bool NeedsHelp = PlayerIsIncapped(); // [Ace] You're just incapped.
+		bool NeedsMedic = PlayerNeedsMedic(); // [Ace] You're bleeding and incapped.
+		bool IsHelping = IsHelpingPlayer();
+
+		if (!HasTarget && !InCombatStates || Order == FOrder_GoAndCover)
+		{
+			if (!IsHelping)
+			{
+				if (!Moving && !IsInIdleState())
+				{
+					SetStateLabel("Idle");
+				}
+				else if (Moving && !IsInMovingState())
+				{
+					SetStateLabel("Moving");
+				}
+			}
+
+			if (Status == FStatus_None)
+			{
+				if ((NeedsMedic || NeedsHelp) && bFRIENDLY && Distance3D(LinkedPlayer) < 512 && CanSeePlayer)
+				{
+					if (Distance3D(LinkedPlayer) < MedicRange && !IsHelping) // [Ace] Start stapling if close enough. Minimum distance is 22. Don't go any lower or follower will be stuck walking towards you.
+					{
+						if (NeedsMedic)
+						{
+							SetStateLabel("StapleHumptyDumptyBackTogetherAgain");
+						}
+						else if (NeedsHelp)
+						{
+							SetStateLabel("PullYouUp");
+						}
+					}
+					else
+					{
+						TGoal = LinkedPlayer;
+					}
+				}
+				else if (Order < FOrder_Cover)
+				{
+					// [Ace] Go to player if they're too far away.
+					if (bFRIENDLY && Distance3D(LinkedPlayer) > MinPlayerRange && Distance3D(LinkedPlayer) < MaxPlayerRange)
+					{
+						// [Ace] If following the player and the player is nearby but suddenly goes around a corner, try to go around the same corner.
+						if (CanSeePlayer)
+						{
+							TGoal = LinkedPlayer;
+							LastKnownPos = TGoal.Pos;
+						}
+						else if (TGoal && TGoal.pos != LastKnownPos)
+						{
+							TrySetGoal(LastKnownPos);
+						}
+					}
+
+					if (!Moving && IdleTimer <= 0)
+					{
+						ResetIdleTimer();
+
+						// [Ace] Spawn a new idle spot.
+						vector3 SpotPos = Vec3Angle(random(16, 96), random(0, 359));
+						for (int i = 0; i < 100 && !TrySetGoal(SpotPos); ++i);
+					}
+				}
+
+				if (hdf_collectbrass)
+				{
+					VacuumBrass();
+				}
+			}
+		}
+		
+		if (!InCombatStates && Status == FStatus_None && (!bFRIENDLY || Order == FOrder_Follow || Order == FOrder_Cover) && GetAge() % 8 == 0)
+		{
+			LookForEnemies();
+		}
+
+		// [Ace] Movement. Always travel to goals if there are any. Status between moving and idle should not be set elsewhere.
+		if ((!HasTarget && !InCombatStates || Order == FOrder_GoAndCover) && TGoal && (TGoal is "PlayerPawn" && Distance2D(TGoal) > (NeedsMedic || NeedsHelp ? MedicRange : MinPlayerRangeStop) || TGoal is "TargetGoal" && Distance2D(TGoal) > 16) && Distance2D(TGoal) < MaxGoalRange)
+		{
+			if (TGoal is "PlayerPawn" && (NeedsMedic || NeedsHelp))
+			{
+				// [Ace] Don't slow down if player is bleeding out their ass or needs help getting up.
+				if (tics == 2)
+				{
+					tics = 1;
+				}
+				MovementSpeed = MaxMovementSpeed;
+			}
+			else
+			{
+				if (Distance2D(TGoal) < 48)
+				{
+					MovementSpeed = default.MovementSpeed / 2;
+				}
+				else
+				{
+					// [Ace] The tics adjustment is purely visual.
+					if (tics == 2)
+					{
+						tics = 1;
+					}
+					MovementSpeed = min(default.MovementSpeed + Distance2D(TGoal) / 80.0, MaxMovementSpeed);
+				}
+			}
+
+			// [Ace] Same as the corner thing from above but does it if the follower is moving.
+			if (TGoal == LinkedPlayer)
+			{
+				if (CanSeePlayer)
+				{
+					LastKnownPos = TGoal.Pos;
+					A_Face(TGoal, 0, 0);
+				}
+				else
+				{
+					TrySetGoal(LastKnownPos);
+				}
+			}
+			else
+			{
+				A_Face(TGoal, 0, 0);
+			}
+
+			A_ChangeVelocity(MovementSpeed, 0, vel.z, CVF_RELATIVE | CVF_REPLACE);
+			Moving = true;
+
+			// [Ace] Stop trying to reach goal shortly after losing LOS.
+			if (!CanSeeGoal && ++NoSightTics == 35 * 3)
+			{
+				NoSightTics = 0;
+				ClearGoal();
+			}
+
+			// [Ace] Only play the sound if moving.
+			if (TauntTimer <= 0)
+			{
+				Taunt();
+			}
+		}
+		else // [Ace] Deceleration.
+		{
+			vel.xy *= 0.98;
+
+			if (Order == FOrder_GoAndCover && vel.xy.length() < 0.65)
+			{
+				Order = FOrder_Cover;
+			}
+
+			if (vel.xy.length() < 0.15)
+			{
+				A_ChangeVelocity(0, 0, vel.z, CVF_REPLACE);
+				Moving = false;
+			}
+		}
+	}
+
+	private void TryActivateLine()
+	{
+		FLineTraceData LineData;
+		LineTrace(angle, 40, 0, 0, height - 8, data: LineData);
+		if (LineData.HitType == FLineTraceData.TRACE_HitWall)
+		{
+			if (ActivateAsPlayer)
+			{
+				LineData.HitLine.Activate(LinkedPlayer, 0, SPAC_Use);
+			}
+			else
+			{
+				LineData.HitLine.Activate(self, 0, SPAC_Use);
+			}
+		}
+		ActivateAsPlayer = false;
+	}
+
+	private bool IsInIdleState() const
+	{
+		return InStateSequence(CurState, FindState("Idle"));
+	}
+
+	private bool IsInMovingState() const
+	{
+		return InStateSequence(CurState, FindState("Moving"));
+	}
+
+	void ReportPosition()
+	{
+		if (Status == FStatus_InactiveOrDead)
+		{
+			return;
+		}
+		
+		// [Ace] Originally suggested and coded by bogus. I did some refactors.
+		static const string Directions[] = { "West", "South-West", "South", "South-East", "East", "North-East", "North", "North-West" };
+
+		// [Ace] It's much easier to get the angle from the player to the follower, otherwise you need to add +180 to flip the direction.
+		double a = (180 + LinkedPlayer.AngleTo(self) + 22.5) % 360;
+		
+		string CoordsMessage = String.Format("@ %i, %i, %i. Go %s!", pos.x, pos.y, pos.z, Directions[int(a / 45)]);
+		PrintMessage(CoordsMessage, "Follower/ReportPosition", true);
+	}
+
+	private void Taunt()
+	{
+		if (hdf_enablecomments)
+		{
+			ResetTauntTimer();
+			A_StartSound(SeeSound, CHAN_VOICE, CHANF_OVERLAP);
+		}
+	}
+
+	private void ResetIdleTimer()
+	{
+		IdleTimer = random(35 * 3, 35 * 6) * (Order == FOrder_Cover ? 3 : 1);
+	}
+
+	private void ResetTauntTimer()
+	{
+		TauntTimer = random(35 * 10, 35 * 30);
+	}
+
+	const MinPlayerRangeStop = 96; // [Ace] If following the player, stop if closer than this distance.
+	const MinPlayerRange = 128;
+	const MaxPlayerRange = 768;
+
+	HDPlayerPawn LinkedPlayer;
+	private Actor CTarget;
+	//private Actor LTarget; // [Ace] Dunno if needed.
+	private Actor TGoal;
+
+	private bool Moving;
+	FStatus Status;
+	FOrder Order;
+
+	private vector3 LastKnownPos;
+
+	private int TauntTimer;
+	private int IdleTimer;
+	private bool ActivateAsPlayer;
+	private int NoSightTics; // [Ace] Used with CheckSight.
+	private int PatrolSteps;
+}

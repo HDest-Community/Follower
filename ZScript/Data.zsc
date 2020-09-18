@@ -1,0 +1,246 @@
+extend class HDFollower
+{
+	bool PackFollower(bool force = false)
+	{
+		if (!force)
+		{
+			if (Distance3D(LinkedPlayer) > radius + 40)
+			{
+				ThinkMessage(LinkedPlayer, "$CARRY_FAR_PLR");
+				return false;
+			}
+			else if (!IsFacedByPlayer())
+			{
+				ThinkMessage(LinkedPlayer, "$CARRY_NOTFACING_PLR");
+				return false;
+			}
+
+			PrintMessage(GetResponse("$CARRY_SUCCESS"), "Follower/Carry/Success");
+		}
+
+		let FData = FollowerBody(LinkedPlayer.GiveInventoryType("FollowerBody"));
+
+		for (int i = 0; i < HDFollower.WeaponCount; ++i)
+		{
+			FData.Mag[i] = Mag[i];
+			FData.SpareAmmo[i] = SpareAmmo[i];
+		}
+
+		if (!force)
+		{
+			FData.Health = Health;
+			FData.Bloodloss = Bloodloss;
+			FData.Stunned = Stunned;
+			FData.BodyDamage = BodyDamage;
+			FData.BloodReviveTicker = BloodReviveTicker;
+			FData.Incapped = InStateSequence(CurState, FindState("Falldown"));
+
+			HDBleedingWound BleedThinker = GetBleedThinker();
+			if (BleedThinker)
+			{
+				FData.IsBleeding = true;
+				FData.BleedPoints = BleedThinker.BleedPoints;
+				FData.BleedRate = BleedThinker.BleedRate;
+				FData.HitVital = BleedThinker.HitVital;
+				FData.Source = BleedThinker.Source;
+			}
+		}
+		else // [Ace] If it's forced, it means it's level end. In that case heal everything. This also only works if they're alive because you have to pick them up manually if they're dead.
+		{
+			FData.NoExitDrop = true;
+			FData.Health = default.Health;
+			FData.Bloodloss = 0;
+			FData.Stunned = 0;
+			FData.BodyDamage = 0;
+			FData.Incapped = false;
+		}
+
+		FData.Outfit = Outfit;
+		FData.Medikits = Medikits;
+		FData.SuturesLeft = SuturesLeft;
+		FData.Stimpacks = Stimpacks;
+		FData.Order = Order;
+
+		let armor = HDArmourWorn(FindInventory("HDArmourWorn"));
+		if (armor)
+		{
+			FData.ArmorDurability = armor.Durability;
+			FData.ArmorMega = armor.Mega;
+		}
+
+		FData.CollectedBrass = GetTotalBrass();
+
+		Destroy();
+
+		return true;
+	}
+
+	int NewBloodloss;
+	int NewStunned;
+	int NewBodyDamage;
+}
+
+// [Ace] This is perhaps the only useful use of an inventory item.
+// Can't use a variable in EventHandler because it gets reset on map start, and can't use a variable in StaticEventHandler because it's not saved to save games.
+
+class FollowerBody : HDPickup
+{
+	override void DoEffect()
+	{
+		if (!owner)
+		{
+			Destroy();
+			return;
+		}
+		
+		let plr = HDPlayerPawn(owner);
+		if (plr && plr.incapacitated > 0 && !NoExitDrop)
+		{
+			FromIncap = true;
+			plr.UseInventory(self);
+		}
+		Super.DoEffect();
+	}
+
+	Default
+	{
+		-HDPICKUP.DROPTRANSLATION
+		-HDPICKUP.FITSINBACKPACK
+		+HDPICKUP.CHEATNOGIVE
+		+HDPICKUP.NOTINPOCKETS
+		+INVENTORY.INVBAR
+		+INVENTORY.UNDROPPABLE
+		HDPickup.Bulk 500;
+		Inventory.MaxAmount 1;
+		Inventory.Icon "FOLLA0";
+		Tag "$FOLLOWER_NAME";
+	}
+
+	bool NoExitDrop; // [Ace] Don't drop if level is exited in incap.
+	bool FromIncap;
+
+	int Outfit;
+
+	// Bleeding thinker stuff.
+	bool IsBleeding;
+	int BleedPoints;
+	int BleedRate;
+	bool HitVital;
+	Actor Source;
+
+	int BodyDamage;
+	bool Incapped;
+	int Bloodloss;
+	int Stunned;
+	int BloodReviveTicker;
+
+	int Mag[HDFollower.WeaponCount];
+	int SpareAmmo[HDFollower.WeaponCount];
+	CRType ChamberedRound[HDFollower.WeaponCount];
+
+	int Medikits;
+	int SuturesLeft;
+	int Stimpacks;
+	FOrder Order;
+
+	int ArmorDurability;
+	bool ArmorMega;
+
+	int CollectedBrass;
+
+	States
+	{
+		Use:
+			TNT1 A 0
+			{
+				bool ReturnValue = false;
+				for (int i = 0; i < 200; ++i)
+				{
+					Actor a; bool success;
+
+					int Distance = random(20, 48);
+					int RandAngle = invoker.FromIncap ? random(0, 359) : 0;
+					vector3 DropDest = Vec3Angle(Distance, angle + RandAngle);
+					Sector DropSec = level.PointInSector(DropDest.xy);
+					if (DropSec && pos.z - DropSec.floorplane.ZAtPoint(DropSec.centerspot) > GetDefaultByType("HDFollower").MaxStepHeight || !level.IsPointInLevel(DropDest))
+					{
+						break;
+					}
+
+					[success, a] = A_SpawnItemEx("HDFollower", Distance, 0, random(8, 16), angle: RandAngle);
+
+					if (success)
+					{
+						let Follower = HDFollower(a);
+						let Handler = FollowerHandler(EventHandler.Find("FollowerHandler"));
+						Handler.Follower = Follower;
+						Follower.LinkedPlayer = HDPlayerPawn(self);
+
+						Follower.Health = invoker.Health;
+						Follower.Order = invoker.Order;
+						Follower.Outfit = invoker.Outfit;
+
+						// [Ace] These aren't even transferred properly because the monsters' PostBeginPlay() calls ResetDamageCounters().
+						// This is needed so that they are.
+						Follower.NewBloodloss = invoker.Bloodloss;
+						Follower.NewStunned = invoker.Stunned;
+						Follower.NewBodyDamage = invoker.BodyDamage;
+
+						for (int i = 0; i < HDFollower.WeaponCount; ++i)
+						{
+							Follower.Mag[i] = invoker.Mag[i];
+							Follower.SpareAmmo[i] = invoker.SpareAmmo[i];
+							Follower.ChamberedRound[i] = invoker.ChamberedRound[i];
+						}
+						Follower.Medikits = invoker.Medikits;
+						Follower.SuturesLeft = invoker.SuturesLeft;
+						Follower.Stimpacks = invoker.Stimpacks;
+
+						if (invoker.ArmorDurability > 0)
+						{
+							let Armor = HDArmourWorn(Follower.GiveInventoryType("HDArmourWorn"));
+							Armor.Durability = invoker.ArmorDurability;
+							Armor.Mega = invoker.ArmorMega;
+						}
+
+						if (invoker.IsBleeding)
+						{
+							HDBleedingWound.Inflict(Follower, invoker.BleedPoints, invoker.BleedRate, invoker.HitVital, invoker.Source);
+						}
+
+						if (invoker.Incapped)
+						{
+							Follower.SetStateLabel("Falldown");
+						}
+
+						if (invoker.Health <= 0)
+						{
+							Follower.bPUSHABLE = false;
+							Follower.DeathSound = "";
+							Follower.SetStateLabel("Death");
+							Follower.bCORPSE = true;
+							Follower.Status = FStatus_InactiveOrDead;
+						}
+
+						if (invoker.CollectedBrass > 0)
+						{
+							Follower.StoredBrass = invoker.CollectedBrass;
+						}
+
+						Follower.BloodReviveTicker = invoker.BloodReviveTicker;
+
+						ReturnValue = true;
+						break;
+					}
+				}
+
+				if (!ReturnValue)
+				{
+					HDFollower.ThinkMessage(self, "$CARRY_CANTDROP_PLR");
+				}
+				
+				return ReturnValue;
+			}
+			Stop;
+	}
+}

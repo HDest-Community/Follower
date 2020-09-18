@@ -1,0 +1,87 @@
+extend class HDFollower
+{
+	private void VacuumBrass()
+	{
+		if (CheckProximity("SevenMilBrass", 192, 1, CPXF_SETTRACER))
+		{
+			if (tracer.pos ~== (0, 0, 0))
+			{
+				return;
+			}
+			
+			if (GetTotalBrass() < GetMaxBrass())
+			{
+				// [Ace] Store brass as an inventory item. Once the item's MaxAmount limit is reached, offload the inventory to a variable and start from 0.
+				if (CountInv("SevenMilBrass") < 1000)
+				{
+					let Brass = SevenMilBrass(tracer);
+					Brass.ActualPickup(self);
+				}
+				else
+				{
+					StoredBrass += 1000;
+					A_TakeInventory("SevenMilBrass", 1000);
+				}
+			}
+		}
+	}
+
+	bool TryCollectBrass()
+	{
+		if (Distance3D(LinkedPlayer) > radius + MaxInventoryDistance)
+		{
+			ThinkMessage(LinkedPlayer, "$BRASS_FAR_PLR");
+			return false;
+		}
+
+		if (GetTotalBrass() == 0)
+		{
+			PrintMessage(GetResponse("$BRASS_NONE"), "Follower/Brass/None");
+			return true;
+		}
+
+		int MaxGiveAmount = 1000 - LinkedPlayer.CountInv("SevenMilBrass");
+		if (MaxGiveAmount > 0)
+		{
+			int TotalGiveAmount = 0;
+
+			// [Ace] Try to take from storage first.
+			if (StoredBrass > 0)
+			{
+				TotalGiveAmount = min(StoredBrass, MaxGiveAmount);
+				StoredBrass -= TotalGiveAmount;
+			}
+
+			// [Ace] Storage is empty but there's still brass to give.
+			if (TotalGiveAmount < MaxGiveAmount)
+			{
+				int BrassInv = CountInv("SevenMilBrass");
+				int AmountUntilFull = MaxGiveAmount - TotalGiveAmount;
+				int GiveAmount = min(AmountUntilFull, BrassInv);
+
+				TotalGiveAmount += GiveAmount;
+				A_TakeInventory("SevenMilBrass", GiveAmount);
+			}
+
+			LinkedPlayer.A_GiveInventory("SevenMilBrass", TotalGiveAmount);
+			PrintMessage(GetResponse("$BRASS_SUCCESS"), "Follower/Brass/Success");
+		}
+		else
+		{
+			ThinkMessage(LinkedPlayer, "$BRASS_FULL_PLR");
+		}
+		return true;
+	}
+
+	int GetTotalBrass() const
+	{
+		return CountInv("SevenMilBrass") + StoredBrass;
+	}
+
+	int GetMaxBrass() const
+	{
+		return 1000 + hdf_extrabrass;
+	}
+
+	int StoredBrass;
+}

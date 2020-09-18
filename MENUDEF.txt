@@ -1,0 +1,62 @@
+OptionMenu "HDFollowerMenu"
+{
+	Title "HD Follower Options"
+	
+	Control "Open Command Menu", "HDF_OpenMenu"
+	StaticText ""
+	
+	StaticText "----- Gameplay & Behaviour -----", "Teal"
+	Option "Collect Brass", "hdf_collectbrass", "YesNo"
+	Slider "Extra Brass Storage", "hdf_extrabrass", 0, 4000, 250, 0
+	Option "Target Uncountable Monsters", "hdf_targetuncountable", "YesNo"
+	StaticText "By default, monsters that don't count towards the tally can be targeted.", "White"
+	StaticText "This allows you to disable that. One use case is so that the follower", "White"
+	StaticText "doesn't target Strife's civilians.", "White"
+	StaticText""
+
+	StaticText "----- Starting Loadout -----", "Teal"
+	Slider "4.26mm Ammo", "hdf_loadout_446", 0, 300, 50, 0
+	Slider "7.76mm Ammo", "hdf_loadout_776", 0, 60, 10, 0
+	Slider "Bronto Bolts", "hdf_loadout_bolts", 0, 6, 1, 0
+	StaticText ""
+	Slider "Medikits", "hdf_loadout_medikits", 0, 2, 1, 0
+	Slider "Stimpacks", "hdf_loadout_stimpacks", 0, 4, 1, 0
+	StaticText ""
+	Option "Armor", "hdf_loadout_armor", "ArmorType"
+
+	StaticText ""
+
+	StaticText "----- Audio/Visual -----", "Teal"
+	Option "Feedback Type", "hdf_feedbacktype", "FeedbackType"
+	Option "Enable Idle Comments", "hdf_enablecomments", "YesNo"
+	StaticText ""
+
+	StaticText "----- Miscellaneous -----", "Teal"
+	SafeCommand "Teleport Follower To Player", "HDF_WarpToPlayer"
+}
+
+AddOptionMenu "OptionsMenu"
+{
+	Submenu "HD Follower", "HDFollowerMenu"
+}
+
+OptionValue "FeedbackType"
+{
+	0, "Disabled"
+	1, "Chat-only"
+	2, "Voice-only"
+	3, "Both" // [Ace] y tho?
+}
+
+OptionValue "RevivalType"
+{
+	1, "Blue Potions"
+	2, "Blood"
+}
+
+OptionValue "ArmorType"
+{
+	0, "None"
+	1, "Garrison Armor"
+	2, "Battle Armor"
+}

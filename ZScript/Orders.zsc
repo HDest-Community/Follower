@@ -1,0 +1,56 @@
+extend class HDFollower
+{
+	bool ChangeOrders(FOrder newOrder)
+	{
+		if (Status == FStatus_InactiveOrDead)
+		{
+			return false;
+		}
+		else if (Status == FStatus_WaitingForArmor)
+		{
+			Status = FStatus_None;
+		}
+
+		int Index = Order == newOrder ? 1 : 2;
+		switch (newOrder)
+		{
+			case FOrder_Follow:
+				PrintMessage(GetResponse("$ORDER_FOLLOW"..Index), "Follower/Order/Follow"..Index);
+				Order = FOrder_Follow;
+				ResetIdleTimer();
+				return true;
+
+			case FOrder_FollowIgnore:
+				PrintMessage(GetResponse("$ORDER_FOLLOWIGNORE"..Index), "Follower/Order/FollowIgnore"..Index);
+				Order = FOrder_FollowIgnore;
+				ClearTarget();
+				ResetIdleTimer();
+				return true;
+
+			case FOrder_Cover:
+				PrintMessage(GetResponse("$ORDER_COVER"..Index), "Follower/Order/Cover"..Index);
+				Order = FOrder_Cover;
+				ClearGoal();
+				return true;
+
+			case FOrder_GoAndCover:
+				FLineTraceData TraceData;
+				LinkedPlayer.LineTrace(LinkedPlayer.Angle, MaxGoalRange * 2, LinkedPlayer.Pitch, TRF_THRUACTORS, LinkedPlayer.Height - 8, data: TraceData);
+				if ((TraceData.HitType == TraceData.TRACE_HitFloor || TraceData.HitType == TraceData.TRACE_HitWall) && TrySetGoal(TraceData.HitLocation, true))
+				{
+					ClearTarget();
+					Order = FOrder_GoAndCover;
+					ActivateAsPlayer = true;
+					PrintMessage(GetResponse("$ORDER_GOANDCOVER2"), "Follower/Order/GoAndCover2");
+					return true;
+				}
+				else
+				{
+					PrintMessage(GetResponse("$ORDER_GOANDCOVER1"), "Follower/Order/GoAndCover1");
+					return false;
+				}
+		}
+
+		return false;
+	}
+}

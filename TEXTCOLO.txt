@@ -1,0 +1,6 @@
+FLW_BloodRed
+{
+	#660505 #FF0000
+
+	Console: #660505 #FF0000
+}

@@ -1,0 +1,348 @@
+version "4.4"
+
+#include "ZScript/Handler.zsc"
+#include "ZScript/Data.zsc"
+#include "ZScript/Resurrection.zsc"
+#include "ZScript/Armor.zsc"
+#include "ZScript/Medical.zsc"
+#include "ZScript/Weapons.zsc"
+#include "ZScript/AI.zsc"
+#include "ZScript/Goals.zsc"
+#include "ZScript/Orders.zsc"
+#include "ZScript/Targeting.zsc"
+#include "ZScript/Brass.zsc"
+#include "ZScript/Loadout.zsc"
+
+class HDFollower : HDMobMan
+{
+	// --------------------------------------------------
+	// NEVER GONNA TOUCH THESE PROBABLY
+	// --------------------------------------------------
+
+	void NextOutfit()
+	{
+		if (Status == FStatus_InactiveOrDead)
+		{
+			return;
+		}
+
+		if (Outfits.Size() < 2)
+		{
+			LinkedPlayer.A_Log("There aren't any other outfits at the moment");
+			return;
+		}
+
+		++Outfit %= Outfits.Size();
+
+		sprite = GetSpriteIndex(Outfits[Outfit]);
+
+		string SoundString;
+		switch (Outfit)
+		{
+			default: SoundString = SeeSound; break;
+		}
+		A_StartSound(SoundString, CHAN_VOICE, CHANF_OVERLAP);
+
+		//SetStateLabel("Spawn");
+	}
+
+	private HDBleedingWound GetBleedThinker() const
+	{
+		ThinkerIterator it = ThinkerIterator.Create("HDBleedingWound", STAT_DEFAULT);
+		HDBleedingWound BleedThinker;
+		while((BleedThinker = HDBleedingWound(it.Next())))
+		{
+			if (BleedThinker.bleeder == self)
+			{
+				return BleedThinker;
+			}
+		}
+		return BleedThinker;
+	}
+
+	bool IsDeadOrMissing() const
+	{
+		bool FollowerDead = Health <= 0;
+		bool CarryingFollower = LinkedPlayer.CheckInventory("FollowerBody", 0);
+		bool TooFar = self.Distance2D(LinkedPlayer) >= 384;
+
+		return TooFar || FollowerDead && !CarryingFollower;
+	}
+
+	void WarpToPlayer()
+	{
+		Warp(LinkedPlayer, 16, flags: WARPF_NOCHECKPOSITION);
+	}
+
+	private void PrintMessage(string message, string voiceLine = "", bool force = false)
+	{
+		int FeedbackType = hdf_feedbacktype;
+		if ((FeedbackType == 0 && !force) || Health <= 0)
+		{
+			return;
+		}
+
+		if (FeedbackType != 2)
+		{
+			LinkedPlayer.A_Log("\c[White]"..GetTag()..": \c[Green]"..message.."\c-");
+			LinkedPlayer.A_StartSound("misc/chat", 20, CHANF_LOCAL);
+		}
+		if (FeedbackType != 1)
+		{
+			LinkedPlayer.A_StartSound(voiceLine, 21, CHANF_LOCAL);
+		}
+	}
+
+	private string GetResponse(string raw, int maxIndex = 3) const
+	{
+		return StringTable.Localize(raw.."_"..random(1, max(1, maxIndex)));
+	}
+
+	static void ThinkMessage(Actor other, string message)
+	{
+		other.A_Print(StringTable.Localize(message));
+	}
+
+	private bool PlayerIsCrouching() const
+	{
+		return LinkedPlayer.player.crouchfactor <= 0.5;
+	}
+
+	private bool IsFacedByPlayer() const
+	{
+		double PAngle = LinkedPlayer.angle;
+		double PAngleTo = self.AngleTo(LinkedPlayer) + 180; // [Ace] Add 180 to invert direction, otherwise you need to face away from the follower.
+		return AbsAngle(PAngle, PAngleTo) <= MaxFaceAngle;
+	}
+
+	// --------------------------------------------------
+	// TICKER
+	// --------------------------------------------------
+
+	override void Tick()
+	{
+		Super.Tick();
+
+		if (!LinkedPlayer)
+		{
+			return;
+		}
+
+		if (bFRIENDLY && Health > 0 && LinkedPlayer.Health <= 0)
+		{
+			return;
+		}
+
+		// [Ace] Only tick timer if idling.
+		if (!Moving)
+		{
+			IdleTimer--;
+			TauntTimer--;
+		}
+
+		if (Status == FStatus_WaitingForArmor)
+		{
+			if (Distance3D(LinkedPlayer) > 512)
+			{
+				PrintMessage(GetResponse("$ARMORGIVE_RANAWAY"), "Follower/ArmorGive/RanAway");
+				Status = FStatus_None;
+			}
+			else if (level.time % 35 == 0)
+			{
+				A_Face(LinkedPlayer);
+				LookForArmor();
+			}
+		}
+
+		if (Health > 0)
+		{
+			if (Status != FStatus_InactiveOrDead && !InStateSequence(CurState, FindState("Spawn")))
+			{
+				AiThink();
+			}
+
+			if (level.time % 35 * 2 == 0)
+			{
+				if (Bloodloss > 0)
+				{
+					Bloodloss--;
+				}
+			}
+		}
+	}
+
+	// --------------------------------------------------
+	// INITIALIZATION
+	// --------------------------------------------------
+
+	override void PostBeginPlay()
+	{
+		if (CheckProximity("HDFollower", 65535, 1))
+		{
+			Destroy();
+			return;
+		}
+
+		ResetIdleTimer();
+		ResetTauntTimer();
+
+		Super.PostBeginPlay();
+
+		// [Ace] I gotta defer setting these until after Super.PostBeginPlay() is called or else picking up the incapped follower and placing them again heals them partially.
+		Bloodloss = NewBloodloss;
+		BodyDamage = NewBodyDamage;
+		Stunned = NewStunned;
+	}
+
+	const MaxInventoryDistance = 48;
+	const MaxFaceAngle = 20;
+
+	static const string Outfits[] = { "FWL1" };
+	int Outfit;
+
+	protected double MovementSpeed, MaxMovementSpeed;
+	property MovementSpeed: MovementSpeed, MaxMovementSpeed;
+
+	Default
+	{
+		Health 200;
+		Radius 12;
+		Height 52;
+		HDFollower.MovementSpeed 3, 7;
+		Scale 0.92;
+		PainChance 192;
+		MaxStepHeight 80;
+		MaxDropOffHeight 128;
+		MaxTargetRange 4096;
+		+ROLLCENTER
+		+ROLLSPRITE
+		+FRIENDLY
+		+NODAMAGETHRUST
+		+SLIDESONWALLS
+		+NODROPOFF
+		+NOBLOCKMONST
+		+NOTELESTOMP
+		+BLOCKASPLAYER
+		+NOTRIGGER
+		+FIXMAPTHINGPOS
+		//+HDMOBBASE.HASHELMET
+		+HDMOBBASE.NOBLURGAZE
+		HDMobBase.DownedFrame 14;
+		HDMobBase.MaxBloodLoss 400;
+		SeeSound "Follower/See";
+		PainSound "Follower/Pain";
+		DeathSound "Follower/Death";
+		Tag "$FOLLOWER_NAME";
+	}
+	
+	States
+	{
+		Spawn:
+			FLW1 A 1;
+			Goto Idle;
+
+		Moving:
+			#### AAABBBCCCDDD 2;
+			Loop;
+		Idle:
+			#### A 15 TryActivateLine();
+			#### A 8;
+			#### D 15;
+			#### D 8;
+			Loop;
+
+		Pain:
+		Pain.Melee:
+			#### E 6
+			{
+				Status = FStatus_InactiveOrDead;
+				A_GiveInventory("HDFireDouse", 2);
+				A_TakeInventory("Heat", 2);
+				A_StartSound(PainSound, CHAN_VOICE, CHANF_NOSTOP);
+			}
+			#### # 0
+			{
+				Status = FStatus_None;
+			}
+			Goto Idle;
+		Pain.Staples:
+			#### # 6
+			{
+				Status = FStatus_InactiveOrDead; 
+				A_StartSound(PainSound, CHAN_VOICE, CHANF_NOSTOP);
+			}
+			#### # 0
+			{
+				Status = FStatus_None;
+			}
+			Goto Idle;
+
+		Falldown:
+			#### H 4
+			{
+				MaxStepHeight = 0; // [Ace] Prevents you from sombrero-ing the follower if you stand over them while they're incapped.
+				Status = FStatus_InactiveOrDead;
+				A_SetSize(-1, deathheight);
+				A_StartSound(PainSound, CHAN_VOICE);
+			}
+			#### I 4 A_StartSound(DeathSound, CHAN_VOICE);
+			#### J 4;
+			#### KLMN 4;
+			#### O 10
+			{
+				if (Stunned > 25 && Distance3D(LinkedPlayer) < radius + MaxReviveDistance && IsFacedByPlayer() && PlayerIsCrouching())
+				{
+					Stunned -= 40;
+				}
+				A_KnockedDown();
+			}
+			Wait;
+
+		Standup:
+			Goto Raise + 1; // [Ace] Don't reset body damage if standing up from incap.
+		Raise:
+			#### N 0
+			{
+				// [Ace] This is technically cheating, but otherwise the follower can get absolutely assblasted and become useless.
+				BodyDamage = 0;
+			}
+			#### NMLK 6;
+			#### J 6 A_Recoil(-0.3);
+			#### I 6;
+			#### H 6 Taunt();
+			#### A 0
+			{
+				ThinkerIterator it = ThinkerIterator.Create("AngelFire", STAT_DEFAULT);
+				AngelFire f;
+				while((f = AngelFire(it.Next())))
+				{
+					if (f.master && f.master == self)
+					{
+						f.Destroy();
+						break;
+					}
+				}
+
+				MaxStepHeight = default.MaxStepHeight;
+				Status = FStatus_None;
+			}
+			Goto Idle;
+
+		Death:
+			#### H 4
+			{
+				ClearGoal();
+				ClearTarget();
+				Status = FStatus_InactiveOrDead;
+			}
+			#### I 4 A_StartSound(DeathSound, CHAN_VOICE);
+			#### J 4;
+			#### KLMN 4;
+			Goto Dead;
+		Dead:
+			#### O 1 CanRaise CheckRevive();
+			Wait;
+	}
+}
+
+class LeftBehindFollower : Inventory { Default { +INVENTORY.UNDROPPABLE } }

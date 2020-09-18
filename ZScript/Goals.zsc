@@ -1,0 +1,46 @@
+extend class HDFollower
+{
+	private bool TrySetGoal(vector3 spawnPos, bool ignoreValid = false)
+	{
+		Actor tg = Spawn("TargetGoal", spawnPos);
+		if (tg && tg.pos.z - tg.floorz <= MaxStepHeight - 8 && Distance2D(tg) < MaxGoalRange && CheckSight(tg) && (ignoreValid || tg.TestMobjLocation() && level.IsPointInLevel(spawnPos)))
+		{
+			ClearGoal(); // [Ace] Nuke old goal.
+			TGoal = tg;
+			return true;
+		}
+		else
+		{
+			tg.Destroy();
+			return false;
+		}
+	}
+
+	private void ClearGoal()
+	{
+		if (TGoal is "TargetGoal")
+		{
+			TGoal.Destroy();
+		}
+		TGoal = null; // [Ace] Just in case it's the player.
+	}
+
+	const MaxGoalRange = 2048;
+}
+
+class TargetGoal : Actor
+{
+	Default
+	{
+		Radius 12;
+		Height 52;
+		+NOINTERACTION
+	}
+
+	States
+	{
+		Spawn:
+			TNT1 A 35 * 15;
+			Stop;
+	}
+}

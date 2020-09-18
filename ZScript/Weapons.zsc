@@ -1,0 +1,408 @@
+enum WType
+{
+	Weapon_None = -1,
+	Weapon_ZM,
+	Weapon_Boss,
+	Weapon_Bronto
+}
+
+enum CRType
+{
+	CRT_Empty,
+	CRT_Chambered,
+	CRT_Spent
+}
+
+extend class HDFollower
+{
+	void TryGiveAmmo(WType type)
+	{
+		if (Status == FStatus_InactiveOrDead)
+		{
+			return;
+		}
+		
+		static const string Messages[] = 
+		{
+			"$AMMOGIVE_ZM_SUCCESS", "$AMMOGIVE_BOSS_SUCCESS", "$AMMOGIVE_BRONTO_SUCCESS",
+			"Follower/AmmoGive/ZM/Success","Follower/AmmoGive/Boss/Success", "Follower/AmmoGive/Bronto/Success",
+
+			"$AMMOGIVE_ZM_TOOMANY", "$AMMOGIVE_BOSS_TOOMANY", "$AMMOGIVE_BRONTO_TOOMANY",
+			"Follower/AmmoGive/ZM/TooMany","Follower/AmmoGive/Boss/TooMany", "Follower/AmmoGive/Bronto/TooMany"
+		};
+
+		class<Inventory> AmmoType = AmmoTypes[type];
+		int MaxGive = GetMaxGiveAmount(type);
+
+		if (Distance3D(LinkedPlayer) > radius + MaxInventoryDistance)
+		{
+			TryReload(type, MagAmounts[type]);
+			ThinkMessage(LinkedPlayer, "$AMMOGIVE_FAR_PLR");
+			return;
+		}
+		else if (SpareAmmo[type] >= MaxAmounts[type])
+		{
+			TryReload(type, MagAmounts[type]);
+			PrintMessage(GetResponse(Messages[6 + type]), Messages[9 + type]);
+			return;
+		}
+		else if (LinkedPlayer.CountInv(AmmoType) == 0)
+		{
+			TryReload(type, MagAmounts[type]);
+			ThinkMessage(LinkedPlayer, "$AMMOGIVE_NOTENOUGH_PLR");
+			return;
+		}
+
+		LinkedPlayer.A_TakeInventory(AmmoType, MaxGive);
+		SpareAmmo[type] += MaxGive;
+		HasWarnedLowAmmo[type] = false;
+		TryReload(type, MagAmounts[type]);
+
+		PrintMessage(GetResponse(Messages[type]), Messages[3 + type]);
+	}
+
+	int GetMaxGiveAmount(WType type) const
+	{
+		return min(LinkedPlayer.CountInv(AmmoTypes[type]), min(MagAmounts[type], MaxAmounts[type] - SpareAmmo[type]));
+	}
+
+	// [Ace] If weapon is out of ammo, reload.
+	private void TryReload(WType type, int min = 0, bool force = false, bool silent = false, bool noJump = false)
+	{
+		if (IsInCombatStates() && !force)
+		{
+			return;
+		}
+
+		if (Mag[type] <= 0 || Mag[type] < min)
+		{
+			if (SpareAmmo[type] > 0)
+			{
+				switch (type)
+				{
+					case Weapon_ZM: SetStateLabel("ReloadZM"); break;
+					case Weapon_Boss: SetStateLabel("ReloadBoss"); break;
+					case Weapon_Bronto: SetStateLabel("ReloadBronto"); break;
+				}
+			}
+			else
+			{
+				static const string Messages[] =
+				{
+					"$NOAMMO_ZM", "$NOAMMO_BOSS", "$NOAMMO_BRONTO",
+					"Follower/NoAmmo/ZM", "Follower/NoAmmo/Boss", "Follower/NoAmmo/Bronto"
+				};
+
+				if (!silent)
+				{
+					PrintMessage(GetResponse(Messages[type]), Messages[3 + type]);
+				}
+
+				if (!noJump)
+				{
+					SetStateLabel("Idle");
+				}
+			}
+		}
+	}
+
+	private void EngageTarget(WType wpn, Actor other)
+	{
+		SelectedWeapon = FindLoadedWeapon(wpn);
+
+		// [Ace] If no loaded weapon is found, try to at least reload the ZM.
+		if (SelectedWeapon == Weapon_None)
+		{
+			TryReload(Weapon_ZM, 0, false, true, true);
+		}
+		else if (other)
+		{
+			CTarget = other;
+			SetStateLabel("See");
+		}
+	}
+
+	private void Aim()
+	{
+		A_Face(CTarget, 0, 0, flags: FAF_MIDDLE);
+		
+		// [Ace] If you're incapped, follower can probably shoot over you. Otherwise it's not a good idea.
+		Actor ATarget = AimTarget();
+		if (ATarget && bFRIENDLY && (ATarget is "PlayerPawn" || ATarget.bFRIENDLY))
+		{
+			AimTimer = 0;
+			SetStateLabel("Aiming");
+		}
+	}
+
+	// [Ace] Start from the selected weapon and work in descending order.
+	private WType FindLoadedWeapon(WType startWeapon) const
+	{
+		for (WType wpn = startWeapon; wpn >= Weapon_ZM; --wpn)
+		{
+			if (Mag[wpn] > 0)
+			{
+				return wpn;
+			}
+		}
+
+		return Weapon_None; // [Ace] This really shouldn't happen.
+	}
+
+	private int AdjustForDistance(double mult = 1.0)
+	{
+		return int(clamp((Distance3D(CTarget) / 64.0) * mult, 4, 80));
+	}
+
+	private bool IsInCombatStates() const
+	{
+		// [Ace] Well, that's one way to do it.
+		static const StateLabel CombatStates[] =
+		{
+			"See", "Aiming",
+			"ShootZM", "ReloadZM",
+			"ShootBoss", "ChamberRound", "ReloadBoss", "ReloadBossLoop",
+			"ShootBronto", "ReloadBronto"
+		};
+
+		for (int i = 0; i < CombatStates.Size(); ++i)
+		{
+			if (InStateSequence(CurState, FindState(CombatStates[i])))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	const WeaponCount = 3;
+	static const class<Inventory> AmmoTypes[] = { "FourMilAmmo", "SevenMilAmmo", "BrontornisRound" };
+	static const string AmmoTypeNames[] = { "4mm Ammo", "7mm Rounds", "Brontornis Bolt" };
+	static const int MagAmounts[] = { 50, 10, 1 };
+	static const int MaxAmounts[] = { 250, 50, 5 };
+	
+	int Mag[WeaponCount];
+	int SpareAmmo[WeaponCount];
+	CRType ChamberedRound[WeaponCount];
+
+	private bool HasWarnedLowAmmo[WeaponCount];
+	private WType SelectedWeapon;
+
+	private int AimTimer;
+	
+	States
+	{
+		See:
+			#### FF 2
+			{
+				AimTimer = 0;
+			}
+		Aiming:
+			#### F 1; // [Ace] Otherwise it's gonna cause an infinite loop.
+			#### F 1
+			{
+				if (!CheckTarget())
+				{
+					SetStateLabel("Idle");
+					return;
+				}
+
+				Aim();
+				if (AimTimer++ > AdjustForDistance(SelectedWeapon == Weapon_Boss ? 0.5 : 1))
+				{
+					AimTimer = 0;
+					SetStateLabel("Shoot");
+				}
+			}
+			Loop;
+		Shoot:
+			#### F 0
+			{
+				switch (SelectedWeapon)
+				{
+					case Weapon_ZM: SetStateLabel("ShootZM"); return;
+					case Weapon_Boss: SetStateLabel("ShootBoss"); return;
+					case Weapon_Bronto: SetStateLabel("ShootBronto"); return;
+				}
+
+				// [Ace] Follower is out of ammo and should not (re)engage enemies.
+				// Clear target so that they don't get stuck idling.
+				ClearTarget();
+			}
+			Goto Idle;
+
+		// ----------------------------------------
+		// ZM66
+		// ----------------------------------------
+
+		ShootZM:
+			#### GGG 1
+			{
+				A_StartSound("weapons/rifle", CHAN_WEAPON);
+				HDBulletActor.FireBullet(self, "HDB_426");
+				Mag[Weapon_ZM]--;
+				A_AlertMonsters(flags: AMF_TARGETEMITTER);
+
+				TryReload(Weapon_ZM, force: true);
+			}
+			#### F 10;
+			Goto See;
+		ReloadZM:
+			#### F 8
+			{
+				bNOPAIN = true;
+			}
+			#### F 6
+			{
+				A_StartSound("weapons/rifleclick2");
+			}
+			#### F 0
+			{
+				A_StartSound("weapons/rifleload");
+				HDMagAmmo.SpawnMag(self,"HD4mMag", 0);
+			}
+			#### F 30 A_StartSound("weapons/pocket", 8);
+			#### F 10
+			{
+				A_StartSound("weapons/rifleload", 9);
+				int AmmoMissing = 50 - Mag[Weapon_ZM];
+				int AmmoToLoad = min(AmmoMissing, SpareAmmo[Weapon_ZM]);
+				SpareAmmo[Weapon_ZM] -= AmmoToLoad;
+				Mag[Weapon_ZM] += AmmoToLoad;
+			}
+			#### F 2 A_StartSound("weapons/rifleclick2", 8);
+			#### F 0
+			{
+				bNOPAIN = false;
+			}
+			Goto See;
+
+		// ----------------------------------------
+		// BOSS RIFLE
+		// ----------------------------------------
+
+		ShootBoss:
+			#### F 0
+			{
+				if (!CheckTarget())
+				{
+					SetStateLabel("See");
+					return;
+				}
+			}
+			#### F 4 Aim();
+			#### G 1
+			{
+				ChamberedRound[Weapon_Boss] = CRT_Spent;
+				A_StartSound("weapons/bigrifle2", CHAN_WEAPON);
+				HDBulletActor.FireBullet(self, "HDB_776", speedfactor: 0.99);
+				Mag[Weapon_Boss]--;
+				A_AlertMonsters(flags: AMF_TARGETEMITTER);
+
+				TryReload(Weapon_Boss, force: true);
+			}
+			#### F 5;
+		ChamberRound:
+			#### F 0
+			{
+				bNOPAIN = true;
+			}
+			#### F 5 A_StartSound("weapons/boltback", 8);
+			#### F 0
+			{
+				if (ChamberedRound[Weapon_Boss] == CRT_Spent)
+				{
+					A_SpawnItemEx("HDSpent7mm", cos(pitch) * 8, 1, height - 7 - sin(pitch) * 8, cos(pitch) * cos(angle - 80) * 6 + vel.x, cos(pitch) * sin(angle - 80) * 6 + vel.y, -sin(pitch) * 6+ vel.z, 0, SXF_ABSOLUTEMOMENTUM | SXF_NOCHECKPOSITION | SXF_TRANSFERPITCH);
+				}
+				ChamberedRound[Weapon_Boss] = Mag[Weapon_Boss] > 0 ? CRT_Chambered : CRT_Empty;
+			}
+			#### F 7 A_StartSound("weapons/boltfwd", 8);
+			#### F 0
+			{
+				bNOPAIN = false;
+			}
+			Goto ShootBoss;
+		ReloadBoss:
+			#### F 8
+			{
+				bNOPAIN = true;
+			}
+			#### F 2 A_StartSound("weapons/rifleclick2", 8, CHANF_OVERLAP, 0.9, pitch: 0.95);
+			#### F 4 A_StartSound("weapons/rifleload", 8, CHANF_OVERLAP);
+			#### F 20 A_StartSound("weapons/pocket", 8);
+		ReloadBossLoop:
+			#### F 0
+			{
+				if (Mag[Weapon_Boss] == 10 || SpareAmmo[Weapon_Boss] == 0)
+				{
+					if (ChamberedRound[Weapon_Boss] == CRT_Chambered)
+					{
+						SetStateLabel("See");
+					}
+					else
+					{
+						SetStateLabel("ChamberRound");
+					}
+					bNOPAIN = false;
+				}
+			}
+			#### F 12
+			{
+				A_StartSound("weapons/rifleclick2",8);
+				SpareAmmo[Weapon_Boss]--;
+				Mag[Weapon_Boss]++;
+			}
+			Loop;
+
+		// ----------------------------------------
+		// BRONTORNIS
+		// ----------------------------------------
+
+		ShootBronto:
+			#### G 1
+			{
+				ChamberedRound[Weapon_Bronto] = CRT_Spent;
+				A_StartSound("weapons/bronto",CHAN_WEAPON);
+				A_StartSound("weapons/bronto",CHAN_WEAPON, CHANF_OVERLAP);
+				A_StartSound("weapons/bronto2",CHAN_WEAPON, CHANF_OVERLAP);
+				HDBulletActor.FireBullet(self, "HDB_bronto");
+				Mag[Weapon_Bronto]--;
+				A_AlertMonsters(flags: AMF_TARGETEMITTER);
+				A_Recoil(6);
+
+				TryReload(Weapon_Bronto, force: true);
+			}
+			#### F 10;
+			Goto See;
+		ReloadBronto:
+			#### F 8
+			{
+				bNOPAIN = true;
+			}
+			#### F 5
+			{
+				A_StartSound("weapons/brontunload", 8);
+				if (ChamberedRound[Weapon_Bronto] == CRT_Spent)
+				{
+					A_SpawnItemEx("TerrorCasing", cos(pitch) * 4, 0, height - 10 - sin(pitch) * 4, vel.x, vel.y, vel.z - frandom(-1, 1), frandom(-1, 1), SXF_ABSOLUTEMOMENTUM | SXF_NOCHECKPOSITION | SXF_TRANSFERPITCH | SXF_TRANSFERTRANSLATION);
+				}
+			}
+			#### F 12
+			{
+				ChamberedRound[Weapon_Bronto] = CRT_Chambered;
+				A_StartSound("weapons/brontoload", 9);
+				Mag[Weapon_Bronto] = 1;
+				SpareAmmo[Weapon_Bronto]--;
+			}
+			#### F 12 A_StartSound("weapons/pocket", 10);
+			#### F 10 A_StartSound("weapons/brontoload", 10);
+			#### F 10 A_StartSound("weapons/brontunload", 11);
+			#### F 5 A_StartSound("weapons/brontoclose", 8);
+			#### F 0
+			{
+				bNOPAIN = false;
+			}
+			Goto See;
+	}
+}

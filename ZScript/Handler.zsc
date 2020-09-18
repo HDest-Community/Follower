@@ -1,0 +1,376 @@
+class FollowerHandler : EventHandler
+{
+	private transient ui HUDFont MainFont;
+
+	private transient int FollowerMenuLevel;
+	private transient bool CanExitNow;
+	HDFollower Follower;
+
+	private transient int WarningResetTimer;
+
+	override void PlayerEntered(PlayerEvent e)
+	{
+		if (e.PlayerNumber > 0 || gamestate == GS_TITLELEVEL)
+		{
+			return;
+		}
+
+		let plr = players[e.PlayerNumber].mo;
+		if (plr)
+		{
+			let Body = plr.FindInventory("FollowerBody");
+
+			// [Ace] New map who dis? Spawn a new follower.
+			if (!Body && !plr.CheckInventory("LeftBehindFollower", 1))
+			{
+				Actor a; bool success;
+				for (int i = 0; i < 200; ++i)
+				{
+					[success, a] = plr.A_SpawnItemEx("HDFollower", random(16, 48), 0, random(0, 32), angle: random(0, 359));
+					if (success)
+					{
+						Follower = HDFollower(a);
+						Follower.LinkedPlayer = HDPlayerPawn(plr);
+						Follower.GiveStartingItems();
+						break;
+					}
+				}
+				if (!success)
+				{
+					plr.A_GiveInventory("FollowerBody");
+				}
+			}
+			else if (Body)
+			{
+				plr.UseInventory(Body);
+			}
+		}
+	}
+
+	override void RenderOverlay(RenderEvent e)
+	{
+		MainFont = HUDFont.Create("CONFONT");
+
+		int OriginalWidth = StatusBar.HorizontalResolution;
+		int OriginalHeight = StatusBar.VerticalResolution;
+
+		StatusBar.BeginHUD(1.0, true);
+		StatusBar.SetSize(StatusBar.RelTop, 640, 480);
+
+		if (Follower && FollowerMenuLevel > 0 && (Follower.Health > 0 && Follower.bFRIENDLY || Follower.Health <= 0) && !AutomapActive && GameState == GS_LEVEL)
+		{
+			DrawCommandMenu(StatusBar, (0, 40), StatusBar.DI_SCREEN_LEFT | StatusBar.DI_SCREEN_VCENTER | StatusBar.DI_TEXT_ALIGN_LEFT);
+		}
+
+		// --------------- PRETEND WE WERE NEVER HERE ---------------
+
+		StatusBar.BeginHUD(1.0, false);
+		StatusBar.SetSize(StatusBar.RelTop, OriginalWidth, OriginalHeight);
+	}
+
+	// [Ace] Not gonna lie, this is absolutely DISGUSTING!. Alas, I lack ideas.
+	private ui void DrawCommandMenu(BaseStatusBar sb, vector2 pos, int flags)
+	{
+		vector2 OriginalPos = pos;
+		int Brass = Follower.GetTotalBrass();
+		int MaxBrass = Follower.GetMaxBrass();
+		string BrassString = (Brass > 0 ? "" : "\c[Red]").."Take collected brass\c- ".."("..Brass.."/"..MaxBrass..")";
+
+		switch (FollowerMenuLevel)
+		{
+			case 1:
+				if (Follower.Health <= 0)
+				{
+					sb.DrawString(MainFont, "1) Carry follower", pos, flags, Font.CR_WHITE); pos.y += 10;
+					sb.DrawString(MainFont, "2) "..(sb.CheckInventory("BluePotion", 1) ? "" : "\c[Red]").."Give blue potion\c-", pos, flags, Font.CR_WHITE); pos.y += 10;
+					sb.DrawString(MainFont, "3) Try to give blood \c[FLW_BloodRed](+10 wounds)\c-", pos, flags, Font.CR_WHITE); pos.y += 10;
+					sb.DrawString(MainFont, "4) "..BrassString, pos, flags, Font.CR_WHITE); pos.y += 10;
+				}
+				else if (Follower.bFRIENDLY)
+				{
+					int Durability = 0;
+					bool Mega = false;
+					let Armor = HDArmourWorn(Follower.FindInventory("HDArmourWorn"));
+					if (Armor)
+					{
+						Durability = Armor.Durability;
+						Mega = Armor.Mega;
+					}
+
+					sb.DrawString(MainFont, "1) Orders", pos, flags, Font.CR_WHITE); pos.y += 10;
+					sb.DrawString(MainFont, "2) Carry follower", pos, flags, Font.CR_WHITE); pos.y += 10;
+					sb.DrawString(MainFont, "3) Give ammo", pos, flags, Font.CR_WHITE); pos.y += 10;
+					sb.DrawString(MainFont, "4) Give supplies", pos, flags, Font.CR_WHITE); pos.y += 10;
+					sb.DrawString(MainFont, "5) Try/drop armor"..(Durability > 0 ? (Mega ? "\c[Blue]" : "\c[DarkGreen]").." ("..Durability..")": "").."\c-", pos, flags, Font.CR_WHITE); pos.y += 10;
+					sb.DrawString(MainFont, "6) Misc commands", pos, flags, Font.CR_WHITE); pos.y += 10;
+				}
+				break;
+
+			case 2:
+				static const string Orders[] = { "Follow", "Follow and ignore hostiles", "Stay and provide cover", "Go there and provide cover" };
+				for (int i = 0; i < Orders.Size(); ++i)
+				{
+					sb.DrawString(MainFont, (i + 1)..") "..(Follower.Order == i ? "\c[Green]" : "")..Orders[i].."\c-", pos, flags, Font.CR_WHITE);
+					pos.y += 10;
+				}
+				sb.DrawString(MainFont, "5) Back...", pos, flags, Font.CR_WHITE);
+				pos.y += 10;
+				break;
+
+			case 3:
+				pos.y = OriginalPos.y;
+				for (int i = 0; i < Follower.AmmoTypes.Size(); ++i)
+				{
+					int MaxGiveAmount = Follower.GetMaxGiveAmount(i);
+					string ColorString = MaxGiveAmount > 0 ? "" : "\c[Red]";
+					string AmmoString = MaxGiveAmount.." "..Follower.AmmoTypeNames[i].."\c- ("..Follower.Mag[i]..", "..Follower.SpareAmmo[i].."/"..Follower.MaxAmounts[i]..")";
+
+					sb.DrawString(MainFont, (i + 1)..") "..ColorString..AmmoString, pos, flags, Font.CR_WHITE);
+					pos.y += 10;
+				}
+				sb.DrawString(MainFont, "4) Back...", pos, flags, Font.CR_WHITE);
+				pos.y += 10;
+				break;
+
+			case 4:
+				sb.DrawString(MainFont, "1) "..(sb.CheckInventory("PortableMedikit") ? "" : "\c[Red]").."Give Medikit\c- ".."("..Follower.SuturesLeft..", "..Follower.Medikits.."/"..Follower.MaxMedikits..")", pos, flags, Font.CR_WHITE); pos.y += 10;
+				sb.DrawString(MainFont, "2) "..(sb.CheckInventory("PortableStimpack") ? "" : "\c[Red]").."Give Stimpack\c- ".."("..Follower.Stimpacks.."/"..Follower.MaxStimpacks..")", pos, flags, Font.CR_WHITE); pos.y += 10;
+				sb.DrawString(MainFont, "3) Back...", pos, flags, Font.CR_WHITE); pos.y += 10;
+				break;
+
+			case 5:
+				sb.DrawString(MainFont, "1) Report position", pos, flags, Font.CR_WHITE); pos.y += 10;
+				sb.DrawString(MainFont, "2) "..BrassString, pos, flags, Font.CR_WHITE); pos.y += 10;
+				sb.DrawString(MainFont, "3) Back...", pos, flags, Font.CR_WHITE); pos.y += 10;
+				break;
+		}
+	}
+
+	override bool InputProcess(InputEvent e)
+	{
+		if (Follower && FollowerMenuLevel > 0 && (Follower.Health > 0 && Follower.bFRIENDLY || Follower.Health <= 0) && e.Type == InputEvent.Type_KeyDown)
+		{
+			Name Key = String.Format("%c", e.KeyChar);
+			switch (FollowerMenuLevel)
+			{
+				case 1:
+					if (Follower.Health <= 0)
+					{
+						switch (Key)
+						{
+							case '1': SendNetworkEvent("HDF_CarryFollower"); break;
+							case '2': SendNetworkEvent("HDF_TryRevive", Revive_Blues); break;
+							case '3': SendNetworkEvent("HDF_TryRevive", Revive_Blood); break;
+							case '4': SendNetworkEvent("HDF_CollectBrass"); break;
+						}
+					}
+					else if (Follower.bFRIENDLY)
+					{
+						switch (Key)
+						{
+							case '1': SendNetworkEvent("HDF_SetFollowerMenu", 2); break;
+							case '2': SendNetworkEvent("HDF_CarryFollower"); break;
+							case '3': SendNetworkEvent("HDF_SetFollowerMenu", 3); break;
+							case '4': SendNetworkEvent("HDF_SetFollowerMenu", 4); break;
+							case '5': SendNetworkEvent("HDF_TryArmor"); break;
+							case '6': SendNetworkEvent("HDF_SetFollowerMenu", 5); break;
+						}
+					}
+					break;
+					
+				case 2:
+					switch (Key)
+					{
+						case '1': SendNetworkEvent("HDF_ChangeOrders", FOrder_Follow); break;
+						case '2': SendNetworkEvent("HDF_ChangeOrders", FOrder_FollowIgnore); break;
+						case '3': SendNetworkEvent("HDF_ChangeOrders", FOrder_Cover); break;
+						case '4': SendNetworkEvent("HDF_ChangeOrders", FOrder_GoAndCover); break;
+						case '5': SendNetworkEvent("HDF_SetFollowerMenu", 1); break;
+					}
+					break;
+
+				case 3:
+					switch (Key)
+					{
+						case '1': SendNetworkEvent("HDF_GiveAmmo", Weapon_ZM); break;
+						case '2': SendNetworkEvent("HDF_GiveAmmo", Weapon_Boss); break;
+						case '3': SendNetworkEvent("HDF_GiveAmmo", Weapon_Bronto); break;
+						case '4': SendNetworkEvent("HDF_SetFollowerMenu", 1); break;
+					}
+					break;
+
+				case 4:
+					switch (Key)
+					{
+						case '1': SendNetworkEvent("HDF_GiveSupplies", 0); break;
+						case '2': SendNetworkEvent("HDF_GiveSupplies", 1); break;
+						case '3': SendNetworkEvent("HDF_SetFollowerMenu", 1); break;
+					}
+					break;
+
+				case 5:
+					switch (Key)
+					{
+						case '1': SendNetworkEvent("HDF_ReportPosition"); break;
+						case '2': SendNetworkEvent("HDF_CollectBrass"); break;
+						case '3': SendNetworkEvent("HDF_SetFollowerMenu", 1); break;
+					}
+					break;
+			}
+
+			// [Ace] Block 0-9 keys from affecting the world.
+			if (e.KeyChar >= 48 && e.KeyChar <= 57)
+			{
+				return true;
+			}
+
+			// [Ace] Exit.
+			int Key1, Key2;
+			[Key1, Key2] = Bindings.GetKeysForCommand("HDF_OpenMenu");
+			if (e.KeyScan == Key1 || e.KeyScan == Key2)
+			{
+				SendNetworkEvent("HDF_SetFollowerMenu", 0);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	override void NetworkProcess(ConsoleEvent e)
+	{
+		if (e.Player != consoleplayer || !Follower)
+		{
+			return;
+		}
+
+		// [Ace] These commands can be activated through the console and don't require the follower to be alive.
+		if (e.Name ~== "HDF_SetFollowerMenu")
+		{
+			FollowerMenuLevel = e.Args[0];
+			return;
+		}
+
+		if (e.Name ~== "HDF_WarpToPlayer")
+		{
+			// [Ace] This is an obvious cheat, so don't use it unless you absolutely HAVE to.
+			Follower.WarpToPlayer();
+			return;
+		}
+
+		if (Follower.Health > 0 && !Follower.bFRIENDLY)
+		{
+			return;
+		}
+
+		// [Ace] These commands cannot be used if alive and hostile.
+		if (e.Name ~== "HDF_CarryFollower")
+		{
+			if (Follower.PackFollower())
+			{
+				FollowerMenuLevel = 0;
+			}
+			return;
+		}
+
+		if (e.Name ~== "HDF_TryRevive")
+		{
+			if (Follower.TryRevive(e.Args[0]))
+			{
+				FollowerMenuLevel = 0;
+			}
+			return;
+		}
+
+		if (e.Name ~== "HDF_CollectBrass")
+		{
+			if (Follower.TryCollectBrass())
+			{
+				FollowerMenuLevel = 0;
+			}
+			return;
+		}
+
+		if (e.Name ~== "HDF_NextOutfit")
+		{
+			Follower.NextOutfit();
+			return;
+		}
+
+		if (e.Name ~== "HDF_GiveAmmo")
+		{
+			Follower.TryGiveAmmo(e.Args[0]);
+			return;
+		}
+
+		if (e.Name ~== "HDF_TryArmor")
+		{
+			Follower.TryUseArmor();
+			FollowerMenuLevel = 0;
+			return;
+		}
+
+		if (e.Name ~== "HDF_GiveSupplies")
+		{
+			switch (e.Args[0])
+			{
+				case 0: Follower.TryGiveMedikit(); break;
+				case 1: Follower.TryGiveStimpack(); break;
+			}
+			return;
+		}
+
+		if (e.Name ~== "HDF_ChangeOrders")
+		{
+			if (Follower.ChangeOrders(e.Args[0]))
+			{
+				FollowerMenuLevel = 0;
+			}
+			return;
+		}
+
+		if (e.Name ~== "HDF_ReportPosition")
+		{
+			Follower.ReportPosition();
+			FollowerMenuLevel = 0;
+			return;
+		}
+	}
+
+	override void WorldUnloaded(WorldEvent e)
+	{
+		if (Follower)
+		{
+			if (Follower.IsDeadOrMissing())
+			{
+				Follower.LinkedPlayer.A_GiveInventory("LeftBehindFollower");
+			}
+			else
+			{
+				Follower.PackFollower(true);
+			}
+		}
+	}
+
+	override void WorldLinePreActivated(WorldEvent e)
+	{
+		// [Ace] This only prints the warning. Tokens are given when you actually exit the level.
+		if (e.Thing is "PlayerPawn" && (e.ActivatedLine.special == 74 || e.ActivatedLine.special == 243 || e.ActivatedLine.special == 244))
+		{
+			if (Follower && Follower.IsDeadOrMissing() && !CanExitNow)
+			{
+				e.Thing.A_Print("\c[White]You shouldn't leave "..Follower.GetTag().." behind.\c-\n\n\c[White]Activate the exit again within two seconds to exit the level and leave "..Follower.GetTag().." to the monsters.\c-");
+				e.ShouldActivate = false;
+				CanExitNow = true;
+				WarningResetTimer = 70;
+			}
+		}
+	}
+
+	override void WorldTick()
+	{
+		if (CanExitNow && --WarningResetTimer <= 0)
+		{
+			CanExitNow = false;
+		}
+	}
+}
