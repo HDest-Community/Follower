@@ -106,7 +106,7 @@ extend class HDFollower
 		}
 	}
 
-	private void EngageTarget(WType wpn, Actor other)
+	private virtual void EngageTarget(WType wpn, Actor other)
 	{
 		SelectedWeapon = FindLoadedWeapon(wpn);
 
@@ -136,7 +136,7 @@ extend class HDFollower
 	}
 
 	// [Ace] Start from the selected weapon and work in descending order.
-	private WType FindLoadedWeapon(WType startWeapon) const
+	private virtual WType FindLoadedWeapon(WType startWeapon) const
 	{
 		for (WType wpn = startWeapon; wpn >= Weapon_ZM; --wpn)
 		{
@@ -154,7 +154,7 @@ extend class HDFollower
 		return int(clamp((Distance3D(CTarget) / 64.0) * mult, 4, 80));
 	}
 
-	private bool IsInCombatStates() const
+	private virtual bool IsInCombatStates() const
 	{
 		// [Ace] Well, that's one way to do it.
 		static const StateLabel CombatStates[] =

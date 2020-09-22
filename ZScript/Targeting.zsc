@@ -1,6 +1,6 @@
 extend class HDFollower
 {
-	private void LookForEnemies()
+	private virtual void LookForEnemies()
 	{
 		let TheEye = BlockThingsIterator.Create(self, MaxTargetRange);
 		while (TheEye.Next())
@@ -57,7 +57,7 @@ extend class HDFollower
 		}
 	}
 
-	private bool CheckTarget() const
+	private virtual bool CheckTarget() const
 	{
 		// [Ace] Don't target if:
 		// - Follower is friendly and target is friendly or player;
