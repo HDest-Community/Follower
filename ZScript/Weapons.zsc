@@ -199,7 +199,7 @@ extend class HDFollower
 		}
 	}
 
-	protected virtual bool IsInCombatStates() const
+	protected virtual bool IsInCombatStates()
 	{
 		// [Ace] Well, that's one way to do it.
 		static const StateLabel CombatStates[] =
@@ -264,6 +264,7 @@ extend class HDFollower
 				if (SelWeapon)
 				{
 					SetStateLabel(SelWeapon.FireState);
+					return;
 				}
 
 				// [Ace] Follower is out of ammo and should not (re)engage enemies.
