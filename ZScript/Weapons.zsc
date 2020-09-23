@@ -55,7 +55,7 @@ extend class HDFollower
 		return min(LinkedPlayer.CountInv(wpn.AmmoType), min(wpn.MaxMag, wpn.MaxSpareAmmo - wpn.SpareAmmo));
 	}
 
-	private void Aim()
+	protected void Aim()
 	{
 		A_Face(CTarget, 0, 0, flags: FAF_MIDDLE);
 		
@@ -301,7 +301,7 @@ extend class HDFollower
 			#### F 0
 			{
 				A_StartSound("weapons/rifleload");
-				HDMagAmmo.SpawnMag(self,"HD4mMag", 0);
+				HDMagAmmo.SpawnMag(self, "HD4mMag", 0);
 			}
 			#### F 30 A_StartSound("weapons/pocket", 8);
 			#### F 10
