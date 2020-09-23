@@ -2,4 +2,5 @@ AddKeySection "HD Follower Keybinds" "HDFollowerKeys"
 AddMenuKey "Open Command Menu" "HDF_OpenMenu"
 
 alias "HDF_WarpToPlayer" "netevent HDF_WarpToPlayer"
+alias "HDF_ResetFollower" "netevent HDF_ResetFollower"
 alias "HDF_OpenMenu" "netevent HDF_SetFollowerMenu 1"
