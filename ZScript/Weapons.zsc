@@ -33,8 +33,8 @@ class FollowerWeapon
 
 		return wpn;
 	}
-
-	void ReloadWeapon()
+	
+	void ReloadMag()
 	{
 		int AmmoMissing = MaxMag - Mag;
 		int AmmoToLoad = min(AmmoMissing, SpareAmmo);
@@ -307,7 +307,7 @@ extend class HDFollower
 			#### F 10
 			{
 				A_StartSound("weapons/rifleload", 9);
-				SelWeapon.ReloadWeapon();
+				SelWeapon.ReloadMag();
 			}
 			#### F 2 A_StartSound("weapons/rifleclick2", 8);
 			#### F 0
