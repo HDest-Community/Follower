@@ -247,8 +247,7 @@ extend class HDFollower
 	const MaxPlayerRange = 768;
 
 	HDPlayerPawn LinkedPlayer;
-	private Actor CTarget;
-	//private Actor LTarget; // [Ace] Dunno if needed.
+	protected Actor CTarget;
 	private Actor TGoal;
 
 	private bool Moving;

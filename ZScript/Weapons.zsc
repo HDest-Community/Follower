@@ -228,7 +228,7 @@ extend class HDFollower
 		Weapons.Push(FollowerWeapon.Create("Bronto", "BrontornisRound", "Brontornis Bolt", 0, 1, 0, 5, "ShootBronto", "ReloadBronto", FollowerWeapon.CRT_Empty));
 	}
 
-	private FollowerWeapon SelWeapon;
+	protected FollowerWeapon SelWeapon;
 	Array<FollowerWeapon> Weapons;
 
 	private int AimTimer;
