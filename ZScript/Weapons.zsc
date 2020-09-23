@@ -133,7 +133,7 @@ extend class HDFollower
 	}
 
 	// [Ace] If weapon is out of ammo, reload.
-	private void TryReload(FollowerWeapon wpn, int min = 0, bool force = false, bool silent = false, bool noJump = false)
+	protected void TryReload(FollowerWeapon wpn, int min = 0, bool force = false, bool silent = false, bool noJump = false)
 	{
 		if (IsInCombatStates() && !force)
 		{
