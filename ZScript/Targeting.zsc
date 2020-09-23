@@ -15,7 +15,9 @@ extend class HDFollower
 			HDPlayerPawn PTarget = HDPlayerPawn(TheEye.thing);
 
 			// [Ace] Weapons are listed in descending priority.
+			// If a weapon is missing from the list, the follower will never attack with that weapon.
 			Array<FollowerWeapon> UsedWeapons;
+
 			if (MTarget && (bFRIENDLY && !MTarget.bFRIENDLY || !bFRIENDLY && MTarget.bFRIENDLY) && MTarget.bISMONSTER && MTarget.bSHOOTABLE && MTarget != self && MTarget.Health > 0 && CheckSight(MTarget, SF_SEEPASTSHOOTABLELINES) && !TargetIsIncapped(MTarget))
 			{
 				if (MTarget is "HERPBot" || MTarget is "DERPBot" || (!hdf_targetuncountable && !MTarget.bCOUNTKILL))
@@ -41,16 +43,19 @@ extend class HDFollower
 					UsedWeapons.Push(GetWeaponByName("Bronto"));
 					UsedWeapons.Push(GetWeaponByName("Boss"));
 					UsedWeapons.Push(GetWeaponByName("ZM66"));
+					EngageTarget(UsedWeapons, MTarget);
 				}
 				else if (MTarget is "PainBringer")
 				{
 					UsedWeapons.Push(GetWeaponByName("Boss"));
 					UsedWeapons.Push(GetWeaponByName("ZM66"));
+					EngageTarget(UsedWeapons, MTarget);
 				}
 				else if (MTarget is "HDMobBase" && HDMobBase(MTarget).Shields > 150)
 				{
 					UsedWeapons.Push(GetWeaponByName("Boss"));
 					UsedWeapons.Push(GetWeaponByName("ZM66"));
+					EngageTarget(UsedWeapons, MTarget);
 				}
 				else if (!CheckTarget())
 				{
