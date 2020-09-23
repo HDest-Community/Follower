@@ -113,6 +113,7 @@ extend class HDFollower
 			return;
 		}
 
+		SelWeapon = wpn;
 		class<Inventory> AmmoType = wpn.AmmoType;
 		int MaxGive = GetMaxGiveAmount(wpn);
 
@@ -235,7 +236,7 @@ extend class HDFollower
 	virtual void InitWeapons()
 	{
 		Weapons.Push(FollowerWeapon.Create("ZM66", "FourMilAmmo", "4mm Rounds", 30, 50, 0, 250, "ShootZM", "ReloadZM", FollowerWeapon.CRT_Chambered, "$AMMOGIVE_ZM_SUCCESS", "Follower/AmmoGive/ZM/Success", "$AMMOGIVE_ZM_TOOMANY", "Follower/AmmoGive/ZM/TooMany", "$NOAMMO_ZM", "Follower/NoAmmo/ZM"));
-		Weapons.Push(FollowerWeapon.Create("Boss", "SevenMilAmmo", "7mm Rounds", 0, 10, 0, 50, "ShootZM", "ReloadZM", FollowerWeapon.CRT_Empty, "$AMMOGIVE_BOSS_SUCCESS", "Follower/AmmoGive/Boss/Success", "$AMMOGIVE_BOSS_TOOMANY", "Follower/AmmoGive/Boss/TooMany", "$NOAMMO_BOSS", "Follower/NoAmmo/Boss"));
+		Weapons.Push(FollowerWeapon.Create("Boss", "SevenMilAmmo", "7mm Rounds", 0, 10, 0, 50, "ShootBoss", "ReloadBoss", FollowerWeapon.CRT_Empty, "$AMMOGIVE_BOSS_SUCCESS", "Follower/AmmoGive/Boss/Success", "$AMMOGIVE_BOSS_TOOMANY", "Follower/AmmoGive/Boss/TooMany", "$NOAMMO_BOSS", "Follower/NoAmmo/Boss"));
 		Weapons.Push(FollowerWeapon.Create("Bronto", "BrontornisRound", "Brontornis Bolt", 0, 1, 0, 5, "ShootBronto", "ReloadBronto", FollowerWeapon.CRT_Empty, "$AMMOGIVE_BRONTO_SUCCESS", "Follower/AmmoGive/Bronto/Success", "$AMMOGIVE_BRONTO_TOOMANY", "Follower/AmmoGive/Bronto/TooMany", "$NOAMMO_BRONTO", "Follower/NoAmmo/Bronto"));
 	}
 
