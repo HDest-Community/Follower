@@ -7,19 +7,16 @@ class FollowerWeapon
 		CRT_Spent
 	}
 
-	Name WeaponName; // [Ace] Used for identification.
+	Name WeaponName; // [Ace] Used for identification. Also for the sounds and stuff.
 	class<HDAmmo> AmmoType;
 	string AmmoName; // [Ace] Fancy name.
 	StateLabel FireState, ReloadState;
 	int Mag, MaxMag;
 	int SpareAmmo, MaxSpareAmmo;
 	CRType ChamberedRound;
-	string SuccessText, SuccessVoice;
-	string TooManyText, TooManyVoice;
-	string NoAmmoText, NoAmmoVoice;
 	bool HasWarnedLowAmmo;
 
-	static FollowerWeapon Create(Name wName, class<HDAmmo> amType, string amName, int sMag, int mMag, int sSpare, int mSpare, StateLabel fState, StateLabel rState, CRType chamber, string succText, string succVoice, string failTooManyText, string failTooManyVoice, string failNoAmmoText, string failNoAmmoVoice)
+	static FollowerWeapon Create(Name wName, class<HDAmmo> amType, string amName, int sMag, int mMag, int sSpare, int mSpare, StateLabel fState, StateLabel rState, CRType chamber)
 	{
 		FollowerWeapon wpn = new("FollowerWeapon");
 		wpn.WeaponName = wName;
@@ -32,15 +29,6 @@ class FollowerWeapon
 		wpn.ChamberedRound = chamber;
 		wpn.FireState = fState;
 		wpn.ReloadState = rState;
-
-		// [Ace] Need to streamline this shit later.
-		// Best case scenario it uses the identifier to form the full string.
-		wpn.SuccessText = succText;
-		wpn.SuccessVoice = succVoice;
-		wpn.TooManyText = failTooManyText;
-		wpn.TooManyVoice = failTooManyVoice;
-		wpn.NoAmmoText = failNoAmmoText;
-		wpn.NoAmmoVoice = failNoAmmoVoice;
 		wpn.HasWarnedLowAmmo = false;
 
 		return wpn;
@@ -126,7 +114,7 @@ extend class HDFollower
 		else if (wpn.SpareAmmo >= wpn.MaxSpareAmmo)
 		{
 			TryReload(wpn, wpn.MaxMag);
-			PrintMessage(GetResponse(wpn.TooManyText), wpn.TooManyVoice);
+			PrintMessage(GetResponse("$AMMOGIVE_"..wpn.WeaponName.."_TOOMANY"), "Follower/AmmoGive/"..wpn.WeaponName.."/TooMany");
 			return;
 		}
 		else if (LinkedPlayer.CountInv(wpn.AmmoType) == 0)
@@ -141,7 +129,7 @@ extend class HDFollower
 		wpn.HasWarnedLowAmmo = false;
 		TryReload(wpn, wpn.MaxMag);
 
-		PrintMessage(GetResponse(wpn.SuccessText), wpn.SuccessVoice);
+		PrintMessage(GetResponse("$AMMOGIVE_"..wpn.WeaponName.."_SUCCESS"), "Follower/AmmoGive/"..wpn.WeaponName.."/Success");
 	}
 
 	// [Ace] If weapon is out of ammo, reload.
@@ -163,7 +151,7 @@ extend class HDFollower
 				if (!silent && !wpn.HasWarnedLowAmmo)
 				{
 					wpn.HasWarnedLowAmmo = true;
-					PrintMessage(GetResponse(wpn.NoAmmoText), wpn.NoAmmoVoice);
+					PrintMessage(GetResponse("$NOAMMO_"..wpn.WeaponName), "Follower/NoAmmo/"..wpn.WeaponName);
 				}
 
 				if (!noJump)
@@ -235,9 +223,9 @@ extend class HDFollower
 
 	virtual void InitWeapons()
 	{
-		Weapons.Push(FollowerWeapon.Create("ZM66", "FourMilAmmo", "4mm Rounds", 30, 50, 0, 250, "ShootZM", "ReloadZM", FollowerWeapon.CRT_Chambered, "$AMMOGIVE_ZM_SUCCESS", "Follower/AmmoGive/ZM/Success", "$AMMOGIVE_ZM_TOOMANY", "Follower/AmmoGive/ZM/TooMany", "$NOAMMO_ZM", "Follower/NoAmmo/ZM"));
-		Weapons.Push(FollowerWeapon.Create("Boss", "SevenMilAmmo", "7mm Rounds", 0, 10, 0, 50, "ShootBoss", "ReloadBoss", FollowerWeapon.CRT_Empty, "$AMMOGIVE_BOSS_SUCCESS", "Follower/AmmoGive/Boss/Success", "$AMMOGIVE_BOSS_TOOMANY", "Follower/AmmoGive/Boss/TooMany", "$NOAMMO_BOSS", "Follower/NoAmmo/Boss"));
-		Weapons.Push(FollowerWeapon.Create("Bronto", "BrontornisRound", "Brontornis Bolt", 0, 1, 0, 5, "ShootBronto", "ReloadBronto", FollowerWeapon.CRT_Empty, "$AMMOGIVE_BRONTO_SUCCESS", "Follower/AmmoGive/Bronto/Success", "$AMMOGIVE_BRONTO_TOOMANY", "Follower/AmmoGive/Bronto/TooMany", "$NOAMMO_BRONTO", "Follower/NoAmmo/Bronto"));
+		Weapons.Push(FollowerWeapon.Create("ZM66", "FourMilAmmo", "4mm Rounds", 30, 50, 0, 250, "ShootZM", "ReloadZM", FollowerWeapon.CRT_Chambered));
+		Weapons.Push(FollowerWeapon.Create("Boss", "SevenMilAmmo", "7mm Rounds", 0, 10, 0, 50, "ShootBoss", "ReloadBoss", FollowerWeapon.CRT_Empty));
+		Weapons.Push(FollowerWeapon.Create("Bronto", "BrontornisRound", "Brontornis Bolt", 0, 1, 0, 5, "ShootBronto", "ReloadBronto", FollowerWeapon.CRT_Empty));
 	}
 
 	private FollowerWeapon SelWeapon;
