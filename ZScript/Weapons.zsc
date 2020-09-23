@@ -223,7 +223,7 @@ extend class HDFollower
 
 	virtual void InitWeapons()
 	{
-		Weapons.Push(FollowerWeapon.Create("ZM66", "FourMilAmmo", "4mm Rounds", 30, 50, 0, 250, "ShootZM", "ReloadZM", FollowerWeapon.CRT_Chambered));
+		Weapons.Push(FollowerWeapon.Create("ZM66", "FourMilAmmo", "4mm Rounds", 50, 50, 0, 250, "ShootZM", "ReloadZM", FollowerWeapon.CRT_Chambered));
 		Weapons.Push(FollowerWeapon.Create("Boss", "SevenMilAmmo", "7mm Rounds", 0, 10, 0, 50, "ShootBoss", "ReloadBoss", FollowerWeapon.CRT_Empty));
 		Weapons.Push(FollowerWeapon.Create("Bronto", "BrontornisRound", "Brontornis Bolt", 0, 1, 0, 5, "ShootBronto", "ReloadBronto", FollowerWeapon.CRT_Empty));
 	}

@@ -8,14 +8,9 @@ class FollowerHandler : EventHandler
 
 	private transient int WarningResetTimer;
 
-	override void PlayerEntered(PlayerEvent e)
+	private void CreateFollower(int playerNum)
 	{
-		if (e.PlayerNumber > 0 || gamestate == GS_TITLELEVEL)
-		{
-			return;
-		}
-
-		let plr = players[e.PlayerNumber].mo;
+		let plr = players[playerNum].mo;
 		if (plr)
 		{
 			let Body = plr.FindInventory("FollowerBody");
@@ -47,6 +42,16 @@ class FollowerHandler : EventHandler
 				plr.UseInventory(Body);
 			}
 		}
+	}
+
+	override void PlayerEntered(PlayerEvent e)
+	{
+		if (e.PlayerNumber > 0 || gamestate == GS_TITLELEVEL)
+		{
+			return;
+		}
+
+		CreateFollower(e.PlayerNumber);
 	}
 
 	override void RenderOverlay(RenderEvent e)
@@ -262,6 +267,14 @@ class FollowerHandler : EventHandler
 		{
 			// [Ace] This is an obvious cheat, so don't use it unless you absolutely HAVE to.
 			Follower.WarpToPlayer();
+			return;
+		}
+
+		if (e.Name ~== "HDF_ResetFollower")
+		{
+			// [Ace] This allows you to use the follower after big refactors without having to start a new game. This will re-create the actor objecct.
+			Follower.Destroy();
+			CreateFollower(e.Player);
 			return;
 		}
 
