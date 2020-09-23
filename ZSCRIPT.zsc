@@ -177,7 +177,8 @@ class HDFollower : HDMobMan
 
 	override void PostBeginPlay()
 	{
-		if (CheckProximity("HDFollower", 65535, 1))
+		// [Ace] Nuke self if duplicate.
+		if (CheckProximity("HDFollower", 65535, 1, flags: CPXF_ANCESTOR))
 		{
 			Destroy();
 			return;

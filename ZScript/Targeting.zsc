@@ -1,6 +1,6 @@
 extend class HDFollower
 {
-	private virtual void LookForEnemies()
+	protected virtual void LookForEnemies()
 	{
 		let TheEye = BlockThingsIterator.Create(self, MaxTargetRange);
 		while (TheEye.Next())
@@ -14,6 +14,8 @@ extend class HDFollower
 			Actor MTarget = TheEye.thing;
 			HDPlayerPawn PTarget = HDPlayerPawn(TheEye.thing);
 
+			// [Ace] Weapons are listed in descending priority.
+			Array<FollowerWeapon> UsedWeapons;
 			if (MTarget && (bFRIENDLY && !MTarget.bFRIENDLY || !bFRIENDLY && MTarget.bFRIENDLY) && MTarget.bISMONSTER && MTarget.bSHOOTABLE && MTarget != self && MTarget.Health > 0 && CheckSight(MTarget, SF_SEEPASTSHOOTABLELINES) && !TargetIsIncapped(MTarget))
 			{
 				if (MTarget is "HERPBot" || MTarget is "DERPBot" || (!hdf_targetuncountable && !MTarget.bCOUNTKILL))
@@ -23,41 +25,57 @@ extend class HDFollower
 
 				if (MTarget.bBOSS && (CheckTarget() && !CTarget.bBOSS || !CheckTarget()))
 				{
-					EngageTarget(Weapon_Bronto, MTarget);
+					UsedWeapons.Push(GetWeaponByName("Bronto"));
+					UsedWeapons.Push(GetWeaponByName("Boss"));
+					UsedWeapons.Push(GetWeaponByName("ZM66"));
+					EngageTarget(UsedWeapons, MTarget);
 				}
 				else if (MTarget is "Necromancer")
 				{
-					EngageTarget(Weapon_ZM, MTarget);
+					UsedWeapons.Push(GetWeaponByName("ZM66"));
+					UsedWeapons.Push(GetWeaponByName("Boss"));
+					EngageTarget(UsedWeapons, MTarget);
 				}
 				else if (MTarget is "PainLord")
 				{
-					EngageTarget(Weapon_Bronto, MTarget);
+					UsedWeapons.Push(GetWeaponByName("Bronto"));
+					UsedWeapons.Push(GetWeaponByName("Boss"));
+					UsedWeapons.Push(GetWeaponByName("ZM66"));
 				}
 				else if (MTarget is "PainBringer")
 				{
-					EngageTarget(Weapon_Boss, MTarget);
+					UsedWeapons.Push(GetWeaponByName("Boss"));
+					UsedWeapons.Push(GetWeaponByName("ZM66"));
 				}
 				else if (MTarget is "HDMobBase" && HDMobBase(MTarget).Shields > 150)
 				{
-					EngageTarget(Weapon_Boss, MTarget);
+					UsedWeapons.Push(GetWeaponByName("Boss"));
+					UsedWeapons.Push(GetWeaponByName("ZM66"));
 				}
 				else if (!CheckTarget())
 				{
-					EngageTarget(Distance3D(MTarget) > 2048 ? Weapon_Boss : Weapon_ZM, MTarget);
+					if (Distance3D(MTarget) > 2048)
+					{
+						UsedWeapons.Push(GetWeaponByName("Boss"));
+					}
+					UsedWeapons.Push(GetWeaponByName("ZM66"));
+					EngageTarget(UsedWeapons, MTarget);
 				}
 				else // [Ace] In case follower gets interrupted, re-engage old target.
 				{
-					EngageTarget(SelectedWeapon, CTarget);
+					UsedWeapons.Push(SelWeapon);
+					EngageTarget(UsedWeapons, CTarget);
 				}
 			}
 			else if (!bFRIENDLY && PTarget && PTarget.Health > 0 && CheckSight(PTarget, SF_SEEPASTSHOOTABLELINES))
 			{
-				EngageTarget(Weapon_ZM, PTarget);
+				UsedWeapons.Push(GetWeaponByName("ZM66"));
+				EngageTarget(UsedWeapons, PTarget);
 			}
 		}
 	}
 
-	private virtual bool CheckTarget() const
+	protected virtual bool CheckTarget() const
 	{
 		// [Ace] Don't target if:
 		// - Follower is friendly and target is friendly or player;
@@ -76,7 +94,7 @@ extend class HDFollower
 		return (FriendlyCheck || HostileCHeck) && CTarget.Health > 0 && CheckSight(CTarget, SF_SEEPASTSHOOTABLELINES) && !TargetIsIncapped(CTarget) && CTarget.bSHOOTABLE;
 	}
 
-	private bool TargetIsIncapped(Actor other) const
+	protected bool TargetIsIncapped(Actor other) const
 	{
 		return other && other.InStateSequence(other.CurState, other.FindState("Falldown"));
 	}

@@ -26,12 +26,14 @@ class FollowerHandler : EventHandler
 				Actor a; bool success;
 				for (int i = 0; i < 200; ++i)
 				{
-					[success, a] = plr.A_SpawnItemEx("HDFollower", random(16, 48), 0, random(0, 32), angle: random(0, 359));
+					[success, a] = plr.A_SpawnItemEx(Actor.GetReplacement("HDFollower"), random(16, 48), 0, random(0, 32), angle: random(0, 359));
 					if (success)
 					{
 						Follower = HDFollower(a);
 						Follower.LinkedPlayer = HDPlayerPawn(plr);
+						// [Ace] These are here so that they are only called once when the follower is created.
 						Follower.GiveStartingItems();
+						Follower.InitWeapons();
 						break;
 					}
 				}
@@ -119,16 +121,19 @@ class FollowerHandler : EventHandler
 
 			case 3:
 				pos.y = OriginalPos.y;
-				for (int i = 0; i < Follower.AmmoTypes.Size(); ++i)
+				int LastIndex = 0;
+				for (int i = 0; i < Follower.Weapons.Size(); ++i)
 				{
-					int MaxGiveAmount = Follower.GetMaxGiveAmount(i);
+					FollowerWeapon CurrWeapon = Follower.GetWeaponByIndex(i);
+					int MaxGiveAmount = Follower.GetMaxGiveAmount(CurrWeapon);
 					string ColorString = MaxGiveAmount > 0 ? "" : "\c[Red]";
-					string AmmoString = MaxGiveAmount.." "..Follower.AmmoTypeNames[i].."\c- ("..Follower.Mag[i]..", "..Follower.SpareAmmo[i].."/"..Follower.MaxAmounts[i]..")";
+					string AmmoString = MaxGiveAmount.." "..CurrWeapon.AmmoName.."\c- ("..CurrWeapon.Mag..", "..CurrWeapon.SpareAmmo.."/"..CurrWeapon.MaxSpareAmmo..")";
 
 					sb.DrawString(MainFont, (i + 1)..") "..ColorString..AmmoString, pos, flags, Font.CR_WHITE);
 					pos.y += 10;
+					LastIndex = i + 1;
 				}
-				sb.DrawString(MainFont, "4) Back...", pos, flags, Font.CR_WHITE);
+				sb.DrawString(MainFont, (LastIndex + 1)..") Back...", pos, flags, Font.CR_WHITE);
 				pos.y += 10;
 				break;
 
@@ -150,6 +155,7 @@ class FollowerHandler : EventHandler
 	{
 		if (Follower && FollowerMenuLevel > 0 && (Follower.Health > 0 && Follower.bFRIENDLY || Follower.Health <= 0) && e.Type == InputEvent.Type_KeyDown)
 		{
+			int NumKey = e.KeyChar - 48;
 			Name Key = String.Format("%c", e.KeyChar);
 			switch (FollowerMenuLevel)
 			{
@@ -190,12 +196,14 @@ class FollowerHandler : EventHandler
 					break;
 
 				case 3:
-					switch (Key)
+					// Back key is next weapon +
+					if (NumKey == Follower.Weapons.Size() + 1)
 					{
-						case '1': SendNetworkEvent("HDF_GiveAmmo", Weapon_ZM); break;
-						case '2': SendNetworkEvent("HDF_GiveAmmo", Weapon_Boss); break;
-						case '3': SendNetworkEvent("HDF_GiveAmmo", Weapon_Bronto); break;
-						case '4': SendNetworkEvent("HDF_SetFollowerMenu", 1); break;
+						SendNetworkEvent("HDF_SetFollowerMenu", 1);
+					}
+					else
+					{
+						SendNetworkEvent("HDF_GiveAmmo", NumKey - 1);
 					}
 					break;
 

@@ -20,10 +20,9 @@ extend class HDFollower
 
 		let FData = FollowerBody(LinkedPlayer.GiveInventoryType("FollowerBody"));
 
-		for (int i = 0; i < HDFollower.WeaponCount; ++i)
+		for (int i = 0; i < Weapons.Size(); ++i)
 		{
-			FData.Mag[i] = Mag[i];
-			FData.SpareAmmo[i] = SpareAmmo[i];
+			FData.Weapons.Push(Weapons[i]);
 		}
 
 		if (!force)
@@ -134,9 +133,8 @@ class FollowerBody : HDPickup
 	int Stunned;
 	int BloodReviveTicker;
 
-	int Mag[HDFollower.WeaponCount];
-	int SpareAmmo[HDFollower.WeaponCount];
-	CRType ChamberedRound[HDFollower.WeaponCount];
+	// [Ace] They better all be the same size or you'll witness the console screen with red letters.
+	Array<FollowerWeapon> Weapons;
 
 	int Medikits;
 	int SuturesLeft;
@@ -167,7 +165,7 @@ class FollowerBody : HDPickup
 						break;
 					}
 
-					[success, a] = A_SpawnItemEx("HDFollower", Distance, 0, random(8, 16), angle: RandAngle);
+					[success, a] = A_SpawnItemEx(GetReplacement("HDFollower"), Distance, 0, random(8, 16), angle: RandAngle);
 
 					if (success)
 					{
@@ -186,12 +184,11 @@ class FollowerBody : HDPickup
 						Follower.NewStunned = invoker.Stunned;
 						Follower.NewBodyDamage = invoker.BodyDamage;
 
-						for (int i = 0; i < HDFollower.WeaponCount; ++i)
+						for (int i = 0; i < invoker.Weapons.Size(); ++i)
 						{
-							Follower.Mag[i] = invoker.Mag[i];
-							Follower.SpareAmmo[i] = invoker.SpareAmmo[i];
-							Follower.ChamberedRound[i] = invoker.ChamberedRound[i];
+							Follower.Weapons.Push(invoker.Weapons[i]);
 						}
+						
 						Follower.Medikits = invoker.Medikits;
 						Follower.SuturesLeft = invoker.SuturesLeft;
 						Follower.Stimpacks = invoker.Stimpacks;

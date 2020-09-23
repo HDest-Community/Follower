@@ -1,29 +1,7 @@
 extend class HDFollower
 {
-	void GiveStartingItems()
+	virtual void GiveStartingItems()
 	{
-		// [Ace] Always start with a full ZM mag.
-		SpareAmmo[Weapon_ZM] = hdf_loadout_446;
-		if (Mag[Weapon_ZM] == 0 && SpareAmmo[Weapon_ZM] > 0)
-		{
-			SpareAmmo[Weapon_ZM] -= MagAmounts[Weapon_ZM];
-			Mag[Weapon_ZM] = MagAmounts[Weapon_ZM];
-		}
-
-		SpareAmmo[Weapon_Boss] = hdf_loadout_776;
-		if (Mag[Weapon_Boss] == 0 && SpareAmmo[Weapon_Boss] > 0)
-		{
-			SpareAmmo[Weapon_Boss] -= MagAmounts[Weapon_Boss];
-			Mag[Weapon_Boss] = MagAmounts[Weapon_Boss];
-		}
-
-		SpareAmmo[Weapon_Bronto] = hdf_loadout_bolts;
-		if (Mag[Weapon_Bronto] == 0 && SpareAmmo[Weapon_Bronto] > 0)
-		{
-			SpareAmmo[Weapon_Bronto] -= MagAmounts[Weapon_Bronto];
-			Mag[Weapon_Bronto] = MagAmounts[Weapon_Bronto];
-		}
-
 		Medikits = hdf_loadout_medikits;
 		Stimpacks = hdf_loadout_stimpacks + Medikits;
 

@@ -1,6 +1,22 @@
 [enu default]
 FOLLOWER_NAME = "Balthazar";
 
+CARRY_FAR_PLR = "I'll have to get closer for that.";
+CARRY_NOTFACING_PLR = "I need to be facing my buddy to do that.";
+CARRY_CANTDROP_PLR = "I can't place my buddy here.";
+AMMOGIVE_FAR_PLR = "I'll need to get closer to do that.";
+AMMOGIVE_NOTENOUGH_PLR = "I don't have enough ammo for that.";
+MEDGIVE_FAR_PLR = "I'm too far away to do that.";
+MEDGIVE_NOTENOUGH_PLR = "I don't have any medikits.";
+STIMGIVE_FAR_PLR = "I'm too far away to do that.";
+STIMGIVE_NOTENOUGH_PLR = "I don't have any stimpacks.";
+REVIVE_NOROOM_PLR = "I don't think there's enough room for that.";
+REVIVE_FAR_PLR = "I'll need to get closer to do that.";
+REVIVE_BLOOD_NOTENOUGH_PLR = "I don't think that's going to be enough blood.";
+REVIVE_BLUES_ALREADYWORKING_PLR = "The potion seems to already be hard at work.";
+BRASS_FAR_PLR = "I'm too far away to do that.";
+BRASS_FULL_PLR = "I can't carry any more.";
+
 ORDER_FOLLOW1_1 = "WE FOLLOW YOU ALREADY!";
 ORDER_FOLLOW1_2 = "STOP REPEATING YOURSELF!";
 ORDER_FOLLOW1_3 = "WE ARE BEHIND YOU!";
@@ -33,10 +49,6 @@ ORDER_GOANDCOVER2_1 = "WE GO THERE!";
 ORDER_GOANDCOVER2_2 = "MOOOOOOOOVING!";
 ORDER_GOANDCOVER2_3 = "RUNNNNN!";
 
-CARRY_FAR_PLR = "I'll have to get closer for that.";
-CARRY_NOTFACING_PLR = "I need to be facing my buddy to do that.";
-CARRY_CANTDROP_PLR = "I can't place my buddy here.";
-
 CARRY_SUCCESS_1 = "AAAAGH! LET GO! WE MUST KILL!";
 CARRY_SUCCESS_2 = "PUT US DOWN! WE MUST SHOOT!";
 CARRY_SUCCESS_3 = "THEY ARE GETTING AWAY!";
@@ -65,9 +77,6 @@ AMMOGIVE_BRONTO_SUCCESS_1 = "THIS GO BIG BOOM!";
 AMMOGIVE_BRONTO_SUCCESS_2 = "BLAAAAAST 'EM!";
 AMMOGIVE_BRONTO_SUCCESS_3 = "HAAAAHAHAHAHA!";
 
-AMMOGIVE_FAR_PLR = "I'll need to get closer to do that.";
-AMMOGIVE_NOTENOUGH_PLR = "I don't have enough ammo for that.";
-
 NOAMMO_ZM_1 = "MY SHOOTY NO SHOOTY!";
 NOAMMO_ZM_2 = "SPACE AGE PIECE OF SHIT!";
 NOAMMO_ZM_3 = "IT JAAAAMS! IT JAAAAMS! AH IT IS EMPTY!";
@@ -79,9 +88,6 @@ NOAMMO_BOSS_3 = "NO MORE CRUNCHY YELLOW!";
 NOAMMO_BRONTO_1 = "BIG BOOM NO MORE!";
 NOAMMO_BRONTO_2 = "GIVE MORE BIG BOOM!";
 NOAMMO_BRONTO_3 = "BIG BOOM HUNGERS!";
-
-MEDGIVE_FAR_PLR = "I'm too far away to do that.";
-MEDGIVE_NOTENOUGH_PLR = "I don't have any medikits.";
 
 MEDGIVE_TOOMANY_1 = "TOO MANY! TOO MANY!";
 MEDGIVE_TOOMANY_2 = "WE CANNOT TAKE THAT!";
@@ -95,9 +101,6 @@ MEDIC_STIMMED_1 = "GET UP GET UP GET UP!";
 MEDIC_STIMMED_2 = "GET BACK INTO THE FIGHT!";
 MEDIC_STIMMED_3 = "LAAAAAAZY!";
 
-STIMGIVE_FAR_PLR = "I'm too far away to do that.";
-STIMGIVE_NOTENOUGH_PLR = "I don't have any stimpacks.";
-
 STIMGIVE_TOOMANY_1 = "ENOUGH ALREADY!";
 STIMGIVE_TOOMANY_2 = "CANNOT CARRY MORE!";
 STIMGIVE_TOOMANY_3 = "CEASE!";
@@ -106,19 +109,14 @@ STIMGIVE_SUCCESS_1 = "INNNNNNJECT!";
 STIMGIVE_SUCCESS_2 = "STABBY STABBY!";
 STIMGIVE_SUCCESS_3 = "AAAAAAAAHHHH YEAH!";
 
-REVIVE_NOROOM_PLR = "I don't think there's enough room for that.";
-REVIVE_FAR_PLR = "I'll need to get closer to do that.";
-
 REVIVE_BLUES_NONE_PLR = "I don't have any potions on me.";
 REVIVE_BLUES_NOTENOUGH_PLR1 = "Looks I'll need at least";
 REVIVE_BLUES_NOTENOUGH_PLR2 = "of a potion to make this work.\nBetter sort my potions before doing that.";
-REVIVE_BLUES_ALREADYWORKING_PLR = "The potion seems to already be hard at work.";
 
 REVIVE_BLUES_SUCCESS_1 = "AAAAAAAAAA! I LIVE AGAIN!";
 REVIVE_BLUES_SUCCESS_2 = "LET US KILL ONCE MORE!";
 REVIVE_BLUES_SUCCESS_3 = "I AM POWER!";
 
-REVIVE_BLOOD_NOTENOUGH_PLR = "I don't think that's going to be enough blood.";
 REVIVE_BLOOD_SUCCESS_1 = "FRESH BLOOD!";
 REVIVE_BLOOD_SUCCESS_2 = "MASTER'S BLOOD IS GOOD!";
 REVIVE_BLOOD_SUCCESS_3 = "FEEEEEEED MEEEE!";
@@ -158,9 +156,6 @@ ARMORGIVE_NOTHANKS_3 = "NO! DISGUSTING!";
 ARMORGIVE_RANAWAY_1 = "YOU LIED TO US!";
 ARMORGIVE_RANAWAY_2 = "YOU CHEATER!";
 ARMORGIVE_RANAWAY_3 = "COME BACK HERE!";
-
-BRASS_FAR_PLR = "I'm too far away to do that.";
-BRASS_FULL_PLR = "I can't carry any more.";
 
 BRASS_NONE_1 = "WE GIVE YOU NOTHING!";
 BRASS_NONE_2 = "THERE IS NOTHING TO GIVE!";

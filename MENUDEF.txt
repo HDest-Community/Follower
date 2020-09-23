@@ -15,10 +15,6 @@ OptionMenu "HDFollowerMenu"
 	StaticText""
 
 	StaticText "----- Starting Loadout -----", "Teal"
-	Slider "4.26mm Ammo", "hdf_loadout_446", 0, 300, 50, 0
-	Slider "7.76mm Ammo", "hdf_loadout_776", 0, 60, 10, 0
-	Slider "Bronto Bolts", "hdf_loadout_bolts", 0, 6, 1, 0
-	StaticText ""
 	Slider "Medikits", "hdf_loadout_medikits", 0, 2, 1, 0
 	Slider "Stimpacks", "hdf_loadout_stimpacks", 0, 4, 1, 0
 	StaticText ""
@@ -46,12 +42,6 @@ OptionValue "FeedbackType"
 	1, "Chat-only"
 	2, "Voice-only"
 	3, "Both" // [Ace] y tho?
-}
-
-OptionValue "RevivalType"
-{
-	1, "Blue Potions"
-	2, "Blood"
 }
 
 OptionValue "ArmorType"
