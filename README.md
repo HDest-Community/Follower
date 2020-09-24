@@ -23,4 +23,4 @@ For the most part the mechanics are fairly simple and straightforward. Documente
 
 #### Modding
 ---
-- Followers can have their arsenal changed to have up to 8 weapons. An example of an SMG-only follower can be found [here](https://pastebin.com/LyAtAdxn).
+- Followers can have their arsenal changed to have up to 8 weapons. An example of an SMG-only follower can be found [here](https://pastebin.com/M6L6fR6r).
