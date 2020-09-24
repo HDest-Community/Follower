@@ -192,10 +192,17 @@ extend class HDFollower
 			return;
 		}
 		
-		if (SelWeapon && other)
+		if (other)
 		{
-			CTarget = other;
-			SetStateLabel("See");
+			if (SelWeapon)
+			{
+				CTarget = other;
+				SetStateLabel("See");
+			}
+			else if (CTarget)
+			{
+				ClearTarget();
+			}
 		}
 	}
 

@@ -66,7 +66,7 @@ extend class HDFollower
 					UsedWeapons.Push(GetWeaponByName("ZM66"));
 					EngageTarget(UsedWeapons, MTarget);
 				}
-				else // [Ace] In case follower gets interrupted, re-engage old target.
+				else if (SelWeapon) // [Ace] In case follower gets interrupted, re-engage old target.
 				{
 					UsedWeapons.Push(SelWeapon);
 					EngageTarget(UsedWeapons, CTarget);
