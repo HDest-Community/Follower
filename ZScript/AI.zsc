@@ -19,7 +19,7 @@ extend class HDFollower
 	{
 		bool CanSeeGoal = TGoal && CheckSight(TGoal, SF_SEEPASTSHOOTABLELINES); // [Ace] This can be either the player or a specific goal actor. It's for when it doesn't matter.
 		bool CanSeePlayer = CheckSight(LinkedPlayer, SF_SEEPASTSHOOTABLELINES);
-		bool InCombatStates = IsInCombatStates();
+		bool InCombatStates = IsInCombatStates(CState_All) || IsInInternalStates();
 		bool HasTarget = CheckTarget();
 		bool NeedsHelp = PlayerIsIncapped(); // [Ace] You're just incapped.
 		bool NeedsMedic = PlayerNeedsMedic(); // [Ace] You're bleeding and incapped.

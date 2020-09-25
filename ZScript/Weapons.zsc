@@ -45,6 +45,13 @@ class FollowerWeapon
 
 extend class HDFollower
 {
+	enum CState
+	{
+		CState_Fire = 1 << 0,
+		CState_Reload = 1 << 1,
+		CState_All = CState_Fire | CState_Reload
+	}
+
 	private int AdjustForDistance(double distance, double mult = 1.0) const
 	{
 		return int(clamp((distance / 64.0) * mult, 4, 80));
@@ -96,7 +103,7 @@ extend class HDFollower
 	void TryGiveAmmo(int wpnIndex)
 	{
 		FollowerWeapon wpn = GetWeaponByIndex(wpnIndex);
-		if (Status == FStatus_InactiveOrDead || !wpn)
+		if (IsInCombatStates(CState_Reload) || Status == FStatus_InactiveOrDead || !wpn)
 		{
 			return;
 		}
@@ -135,7 +142,7 @@ extend class HDFollower
 	// [Ace] If weapon is out of ammo, reload.
 	protected void TryReload(FollowerWeapon wpn, int min = 0, bool force = false, bool silent = false, bool noJump = false)
 	{
-		if (IsInCombatStates() && !force)
+		if (IsInCombatStates(CState_Reload) || IsInCombatStates(CState_Fire) && !force)
 		{
 			return;
 		}
@@ -206,22 +213,59 @@ extend class HDFollower
 		}
 	}
 
-	protected virtual bool IsInCombatStates()
+	private bool IsInInternalStates()
 	{
-		// [Ace] Well, that's one way to do it.
-		static const StateLabel CombatStates[] =
+		static const StateLabel InternalStates[] =
 		{
-			"See", "Aiming",
-			"ShootZM", "ReloadZM",
-			"ShootBoss", "ChamberRound", "ReloadBoss", "ReloadBossLoop",
-			"ShootBronto", "ReloadBronto"
+			"See", "Aiming"
 		};
 
-		for (int i = 0; i < CombatStates.Size(); ++i)
+		for (int i = 0; i < InternalStates.Size(); ++i)
 		{
-			if (InStateSequence(CurState, FindState(CombatStates[i])))
+			if (InStateSequence(CurState, FindState(InternalStates[i])))
 			{
 				return true;
+			}
+		}
+
+		return false;
+	}
+
+	protected virtual bool IsInCombatStates(CState type)
+	{
+		if (type & CState_Fire)
+		{
+			static const StateLabel FireStates[] =
+			{
+				"ShootZM",
+				"ShootBoss",
+				"ShootBronto"
+			};
+
+			for (int i = 0; i < FireStates.Size(); ++i)
+			{
+				if (InStateSequence(CurState, FindState(FireStates[i])))
+				{
+					return true;
+				}
+			}
+		}
+
+		if (type & CState_Reload)
+		{
+			static const StateLabel ReloadStates[] =
+			{
+				"ReloadZM",
+				"ChamberRound", "ReloadBoss", "ReloadBossLoop",
+				"ReloadBronto"
+			};
+
+			for (int i = 0; i < ReloadStates.Size(); ++i)
+			{
+				if (InStateSequence(CurState, FindState(ReloadStates[i])))
+				{
+					return true;
+				}
 			}
 		}
 

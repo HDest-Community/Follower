@@ -1,0 +1,141 @@
+class NewFollower : HDFollower replaces HDFollower
+{
+	override void InitWeapons()
+	{
+		Weapons.Push(FollowerWeapon.Create("SMG", "HDPistolAmmo", "9mm Rounds", 30, 30, 90, 300, "ShootSMG", "ReloadSMG", FollowerWeapon.CRT_Chambered));
+	}
+ 
+	override bool IsInCombatStates(CState type)
+	{
+		if (type & CState_Fire)
+		{
+			static const StateLabel FireStates[] =
+			{
+				"ShootSMG"
+			};
+
+			for (int i = 0; i < FireStates.Size(); ++i)
+			{
+				if (InStateSequence(CurState, FindState(FireStates[i])))
+				{
+					return true;
+				}
+			}
+		}
+
+		if (type & CState_Reload)
+		{
+			static const StateLabel ReloadStates[] =
+			{
+				"ReloadSMG"
+			};
+
+			for (int i = 0; i < ReloadStates.Size(); ++i)
+			{
+				if (InStateSequence(CurState, FindState(ReloadStates[i])))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+ 
+	override void LookForEnemies()
+	{
+		let TheEye = BlockThingsIterator.Create(self, MaxTargetRange);
+		while (TheEye.Next())
+		{
+			// [Ace] To reiterate,
+			// MTarget = MonsterTarget
+			// PTarget = PlayerTarget
+			// CTarget = CurrentTarget
+			// Remember the prefixes.
+ 
+			Actor MTarget = TheEye.thing;
+			HDPlayerPawn PTarget = HDPlayerPawn(TheEye.thing);
+ 
+			// [Ace] Weapons are listed in descending priority.
+			// If a weapon is missing from the list, the follower will never attack with that weapon.
+			Array<FollowerWeapon> UsedWeapons;
+ 
+			if (MTarget && (bFRIENDLY && !MTarget.bFRIENDLY || !bFRIENDLY && MTarget.bFRIENDLY) && MTarget.bISMONSTER && MTarget.bSHOOTABLE && MTarget != self && MTarget.Health > 0 && CheckSight(MTarget, SF_SEEPASTSHOOTABLELINES) && !TargetIsIncapped(MTarget))
+			{
+				if (MTarget is "HERPBot" || MTarget is "DERPBot" || (!hdf_targetuncountable && !MTarget.bCOUNTKILL))
+				{
+					continue;
+				}
+ 
+				else if (!CheckTarget())
+				{
+					UsedWeapons.Push(GetWeaponByName("SMG"));
+					EngageTarget(UsedWeapons, MTarget);
+				}
+				else if (SelWeapon) // [Ace] In case follower gets interrupted, re-engage old target.
+				{
+					UsedWeapons.Push(SelWeapon);
+					EngageTarget(UsedWeapons, CTarget);
+				}
+			}
+			else if (!bFRIENDLY && PTarget && PTarget.Health > 0 && CheckSight(PTarget, SF_SEEPASTSHOOTABLELINES))
+			{
+				UsedWeapons.Push(GetWeaponByName("SMG"));
+				EngageTarget(UsedWeapons, PTarget);
+			}
+		}
+	}
+ 
+	States
+	{
+		ShootSMG:
+			#### F 1 Aim();
+			#### G 1
+			{
+				if (!CheckTarget())
+				{
+					SetStateLabel("See");
+					return;
+				}
+ 
+				A_StartSound("weapons/smg", CHAN_WEAPON);
+				HDBulletActor.FireBullet(self, "HDB_9", speedfactor: 1.1);
+				A_SpawnItemEx("HDSpent9mm", cos(pitch) * 10, 0, height - 8 - sin(pitch) * 10, vel.x, vel.y, vel.z, 0, SXF_ABSOLUTEMOMENTUM | SXF_NOCHECKPOSITION | SXF_TRANSFERPITCH);
+				SelWeapon.Mag--;
+				SelWeapon.ChamberedRound = FollowerWeapon.CRT_Empty;
+ 
+				TryReload(SelWeapon, force: true);
+			}
+			#### F 1
+			{
+				SelWeapon.ChamberedRound = FollowerWeapon.CRT_Chambered;
+			}
+			Goto ShootSMG;
+		ReloadSMG:
+			#### F 3
+			{
+				bNOPAIN = true;
+			}
+			#### F 4
+			{
+				A_StartSound("weapons/rifleclick2");
+			}
+			#### F 0
+			{
+				A_StartSound("weapons/rifleload");
+				HDMagAmmo.SpawnMag(self, "HD9mMag30", 0);
+			}
+			#### F 25 A_StartSound("weapons/pocket", 8);
+			#### F 10
+			{
+				A_StartSound("weapons/rifleload", 9);
+				SelWeapon.ReloadMag();
+			}
+			#### F 0 A_JumpIf(SelWeapon.ChamberedRound == FollowerWeapon.CRT_Chambered, 2);
+			#### F 2 A_StartSound("weapons/rifleclick2", 8);
+			#### F 0
+			{
+				bNOPAIN = false;
+			}
+			Goto See;
+	}
+}
