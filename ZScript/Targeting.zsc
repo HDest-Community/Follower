@@ -59,11 +59,8 @@ extend class HDFollower
 				}
 				else if (!CheckTarget())
 				{
-					if (Distance3D(MTarget) > 2048)
-					{
-						UsedWeapons.Push(GetWeaponByName("Boss"));
-					}
 					UsedWeapons.Push(GetWeaponByName("ZM66"));
+					UsedWeapons.Push(GetWeaponByName("Boss"));
 					EngageTarget(UsedWeapons, MTarget);
 				}
 				else if (SelWeapon) // [Ace] In case follower gets interrupted, re-engage old target.

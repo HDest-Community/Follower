@@ -80,10 +80,6 @@ extend class HDFollower
 				}
 				else
 				{
-					Blues = 0;
-					AbsorbedBlues = 0;
-					AbsorbedBlood = 0;
-					BloodReviveTicker = 0;
 					bFRIENDLY = true;
 					PrintMessage(GetResponse("$REVIVE_BLUES_SUCCESS"), "Follower/Revive/Blues/Success");
 				}
@@ -110,14 +106,22 @@ extend class HDFollower
 				}
 				else
 				{
-					AbsorbedBlood = 0;
-					BloodReviveTicker = 0;
 					LinkedPlayer.AggravatedDamage += RequiredBlood;
 					bFRIENDLY = true;
 					PrintMessage(GetResponse("$REVIVE_BLOOD_SUCCESS"), "Follower/Revive/Blood/Success");
 				}
 			}
 		}
+	}
+
+	// [Ace] This is technically cheating, but otherwise the follower can get absolutely assblasted and become useless.
+	private void OnRevive()
+	{
+		BodyDamage = 0;
+		Blues = 0;
+		AbsorbedBlues = 0;
+		AbsorbedBlood = 0;
+		BloodReviveTicker = 0;
 	}
 
 	private void SpawnReviveParticles(color col)

@@ -251,7 +251,24 @@ class FollowerHandler : EventHandler
 
 	override void NetworkProcess(ConsoleEvent e)
 	{
-		if (e.Player != consoleplayer || !Follower)
+		if (e.Player != consoleplayer)
+		{
+			return;
+		}
+
+		if (e.Name ~== "HDF_ResetFollower")
+		{
+			// [Ace] This allows you to use the follower after big refactors without having to start a new game. This will re-create the actor object.
+			// Or create an entirely new one, as long as they didn't actually leave them behind.
+			if (Follower)
+			{
+				Follower.Destroy();
+			}
+			CreateFollower(e.Player);
+			return;
+		}
+
+		if (!Follower)
 		{
 			return;
 		}
@@ -267,14 +284,6 @@ class FollowerHandler : EventHandler
 		{
 			// [Ace] This is an obvious cheat, so don't use it unless you absolutely HAVE to.
 			Follower.WarpToPlayer();
-			return;
-		}
-
-		if (e.Name ~== "HDF_ResetFollower")
-		{
-			// [Ace] This allows you to use the follower after big refactors without having to start a new game. This will re-create the actor objecct.
-			Follower.Destroy();
-			CreateFollower(e.Player);
 			return;
 		}
 

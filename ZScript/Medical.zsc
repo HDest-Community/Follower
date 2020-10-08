@@ -9,7 +9,7 @@ extend class HDFollower
 	private bool PlayerIsIncapped() const
 	{
 		let plr = HDPlayerPawn(LinkedPlayer);
-		return plr.incapacitated >= 20 && (plr.incaptimer > MinIncap || plr.Health < 15); // [Ace] Player can't get up if lying on the floor at < 15 health, even if timer is 0.
+		return plr && plr.incapacitated >= 20 && (plr.incaptimer > MinIncap || plr.Health < 15); // [Ace] Player can't get up if lying on the floor at < 15 health, even if timer is 0.
 	}
 
 	private bool HasWounds() const

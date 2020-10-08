@@ -46,7 +46,7 @@ class HDFollower : HDMobMan
 		//SetStateLabel("Spawn");
 	}
 
-	private HDBleedingWound GetBleedThinker() const
+	private HDBleedingWound GetBleedThinker()
 	{
 		ThinkerIterator it = ThinkerIterator.Create("HDBleedingWound", STAT_DEFAULT);
 		HDBleedingWound BleedThinker;
@@ -60,7 +60,7 @@ class HDFollower : HDMobMan
 		return BleedThinker;
 	}
 
-	bool IsDeadOrMissing() const
+	bool IsDeadOrMissing()
 	{
 		bool FollowerDead = Health <= 0;
 		bool CarryingFollower = LinkedPlayer.CheckInventory("FollowerBody", 0);
@@ -93,7 +93,7 @@ class HDFollower : HDMobMan
 		}
 	}
 
-	private string GetResponse(string raw, int maxIndex = 3) const
+	private string GetResponse(string raw, int maxIndex = 3)
 	{
 		return StringTable.Localize(raw.."_"..random(1, max(1, maxIndex)));
 	}
@@ -103,12 +103,12 @@ class HDFollower : HDMobMan
 		other.A_Print(StringTable.Localize(message));
 	}
 
-	private bool PlayerIsCrouching() const
+	private bool PlayerIsCrouching()
 	{
 		return LinkedPlayer.player.crouchfactor <= 0.5;
 	}
 
-	private bool IsFacedByPlayer() const
+	private bool IsFacedByPlayer()
 	{
 		double PAngle = LinkedPlayer.angle;
 		double PAngleTo = self.AngleTo(LinkedPlayer) + 180; // [Ace] Add 180 to invert direction, otherwise you need to face away from the follower.
@@ -302,11 +302,7 @@ class HDFollower : HDMobMan
 		Standup:
 			Goto Raise + 1; // [Ace] Don't reset body damage if standing up from incap.
 		Raise:
-			#### N 0
-			{
-				// [Ace] This is technically cheating, but otherwise the follower can get absolutely assblasted and become useless.
-				BodyDamage = 0;
-			}
+			#### N 0 OnRevive();
 			#### NMLK 6;
 			#### J 6 A_Recoil(-0.3);
 			#### I 6;

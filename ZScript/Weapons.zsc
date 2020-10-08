@@ -10,13 +10,15 @@ class FollowerWeapon
 	Name WeaponName; // [Ace] Used for identification. Also for the sounds and stuff.
 	class<HDAmmo> AmmoType;
 	string AmmoName; // [Ace] Fancy name.
-	StateLabel FireState, ReloadState;
+	StateLabel FireState;
+	StateLabel ReloadState;
 	int Mag, MaxMag;
-	int SpareAmmo, MaxSpareAmmo;
+	int SpareAmmo;
+	int MaxSpareAmmo;
 	CRType ChamberedRound;
 	bool HasWarnedLowAmmo;
 
-	static FollowerWeapon Create(Name wName, class<HDAmmo> amType, string amName, int sMag, int mMag, int sSpare, int mSpare, StateLabel fState, StateLabel rState, CRType chamber)
+	static FollowerWeapon Create(Name wName, class<HDAmmo> amType, string amName, int sMag, int mMag, int sSpare, int mSpare, StateLabel frState, StateLabel rlState, CRType chamber)
 	{
 		FollowerWeapon wpn = new("FollowerWeapon");
 		wpn.WeaponName = wName;
@@ -27,8 +29,8 @@ class FollowerWeapon
 		wpn.SpareAmmo = sSpare;
 		wpn.MaxSpareAmmo = mSpare;
 		wpn.ChamberedRound = chamber;
-		wpn.FireState = fState;
-		wpn.ReloadState = rState;
+		wpn.FireState = frState;
+		wpn.ReloadState = rlState;
 		wpn.HasWarnedLowAmmo = false;
 
 		return wpn;
@@ -103,12 +105,11 @@ extend class HDFollower
 	void TryGiveAmmo(int wpnIndex)
 	{
 		FollowerWeapon wpn = GetWeaponByIndex(wpnIndex);
-		if (IsInCombatStates(CState_Reload) || Status == FStatus_InactiveOrDead || !wpn)
+		if (Status == FStatus_InactiveOrDead || !wpn)
 		{
 			return;
 		}
 
-		SelWeapon = wpn;
 		class<Inventory> AmmoType = wpn.AmmoType;
 		int MaxGive = GetMaxGiveAmount(wpn);
 
@@ -151,6 +152,8 @@ extend class HDFollower
 		{
 			if (wpn.SpareAmmo > 0)
 			{
+				// Console.Printf("Trying to reload "..wpn.WeaponName..".");
+				SelWeapon = wpn;
 				SetStateLabel(wpn.ReloadState);
 			}
 			else
@@ -213,11 +216,11 @@ extend class HDFollower
 		}
 	}
 
-	private bool IsInInternalStates()
+	private bool IsInInternalCombatStates()
 	{
 		static const StateLabel InternalStates[] =
 		{
-			"See", "Aiming"
+			"See", "Aiming", "Shoot"
 		};
 
 		for (int i = 0; i < InternalStates.Size(); ++i)
@@ -231,6 +234,7 @@ extend class HDFollower
 		return false;
 	}
 
+	// [Ace] There's gotta be a better way to do all this.
 	protected virtual bool IsInCombatStates(CState type)
 	{
 		if (type & CState_Fire)
@@ -314,6 +318,7 @@ extend class HDFollower
 			{
 				if (SelWeapon)
 				{
+					// Console.Printf("Trying to fire "..SelWeapon.WeaponName.." at "..CTarget.GetTag()..".");
 					SetStateLabel(SelWeapon.FireState);
 					return;
 				}
