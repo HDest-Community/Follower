@@ -1,13 +1,13 @@
 enum RType
 {
-	Revive_None,
-	Revive_Blues,
-	Revive_Blood
+	RType_None,
+	RType_Blues,
+	RType_Blood
 }
 
 extend class HDFollower
 {
-	bool TryRevive(int type)
+	bool TryRevive(RType type)
 	{
 		if (Distance3D(LinkedPlayer) > radius + MaxReviveDistance)
 		{
@@ -17,7 +17,7 @@ extend class HDFollower
 
 		switch (type)
 		{
-			case Revive_Blues:
+			case RType_Blues:
 				if (Blues > 0)
 				{
 					ThinkMessage(LinkedPlayer, "$REVIVE_BLUES_ALREADYWORKING_PLR");
@@ -54,7 +54,7 @@ extend class HDFollower
 				Blues = RequiredSips * 12;
 				break;
 
-			case Revive_Blood:
+			case RType_Blood:
 				HDBleedingWound.Inflict(LinkedPlayer, 22, 17, false, LinkedPlayer);
 				if (LinkedPlayer.woundcount < GetRequiredBlood())
 				{

@@ -170,8 +170,8 @@ class FollowerHandler : EventHandler
 						switch (Key)
 						{
 							case '1': SendNetworkEvent("HDF_CarryFollower"); break;
-							case '2': SendNetworkEvent("HDF_TryRevive", Revive_Blues); break;
-							case '3': SendNetworkEvent("HDF_TryRevive", Revive_Blood); break;
+							case '2': SendNetworkEvent("HDF_TryRevive", RType_Blues); break;
+							case '3': SendNetworkEvent("HDF_TryRevive", RType_Blood); break;
 							case '4': SendNetworkEvent("HDF_CollectBrass"); break;
 						}
 					}

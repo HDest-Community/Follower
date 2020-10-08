@@ -2,9 +2,9 @@ class FollowerWeapon
 {
 	enum CRType
 	{
-		CRT_Empty,
-		CRT_Chambered,
-		CRT_Spent
+		CRType_Empty,
+		CRType_Chambered,
+		CRType_Spent
 	}
 
 	Name WeaponName; // [Ace] Used for identification. Also for the sounds and stuff.
@@ -47,11 +47,19 @@ class FollowerWeapon
 
 extend class HDFollower
 {
-	enum CState
+	enum CSFlags
 	{
-		CState_Fire = 1 << 0,
-		CState_Reload = 1 << 1,
-		CState_All = CState_Fire | CState_Reload
+		CSF_FIRE	= 1 << 0,
+		CSF_RELOAD	= 1 << 1,
+		CSF_ALL		= CSF_FIRE | CSF_RELOAD
+	}
+
+	enum RLFlags
+	{
+		RLF_FORCE	= 1 << 0,
+		RLF_MANUAL	= 1 << 1,
+		RLF_SILENT	= 1 << 2,
+		RLF_NOJUMP	= 1 << 3
 	}
 
 	private int AdjustForDistance(double distance, double mult = 1.0) const
@@ -115,19 +123,19 @@ extend class HDFollower
 
 		if (Distance3D(LinkedPlayer) > radius + MaxInventoryDistance)
 		{
-			TryReload(wpn, wpn.MaxMag);
+			TryReload(wpn, wpn.MaxMag, RLF_MANUAL);
 			ThinkMessage(LinkedPlayer, "$AMMOGIVE_FAR_PLR");
 			return;
 		}
 		else if (wpn.SpareAmmo >= wpn.MaxSpareAmmo)
 		{
-			TryReload(wpn, wpn.MaxMag);
+			TryReload(wpn, wpn.MaxMag, RLF_MANUAL);
 			PrintMessage(GetResponse("$AMMOGIVE_"..wpn.WeaponName.."_TOOMANY"), "Follower/AmmoGive/"..wpn.WeaponName.."/TooMany");
 			return;
 		}
 		else if (LinkedPlayer.CountInv(wpn.AmmoType) == 0)
 		{
-			TryReload(wpn, wpn.MaxMag);
+			TryReload(wpn, wpn.MaxMag, RLF_MANUAL);
 			ThinkMessage(LinkedPlayer, "$AMMOGIVE_NOTENOUGH_PLR");
 			return;
 		}
@@ -135,15 +143,15 @@ extend class HDFollower
 		LinkedPlayer.A_TakeInventory(AmmoType, MaxGive);
 		wpn.SpareAmmo += MaxGive;
 		wpn.HasWarnedLowAmmo = false;
-		TryReload(wpn, wpn.MaxMag);
+		TryReload(wpn, wpn.MaxMag, RLF_MANUAL);
 
 		PrintMessage(GetResponse("$AMMOGIVE_"..wpn.WeaponName.."_SUCCESS"), "Follower/AmmoGive/"..wpn.WeaponName.."/Success");
 	}
 
 	// [Ace] If weapon is out of ammo, reload.
-	protected void TryReload(FollowerWeapon wpn, int min = 0, bool force = false, bool silent = false, bool noJump = false)
+	protected void TryReload(FollowerWeapon wpn, int min = 0, RLFlags flags = 0)
 	{
-		if (IsInCombatStates(CState_Reload) || IsInCombatStates(CState_Fire) && !force)
+		if (IsInCombatStates(CSF_FIRE) && !(flags & RLF_FORCE) || IsInCombatStates(CSF_Reload))
 		{
 			return;
 		}
@@ -158,13 +166,14 @@ extend class HDFollower
 			}
 			else
 			{
-				if (!silent && !wpn.HasWarnedLowAmmo)
+				// [Ace] Keep complaining if manual.
+				if (!(flags & RLF_SILENT) && (!wpn.HasWarnedLowAmmo || (flags & RLF_MANUAL)))
 				{
 					wpn.HasWarnedLowAmmo = true;
 					PrintMessage(GetResponse("$NOAMMO_"..wpn.WeaponName), "Follower/NoAmmo/"..wpn.WeaponName);
 				}
 
-				if (!noJump)
+				if (!(flags & RLF_NOJUMP))
 				{
 					SetStateLabel("Idle");
 				}
@@ -198,7 +207,7 @@ extend class HDFollower
 		else if (HighestWithSpare)
 		{
 			SelWeapon = HighestWithSpare;
-			TryReload(SelWeapon, 0, false, true, true);
+			TryReload(SelWeapon, 0, RLF_SILENT | RLF_NOJUMP);
 			return;
 		}
 		
@@ -235,9 +244,9 @@ extend class HDFollower
 	}
 
 	// [Ace] There's gotta be a better way to do all this.
-	protected virtual bool IsInCombatStates(CState type)
+	protected virtual bool IsInCombatStates(CSFlags flags)
 	{
-		if (type & CState_Fire)
+		if (flags & CSF_FIRE)
 		{
 			static const StateLabel FireStates[] =
 			{
@@ -255,7 +264,7 @@ extend class HDFollower
 			}
 		}
 
-		if (type & CState_Reload)
+		if (flags & CSF_Reload)
 		{
 			static const StateLabel ReloadStates[] =
 			{
@@ -278,9 +287,9 @@ extend class HDFollower
 
 	virtual void InitWeapons()
 	{
-		Weapons.Push(FollowerWeapon.Create("ZM66", "FourMilAmmo", "4mm Rounds", 50, 50, 0, 250, "ShootZM", "ReloadZM", FollowerWeapon.CRT_Chambered));
-		Weapons.Push(FollowerWeapon.Create("Boss", "SevenMilAmmo", "7mm Rounds", 0, 10, 0, 50, "ShootBoss", "ReloadBoss", FollowerWeapon.CRT_Empty));
-		Weapons.Push(FollowerWeapon.Create("Bronto", "BrontornisRound", "Brontornis Bolt", 0, 1, 0, 5, "ShootBronto", "ReloadBronto", FollowerWeapon.CRT_Empty));
+		Weapons.Push(FollowerWeapon.Create("ZM66", "FourMilAmmo", "4mm Rounds", 50, 50, 0, 250, "ShootZM", "ReloadZM", FollowerWeapon.CRType_Chambered));
+		Weapons.Push(FollowerWeapon.Create("Boss", "SevenMilAmmo", "7mm Rounds", 0, 10, 0, 50, "ShootBoss", "ReloadBoss", FollowerWeapon.CRType_Empty));
+		Weapons.Push(FollowerWeapon.Create("Bronto", "BrontornisRound", "Brontornis Bolt", 0, 1, 0, 5, "ShootBronto", "ReloadBronto", FollowerWeapon.CRType_Empty));
 	}
 
 	protected FollowerWeapon SelWeapon;
@@ -341,7 +350,7 @@ extend class HDFollower
 				A_AlertMonsters(flags: AMF_TARGETEMITTER);
 				SelWeapon.Mag--;
 
-				TryReload(SelWeapon, force: true);
+				TryReload(SelWeapon, flags: RLF_FORCE);
 			}
 			#### F 10;
 			Goto See;
@@ -390,11 +399,11 @@ extend class HDFollower
 			{
 				A_StartSound("weapons/bigrifle2", CHAN_WEAPON);
 				HDBulletActor.FireBullet(self, "HDB_776", speedfactor: 0.99);
-				SelWeapon.ChamberedRound = FollowerWeapon.CRT_Spent;
+				SelWeapon.ChamberedRound = FollowerWeapon.CRType_Spent;
 				A_AlertMonsters(flags: AMF_TARGETEMITTER);
 				SelWeapon.Mag--;
 
-				TryReload(SelWeapon, force: true);
+				TryReload(SelWeapon, flags: RLF_FORCE);
 			}
 			#### F 5;
 		ChamberRound:
@@ -405,11 +414,11 @@ extend class HDFollower
 			#### F 5 A_StartSound("weapons/boltback", 8);
 			#### F 0
 			{
-				if (SelWeapon.ChamberedRound == FollowerWeapon.CRT_Spent)
+				if (SelWeapon.ChamberedRound == FollowerWeapon.CRType_Spent)
 				{
 					A_SpawnItemEx("HDSpent7mm", cos(pitch) * 8, 1, height - 7 - sin(pitch) * 8, cos(pitch) * cos(angle - 80) * 6 + vel.x, cos(pitch) * sin(angle - 80) * 6 + vel.y, -sin(pitch) * 6+ vel.z, 0, SXF_ABSOLUTEMOMENTUM | SXF_NOCHECKPOSITION | SXF_TRANSFERPITCH);
 				}
-				SelWeapon.ChamberedRound = SelWeapon.Mag > 0 ? FollowerWeapon.CRT_Chambered : FollowerWeapon.CRT_Empty;
+				SelWeapon.ChamberedRound = SelWeapon.Mag > 0 ? FollowerWeapon.CRType_Chambered : FollowerWeapon.CRType_Empty;
 			}
 			#### F 7 A_StartSound("weapons/boltfwd", 8);
 			#### F 0
@@ -430,7 +439,7 @@ extend class HDFollower
 			{
 				if (SelWeapon.Mag == 10 || SelWeapon.SpareAmmo == 0)
 				{
-					if (SelWeapon.ChamberedRound == FollowerWeapon.CRT_Chambered)
+					if (SelWeapon.ChamberedRound == FollowerWeapon.CRType_Chambered)
 					{
 						SetStateLabel("See");
 					}
@@ -460,12 +469,12 @@ extend class HDFollower
 				A_StartSound("weapons/bronto",CHAN_WEAPON, CHANF_OVERLAP);
 				A_StartSound("weapons/bronto2",CHAN_WEAPON, CHANF_OVERLAP);
 				HDBulletActor.FireBullet(self, "HDB_bronto");
-				SelWeapon.ChamberedRound= FollowerWeapon.CRT_Spent;
+				SelWeapon.ChamberedRound= FollowerWeapon.CRType_Spent;
 				SelWeapon.Mag--;
 				A_AlertMonsters(flags: AMF_TARGETEMITTER);
 				A_Recoil(6);
 
-				TryReload(SelWeapon, force: true);
+				TryReload(SelWeapon, flags: RLF_FORCE);
 			}
 			#### F 10;
 			Goto See;
@@ -477,14 +486,14 @@ extend class HDFollower
 			#### F 5
 			{
 				A_StartSound("weapons/brontunload", 8);
-				if (SelWeapon.ChamberedRound == FollowerWeapon.CRT_Spent)
+				if (SelWeapon.ChamberedRound == FollowerWeapon.CRType_Spent)
 				{
 					A_SpawnItemEx("TerrorCasing", cos(pitch) * 4, 0, height - 10 - sin(pitch) * 4, vel.x, vel.y, vel.z - frandom(-1, 1), frandom(-1, 1), SXF_ABSOLUTEMOMENTUM | SXF_NOCHECKPOSITION | SXF_TRANSFERPITCH | SXF_TRANSFERTRANSLATION);
 				}
 			}
 			#### F 12
 			{
-				SelWeapon.ChamberedRound = FollowerWeapon.CRT_Chambered;
+				SelWeapon.ChamberedRound = FollowerWeapon.CRType_Chambered;
 				A_StartSound("weapons/brontoload", 9);
 				SelWeapon.Mag = 1;
 				SelWeapon.SpareAmmo--;

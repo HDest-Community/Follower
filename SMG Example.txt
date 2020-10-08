@@ -2,12 +2,12 @@ class NewFollower : HDFollower replaces HDFollower
 {
 	override void InitWeapons()
 	{
-		Weapons.Push(FollowerWeapon.Create("SMG", "HDPistolAmmo", "9mm Rounds", 30, 30, 90, 300, "ShootSMG", "ReloadSMG", FollowerWeapon.CRT_Chambered));
+		Weapons.Push(FollowerWeapon.Create("SMG", "HDPistolAmmo", "9mm Rounds", 30, 30, 90, 300, "ShootSMG", "ReloadSMG", FollowerWeapon.CRType_Chambered));
 	}
  
-	override bool IsInCombatStates(CState type)
+	override bool IsInCombatStates(CSFlags flags)
 	{
-		if (type & CState_Fire)
+		if (flags & CSF_FIRE)
 		{
 			static const StateLabel FireStates[] =
 			{
@@ -23,7 +23,7 @@ class NewFollower : HDFollower replaces HDFollower
 			}
 		}
 
-		if (type & CState_Reload)
+		if (flags & CSF_RELOAD)
 		{
 			static const StateLabel ReloadStates[] =
 			{
@@ -38,6 +38,7 @@ class NewFollower : HDFollower replaces HDFollower
 				}
 			}
 		}
+
 		return false;
 	}
  
@@ -101,13 +102,13 @@ class NewFollower : HDFollower replaces HDFollower
 				HDBulletActor.FireBullet(self, "HDB_9", speedfactor: 1.1);
 				A_SpawnItemEx("HDSpent9mm", cos(pitch) * 10, 0, height - 8 - sin(pitch) * 10, vel.x, vel.y, vel.z, 0, SXF_ABSOLUTEMOMENTUM | SXF_NOCHECKPOSITION | SXF_TRANSFERPITCH);
 				SelWeapon.Mag--;
-				SelWeapon.ChamberedRound = FollowerWeapon.CRT_Empty;
+				SelWeapon.ChamberedRound = FollowerWeapon.CRType_Empty;
  
-				TryReload(SelWeapon, force: true);
+				TryReload(SelWeapon, flags: RLF_FORCE);
 			}
 			#### F 1
 			{
-				SelWeapon.ChamberedRound = FollowerWeapon.CRT_Chambered;
+				SelWeapon.ChamberedRound = FollowerWeapon.CRType_Chambered;
 			}
 			Goto ShootSMG;
 		ReloadSMG:
@@ -130,7 +131,7 @@ class NewFollower : HDFollower replaces HDFollower
 				A_StartSound("weapons/rifleload", 9);
 				SelWeapon.ReloadMag();
 			}
-			#### F 0 A_JumpIf(SelWeapon.ChamberedRound == FollowerWeapon.CRT_Chambered, 2);
+			#### F 0 A_JumpIf(SelWeapon.ChamberedRound == FollowerWeapon.CRType_Chambered, 2);
 			#### F 2 A_StartSound("weapons/rifleclick2", 8);
 			#### F 0
 			{
