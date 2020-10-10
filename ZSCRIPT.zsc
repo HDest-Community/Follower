@@ -215,7 +215,6 @@ class HDFollower : HDMobMan
 		MaxStepHeight 80;
 		MaxDropOffHeight 128;
 		MaxTargetRange 4096;
-		-ISMONSTER
 		+ROLLCENTER
 		+ROLLSPRITE
 		+FRIENDLY
