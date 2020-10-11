@@ -307,17 +307,10 @@ extend class HDFollower
 			return;
 		}
 		
-		if (other)
+		if (other && SelWeapon)
 		{
-			if (SelWeapon)
-			{
-				CTarget = other;
-				SetStateLabel("See");
-			}
-			else
-			{
-				ClearTarget();
-			}
+			CTarget = other;
+			SetStateLabel("See");
 		}
 	}
 
@@ -354,7 +347,6 @@ extend class HDFollower
 				if (!CheckTarget())
 				{
 					SetStateLabel("Idle");
-					ClearWeapon();
 					Status = FStatus_None;
 					return;
 				}
@@ -376,10 +368,6 @@ extend class HDFollower
 					SetStateLabel(SelWeapon.GetFireState());
 					return;
 				}
-
-				// [Ace] Follower is out of ammo and should not (re)engage enemies.
-				// Clear target so that they don't get stuck idling.
-				ClearTarget();
 			}
 			Goto Idle;
 

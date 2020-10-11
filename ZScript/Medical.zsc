@@ -172,7 +172,7 @@ extend class HDFollower
 					SetStateLabel("ApplyStim");
 					return;
 				}
-				if (!HasWounds() || Medikits == 0 && SuturesLeft == 0 )
+				if (!PlayerNeedsMedic())
 				{
 					ClearGoal();
 					SetStateLabel("Idle");
