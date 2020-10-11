@@ -285,6 +285,7 @@ class HDFollower : HDMobMan
 				Status = FStatus_InactiveOrDead;
 				A_SetSize(-1, deathheight);
 				A_StartSound(PainSound, CHAN_VOICE);
+				ClearWeapon();
 			}
 			#### I 4 A_StartSound(DeathSound, CHAN_VOICE);
 			#### J 4;
@@ -330,6 +331,7 @@ class HDFollower : HDMobMan
 			{
 				ClearGoal();
 				ClearTarget();
+				ClearWeapon();
 				Status = FStatus_InactiveOrDead;
 			}
 			#### I 4 A_StartSound(DeathSound, CHAN_VOICE);

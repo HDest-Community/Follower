@@ -10,22 +10,23 @@ enum FStatus
 {
 	FStatus_None,
 	FStatus_WaitingForArmor,
-	FStatus_InactiveOrDead
+	FStatus_InactiveOrDead,
+	FStatus_InCombat,
 }
 
 extend class HDFollower
 {
 	private void AiThink()
 	{
+		// Console.Printf("Follower has "..(SelWeapon ? SelWeapon.GetName() : "no weapon").." out.");
 		bool CanSeeGoal = TGoal && CheckSight(TGoal, SF_SEEPASTSHOOTABLELINES); // [Ace] This can be either the player or a specific goal actor. It's for when it doesn't matter.
 		bool CanSeePlayer = CheckSight(LinkedPlayer, SF_SEEPASTSHOOTABLELINES);
-		bool InCombatStates = IsInCombatStates(CSF_All) || IsInInternalCombatStates();
 		bool HasTarget = CheckTarget();
 		bool NeedsHelp = PlayerIsIncapped(); // [Ace] You're just incapped.
 		bool NeedsMedic = PlayerNeedsMedic(); // [Ace] You're bleeding and incapped.
 		bool IsHelping = IsHelpingPlayer();
 
-		if (!HasTarget && !InCombatStates || Order == FOrder_GoAndCover)
+		if (Status != FStatus_InCombat || Order == FOrder_GoAndCover)
 		{
 			if (!IsHelping)
 			{
@@ -93,13 +94,13 @@ extend class HDFollower
 			}
 		}
 		
-		if (!InCombatStates && Status == FStatus_None && (!bFRIENDLY || Order == FOrder_Follow || Order == FOrder_Cover) && GetAge() % 8 == 0)
+		if (Status == FStatus_None && (!bFRIENDLY || Order == FOrder_Follow || Order == FOrder_Cover) && GetAge() % 8 == 0)
 		{
 			LookForEnemies();
 		}
 
 		// [Ace] Movement. Always travel to goals if there are any. Status between moving and idle should not be set elsewhere.
-		if ((!HasTarget && !InCombatStates || Order == FOrder_GoAndCover) && TGoal && (TGoal is "PlayerPawn" && Distance2D(TGoal) > (NeedsMedic || NeedsHelp ? MedicRange : MinPlayerRangeStop) || TGoal is "TargetGoal" && Distance2D(TGoal) > 16) && Distance2D(TGoal) < MaxGoalRange)
+		if ((!HasTarget && !SelWeapon || Order == FOrder_GoAndCover) && TGoal && (TGoal is "PlayerPawn" && Distance2D(TGoal) > (NeedsMedic || NeedsHelp ? MedicRange : MinPlayerRangeStop) || TGoal is "TargetGoal" && Distance2D(TGoal) > 16) && Distance2D(TGoal) < MaxGoalRange)
 		{
 			if (TGoal is "PlayerPawn" && (NeedsMedic || NeedsHelp))
 			{

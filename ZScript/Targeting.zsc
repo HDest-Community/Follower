@@ -16,7 +16,8 @@ extend class HDFollower
 
 			// [Ace] Weapons are listed in descending priority.
 			// If a weapon is missing from the list, the follower will never attack with that weapon.
-			Array<FollowerWeapon> UsedWeapons;
+			Array<class<FollowerWeapon> > UsedWeapons;
+			class<FollowerWeapon> W; // [Ace] I won't even bother giving it a full name. This is how much I care at this point.
 
 			if (MTarget && (bFRIENDLY && !MTarget.bFRIENDLY || !bFRIENDLY && MTarget.bFRIENDLY) && MTarget.bISMONSTER && MTarget.bSHOOTABLE && MTarget != self && MTarget.Health > 0 && CheckSight(MTarget, SF_SEEPASTSHOOTABLELINES) && !TargetIsIncapped(MTarget))
 			{
@@ -27,51 +28,51 @@ extend class HDFollower
 
 				if (MTarget.bBOSS && (CheckTarget() && !CTarget.bBOSS || !CheckTarget()))
 				{
-					UsedWeapons.Push(GetWeaponByName("Bronto"));
-					UsedWeapons.Push(GetWeaponByName("Boss"));
-					UsedWeapons.Push(GetWeaponByName("ZM66"));
+					W = "FW_Bronto"; UsedWeapons.Push(W);
+					W = "FW_Boss"; UsedWeapons.Push(W);
+					W = "FW_ZM66"; UsedWeapons.Push(W);
 					EngageTarget(UsedWeapons, MTarget);
 				}
 				else if (MTarget is "Necromancer")
 				{
-					UsedWeapons.Push(GetWeaponByName("ZM66"));
-					UsedWeapons.Push(GetWeaponByName("Boss"));
+					W = "FW_ZM66"; UsedWeapons.Push(W);
+					W = "FW_Boss"; UsedWeapons.Push(W);
 					EngageTarget(UsedWeapons, MTarget);
 				}
 				else if (MTarget is "PainLord")
 				{
-					UsedWeapons.Push(GetWeaponByName("Bronto"));
-					UsedWeapons.Push(GetWeaponByName("Boss"));
-					UsedWeapons.Push(GetWeaponByName("ZM66"));
+					W = "FW_Bronto"; UsedWeapons.Push(W);
+					W = "FW_Boss"; UsedWeapons.Push(W);
+					W = "FW_ZM66"; UsedWeapons.Push(W);
 					EngageTarget(UsedWeapons, MTarget);
 				}
 				else if (MTarget is "PainBringer")
 				{
-					UsedWeapons.Push(GetWeaponByName("Boss"));
-					UsedWeapons.Push(GetWeaponByName("ZM66"));
+					W = "FW_Boss"; UsedWeapons.Push(W);
+					W = "FW_ZM66"; UsedWeapons.Push(W);
 					EngageTarget(UsedWeapons, MTarget);
 				}
 				else if (MTarget is "HDMobBase" && HDMobBase(MTarget).Shields > 150)
 				{
-					UsedWeapons.Push(GetWeaponByName("Boss"));
-					UsedWeapons.Push(GetWeaponByName("ZM66"));
+					W = "FW_Boss"; UsedWeapons.Push(W);
+					W = "FW_ZM66"; UsedWeapons.Push(W);
 					EngageTarget(UsedWeapons, MTarget);
 				}
 				else if (!CheckTarget())
 				{
-					UsedWeapons.Push(GetWeaponByName("ZM66"));
-					UsedWeapons.Push(GetWeaponByName("Boss"));
+					W = "FW_ZM66"; UsedWeapons.Push(W);
+					W = "FW_Boss"; UsedWeapons.Push(W);
 					EngageTarget(UsedWeapons, MTarget);
 				}
 				else if (SelWeapon) // [Ace] In case follower gets interrupted, re-engage old target.
 				{
-					UsedWeapons.Push(SelWeapon);
+					UsedWeapons.Push(SelWeapon.GetClass());
 					EngageTarget(UsedWeapons, CTarget);
 				}
 			}
 			else if (!bFRIENDLY && PTarget && PTarget.Health > 0 && CheckSight(PTarget, SF_SEEPASTSHOOTABLELINES))
 			{
-				UsedWeapons.Push(GetWeaponByName("ZM66"));
+				W = "FW_ZM66"; UsedWeapons.Push(W);
 				EngageTarget(UsedWeapons, PTarget);
 			}
 		}
