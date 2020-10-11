@@ -372,7 +372,7 @@ extend class HDFollower
 			{
 				if (SelWeapon)
 				{
-					// Console.Printf("Trying to fire "..SelWeapon.WeaponName.." at "..CTarget.GetTag()..".");
+					// Console.Printf("Trying to fire "..SelWeapon.GetName().." at "..CTarget.GetTag()..".");
 					SetStateLabel(SelWeapon.GetFireState());
 					return;
 				}
@@ -468,6 +468,7 @@ extend class HDFollower
 				if (SelWeapon.ChamberedRound == FollowerWeapon.CRType_Spent)
 				{
 					A_SpawnItemEx("HDSpent7mm", cos(pitch) * 8, 1, height - 7 - sin(pitch) * 8, cos(pitch) * cos(angle - 80) * 6 + vel.x, cos(pitch) * sin(angle - 80) * 6 + vel.y, -sin(pitch) * 6+ vel.z, 0, SXF_ABSOLUTEMOMENTUM | SXF_NOCHECKPOSITION | SXF_TRANSFERPITCH);
+					SelWeapon.ChamberedRound = FollowerWeapon.CRType_Empty;
 				}
 				SelWeapon.TryChamberRound();
 				A_StartSound("weapons/boltfwd", 8);
