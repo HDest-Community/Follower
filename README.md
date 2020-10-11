@@ -19,7 +19,7 @@ For the most part the mechanics are fairly simple and straightforward. Documente
 
 ##### Orders
 ---
-- Orders are mostly straightforward except for some details, such as "go there and cover me", which will make the follower disengage their current target and run to their destination. Be sure to cover them because they won't engage any enemies on the way.
+- Orders are mostly straightforward except for some details, such as "go there and cover me", which will make the follower stop whatever they're doing and run to their destination, unless they're patching you up. No one gets left behind. Be sure to cover them if you can because they won't engage any enemies on the way.
 
 #### Modding
 ---

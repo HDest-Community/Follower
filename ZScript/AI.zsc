@@ -25,7 +25,7 @@ extend class HDFollower
 		bool NeedsMedic = PlayerNeedsMedic(); // [Ace] You're bleeding and incapped.
 		bool IsHelping = IsHelpingPlayer();
 
-		if (Status != FStatus_InCombat || Order == FOrder_GoAndCover)
+		if (Status != FStatus_InCombat)
 		{
 			if (SelWeapon)
 			{
