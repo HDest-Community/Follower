@@ -6,7 +6,8 @@ extend class HDFollower
 		{
 			return false;
 		}
-		else if (Status == FStatus_WaitingForArmor)
+		
+		if (Status == FStatus_WaitingForArmor)
 		{
 			Status = FStatus_None;
 		}
@@ -22,8 +23,10 @@ extend class HDFollower
 
 			case FOrder_FollowIgnore:
 				PrintMessage(GetResponse("$ORDER_FOLLOWIGNORE"..Index), "Follower/Order/FollowIgnore"..Index);
-				Order = FOrder_FollowIgnore;
 				ClearTarget();
+				ClearWeapon();
+				Status = FStatus_None;
+				Order = FOrder_FollowIgnore;
 				ResetIdleTimer();
 				return true;
 
