@@ -262,6 +262,7 @@ extend class HDFollower
 
 				if (!(flags & RLF_NOJUMP))
 				{
+					ClearWeapon();
 					SetStateLabel("Idle");
 				}
 			}
