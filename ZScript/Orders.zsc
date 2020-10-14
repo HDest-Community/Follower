@@ -23,9 +23,7 @@ extend class HDFollower
 
 			case FOrder_FollowIgnore:
 				PrintMessage(GetResponse("$ORDER_FOLLOWIGNORE"..Index), "Follower/Order/FollowIgnore"..Index);
-				ClearTarget();
-				ClearWeapon();
-				Status = FStatus_None;
+				HaulAss();
 				Order = FOrder_FollowIgnore;
 				ResetIdleTimer();
 				return true;
@@ -42,9 +40,7 @@ extend class HDFollower
 				if ((TraceData.HitType == TraceData.TRACE_HitFloor || TraceData.HitType == TraceData.TRACE_HitWall) && TrySetGoal(TraceData.HitLocation, true))
 				{
 					// [Ace] Drop whatever they're doing and haul ass to their destination.
-					ClearTarget();
-					ClearWeapon();
-					Status = FStatus_None;
+					HaulAss();
 					Order = FOrder_GoAndCover;
 					ActivateAsPlayer = true;
 					PrintMessage(GetResponse("$ORDER_GOANDCOVER2"), "Follower/Order/GoAndCover2");
@@ -58,5 +54,13 @@ extend class HDFollower
 		}
 
 		return false;
+	}
+
+	private void HaulAss()
+	{
+		ClearTarget();
+		ClearWeapon();
+		SetStateLabel("Idle"); // [Ace] Surely putting this here can't backfire. Right? :uhh:
+		Status = FStatus_None;
 	}
 }
