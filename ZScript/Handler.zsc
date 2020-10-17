@@ -132,7 +132,7 @@ class FollowerHandler : EventHandler
 					FollowerWeapon CurrWeapon = Follower.GetWeaponByIndex(i);
 					int MaxGiveAmount = Follower.GetMaxGiveAmount(CurrWeapon);
 					string ColorString = MaxGiveAmount > 0 ? "" : "\c[Red]";
-					string AmmoString = MaxGiveAmount.." "..CurrWeapon.GetAmmoName().."\c- ("..CurrWeapon.GetLoadedRounds()..", "..CurrWeapon.SpareAmmo.."/"..CurrWeapon.GetMaxSpare()..")";
+					string AmmoString = CurrWeapon.GetName()..": "..MaxGiveAmount.." "..CurrWeapon.GetAmmoName().."\c- ("..CurrWeapon.GetLoadedRounds()..", "..CurrWeapon.SpareAmmo.."/"..CurrWeapon.GetMaxSpare()..")";
 
 					sb.DrawString(MainFont, (i + 1)..") "..ColorString..AmmoString, pos, flags, Font.CR_WHITE);
 					pos.y += 10;
