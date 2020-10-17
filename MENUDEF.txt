@@ -23,7 +23,7 @@ OptionMenu "HDFollowerMenu"
 	//FollowerFlagItem "Rocket Launcher", "hdf_loadout_weapons", "YesNo", 5
 	//FollowerFlagItem "Liberator", "hdf_loadout_weapons", "YesNo", 6
 	FollowerFlagItem "Boss", "hdf_loadout_weapons", "YesNo", 7
-	FollowerFlagItem "SMG", "hdf_loadout_weapons", "YesNo", 8
+	FollowerFlagItem "Bronto", "hdf_loadout_weapons", "YesNo", 8
 	StaticText ""
 
 	StaticText "----- Loadout (Starting Ammo) -----", "Teal"
@@ -35,7 +35,7 @@ OptionMenu "HDFollowerMenu"
 	//FollowerFlagItem "Rocket Launcher", "hdf_loadout_startingammo", "YesNo", 5
 	//FollowerFlagItem "Liberator", "hdf_loadout_startingammo", "YesNo", 6
 	FollowerFlagItem "Boss", "hdf_loadout_startingammo", "YesNo", 7
-	FollowerFlagItem "SMG", "hdf_loadout_startingammo", "YesNo", 8
+	FollowerFlagItem "Bronto", "hdf_loadout_startingammo", "YesNo", 8
 	StaticText ""
 
 	StaticText "----- Loadout (Items) -----", "Teal"
