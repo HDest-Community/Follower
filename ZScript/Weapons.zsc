@@ -343,97 +343,16 @@ extend class HDFollower
 		int WeaponFlags = hdf_loadout_weapons;
 		int StartingAmmoFlags = hdf_loadout_startingammo;
 
-		if (WeaponFlags & (1 << 0))
-		{
-			wpn = new("FW_SMG");
-			if (StartingAmmoFlags & (1 << 0))
-			{
-				wpn.Init();
-			}
-			Weapons.Push(wpn);
-		}
-
 		// [Ace] A little bit of future-proofing.
-
-		// if (WeaponFlags & (1 << 1))
-		// {
-		// 	wpn = new("FW_Slayer");
-		// 	if (StartingAmmoFlags & (1 << 1))
-		// 	{
-		// 		wpn.Init();
-		// 	}
-		// 	Weapons.Push(wpn);
-		// }
-
-		// if (WeaponFlags & (1 << 2))
-		// {
-		// 	wpn = new("FW_Hunter");
-		// 	if (StartingAmmoFlags & (1 << 2))
-		// 	{
-		// 		wpn.Init();
-		// 	}
-		// 	Weapons.Push(wpn);
-		// }
-
-		if (WeaponFlags & (1 << 3))
-		{
-			wpn = new("FW_ZM66");
-			if (StartingAmmoFlags & (1 << 3))
-			{
-				wpn.Init();
-			}
-			Weapons.Push(wpn);
-		}
-
-		// if (WeaponFlags & (1 << 4))
-		// {
-		// 	wpn = new("FW_Blooper");
-		// 	if (StartingAmmoFlags & (1 << 4))
-		// 	{
-		// 		wpn.Init();
-		// 	}
-		// 	Weapons.Push(wpn);
-		// }
-
-		// if (WeaponFlags & (1 << 5))
-		// {
-		// 	wpn = new("FW_RocketLauncher");
-		// 	if (StartingAmmoFlags & (1 << 5))
-		// 	{
-		// 		wpn.Init();
-		// 	}
-		// 	Weapons.Push(wpn);
-		// }
-
-		// if (WeaponFlags & (1 << 6))
-		// {
-		// 	wpn = new("FW_Liberator");
-		// 	if (StartingAmmoFlags & (1 << 6))
-		// 	{
-		// 		wpn.Init();
-		// 	}
-		// 	Weapons.Push(wpn);
-		// }
-
-		if (WeaponFlags & (1 << 7))
-		{
-			wpn = new("FW_Boss");
-			if (StartingAmmoFlags & (1 << 7))
-			{
-				wpn.Init();
-			}
-			Weapons.Push(wpn);
-		}
-
-		if (WeaponFlags & (1 << 8))
-		{
-			wpn = new("FW_Bronto");
-			if (StartingAmmoFlags & (1 << 8))
-			{
-				wpn.Init();
-			}
-			Weapons.Push(wpn);
-		}
+		if (WeaponFlags & (1 << 0)) { wpn = new("FW_SMG");             if (StartingAmmoFlags & (1 << 0)) { wpn.Init(); } Weapons.Push(wpn); }
+		// if (WeaponFlags & (1 << 1)) { wpn = new("FW_Slayer");          if (StartingAmmoFlags & (1 << 1)) { wpn.Init(); } Weapons.Push(wpn); }
+		// if (WeaponFlags & (1 << 2)) { wpn = new("FW_Hunter");          if (StartingAmmoFlags & (1 << 2)) { wpn.Init(); } Weapons.Push(wpn); }
+		if (WeaponFlags & (1 << 3)) { wpn = new("FW_ZM66");            if (StartingAmmoFlags & (1 << 3)) { wpn.Init(); } Weapons.Push(wpn); }
+		// if (WeaponFlags & (1 << 4)) { wpn = new("FW_Blooper");         if (StartingAmmoFlags & (1 << 4)) { wpn.Init(); } Weapons.Push(wpn); }
+		// if (WeaponFlags & (1 << 5)) { wpn = new("FW_RocketLauncher");  if (StartingAmmoFlags & (1 << 5)) { wpn.Init(); } Weapons.Push(wpn); }
+		// if (WeaponFlags & (1 << 6)) { wpn = new("FW_Liberator");       if (StartingAmmoFlags & (1 << 6)) { wpn.Init(); } Weapons.Push(wpn); }
+		if (WeaponFlags & (1 << 7)) { wpn = new("FW_Boss");            if (StartingAmmoFlags & (1 << 7)) { wpn.Init(); } Weapons.Push(wpn); }
+		if (WeaponFlags & (1 << 8)) { wpn = new("FW_Bronto");          if (StartingAmmoFlags & (1 << 8)) { wpn.Init(); } Weapons.Push(wpn); }
 	}
 
 	private void ClearWeapon()
