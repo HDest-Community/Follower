@@ -1,5 +1,6 @@
 version "4.4"
 
+#include "ZScript/FollowerMenu.zsc"
 #include "ZScript/Handler.zsc"
 #include "ZScript/Data.zsc"
 #include "ZScript/Resurrection.zsc"

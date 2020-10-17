@@ -7,6 +7,8 @@ server int hdf_extrabrass = 0;
 
 server bool hdf_targetuncountable = true;
 
+server int hdf_loadout_weapons = 393;
+server int hdf_loadout_startingammo = 8;
 server int hdf_loadout_medikits = 0;
 server int hdf_loadout_stimpacks = 0;
 server int hdf_loadout_armor = 0;
