@@ -15,27 +15,27 @@ OptionMenu "HDFollowerMenu"
 	StaticText ""
 
 	StaticText "----- Loadout (Weapons) -----", "Teal"
-	FollowerFlagItem "SMG", "hdf_loadout_weapons", "YesNo", 0
-	//FollowerFlagItem "Slayer", "hdf_loadout_weapons", "YesNo", 1
-	//FollowerFlagItem "Hunter", "hdf_loadout_weapons", "YesNo", 2
-	FollowerFlagItem "ZM66", "hdf_loadout_weapons", "YesNo", 3
-	//FollowerFlagItem "Blooper", "hdf_loadout_weapons", "YesNo", 4
-	//FollowerFlagItem "Rocket Launcher", "hdf_loadout_weapons", "YesNo", 5
-	//FollowerFlagItem "Liberator", "hdf_loadout_weapons", "YesNo", 6
-	FollowerFlagItem "Boss", "hdf_loadout_weapons", "YesNo", 7
-	FollowerFlagItem "Bronto", "hdf_loadout_weapons", "YesNo", 8
+	FlagOption "SMG", "hdf_loadout_weapons", "YesNo", 0
+	//FlagOption "Slayer", "hdf_loadout_weapons", "YesNo", 1
+	//FlagOption "Hunter", "hdf_loadout_weapons", "YesNo", 2
+	FlagOption "ZM66", "hdf_loadout_weapons", "YesNo", 3
+	//FlagOption "Blooper", "hdf_loadout_weapons", "YesNo", 4
+	//FlagOption "Rocket Launcher", "hdf_loadout_weapons", "YesNo", 5
+	//FlagOption "Liberator", "hdf_loadout_weapons", "YesNo", 6
+	FlagOption "Boss", "hdf_loadout_weapons", "YesNo", 7
+	FlagOption "Bronto", "hdf_loadout_weapons", "YesNo", 8
 	StaticText ""
 
 	StaticText "----- Loadout (Starting Ammo) -----", "Teal"
-	FollowerFlagItem "SMG", "hdf_loadout_startingammo", "YesNo", 0
-	//FollowerFlagItem "Slayer", "hdf_loadout_startingammo", "YesNo", 1
-	//FollowerFlagItem "Hunter", "hdf_loadout_startingammo", "YesNo", 2
-	FollowerFlagItem "ZM66", "hdf_loadout_startingammo", "YesNo", 3
-	//FollowerFlagItem "Blooper", "hdf_loadout_startingammo", "YesNo", 4
-	//FollowerFlagItem "Rocket Launcher", "hdf_loadout_startingammo", "YesNo", 5
-	//FollowerFlagItem "Liberator", "hdf_loadout_startingammo", "YesNo", 6
-	FollowerFlagItem "Boss", "hdf_loadout_startingammo", "YesNo", 7
-	FollowerFlagItem "Bronto", "hdf_loadout_startingammo", "YesNo", 8
+	FlagOption "SMG", "hdf_loadout_startingammo", "YesNo", 0
+	//FlagOption "Slayer", "hdf_loadout_startingammo", "YesNo", 1
+	//FlagOption "Hunter", "hdf_loadout_startingammo", "YesNo", 2
+	FlagOption "ZM66", "hdf_loadout_startingammo", "YesNo", 3
+	//FlagOption "Blooper", "hdf_loadout_startingammo", "YesNo", 4
+	//FlagOption "Rocket Launcher", "hdf_loadout_startingammo", "YesNo", 5
+	//FlagOption "Liberator", "hdf_loadout_startingammo", "YesNo", 6
+	FlagOption "Boss", "hdf_loadout_startingammo", "YesNo", 7
+	FlagOption "Bronto", "hdf_loadout_startingammo", "YesNo", 8
 	StaticText ""
 
 	StaticText "----- Loadout (Items) -----", "Teal"
