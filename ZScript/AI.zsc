@@ -102,7 +102,7 @@ extend class HDFollower
 			}
 		}
 		
-		if (Status == FStatus_None && (!bFRIENDLY || Order == FOrder_Follow || Order == FOrder_Cover) && GetAge() % 8 == 0)
+		if ((Status == FStatus_None || Status == FStatus_InCombat && !SelWeapon) && (!bFRIENDLY || Order == FOrder_Follow || Order == FOrder_Cover) && GetAge() % 8 == 0)
 		{
 			LookForEnemies();
 		}

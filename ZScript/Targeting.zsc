@@ -63,7 +63,7 @@ extend class HDFollower
 					W = "FW_ZM66"; UsedWeapons.Push(W);
 					EngageTarget(UsedWeapons, MTarget);
 				}
-				else if (!CheckTarget())
+				else if (!CheckTarget() || !SelWeapon)
 				{
 					W = "FW_ZM66"; UsedWeapons.Push(W);
 					W = "FW_SMG"; UsedWeapons.Push(W);
