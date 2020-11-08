@@ -35,6 +35,10 @@ Follower/Order/Cover2 FLWCOVR2
 Follower/Order/GoAndCover1 FLWGCVR1
 Follower/Order/GoAndCover2 FLWGCVR2
 
+Follower/Order/Help1 FLWHELP1
+Follower/Order/Help2 FLWHELP2
+Follower/Order/Help3 FLWHELP3
+
 Follower/Carry/Success FLWCRYSC
 
 Follower/AmmoGive/ZM/TooMany FLWAZMTM

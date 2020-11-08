@@ -1,24 +1,24 @@
 extend class HDFollower
 {
-	private bool PlayerNeedsMedic() const
+	private bool PlayerNeedsMedic()
 	{
 		let plr = HDPlayerPawn(LinkedPlayer);
-		return plr && plr.Health > 0 && PlayerIsIncapped() && (HasWounds() && (Medikits > 0 || SuturesLeft > 0) || CanApplyStim());
+		return plr && plr.Health > 2 && PlayerIsIncapped() && (HasWounds() && (Medikits > 0 || SuturesLeft > 0) || CanApplyStim());
 	}
 
-	private bool PlayerIsIncapped() const
+	private bool PlayerIsIncapped()
 	{
 		let plr = HDPlayerPawn(LinkedPlayer);
 		return plr && plr.incapacitated >= 20 && (plr.incaptimer > MinIncap || plr.Health < 15); // [Ace] Player can't get up if lying on the floor at < 15 health, even if timer is 0.
 	}
 
-	private bool HasWounds() const
+	private bool HasWounds()
 	{
 		let plr = HDPlayerPawn(LinkedPlayer);
 		return plr && (plr.woundcount > 0 || plr.unstablewoundcount > 0);
 	}
 
-	private bool CanApplyStim() const
+	private bool CanApplyStim()
 	{
 		let plr = HDPlayerPawn(LinkedPlayer);
 		return plr.stimcount < 4 && Stimpacks > 0 && plr.regenblues <= 2 && plr.Health < 30; // [Ace] Don't stim player unless it's necessary.
@@ -164,7 +164,8 @@ extend class HDFollower
 			}
 			Loop;
 		StapleHumptyDumptyBackTogetherAgain:
-			#### JKL 14
+			#### JK 5;
+			#### L 5
 			{
 				if (CanApplyStim())
 				{
@@ -175,7 +176,7 @@ extend class HDFollower
 				if (!PlayerNeedsMedic())
 				{
 					ClearGoal();
-					SetStateLabel("Idle");
+					SetStateLabel("PullYouUp");
 					return;
 				}
 

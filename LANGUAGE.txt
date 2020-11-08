@@ -52,6 +52,18 @@ ORDER_GOANDCOVER2_1 = "On it.";
 ORDER_GOANDCOVER2_2 = "Cover me while I get there.";
 ORDER_GOANDCOVER2_3 = "Okay, I'll cover you from that spot.";
 
+ORDER_HELP1_1 = "I'm running as fast as I can.";
+ORDER_HELP1_2 = "Repeating yourself won't teleport me to you.";
+ORDER_HELP1_3 = "I heard you the first time.";
+
+ORDER_HELP2_1 = "Hold on tight.";
+ORDER_HELP2_2 = "Don't you die on me.";
+ORDER_HELP2_3 = "Try to stay alive, okay?";
+
+ORDER_HELP3_1 = "You look okay to me.";
+ORDER_HELP3_2 = "I don't need to do that.";
+ORDER_HELP3_3 = "You'll be just fine.";
+
 CARRY_SUCCESS_1 = "I don't like being carried, but if you insist...";
 CARRY_SUCCESS_2 = "Put me down, damn it!";
 CARRY_SUCCESS_3 = "I'm not a backpack.";

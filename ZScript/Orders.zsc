@@ -1,3 +1,12 @@
+enum FOrder
+{
+	FOrder_Follow,
+	FOrder_FollowIgnore,
+	FOrder_Cover,
+	FOrder_GoAndCover,
+	FOrder_ComeAndHelp
+}
+
 extend class HDFollower
 {
 	bool ChangeOrders(FOrder newOrder)
@@ -51,6 +60,18 @@ extend class HDFollower
 					PrintMessage(GetResponse("$ORDER_GOANDCOVER1"), "Follower/Order/GoAndCover1");
 					return false;
 				}
+
+			case FOrder_ComeAndHelp:
+				if (!PlayerNeedsMedic() && !PlayerIsIncapped())
+				{
+					PrintMessage(GetResponse("$ORDER_HELP3"), "Follower/Order/Help3");
+					return true;
+				}
+				PrintMessage(GetResponse("$ORDER_HELP"..Index), "Follower/Order/Help"..Index);
+				HaulAss();
+				Order = FOrder_ComeAndHelp;
+				ResetIdleTimer();
+				return true;
 		}
 
 		return false;

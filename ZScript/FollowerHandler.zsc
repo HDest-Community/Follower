@@ -114,7 +114,7 @@ class FollowerHandler : EventHandler
 				break;
 
 			case 2:
-				static const string Orders[] = { "Follow", "Follow and ignore hostiles", "Stay and provide cover", "Go there and provide cover" };
+				static const string Orders[] = { "Follow", "Follow and ignore hostiles", "Stay and provide cover", "Go there and provide cover", "Come and help me" };
 				for (int i = 0; i < Orders.Size(); ++i)
 				{
 					sb.DrawString(MainFont, (i + 1)..") "..(Follower.Order == i ? "\c[Green]" : "")..Orders[i].."\c-", pos, flags, Font.CR_WHITE);
@@ -197,7 +197,8 @@ class FollowerHandler : EventHandler
 						case '2': SendNetworkEvent("HDF_ChangeOrders", FOrder_FollowIgnore); break;
 						case '3': SendNetworkEvent("HDF_ChangeOrders", FOrder_Cover); break;
 						case '4': SendNetworkEvent("HDF_ChangeOrders", FOrder_GoAndCover); break;
-						case '5': SendNetworkEvent("HDF_SetFollowerMenu", 1); break;
+						case '5': SendNetworkEvent("HDF_ChangeOrders", FOrder_ComeAndHelp); break;
+						case '6': SendNetworkEvent("HDF_SetFollowerMenu", 1); break;
 					}
 					break;
 

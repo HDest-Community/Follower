@@ -1,11 +1,3 @@
-enum FOrder
-{
-	FOrder_Follow,
-	FOrder_FollowIgnore,
-	FOrder_Cover,
-	FOrder_GoAndCover
-}
-
 enum FStatus
 {
 	FStatus_None,
@@ -50,7 +42,7 @@ extend class HDFollower
 
 			if (Status == FStatus_None)
 			{
-				if ((NeedsMedic || NeedsHelp) && bFRIENDLY && Distance3D(LinkedPlayer) < 512 && CanSeePlayer)
+				if (Order == FOrder_ComeAndHelp && bFRIENDLY && Distance3D(LinkedPlayer) < 512 && CanSeePlayer)
 				{
 					if (Distance3D(LinkedPlayer) < MedicRange && !IsHelping) // [Ace] Start stapling if close enough. Minimum distance is 22. Don't go any lower or follower will be stuck walking towards you.
 					{
@@ -61,6 +53,10 @@ extend class HDFollower
 						else if (NeedsHelp)
 						{
 							SetStateLabel("PullYouUp");
+						}
+						else
+						{
+							Order = FOrder_Follow;
 						}
 					}
 					else
@@ -102,15 +98,15 @@ extend class HDFollower
 			}
 		}
 		
-		if ((Status == FStatus_None || Status == FStatus_InCombat && !SelWeapon) && (!bFRIENDLY || Order == FOrder_Follow || Order == FOrder_Cover) && GetAge() % 8 == 0)
+		if ((Status == FStatus_None || Status == FStatus_InCombat && !SelWeapon) && (!bFRIENDLY || Order == FOrder_Follow || Order == FOrder_Cover || Order == FOrder_ComeAndHelp) && GetAge() % 8 == 0)
 		{
 			LookForEnemies();
 		}
 
 		// [Ace] Movement. Always travel to goals if there are any. Status between moving and idle should not be set elsewhere.
-		if ((Status != FStatus_InCombat || Order == FOrder_GoAndCover) && TGoal && (TGoal is "PlayerPawn" && Distance2D(TGoal) > (NeedsMedic || NeedsHelp ? MedicRange : MinPlayerRangeStop) || TGoal is "TargetGoal" && Distance2D(TGoal) > 16) && Distance2D(TGoal) < MaxGoalRange)
+		if ((Status != FStatus_InCombat || Order == FOrder_GoAndCover) && TGoal && (TGoal is "PlayerPawn" && Distance2D(TGoal) > (Order == FOrder_ComeAndHelp && (NeedsMedic || NeedsHelp) ? MedicRange : MinPlayerRangeStop) || TGoal is "TargetGoal" && Distance2D(TGoal) > 16) && Distance2D(TGoal) < MaxGoalRange)
 		{
-			if (TGoal is "PlayerPawn" && (NeedsMedic || NeedsHelp))
+			if (TGoal is "PlayerPawn" && Order == FOrder_ComeAndHelp && (NeedsMedic || NeedsHelp))
 			{
 				// [Ace] Don't slow down if player is bleeding out their ass or needs help getting up.
 				if (tics == 2)
