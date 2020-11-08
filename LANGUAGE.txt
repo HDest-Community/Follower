@@ -120,7 +120,7 @@ MEDGIVE_TOOMANY_1 = "I'm not a pharmacy.";
 MEDGIVE_TOOMANY_2 = "Giving me fifty medikits isn't going to heal you any faster.";
 MEDGIVE_TOOMANY_3 = "If I had more space, sure. But I don't, so stop it.";
 
-MEDGIVE_SUCCESS_1 = "As much as I like blood, I'd rather not have you bleed out on me.";
+MEDGIVE_SUCCESS_1 = "As much as I enjoy blood, I'd rather not have you bleed out on me.";
 MEDGIVE_SUCCESS_2 = "I'm not a real doctor, but I appreciate the supplies.";
 MEDGIVE_SUCCESS_3 = "Guaranteed to stop bleeding.";
 
