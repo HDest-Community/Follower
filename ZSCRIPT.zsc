@@ -13,6 +13,11 @@ version "4.5"
 #include "ZScript/Brass.zsc"
 #include "ZScript/Loadout.zsc"
 
+class HDFSkinData play
+{
+	virtual vector2 GetScale() { return (1, 1); }
+}
+
 class HDFollower : HDMobMan
 {
 	// --------------------------------------------------
@@ -193,6 +198,15 @@ class HDFollower : HDMobMan
 		Bloodloss = NewBloodloss;
 		BodyDamage = NewBodyDamage;
 		Stunned = NewStunned;
+
+		for (int i = 0; i < AllClasses.Size(); ++i)
+		{
+			if (AllClasses[i] is "HDFSkinData" && AllClasses[i].GetClassName() != 'HDFSkinData')
+			{
+				HDFSkinData Data = HDFSkinData(new(AllClasses[i]));
+				Scale = Data.GetScale();
+			}
+		}
 	}
 
 	const MaxInventoryDistance = 48;
