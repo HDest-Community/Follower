@@ -1,5 +1,5 @@
-Sprites:
-- HorrorMovieGuy: Cultist
+Code:
+- Accensus
 
-Sounds:
-- Blood (Monolith): Cultist Lines
+Sprites:
+- HyperUltra64

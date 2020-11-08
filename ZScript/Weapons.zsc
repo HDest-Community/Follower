@@ -376,14 +376,14 @@ extend class HDFollower
 	States
 	{
 		See:
-			#### FF 2
+			#### HH 2
 			{
 				Status = FStatus_InCombat;
 				AimTimer = 0;
 			}
 		Aiming:
-			#### F 1; // [Ace] Otherwise it's gonna cause an infinite loop.
-			#### F 1
+			#### H 1; // [Ace] Otherwise it's gonna cause an infinite loop.
+			#### H 1
 			{
 				if (!CheckTarget())
 				{
@@ -401,7 +401,7 @@ extend class HDFollower
 			}
 			Loop;
 		Shoot:
-			#### F 0
+			#### H 0
 			{
 				if (SelWeapon)
 				{
@@ -417,8 +417,8 @@ extend class HDFollower
 		// ----------------------------------------
 
 		ShootSMG:
-			#### F 1 Aim();
-			#### G 1
+			#### H 1 Aim();
+			#### I 1
 			{
 				if (!CheckTarget())
 				{
@@ -436,31 +436,31 @@ extend class HDFollower
  
 				TryReloadWeapon(SelWeapon, flags: RLF_FORCE);
 			}
-			#### F 1;
+			#### H 1;
 			Goto ShootSMG;
 		ReloadSMG:
-			#### F 3
+			#### H 3
 			{
 				bNOPAIN = true;
 			}
-			#### F 4
+			#### H 4
 			{
 				A_StartSound("weapons/rifleclick2");
 			}
-			#### F 0
+			#### H 0
 			{
 				A_StartSound("weapons/rifleload");
 				HDMagAmmo.SpawnMag(self, "HD9mMag30", 0);
 			}
-			#### F 25 A_StartSound("weapons/pocket", 8);
-			#### F 10
+			#### H 25 A_StartSound("weapons/pocket", 8);
+			#### H 10
 			{
 				A_StartSound("weapons/rifleload", 9);
 				SelWeapon.TryReloadMag();
 			}
-			#### F 0 A_JumpIf(!SelWeapon.TryChamberRound(), 2);
-			#### F 2 A_StartSound("weapons/rifleclick2", 8);
-			#### F 0
+			#### H 0 A_JumpIf(!SelWeapon.TryChamberRound(), 2);
+			#### H 2 A_StartSound("weapons/rifleclick2", 8);
+			#### H 0
 			{
 				bNOPAIN = false;
 			}
@@ -471,7 +471,7 @@ extend class HDFollower
 		// ----------------------------------------
 
 		ShootZM66:
-			#### GGG 1
+			#### III 1
 			{
 				// [Ace] Technically it's caseless so it doesn't eject anything but for the sake of code let's assume it does.
 				if (SelWeapon.TryFireRound(true))
@@ -484,31 +484,31 @@ extend class HDFollower
 
 				TryReloadWeapon(SelWeapon, flags: RLF_FORCE);
 			}
-			#### F 10;
+			#### H 10;
 			Goto See;
 		ReloadZM66:
-			#### F 8
+			#### H 8
 			{
 				bNOPAIN = true;
 			}
-			#### F 6
+			#### H 6
 			{
 				A_StartSound("weapons/rifleclick2");
 			}
-			#### F 0
+			#### H 0
 			{
 				A_StartSound("weapons/rifleload");
 				HDMagAmmo.SpawnMag(self, "HD4mMag", 0);
 			}
-			#### F 30 A_StartSound("weapons/pocket", 8);
-			#### F 10
+			#### H 30 A_StartSound("weapons/pocket", 8);
+			#### H 10
 			{
 				A_StartSound("weapons/rifleload", 9);
 				SelWeapon.TryReloadMag();
 			}
-			#### F 0 A_JumpIf(!SelWeapon.TryChamberRound(), 2);
-			#### F 2 A_StartSound("weapons/rifleclick2", 8);
-			#### F 0
+			#### H 0 A_JumpIf(!SelWeapon.TryChamberRound(), 2);
+			#### H 2 A_StartSound("weapons/rifleclick2", 8);
+			#### H 0
 			{
 				bNOPAIN = false;
 			}
@@ -519,7 +519,7 @@ extend class HDFollower
 		// ----------------------------------------
 
 		ShootBoss:
-			#### F 0
+			#### H 0
 			{
 				if (!CheckTarget())
 				{
@@ -527,8 +527,8 @@ extend class HDFollower
 					return;
 				}
 			}
-			#### F 4 Aim();
-			#### G 1
+			#### H 4 Aim();
+			#### I 1
 			{
 				if (SelWeapon.TryFireRound(false))
 				{
@@ -539,14 +539,14 @@ extend class HDFollower
 
 				TryReloadWeapon(SelWeapon, flags: RLF_FORCE);
 			}
-			#### F 5;
+			#### H 5;
 		ChamberRound:
-			#### F 0
+			#### H 0
 			{
 				bNOPAIN = true;
 			}
-			#### F 5 A_StartSound("weapons/boltback", 8);
-			#### F 7
+			#### H 5 A_StartSound("weapons/boltback", 8);
+			#### H 7
 			{
 				if (SelWeapon.ChamberedRound == FollowerWeapon.CRType_Spent)
 				{
@@ -556,21 +556,21 @@ extend class HDFollower
 				SelWeapon.TryChamberRound();
 				A_StartSound("weapons/boltfwd", 8);
 			}
-			#### F 0
+			#### H 0
 			{
 				bNOPAIN = false;
 			}
 			Goto ShootBoss;
 		ReloadBoss:
-			#### F 8
+			#### H 8
 			{
 				bNOPAIN = true;
 			}
-			#### F 2 A_StartSound("weapons/rifleclick2", 8, CHANF_OVERLAP, 0.9, pitch: 0.95);
-			#### F 4 A_StartSound("weapons/rifleload", 8, CHANF_OVERLAP);
-			#### F 20 A_StartSound("weapons/pocket", 8);
+			#### H 2 A_StartSound("weapons/rifleclick2", 8, CHANF_OVERLAP, 0.9, pitch: 0.95);
+			#### H 4 A_StartSound("weapons/rifleload", 8, CHANF_OVERLAP);
+			#### H 20 A_StartSound("weapons/pocket", 8);
 		ReloadBossLoop:
-			#### F 12
+			#### H 12
 			{
 				if (SelWeapon.TryReloadMag())
 				{
@@ -596,7 +596,7 @@ extend class HDFollower
 		// ----------------------------------------
 
 		ShootBronto:
-			#### G 1
+			#### I 1
 			{
 				if (SelWeapon.TryFireRound(false))
 				{
@@ -610,14 +610,14 @@ extend class HDFollower
 				
 				TryReloadWeapon(SelWeapon, flags: RLF_FORCE);
 			}
-			#### F 10;
+			#### H 10;
 			Goto See;
 		ReloadBronto:
-			#### F 8
+			#### H 8
 			{
 				bNOPAIN = true;
 			}
-			#### F 5
+			#### H 5
 			{
 				A_StartSound("weapons/brontunload", 8);
 				if (SelWeapon.ChamberedRound == FollowerWeapon.CRType_Spent)
@@ -626,16 +626,16 @@ extend class HDFollower
 					SelWeapon.ChamberedRound = FollowerWeapon.CRType_Empty;
 				}
 			}
-			#### F 12 A_StartSound("weapons/brontoload", 9);
-			#### F 12 A_StartSound("weapons/pocket", 10);
-			#### F 10
+			#### H 12 A_StartSound("weapons/brontoload", 9);
+			#### H 12 A_StartSound("weapons/pocket", 10);
+			#### H 10
 			{
 				A_StartSound("weapons/brontoload", 10);
 				SelWeapon.TryChamberRound();
 			}
-			#### F 10 A_StartSound("weapons/brontunload", 11);
-			#### F 5 A_StartSound("weapons/brontoclose", 8);
-			#### F 0
+			#### H 10 A_StartSound("weapons/brontunload", 11);
+			#### H 5 A_StartSound("weapons/brontoclose", 8);
+			#### H 0
 			{
 				bNOPAIN = false;
 			}

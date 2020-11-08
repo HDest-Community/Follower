@@ -9,36 +9,19 @@ $random Follower/Death
 // Pain sounds.
 Follower/Pain1 FLWPAIN1
 Follower/Pain2 FLWPAIN2
+Follower/Pain3 FLWPAIN3
+Follower/Pain4 FLWPAIN4
 
 $random Follower/Pain
 {
 	Follower/Pain1
 	Follower/Pain2
+	Follower/Pain3
+	Follower/Pain4
 }
 
-// Taunt sounds.
-Follower/See1 FLWSEE1
-Follower/See2 FLWSEE2
-Follower/See3 FLWSEE3
-Follower/See4 FLWSEE4
-Follower/See5 FLWSEE5
-Follower/See6 FLWSEE6
-Follower/See7 FLWSEE7
-Follower/See8 FLWSEE8
-Follower/See9 FLWSEE9
-
-$random Follower/See
-{
-	Follower/See1
-	Follower/See2
-	Follower/See3
-	Follower/See4
-	Follower/See5
-	Follower/See6
-	Follower/See7
-	Follower/See8
-	Follower/See9
-}
+// Taunt sound.
+Follower/See FLWSEE1
 
 Follower/Order/Follow1 FLWFLLW1
 Follower/Order/Follow2 FLWFLLW2

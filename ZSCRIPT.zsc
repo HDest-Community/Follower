@@ -210,7 +210,8 @@ class HDFollower : HDMobMan
 		Radius 12;
 		Height 52;
 		HDFollower.MovementSpeed 3, 7;
-		Scale 0.92;
+		Scale 1.00;
+		XScale 1.08;
 		PainChance 192;
 		MaxStepHeight 80;
 		MaxDropOffHeight 128;
@@ -244,18 +245,16 @@ class HDFollower : HDMobMan
 			Goto Idle;
 
 		Moving:
-			#### AAABBBCCCDDD 2;
+			#### CCCDDDEEEFFF 2;
 			Loop;
 		Idle:
-			#### A 15 TryActivateLine();
-			#### A 8;
-			#### D 15;
-			#### D 8;
+			#### A 35 TryActivateLine();
+			#### B 35;
 			Loop;
 
 		Pain:
 		Pain.Melee:
-			#### E 6
+			#### G 6
 			{
 				Status = FStatus_InactiveOrDead;
 				A_GiveInventory("HDFireDouse", 2);
@@ -280,7 +279,7 @@ class HDFollower : HDMobMan
 			Goto Idle;
 
 		Falldown:
-			#### H 4
+			#### M 4
 			{
 				MaxStepHeight = 0; // [Ace] Prevents you from sombrero-ing the follower if you stand over them while they're incapped.
 				Status = FStatus_InactiveOrDead;
@@ -288,10 +287,10 @@ class HDFollower : HDMobMan
 				A_StartSound(PainSound, CHAN_VOICE);
 				ClearWeapon();
 			}
-			#### I 4 A_StartSound(DeathSound, CHAN_VOICE);
-			#### J 4;
-			#### KLMN 4;
-			#### O 10
+			#### N 4 A_StartSound(DeathSound, CHAN_VOICE);
+			#### O 4;
+			#### PQ 4;
+			#### Q 10
 			{
 				if (Stunned > 25 && Distance3D(LinkedPlayer) < radius + MaxReviveDistance && IsFacedByPlayer() && PlayerIsCrouching())
 				{
@@ -304,11 +303,11 @@ class HDFollower : HDMobMan
 		Standup:
 			Goto Raise + 1; // [Ace] Don't reset body damage if standing up from incap.
 		Raise:
-			#### N 0 OnRevive();
-			#### NMLK 6;
-			#### J 6 A_Recoil(-0.3);
-			#### I 6;
-			#### H 6 Taunt();
+			#### R 0 OnRevive();
+			#### RQP 6;
+			#### O 6 A_Recoil(-0.3);
+			#### N 6;
+			#### M 6 Taunt();
 			#### A 0
 			{
 				ThinkerIterator it = ThinkerIterator.Create("AngelFire", STAT_DEFAULT);
@@ -328,19 +327,19 @@ class HDFollower : HDMobMan
 			Goto Idle;
 
 		Death:
-			#### H 4
+			#### M 9
 			{
 				ClearGoal();
 				ClearTarget();
 				ClearWeapon();
 				Status = FStatus_InactiveOrDead;
 			}
-			#### I 4 A_StartSound(DeathSound, CHAN_VOICE);
-			#### J 4;
-			#### KLMN 4;
+			#### N 6 A_StartSound(DeathSound, CHAN_VOICE);
+			#### O 5;
+			#### PQR 4;
 			Goto Dead;
 		Dead:
-			#### O 1 CanRaise CheckRevive();
+			#### R 1 CanRaise CheckRevive();
 			Wait;
 	}
 }

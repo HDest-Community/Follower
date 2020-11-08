@@ -142,7 +142,7 @@ extend class HDFollower
 	States
 	{
 		PullYouUp:
-			#### A 1
+			#### J 1
 			{
 				if (!PlayerIsIncapped())
 				{
@@ -164,7 +164,7 @@ extend class HDFollower
 			}
 			Loop;
 		StapleHumptyDumptyBackTogetherAgain:
-			#### A 14
+			#### JKL 14
 			{
 				if (CanApplyStim())
 				{
@@ -189,7 +189,7 @@ extend class HDFollower
 				A_StartSound("medikit/stopper", CHAN_WEAPON, CHANF_OVERLAP);
 				A_StartSound("misc/bulletflesh", CHAN_BODY, CHANF_OVERLAP);
 			}
-			#### AAAAA 3
+			#### LLLLL 3
 			{
 				let plr = HDPlayerPawn(LinkedPlayer);
 				A_StartSound("medikit/staple", CHAN_WEAPON);
@@ -205,15 +205,15 @@ extend class HDFollower
 				HDPlayerPawn(plr).secondflesh++;
 			}
 		PatchUpEnd:
-			#### A 10
+			#### J 10
 			{
 				SuturesLeft--;
 				PatchWound(1, LinkedPlayer);
 			}
 			Goto StapleHumptyDumptyBackTogetherAgain;
 		ApplyStim:
-			#### A 25 A_Face(LinkedPlayer);
-			#### A 20
+			#### J 25 A_Face(LinkedPlayer);
+			#### J 20
 			{
 				let plr = HDPlayerPawn(LinkedPlayer);
 				A_Face(plr);
@@ -230,7 +230,7 @@ extend class HDFollower
 				b.A_ChangeVelocity(3,1,2,CVF_RELATIVE);
 				b.A_StartSound("weapons/grenopen", 8);
 			}
-			#### A 0 PrintMessage(GetResponse("$MEDIC_STIMMED"), "Follower/Medic/Stimmed");
+			#### J 0 PrintMessage(GetResponse("$MEDIC_STIMMED"), "Follower/Medic/Stimmed");
 			Goto StapleHumptyDumptyBackTogetherAgain;
 	}
 }

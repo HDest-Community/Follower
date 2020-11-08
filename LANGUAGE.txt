@@ -1,5 +1,5 @@
 [enu default]
-FOLLOWER_NAME = "Balthazar";
+FOLLOWER_NAME = "Freylis";
 
 CARRY_FAR_PLR = "I'll have to get closer for that.";
 CARRY_NOTFACING_PLR = "I need to be facing my buddy to do that.";
@@ -16,163 +16,162 @@ REVIVE_BLOOD_NOTENOUGH_PLR = "I don't think that's going to be enough blood.";
 REVIVE_BLUES_ALREADYWORKING_PLR = "The potion seems to already be hard at work.";
 BRASS_FAR_PLR = "I'm too far away to do that.";
 BRASS_FULL_PLR = "I can't carry any more.";
-
-ORDER_FOLLOW1_1 = "WE FOLLOW YOU ALREADY!";
-ORDER_FOLLOW1_2 = "STOP REPEATING YOURSELF!";
-ORDER_FOLLOW1_3 = "WE ARE BEHIND YOU!";
-
-ORDER_FOLLOW2_1 = "TO VICTORY!";
-ORDER_FOLLOW2_2 = "AAAAAAAAAAAA!";
-ORDER_FOLLOW2_3 = "KILL! KILL! KILL!";
-
-ORDER_FOLLOWIGNORE1_1 = "WE HAVE NO TIME FOR FOOLS!";
-ORDER_FOLLOWIGNORE1_2 = "WE DO NOT SHOOT!";
-ORDER_FOLLOWIGNORE1_3 = "WE MOVE THEN!";
-
-ORDER_FOLLOWIGNORE2_1 = "AH YES COWARDICE TIME!";
-ORDER_FOLLOWIGNORE2_2 = "ARE YOU AFRAID!?";
-ORDER_FOLLOWIGNORE2_3 = "WE RUN AWAY!";
-
-ORDER_COVER1_1 = "WE PROTECT YOU ALREADY!";
-ORDER_COVER1_2 = "YOU ARE ALREADY SAFE!";
-ORDER_COVER1_3 = "WHAT MORE DO YOU WANT!?";
-
-ORDER_COVER2_1 = "WE PROTECT YOU!";
-ORDER_COVER2_2 = "SHOOT THE BAD GUYS!";
-ORDER_COVER2_3 = "WE SEE, WE SHOOT!";
-
-ORDER_GOANDCOVER1_1 = "WE DO NOT GO THERE!";
-ORDER_GOANDCOVER1_2 = "THAT IS IMPOSSIBLE!";
-ORDER_GOANDCOVER1_3 = "WE CANNOT DO THAT!";
-
-ORDER_GOANDCOVER2_1 = "WE GO THERE!";
-ORDER_GOANDCOVER2_2 = "MOOOOOOOOVING!";
-ORDER_GOANDCOVER2_3 = "RUNNNNN!";
-
-CARRY_SUCCESS_1 = "AAAAGH! LET GO! WE MUST KILL!";
-CARRY_SUCCESS_2 = "PUT US DOWN! WE MUST SHOOT!";
-CARRY_SUCCESS_3 = "THEY ARE GETTING AWAY!";
-
-AMMOGIVE_SMG_TOOMANY_1 = "I CAN'T!";
-AMMOGIVE_SMG_TOOMANY_2 = "TOO MUCH HOARD!";
-AMMOGIVE_SMG_TOOMANY_3 = "NO ROOM!";
-
-AMMOGIVE_SMG_SUCCESS_1 = "FOR THE HOARD!";
-AMMOGIVE_SMG_SUCCESS_2 = "MMMM CANDY!";
-AMMOGIVE_SMG_SUCCESS_3 = "THIS WILL LAST US FIVE SECONDS!";
-
-AMMOGIVE_ZM66_TOOMANY_1 = "TOO MANY!";
-AMMOGIVE_ZM66_TOOMANY_2 = "CANNOT CARRY MORE!";
-AMMOGIVE_ZM66_TOOMANY_3 = "STOP IT!";
-
-AMMOGIVE_ZM66_SUCCESS_1 = "RA-TA-TA-TA-TA!";
-AMMOGIVE_ZM66_SUCCESS_2 = "JAMMMMMOMATIC!";
-AMMOGIVE_ZM66_SUCCESS_3 = "POPPY AMMO!";
-
-AMMOGIVE_BOSS_TOOMANY_1 = "TOO MUCH AMMO!";
-AMMOGIVE_BOSS_TOOMANY_2 = "HOLD THE AMMO!";
-AMMOGIVE_BOSS_TOOMANY_3 = "POCKETS ARE FULL!";
-
-AMMOGIVE_BOSS_SUCCESS_1 = "BANG-BANG!";
-AMMOGIVE_BOSS_SUCCESS_2 = "PENETRATING!";
-AMMOGIVE_BOSS_SUCCESS_3 = "BIG AMMO!";
-
-AMMOGIVE_BRONTO_TOOMANY_1 = "WAY MANY!";
-AMMOGIVE_BRONTO_TOOMANY_2 = "NO MORE!";
-AMMOGIVE_BRONTO_TOOMANY_3 = "WE ARE FULL!";
-
-AMMOGIVE_BRONTO_SUCCESS_1 = "THIS GO BIG BOOM!";
-AMMOGIVE_BRONTO_SUCCESS_2 = "BLAAAAAST 'EM!";
-AMMOGIVE_BRONTO_SUCCESS_3 = "HAAAAHAHAHAHA!";
-
-NOAMMO_SMG_1 = "OUTTA CANDY!";
-NOAMMO_SMG_2 = "GUN STOPPED!";
-NOAMMO_SMG_3 = "WE MISS THE PAP-PAP!";
-
-NOAMMO_ZM66_1 = "MY SHOOTY NO SHOOTY!";
-NOAMMO_ZM66_2 = "SPACE AGE PIECE OF SHIT!";
-NOAMMO_ZM66_3 = "IT JAAAAMS! IT JAAAAMS! AH IT IS EMPTY!";
-
-NOAMMO_BOSS_1 = "OUT OF BANG!";
-NOAMMO_BOSS_2 = "RIFLE NEEDS FEEDING!";
-NOAMMO_BOSS_3 = "NO MORE CRUNCHY YELLOW!";
-
-NOAMMO_BRONTO_1 = "BIG BOOM NO MORE!";
-NOAMMO_BRONTO_2 = "GIVE MORE BIG BOOM!";
-NOAMMO_BRONTO_3 = "BIG BOOM HUNGERS!";
-
-MEDGIVE_TOOMANY_1 = "TOO MANY! TOO MANY!";
-MEDGIVE_TOOMANY_2 = "WE CANNOT TAKE THAT!";
-MEDGIVE_TOOMANY_3 = "STOP IT!";
-
-MEDGIVE_SUCCESS_1 = "NO MORE BLOOD!";
-MEDGIVE_SUCCESS_2 = "WE WILL HEAL YOU!";
-MEDGIVE_SUCCESS_3 = "YOU BLEED NO MORE!";
-
-MEDIC_STIMMED_1 = "GET UP GET UP GET UP!";
-MEDIC_STIMMED_2 = "GET BACK INTO THE FIGHT!";
-MEDIC_STIMMED_3 = "LAAAAAAZY!";
-
-STIMGIVE_TOOMANY_1 = "ENOUGH ALREADY!";
-STIMGIVE_TOOMANY_2 = "CANNOT CARRY MORE!";
-STIMGIVE_TOOMANY_3 = "CEASE!";
-
-STIMGIVE_SUCCESS_1 = "INNNNNNJECT!";
-STIMGIVE_SUCCESS_2 = "STABBY STABBY!";
-STIMGIVE_SUCCESS_3 = "AAAAAAAAHHHH YEAH!";
-
 REVIVE_BLUES_NONE_PLR = "I don't have any potions on me.";
 REVIVE_BLUES_NOTENOUGH_PLR1 = "Looks I'll need at least";
 REVIVE_BLUES_NOTENOUGH_PLR2 = "of a potion to make this work.\nBetter sort my potions before doing that.";
 
-REVIVE_BLUES_SUCCESS_1 = "AAAAAAAAAA! I LIVE AGAIN!";
-REVIVE_BLUES_SUCCESS_2 = "LET US KILL ONCE MORE!";
-REVIVE_BLUES_SUCCESS_3 = "I AM POWER!";
+ORDER_FOLLOW1_1 = "What, you want me to come even closer?";
+ORDER_FOLLOW1_2 = "Tell me again and I'll kick you.";
+ORDER_FOLLOW1_3 = "In case you haven't noticed, I'm right behind you.";
 
-REVIVE_BLOOD_SUCCESS_1 = "FRESH BLOOD!";
-REVIVE_BLOOD_SUCCESS_2 = "MASTER'S BLOOD IS GOOD!";
-REVIVE_BLOOD_SUCCESS_3 = "FEEEEEEED MEEEE!";
+ORDER_FOLLOW2_1 = "Sure, whatever you say.";
+ORDER_FOLLOW2_2 = "Alright.";
+ORDER_FOLLOW2_3 = "Let's move.";
 
-ARMORGIVE_INIT_1 = "GIMME GIMME GIMME! DROP IT!";
-ARMORGIVE_INIT_2 = "GIVE ARMOR! DROP NOW!";
-ARMORGIVE_INIT_3 = "PUT IT OVER HERE!";
+ORDER_FOLLOWIGNORE1_1 = "I'm already pretending to be blind.";
+ORDER_FOLLOWIGNORE1_2 = "I know, I know. I got it. I get the concept.";
+ORDER_FOLLOWIGNORE1_3 = "Just shut up and let's get out of here.";
 
-ARMORGIVE_MAYBEDROP_1 = "YOU WANT TAKE ARMOR!?";
-ARMORGIVE_MAYBEDROP_2 = "I DON'T LIKE GIVE BUT OKAY!";
-ARMORGIVE_MAYBEDROP_3 = "OR TAKE IT! TAKE IT ALL!";
+ORDER_FOLLOWIGNORE2_1 = "Fine, but I'm not shooting if you get dropped.";
+ORDER_FOLLOWIGNORE2_2 = "You know what? I agree. Let's bail.";
+ORDER_FOLLOWIGNORE2_3 = "I'll conserve ammo, but it's not like it's rare.";
 
-ARMORGIVE_CANCEL_1 = "WE FEEL CHEATED!";
-ARMORGIVE_CANCEL_2 = "LIES! DECEPTION!";
-ARMORGIVE_CANCEL_3 = "FINE! KEEP YOUR SECRETS!";
+ORDER_COVER1_1 = "I'm already covering you. Or do you need a blanket instead?";
+ORDER_COVER1_2 = "Look, if I see anything, I'll shoot it.";
+ORDER_COVER1_3 = "Shut up and keep shooting at the bad guys.";
 
-ARMORGIVE_STRIP_1 = "NO TAKE! ONLY GIVE! ARGH OKAY!";
-ARMORGIVE_STRIP_2 = "WE FEEL NAKED!";
-ARMORGIVE_STRIP_3 = "EXPOOOOOOSED!";
+ORDER_COVER2_1 = "If you get shot by accident, that wasn't me.";
+ORDER_COVER2_2 = "I'll cover you.";
+ORDER_COVER2_3 = "Will keep it simple. I see bad guys - I shoot.";
 
-ARMORGIVE_NONE_1 = "ARMORRRRR!";
-ARMORGIVE_NONE_2 = "SHINY!";
-ARMORGIVE_NONE_3 = "NO MORE OUCHIE!";
+ORDER_GOANDCOVER1_1 = "I can't reach that spot.";
+ORDER_GOANDCOVER1_2 = "That's not happening.";
+ORDER_GOANDCOVER1_3 = "Nope.";
 
-ARMORGIVE_UPGRADE_1 = "WE LOVE UPGRADES!";
-ARMORGIVE_UPGRADE_2 = "BETTER IS GOOD!";
-ARMORGIVE_UPGRADE_3 = "STRONG!";
+ORDER_GOANDCOVER2_1 = "On it.";
+ORDER_GOANDCOVER2_2 = "Cover me while I get there.";
+ORDER_GOANDCOVER2_3 = "Okay, I'll cover you from that spot.";
 
-ARMORGIVE_BETTERDURABILITY_1 = "MUCH BETTER!";
-ARMORGIVE_BETTERDURABILITY_2 = "WE LIKE THAT!";
-ARMORGIVE_BETTERDURABILITY_3 = "AH YES!";
+CARRY_SUCCESS_1 = "I don't like being carried, but if you insist...";
+CARRY_SUCCESS_2 = "Put me down, damn it!";
+CARRY_SUCCESS_3 = "I'm not a backpack.";
 
-ARMORGIVE_NOTHANKS_1 = "WE DON'T LIKE THAT ONE!";
-ARMORGIVE_NOTHANKS_2 = "KEEP IT!";
-ARMORGIVE_NOTHANKS_3 = "NO! DISGUSTING!";
+AMMOGIVE_SMG_TOOMANY_1 = "That's enough.";
+AMMOGIVE_SMG_TOOMANY_2 = "Take it easy.";
+AMMOGIVE_SMG_TOOMANY_3 = "I don't have room for that.";
 
-ARMORGIVE_RANAWAY_1 = "YOU LIED TO US!";
-ARMORGIVE_RANAWAY_2 = "YOU CHEATER!";
-ARMORGIVE_RANAWAY_3 = "COME BACK HERE!";
+AMMOGIVE_SMG_SUCCESS_1 = "Thanks, but you'll be giving me more in a few seconds.";
+AMMOGIVE_SMG_SUCCESS_2 = "I wish this ammo didn't get eaten like candy.";
+AMMOGIVE_SMG_SUCCESS_3 = "I appreciate the refill.";
 
-BRASS_NONE_1 = "WE GIVE YOU NOTHING!";
-BRASS_NONE_2 = "THERE IS NOTHING TO GIVE!";
-BRASS_NONE_3 = "WE ARE EMPTY!";
+AMMOGIVE_ZM66_TOOMANY_1 = "Hold those.";
+AMMOGIVE_ZM66_TOOMANY_2 = "Out of space.";
+AMMOGIVE_ZM66_TOOMANY_3 = "Do I look like I can carry more?";
 
-BRASS_SUCCESS_1 = "AAAAGH NOT OUR SHINY!";
-BRASS_SUCCESS_2 = "FINE! TAKE IT!";
-BRASS_SUCCESS_3 = "MY MONEY!";
+AMMOGIVE_ZM66_SUCCESS_1 = "One of these will probably jam.";
+AMMOGIVE_ZM66_SUCCESS_2 = "Guaranteed to drop anything without a shield.";
+AMMOGIVE_ZM66_SUCCESS_3 = "Yep, this is plastic, alright.";
+
+AMMOGIVE_BOSS_TOOMANY_1 = "Seven mil is heavy and I'm not made of backpack.";
+AMMOGIVE_BOSS_TOOMANY_2 = "I think I saw a round fall out of my pocket. That means stop.";
+AMMOGIVE_BOSS_TOOMANY_3 = "I have enough of that.";
+
+AMMOGIVE_BOSS_SUCCESS_1 = "Shields-B-Gone.";
+AMMOGIVE_BOSS_SUCCESS_2 = "Great for sniping.";
+AMMOGIVE_BOSS_SUCCESS_3 = "Thanks, I'll try not to shoot you with it by accident.";
+
+AMMOGIVE_BRONTO_TOOMANY_1 = "I can only carry so much of thse.";
+AMMOGIVE_BRONTO_TOOMANY_2 = "One more and I'll start dropping them on the floor.";
+AMMOGIVE_BRONTO_TOOMANY_3 = "Sorry, got no room for those.";
+
+AMMOGIVE_BRONTO_SUCCESS_1 = "Thick and powerful.";
+AMMOGIVE_BRONTO_SUCCESS_2 = "This will blast anything into pieces.";
+AMMOGIVE_BRONTO_SUCCESS_3 = "Pocket tank cannon shells.";
+
+NOAMMO_SMG_1 = "Outta nine mil.";
+NOAMMO_SMG_2 = "SMG is dry.";
+NOAMMO_SMG_3 = "All out of candy.";
+
+NOAMMO_ZM66_1 = "Never thought I'd actually run out of four mil.";
+NOAMMO_ZM66_2 = "Shit, my ZM is out.";
+NOAMMO_ZM66_3 = "If my ZM had a nickname, it'd be 'Empty'.";
+
+NOAMMO_BOSS_1 = "If you see anything with shields, run. I'm out of seven mil.";
+NOAMMO_BOSS_2 = "I hope you have any seven mil, because I'm all out.";
+NOAMMO_BOSS_3 = "Hey, spare some seven mil?";
+
+NOAMMO_BRONTO_1 = "So much for the tank cannon shells.";
+NOAMMO_BRONTO_2 = "There goes the last bolt.";
+NOAMMO_BRONTO_3 = "Do you hear that? It's the sound of no more bronto bolts.";
+
+MEDGIVE_TOOMANY_1 = "I'm not a pharmacy.";
+MEDGIVE_TOOMANY_2 = "Giving me fifty medikits isn't going to heal you any faster.";
+MEDGIVE_TOOMANY_3 = "If I had more space, sure. But I don't, so stop it.";
+
+MEDGIVE_SUCCESS_1 = "As much as I like blood, I'd rather not have you bleed out on me.";
+MEDGIVE_SUCCESS_2 = "I'm not a real doctor, but I appreciate the supplies.";
+MEDGIVE_SUCCESS_3 = "Guaranteed to stop bleeding.";
+
+MEDIC_STIMMED_1 = "Hey, sweetheart, time to get up.";
+MEDIC_STIMMED_2 = "Come on, you lazy bastard.";
+MEDIC_STIMMED_3 = "It's time to stop lying down on the job.";
+
+STIMGIVE_TOOMANY_1 = "One more syringe and I'll start to look like a drug addict.";
+STIMGIVE_TOOMANY_2 = "I'm full on those.";
+STIMGIVE_TOOMANY_3 = "Can you not?";
+
+STIMGIVE_SUCCESS_1 = "Great, I get to stab you and get thanked for it. What a bargain.";
+STIMGIVE_SUCCESS_2 = "This should get you off the ground in no time.";
+STIMGIVE_SUCCESS_3 = "Count on me to stab you in the ass with one. Don't worry, it's for your own good.";
+
+REVIVE_BLUES_SUCCESS_1 = "What happened? Did you get them?";
+REVIVE_BLUES_SUCCESS_2 = "Was I out cold? Damn! I shouldn't have let my guard down.";
+REVIVE_BLUES_SUCCESS_3 = "Please don't tell me I was dead.";
+
+REVIVE_BLOOD_SUCCESS_1 = "I wish I could drink more, but this will suffice. Now staple yourself, you fool.";
+REVIVE_BLOOD_SUCCESS_2 = "Thank you. This was rejuvenating.";
+REVIVE_BLOOD_SUCCESS_3 = "We should do this again sometime.";
+
+ARMORGIVE_INIT_1 = "Free armor? Don't mind if I do.";
+ARMORGIVE_INIT_2 = "Just put it over here.";
+ARMORGIVE_INIT_3 = "Would really be appreciated.";
+
+ARMORGIVE_MAYBEDROP_1 = "Oh, or did you mean I should take mine off?";
+ARMORGIVE_MAYBEDROP_2 = "Unless I'm supposed to give you mine?";
+ARMORGIVE_MAYBEDROP_3 = "Then again, I have a feeling you want my armor.";
+
+ARMORGIVE_CANCEL_1 = "Cool, but let me know when you actually want to give me something.";
+ARMORGIVE_CANCEL_2 = "Ha-ha, very funny.";
+ARMORGIVE_CANCEL_3 = "Fine, but don't expect me to not get killed.";
+
+ARMORGIVE_STRIP_1 = "I don't like this, but I hope you have something else in mind.";
+ARMORGIVE_STRIP_2 = "If I get shot, it'd be entirely your fault.";
+ARMORGIVE_STRIP_3 = "Alright, fine, take it.";
+
+ARMORGIVE_NONE_1 = "Feels good to not be so fragile anymore.";
+ARMORGIVE_NONE_2 = "Oh yeah, now we're talking.";
+ARMORGIVE_NONE_3 = "Much appreciated.";
+
+ARMORGIVE_UPGRADE_1 = "Thank you, this one is much better.";
+ARMORGIVE_UPGRADE_2 = "I really appreciate your concern for my well-being.";
+ARMORGIVE_UPGRADE_3 = "Great stuff. Thanks.";
+
+ARMORGIVE_BETTERDURABILITY_1 = "Better than the old one, that's for sure.";
+ARMORGIVE_BETTERDURABILITY_2 = "Has fewer dents than the old one.";
+ARMORGIVE_BETTERDURABILITY_3 = "Definitely sturdier than what I have.";
+
+ARMORGIVE_NOTHANKS_1 = "I think I'll pass on the offer.";
+ARMORGIVE_NOTHANKS_2 = "Nope. You keep that one.";
+ARMORGIVE_NOTHANKS_3 = "Something tells me what I have now is much better.";
+
+ARMORGIVE_RANAWAY_1 = "Are you seriously going to leave me hanging?";
+ARMORGIVE_RANAWAY_2 = "I don't appreciate being lied to.";
+ARMORGIVE_RANAWAY_3 = "Damn you! Get back here!";
+
+BRASS_NONE_1 = "Hold on, let me magically create brass out of thin air. Oh wait.";
+BRASS_NONE_2 = "If I had any, sure. But I don't.";
+BRASS_NONE_3 = "Look at my pockets. Look at them. See any brass? I sure don't.";
+
+BRASS_SUCCESS_1 = "I have no idea what you're going to do with these and somehow don't want to know either.";
+BRASS_SUCCESS_2 = "Not like it was doing me any good.";
+BRASS_SUCCESS_3 = "Sure, knock yourself out.";
