@@ -125,8 +125,8 @@ MEDGIVE_SUCCESS_2 = "I'm not a real doctor, but I appreciate the supplies.";
 MEDGIVE_SUCCESS_3 = "Guaranteed to stop bleeding.";
 
 MEDIC_STIMMED_1 = "Hey, sweetheart, time to get up.";
-MEDIC_STIMMED_2 = "Come on, you lazy bastard.";
-MEDIC_STIMMED_3 = "It's time to stop lying down on the job.";
+MEDIC_STIMMED_2 = "Come on, you lazy bastard. Let's get you back into the fight.";
+MEDIC_STIMMED_3 = "It's time to stop lying down on the job. This might help with that.";
 
 STIMGIVE_TOOMANY_1 = "One more syringe and I'll start to look like a drug addict.";
 STIMGIVE_TOOMANY_2 = "I'm full on those.";
@@ -140,7 +140,7 @@ REVIVE_BLUES_SUCCESS_1 = "What happened? Did you get them?";
 REVIVE_BLUES_SUCCESS_2 = "Was I out cold? Damn! I shouldn't have let my guard down.";
 REVIVE_BLUES_SUCCESS_3 = "Please don't tell me I was dead.";
 
-REVIVE_BLOOD_SUCCESS_1 = "I wish I could drink more, but this will suffice. Now staple yourself, you fool.";
+REVIVE_BLOOD_SUCCESS_1 = "I wish I could have more, but this will suffice. Now staple yourself, you fool.";
 REVIVE_BLOOD_SUCCESS_2 = "Thank you. This was rejuvenating.";
 REVIVE_BLOOD_SUCCESS_3 = "We should do this again sometime.";
 
