@@ -243,9 +243,9 @@ extend class HDFollower
 			}
 		Aiming:
 			#### H 1; // [Ace] Otherwise it's gonna cause an infinite loop.
-			#### H 1
+			#### H 1 Aim(); // [Ace] This is on this line and not inside the anonymous function because of SetStateLabel.
+			#### H 0
 			{
-				Aim();
 				if (AimTimer++ > AdjustForDistance(Distance3D(CTarget), SelWeapon.GetAdjustmentMult()))
 				{
 					// Console.Printf("Trying to fire "..SelWeapon.GetName().." at "..CTarget.GetTag()..".");
