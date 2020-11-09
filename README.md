@@ -3,6 +3,17 @@
 - Bind the command menu key in the mod's options menu.
 - The same key that opens the menu also closes it.
 
+### Weapons
+---
+The follower has access to the following weapons:
+- SMG
+- Hunter
+- ZM66
+- Rocket Launcher
+- Liberator
+- Brontornis
+- Boss
+
 ### Mechanics
 ---
 For the most part the mechanics are fairly simple and straightforward. Documented here are more niche things that are not obvious at all and can only be found either by trial or error or by looking at the source code.
