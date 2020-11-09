@@ -16,26 +16,22 @@ OptionMenu "HDFollowerMenu"
 
 	StaticText "----- Loadout (Weapons) -----", "Teal"
 	FlagOption "SMG", "hdf_loadout_weapons", "YesNo", 0
-	//FlagOption "Slayer", "hdf_loadout_weapons", "YesNo", 1
-	//FlagOption "Hunter", "hdf_loadout_weapons", "YesNo", 2
-	FlagOption "ZM66", "hdf_loadout_weapons", "YesNo", 3
-	//FlagOption "Blooper", "hdf_loadout_weapons", "YesNo", 4
-	//FlagOption "Rocket Launcher", "hdf_loadout_weapons", "YesNo", 5
-	//FlagOption "Liberator", "hdf_loadout_weapons", "YesNo", 6
-	FlagOption "Boss", "hdf_loadout_weapons", "YesNo", 7
-	FlagOption "Bronto", "hdf_loadout_weapons", "YesNo", 8
+	FlagOption "Hunter", "hdf_loadout_weapons", "YesNo", 1
+	FlagOption "ZM66", "hdf_loadout_weapons", "YesNo", 2
+	FlagOption "Rocket Launcher", "hdf_loadout_weapons", "YesNo", 3
+	FlagOption "Liberator", "hdf_loadout_weapons", "YesNo", 4
+	FlagOption "Boss", "hdf_loadout_weapons", "YesNo", 5
+	FlagOption "Bronto", "hdf_loadout_weapons", "YesNo", 6
 	StaticText ""
 
 	StaticText "----- Loadout (Starting Ammo) -----", "Teal"
 	FlagOption "SMG", "hdf_loadout_startingammo", "YesNo", 0
-	//FlagOption "Slayer", "hdf_loadout_startingammo", "YesNo", 1
-	//FlagOption "Hunter", "hdf_loadout_startingammo", "YesNo", 2
-	FlagOption "ZM66", "hdf_loadout_startingammo", "YesNo", 3
-	//FlagOption "Blooper", "hdf_loadout_startingammo", "YesNo", 4
-	//FlagOption "Rocket Launcher", "hdf_loadout_startingammo", "YesNo", 5
-	//FlagOption "Liberator", "hdf_loadout_startingammo", "YesNo", 6
-	FlagOption "Boss", "hdf_loadout_startingammo", "YesNo", 7
-	FlagOption "Bronto", "hdf_loadout_startingammo", "YesNo", 8
+	FlagOption "Hunter", "hdf_loadout_startingammo", "YesNo", 1
+	FlagOption "ZM66", "hdf_loadout_startingammo", "YesNo", 2
+	FlagOption "Rocket Launcher", "hdf_loadout_startingammo", "YesNo", 3
+	FlagOption "Liberator", "hdf_loadout_startingammo", "YesNo", 4
+	FlagOption "Boss", "hdf_loadout_startingammo", "YesNo", 5
+	FlagOption "Bronto", "hdf_loadout_startingammo", "YesNo", 6
 	StaticText ""
 
 	StaticText "----- Loadout (Items) -----", "Teal"

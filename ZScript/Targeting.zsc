@@ -21,7 +21,7 @@ extend class HDFollower
 
 			if (MTarget && (bFRIENDLY && !MTarget.bFRIENDLY || !bFRIENDLY && MTarget.bFRIENDLY) && MTarget.bISMONSTER && MTarget.bSHOOTABLE && MTarget != self && MTarget.Health > 0 && CheckSight(MTarget, SF_SEEPASTSHOOTABLELINES) && !TargetIsIncapped(MTarget))
 			{
-				if (MTarget is "HERPBot" || MTarget is "DERPBot" || (!hdf_targetuncountable && !MTarget.bCOUNTKILL))
+				if (MTarget is "HERPBot" || MTarget is "DERPBot" || (!hdf_targetuncountable && !MTarget.bCOUNTKILL) || MTarget is "HDMobBase" && HDMobBase(MTarget).BodyDamage > MTarget.SpawnHealth())
 				{
 					continue;
 				}
@@ -29,6 +29,8 @@ extend class HDFollower
 				if (MTarget.bBOSS && (CheckTarget() && !CTarget.bBOSS || !CheckTarget()))
 				{
 					W = "FW_Bronto"; UsedWeapons.Push(W);
+					W = "FW_RocketLauncher"; UsedWeapons.Push(W);
+					W = "FW_Liberator"; UsedWeapons.Push(W);
 					W = "FW_Boss"; UsedWeapons.Push(W);
 					W = "FW_SMG"; UsedWeapons.Push(W);
 					W = "FW_ZM66"; UsedWeapons.Push(W);
@@ -37,13 +39,17 @@ extend class HDFollower
 				else if (MTarget is "Necromancer")
 				{
 					W = "FW_ZM66"; UsedWeapons.Push(W);
+					W = "FW_Hunter"; UsedWeapons.Push(W);
 					W = "FW_SMG"; UsedWeapons.Push(W);
 					W = "FW_Boss"; UsedWeapons.Push(W);
+					W = "FW_Liberator"; UsedWeapons.Push(W);
 					EngageTarget(UsedWeapons, MTarget);
 				}
 				else if (MTarget is "PainLord")
 				{
 					W = "FW_Bronto"; UsedWeapons.Push(W);
+					W = "FW_RocketLauncher"; UsedWeapons.Push(W);
+					W = "FW_Liberator"; UsedWeapons.Push(W);
 					W = "FW_Boss"; UsedWeapons.Push(W);
 					W = "FW_SMG"; UsedWeapons.Push(W);
 					W = "FW_ZM66"; UsedWeapons.Push(W);
@@ -51,6 +57,8 @@ extend class HDFollower
 				}
 				else if (MTarget is "PainBringer")
 				{
+					W = "FW_RocketLauncher"; UsedWeapons.Push(W);
+					W = "FW_Liberator"; UsedWeapons.Push(W);
 					W = "FW_Boss"; UsedWeapons.Push(W);
 					W = "FW_SMG"; UsedWeapons.Push(W);
 					W = "FW_ZM66"; UsedWeapons.Push(W);
@@ -58,16 +66,30 @@ extend class HDFollower
 				}
 				else if (MTarget is "HDMobBase" && HDMobBase(MTarget).Shields > 150)
 				{
+					W = "FW_RocketLauncher"; UsedWeapons.Push(W);
+					W = "FW_Liberator"; UsedWeapons.Push(W);
 					W = "FW_Boss"; UsedWeapons.Push(W);
 					W = "FW_SMG"; UsedWeapons.Push(W);
 					W = "FW_ZM66"; UsedWeapons.Push(W);
+					W = "FW_Hunter"; UsedWeapons.Push(W);
+					EngageTarget(UsedWeapons, MTarget);
+				}
+				else if (MTarget.FindInventory("HDArmourWorn"))
+				{
+					W = "FW_Liberator"; UsedWeapons.Push(W);
+					W = "FW_Boss"; UsedWeapons.Push(W);		
+					W = "FW_ZM66"; UsedWeapons.Push(W);
+					W = "FW_SMG"; UsedWeapons.Push(W);
+					W = "FW_Hunter"; UsedWeapons.Push(W);
 					EngageTarget(UsedWeapons, MTarget);
 				}
 				else if (!CheckTarget() || !SelWeapon)
 				{
+					W = "FW_Hunter"; UsedWeapons.Push(W);
 					W = "FW_ZM66"; UsedWeapons.Push(W);
 					W = "FW_SMG"; UsedWeapons.Push(W);
 					W = "FW_Boss"; UsedWeapons.Push(W);
+					W = "FW_Liberator"; UsedWeapons.Push(W);
 					EngageTarget(UsedWeapons, MTarget);
 				}
 				else if (SelWeapon) // [Ace] In case follower gets interrupted, re-engage old target.

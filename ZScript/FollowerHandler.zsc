@@ -120,7 +120,7 @@ class FollowerHandler : EventHandler
 					sb.DrawString(MainFont, (i + 1)..") "..(Follower.Order == i ? "\c[Green]" : "")..Orders[i].."\c-", pos, flags, Font.CR_WHITE);
 					pos.y += 10;
 				}
-				sb.DrawString(MainFont, "5) Back...", pos, flags, Font.CR_WHITE);
+				sb.DrawString(MainFont, (Orders.Size() + 1)..") Back...", pos, flags, Font.CR_WHITE);
 				pos.y += 10;
 				break;
 
@@ -261,7 +261,7 @@ class FollowerHandler : EventHandler
 		if (e.Name ~== "HDF_ResetFollower")
 		{
 			// [Ace] This allows you to use the follower after big refactors without having to start a new game. This will re-create the actor object.
-			// Or create an entirely new one, as long as they didn't actually leave them behind.
+			// Or create an entirely new one, as long as you didn't actually leave them behind.
 			if (Follower)
 			{
 				Follower.Destroy();

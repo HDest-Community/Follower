@@ -201,12 +201,12 @@ extend class HDFollower
 		ActivateAsPlayer = false;
 	}
 
-	private bool IsInIdleState() const
+	private bool IsInIdleState()
 	{
 		return InStateSequence(CurState, FindState("Idle"));
 	}
 
-	private bool IsInMovingState() const
+	private bool IsInMovingState()
 	{
 		return InStateSequence(CurState, FindState("Moving"));
 	}
@@ -265,5 +265,4 @@ extend class HDFollower
 	private int IdleTimer;
 	private bool ActivateAsPlayer;
 	private int NoSightTics; // [Ace] Used with CheckSight.
-	private int PatrolSteps;
 }

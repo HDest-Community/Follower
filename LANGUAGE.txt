@@ -76,6 +76,14 @@ AMMOGIVE_SMG_SUCCESS_1 = "Thanks, but you'll be giving me more in a few seconds.
 AMMOGIVE_SMG_SUCCESS_2 = "I wish this ammo didn't get eaten like candy.";
 AMMOGIVE_SMG_SUCCESS_3 = "I appreciate the refill.";
 
+AMMOGIVE_HUNTER_TOOMANY_1 = "No can do.";
+AMMOGIVE_HUNTER_TOOMANY_2 = "Look, I don't have more room.";
+AMMOGIVE_HUNTER_TOOMANY_3 = "Already maxed out on those.";
+
+AMMOGIVE_HUNTER_SUCCESS_1 = "Drops troopers like a hammer.";
+AMMOGIVE_HUNTER_SUCCESS_2 = "Powerful.";
+AMMOGIVE_HUNTER_SUCCESS_3 = "These won't last for long.";
+
 AMMOGIVE_ZM66_TOOMANY_1 = "Hold those.";
 AMMOGIVE_ZM66_TOOMANY_2 = "Out of space.";
 AMMOGIVE_ZM66_TOOMANY_3 = "Do I look like I can carry more?";
@@ -83,6 +91,22 @@ AMMOGIVE_ZM66_TOOMANY_3 = "Do I look like I can carry more?";
 AMMOGIVE_ZM66_SUCCESS_1 = "One of these will probably jam.";
 AMMOGIVE_ZM66_SUCCESS_2 = "Guaranteed to drop anything without a shield.";
 AMMOGIVE_ZM66_SUCCESS_3 = "Yep, this is plastic, alright.";
+
+AMMOGIVE_RL_TOOMANY_1 = "I'll pass.";
+AMMOGIVE_RL_TOOMANY_2 = "Get that out of my face.";
+AMMOGIVE_RL_TOOMANY_3 = "No. No. No.";
+
+AMMOGIVE_RL_SUCCESS_1 = "Take cover.";
+AMMOGIVE_RL_SUCCESS_2 = "Try not to get in the way, alright?";
+AMMOGIVE_RL_SUCCESS_3 = "Not quite the Blastmaster 3000, but it works.";
+
+AMMOGIVE_LIBERATOR_TOOMANY_1 = "Piss off, I'm full.";
+AMMOGIVE_LIBERATOR_TOOMANY_2 = "Got more than enough seven mil.";
+AMMOGIVE_LIBERATOR_TOOMANY_3 = "Cut it out.";
+
+AMMOGIVE_LIBERATOR_SUCCESS_1 = "Triple the standard penetration. Oh wipe that grin off your face.";
+AMMOGIVE_LIBERATOR_SUCCESS_2 = "Just don't get in the way while I'm shooting these.";
+AMMOGIVE_LIBERATOR_SUCCESS_3 = "Much appreciated. Nobles won't know what hit them.";
 
 AMMOGIVE_BOSS_TOOMANY_1 = "Seven mil is heavy and I'm not made of backpack.";
 AMMOGIVE_BOSS_TOOMANY_2 = "I think I saw a round fall out of my pocket. That means stop.";
@@ -104,9 +128,21 @@ NOAMMO_SMG_1 = "Outta nine mil.";
 NOAMMO_SMG_2 = "SMG is dry.";
 NOAMMO_SMG_3 = "All out of candy.";
 
+NOAMMO_HUNTER_1 = "Forget about taking down meaty targets fast.";
+NOAMMO_HUNTER_2 = "Hunter is dry.";
+NOAMMO_HUNTER_3 = "Damn, I need more shells.";
+
 NOAMMO_ZM66_1 = "Never thought I'd actually run out of four mil.";
 NOAMMO_ZM66_2 = "Shit, my ZM is out.";
 NOAMMO_ZM66_3 = "If my ZM had a nickname, it'd be 'Empty'.";
+
+NOAMMO_RL_1 = "You can come out of hiding now, the rocket launcher is dry.";
+NOAMMO_RL_2 = "Rocket grenades? Never heard of 'em.";
+NOAMMO_RL_3 = "If you see a box of rockets, it's mine.";
+
+NOAMMO_LIBERATOR_1 = "Well, Lib's out.";
+NOAMMO_LIBERATOR_2 = "I'm gonna need more seven mil for my Lib over here.";
+NOAMMO_LIBERATOR_3 = "Got any seven mil left on you? My Lib is hungry.";
 
 NOAMMO_BOSS_1 = "If you see anything with shields, run. I'm out of seven mil.";
 NOAMMO_BOSS_2 = "I hope you have any seven mil, because I'm all out.";
