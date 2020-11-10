@@ -175,14 +175,14 @@ class FollowerHandler : EventHandler
 	private ui void DrawCommandRectangle(BaseStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, string command, int flags)
 	{
 		sb.Fill(Color(64, 128, 192, 255), pos.x, pos.y, size.x, size.y, flags);
-		sb.Fill(Color(96, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
+		sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 		sb.DrawString(fnt, command, (pos.x + 2, pos.y + (size.y - fnt.mFont.GetHeight()) / 2), flags, Font.CR_WHITE); 
 	}
 
 	private ui void DrawWeaponRectangle(BaseStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, int index, FollowerWeapon wpn, int flags)
 	{
 		sb.Fill(Color(64, 128, 192, 255), pos.x, pos.y, size.x, size.y, flags);
-		sb.Fill(Color(96, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
+		sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 
 		pos += (2, 2);
 		int FontHeight = fnt.mFont.GetHeight();
