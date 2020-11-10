@@ -331,7 +331,7 @@ extend class HDFollower
 			{
 				bNOPAIN = true;
 			}
-			#### H 20 A_StartSound("weapons/pocket", 8);
+			#### H 35 A_StartSound("weapons/pocket", 8);
 		ReloadHunterLoop:
 			#### HHH 8
 			{
