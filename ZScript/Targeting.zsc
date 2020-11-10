@@ -53,6 +53,7 @@ extend class HDFollower
 					W = "FW_Liberator"; UsedWeapons.Push(W);
 					W = "FW_Boss"; UsedWeapons.Push(W);
 					W = "FW_SMG"; UsedWeapons.Push(W);
+					W = "FW_Hunter"; UsedWeapons.Push(W);
 					W = "FW_ZM66"; UsedWeapons.Push(W);
 					EngageTarget(UsedWeapons, MTarget);
 				}
