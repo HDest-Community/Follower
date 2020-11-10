@@ -19,22 +19,15 @@ class FollowerHandler : EventHandler
 			if (!Body && !plr.CheckInventory("LeftBehindFollower", 1))
 			{
 				Actor a; bool success;
-				for (int i = 0; i < 200; ++i)
+				[success, a] = plr.A_SpawnItemEx(Actor.GetReplacement("HDFollower"), random(16, 48), 0, random(0, 32), angle: random(0, 359), flags: SXF_NOCHECKPOSITION);
+				if (success)
 				{
-					[success, a] = plr.A_SpawnItemEx(Actor.GetReplacement("HDFollower"), random(16, 48), 0, random(0, 32), angle: random(0, 359));
-					if (success)
-					{
-						Follower = HDFollower(a);
-						Follower.LinkedPlayer = HDPlayerPawn(plr);
-						// [Ace] These are here so that they are only called once when the follower is created.
-						Follower.GiveStartingItems();
-						Follower.InitWeapons();
-						break;
-					}
-				}
-				if (!success)
-				{
-					plr.A_GiveInventory("FollowerBody");
+					Follower = HDFollower(a);
+					Follower.LinkedPlayer = HDPlayerPawn(plr);
+					// [Ace] These are here so that they are only called once when the follower is created.
+					Follower.GiveStartingItems();
+					Follower.InitWeapons();
+					break;
 				}
 			}
 			else if (Body)
