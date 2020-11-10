@@ -317,8 +317,8 @@ class HDFollower : HDMobMan
 		Standup:
 			Goto Raise + 1; // [Ace] Don't reset body damage if standing up from incap.
 		Raise:
-			#### R 0 OnRevive();
-			#### RQP 6;
+			#### Q 0 OnRevive();
+			#### QQP 6;
 			#### O 6 A_Recoil(-0.3);
 			#### N 6;
 			#### M 6 Taunt();
