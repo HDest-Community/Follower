@@ -1,6 +1,13 @@
 FLW_BloodRed
 {
-	#660505 #FF0000
+	#660505 #ff0000
 
-	Console: #660505 #FF0000
+	Console: #660505 #ff0000
+}
+
+FLW_WeaponBlue
+{
+	#000000 #aed4ff
+
+	Console: #000000 #aed4ff
 }

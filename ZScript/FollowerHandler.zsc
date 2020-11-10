@@ -75,23 +75,34 @@ class FollowerHandler : EventHandler
 		StatusBar.SetSize(StatusBar.RelTop, OriginalWidth, OriginalHeight);
 	}
 
-	// [Ace] Not gonna lie, this is absolutely DISGUSTING!. Alas, I lack ideas.
 	private ui void DrawCommandMenu(BaseStatusBar sb, vector2 pos, int flags)
 	{
 		vector2 OriginalPos = pos;
+		int RectangleHeight = MainFont.mFont.GetHeight() + 4;
+		int Spacing = 1;
+
 		int Brass = Follower.GetTotalBrass();
 		int MaxBrass = Follower.GetMaxBrass();
-		string BrassString = (Brass > 0 ? "" : "\c[Red]").."Take collected brass\c- ".."("..Brass.."/"..MaxBrass..")";
+		string BrassString = (Brass > 0 ? "" : "\c[Red]").."Collect brass\c- ".."("..Brass.."/"..MaxBrass..")";
 
 		switch (FollowerMenuLevel)
 		{
 			case 1:
 				if (Follower.Health <= 0)
 				{
-					sb.DrawString(MainFont, "1) Carry follower", pos, flags, Font.CR_WHITE); pos.y += 10;
-					sb.DrawString(MainFont, "2) "..(sb.CheckInventory("BluePotion", 1) ? "" : "\c[Red]").."Give blue potion\c-", pos, flags, Font.CR_WHITE); pos.y += 10;
-					sb.DrawString(MainFont, "3) Try to give blood \c[FLW_BloodRed](+10 wounds)\c-", pos, flags, Font.CR_WHITE); pos.y += 10;
-					sb.DrawString(MainFont, "4) "..BrassString, pos, flags, Font.CR_WHITE); pos.y += 10;
+					string Commands[] =
+					{
+						"1) Carry follower",
+						"2) "..(sb.CheckInventory("BluePotion", 1) ? "" : "\c[Red]").."Give blue potion\c-",
+						"3) Try to give blood \c[FLW_BloodRed](+10 wounds)\c-",
+						"4) "..BrassString
+					};
+
+					for (int i = 0; i < Commands.Size(); ++i)
+					{
+						DrawCommandRectangle(sb, pos, (270, RectangleHeight), MainFont, Commands[i], flags);
+						pos.y += RectangleHeight + Spacing;
+					}
 				}
 				else if (Follower.bFRIENDLY)
 				{
@@ -104,12 +115,21 @@ class FollowerHandler : EventHandler
 						Mega = Armor.Mega;
 					}
 
-					sb.DrawString(MainFont, "1) Orders", pos, flags, Font.CR_WHITE); pos.y += 10;
-					sb.DrawString(MainFont, "2) Carry follower", pos, flags, Font.CR_WHITE); pos.y += 10;
-					sb.DrawString(MainFont, "3) Give ammo", pos, flags, Font.CR_WHITE); pos.y += 10;
-					sb.DrawString(MainFont, "4) Give supplies", pos, flags, Font.CR_WHITE); pos.y += 10;
-					sb.DrawString(MainFont, "5) Try/drop armor"..(Durability > 0 ? (Mega ? "\c[Blue]" : "\c[DarkGreen]").." ("..Durability..")": "").."\c-", pos, flags, Font.CR_WHITE); pos.y += 10;
-					sb.DrawString(MainFont, "6) Misc commands", pos, flags, Font.CR_WHITE); pos.y += 10;
+					string Commands[] =
+					{
+						"1) Orders",
+						"2) Carry follower",
+						"3) Give ammo",
+						"4) Give supplies",
+						"5) Try/drop armor"..(Durability > 0 ? (Mega ? "\c[Blue]" : "\c[DarkGreen]").." ("..Durability..")": "").."\c-",
+						"6) Misc commands"
+					};
+
+					for (int i = 0; i < Commands.Size(); ++i)
+					{
+						DrawCommandRectangle(sb, pos, (Durability > 0 ? 190 : 150, RectangleHeight), MainFont, Commands[i], flags);
+						pos.y += RectangleHeight + Spacing;
+					}
 				}
 				break;
 
@@ -117,44 +137,61 @@ class FollowerHandler : EventHandler
 				static const string Orders[] = { "Follow", "Follow and ignore hostiles", "Stay and provide cover", "Go there and provide cover", "Come and help me" };
 				for (int i = 0; i < Orders.Size(); ++i)
 				{
-					sb.DrawString(MainFont, (i + 1)..") "..(Follower.Order == i ? "\c[Green]" : "")..Orders[i].."\c-", pos, flags, Font.CR_WHITE);
-					pos.y += 10;
+					DrawCommandRectangle(sb, pos, (240, RectangleHeight), MainFont, (i + 1)..") "..(Follower.Order == i ? "\c[Green]" : "")..Orders[i].."\c-", flags);
+					pos.y += RectangleHeight + Spacing;
 				}
-				sb.DrawString(MainFont, (Orders.Size() + 1)..") Back...", pos, flags, Font.CR_WHITE);
-				pos.y += 10;
+				DrawCommandRectangle(sb, pos, (240, RectangleHeight), MainFont, (Orders.Size() + 1)..") Back...", flags);
 				break;
 
 			case 3:
-				pos.y = OriginalPos.y;
-				int LastIndex = 0;
-				for (int i = 0; i < Follower.Weapons.Size(); ++i)
+				int WeaponSize = Follower.Weapons.Size();
+				int WeaponBlockSize = RectangleHeight * 3 - 5;
+				if (WeaponSize > 4)
 				{
-					FollowerWeapon CurrWeapon = Follower.GetWeaponByIndex(i);
-					int MaxGiveAmount = Follower.GetMaxGiveAmount(CurrWeapon);
-					string ColorString = MaxGiveAmount > 0 ? "" : "\c[Red]";
-					string WeaponString = CurrWeapon.GetName().." ("..CurrWeapon.GetLoadedRounds()..", "..CurrWeapon.SpareAmmo.."/"..CurrWeapon.GetMaxSpare().."): ";
-					string AmmoString = MaxGiveAmount.." "..CurrWeapon.GetAmmoName().."\c-";
-
-					sb.DrawString(MainFont, (i + 1)..") "..WeaponString..ColorString..AmmoString, pos, flags, Font.CR_WHITE);
-					pos.y += 10;
-					LastIndex = i + 1;
+					pos.y -= WeaponBlockSize * (WeaponSize - 4);
 				}
-				sb.DrawString(MainFont, (LastIndex + 1)..") Back...", pos, flags, Font.CR_WHITE);
-				pos.y += 10;
+				for (int i = 0; i < WeaponSize; ++i)
+				{
+					DrawWeaponRectangle(sb, pos, (160, WeaponBlockSize), MainFont, i + 1, Follower.GetWeaponByIndex(i), flags);
+					pos.y += WeaponBlockSize + Spacing;
+				}
+				DrawCommandRectangle(sb, pos, (160, RectangleHeight), MainFont, (WeaponSize + 1)..") Back...", flags);
 				break;
 
 			case 4:
-				sb.DrawString(MainFont, "1) "..(sb.CheckInventory("PortableMedikit") ? "" : "\c[Red]").."Give Medikit\c- ".."("..Follower.SuturesLeft..", "..Follower.Medikits.."/"..Follower.MaxMedikits..")", pos, flags, Font.CR_WHITE); pos.y += 10;
-				sb.DrawString(MainFont, "2) "..(sb.CheckInventory("PortableStimpack") ? "" : "\c[Red]").."Give Stimpack\c- ".."("..Follower.Stimpacks.."/"..Follower.MaxStimpacks..")", pos, flags, Font.CR_WHITE); pos.y += 10;
-				sb.DrawString(MainFont, "3) Back...", pos, flags, Font.CR_WHITE); pos.y += 10;
+				DrawCommandRectangle(sb, pos, (200, RectangleHeight), MainFont, "1) "..(sb.CheckInventory("PortableMedikit") ? "" : "\c[Red]").."Give Medikit\c- ".."("..Follower.SuturesLeft..", "..Follower.Medikits.."/"..Follower.MaxMedikits..")", flags); pos.y += RectangleHeight + Spacing;
+				DrawCommandRectangle(sb, pos, (200, RectangleHeight), MainFont, "2) "..(sb.CheckInventory("PortableStimpack") ? "" : "\c[Red]").."Give Stimpack\c- ".."("..Follower.Stimpacks.."/"..Follower.MaxStimpacks..")", flags); pos.y += RectangleHeight + Spacing;
+				DrawCommandRectangle(sb, pos, (200, RectangleHeight), MainFont, "3) Back...", flags);
 				break;
 
 			case 5:
-				sb.DrawString(MainFont, "1) Report position", pos, flags, Font.CR_WHITE); pos.y += 10;
-				sb.DrawString(MainFont, "2) "..BrassString, pos, flags, Font.CR_WHITE); pos.y += 10;
-				sb.DrawString(MainFont, "3) Back...", pos, flags, Font.CR_WHITE); pos.y += 10;
+				DrawCommandRectangle(sb, pos, (210, RectangleHeight), MainFont, "1) Report position", flags); pos.y += RectangleHeight + Spacing;
+				DrawCommandRectangle(sb, pos, (210, RectangleHeight), MainFont, "2) "..BrassString, flags); pos.y += RectangleHeight + Spacing;
+				DrawCommandRectangle(sb, pos, (210, RectangleHeight), MainFont, "3) Back...", flags);
 				break;
 		}
+	}
+
+	private ui void DrawCommandRectangle(BaseStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, string command, int flags)
+	{
+		sb.Fill(Color(64, 128, 192, 255), pos.x, pos.y, size.x, size.y, flags);
+		sb.Fill(Color(96, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
+		sb.DrawString(fnt, command, (pos.x + 2, pos.y + (size.y - fnt.mFont.GetHeight()) / 2), flags, Font.CR_WHITE); 
+	}
+
+	private ui void DrawWeaponRectangle(BaseStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, int index, FollowerWeapon wpn, int flags)
+	{
+		sb.Fill(Color(64, 128, 192, 255), pos.x, pos.y, size.x, size.y, flags);
+		sb.Fill(Color(96, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
+
+		pos += (2, 2);
+		int FontHeight = fnt.mFont.GetHeight();
+		sb.DrawString(fnt, index..") "..wpn.GetName(), pos, flags, Font.FindFontColor("FLW_WeaponBlue")); pos.y += FontHeight + 1;
+		sb.DrawString(fnt, wpn.GetLoadedRounds()..", "..wpn.SpareAmmo.."/"..wpn.GetMaxSpare(), pos, flags, Font.CR_WHITE); pos.y += FontHeight + 1;
+
+		int MaxGiveAmount = Follower.GetMaxGiveAmount(wpn);
+		string AmmoString = (MaxGiveAmount > 0 ? "\c[Green]" : "\c[Red]")..MaxGiveAmount.." "..wpn.GetAmmoName().."\c-";
+		sb.DrawString(fnt, AmmoString, pos, flags, Font.CR_WHITE);
 	}
 
 	override bool InputProcess(InputEvent e)
@@ -253,6 +290,7 @@ class FollowerHandler : EventHandler
 
 	override void NetworkProcess(ConsoleEvent e)
 	{
+		// [Ace] This possibly desyncs, but since multiplayer compatibility is out of the question now, I'll keep it.
 		if (e.Player != consoleplayer)
 		{
 			return;

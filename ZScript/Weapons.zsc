@@ -97,7 +97,7 @@ extend class HDFollower
 		else if (wpn.SpareAmmo >= wpn.GetMaxSpare())
 		{
 			TryReloadWeapon(wpn, wpn.GetMaxMag(), RLF_MANUAL);
-			PrintMessage(GetResponse("$AMMOGIVE_"..wpn.GetName().."_TOOMANY"), "Follower/AmmoGive/"..wpn.GetName().."/TooMany");
+			PrintMessage(GetResponse("$AMMOGIVE_"..wpn.GetLocalizationTag().."_TOOMANY"), "Follower/AmmoGive/"..wpn.GetLocalizationTag().."/TooMany");
 			return;
 		}
 		else if (LinkedPlayer.CountInv(AmmoType) == 0)
@@ -112,7 +112,7 @@ extend class HDFollower
 		wpn.HasWarnedLowAmmo = false;
 		TryReloadWeapon(wpn, wpn.GetMaxMag(), RLF_MANUAL);
 
-		PrintMessage(GetResponse("$AMMOGIVE_"..wpn.GetName().."_SUCCESS"), "Follower/AmmoGive/"..wpn.GetName().."/Success");
+		PrintMessage(GetResponse("$AMMOGIVE_"..wpn.GetLocalizationTag().."_SUCCESS"), "Follower/AmmoGive/"..wpn.GetLocalizationTag().."/Success");
 	}
 
 	// [Ace] If weapon is out of ammo, reload.
@@ -139,7 +139,7 @@ extend class HDFollower
 				if (!(flags & RLF_SILENT) && (!wpn.HasWarnedLowAmmo || (flags & RLF_MANUAL)))
 				{
 					wpn.HasWarnedLowAmmo = true;
-					PrintMessage(GetResponse("$NOAMMO_"..wpn.GetName()), "Follower/NoAmmo/"..wpn.GetName());
+					PrintMessage(GetResponse("$NOAMMO_"..wpn.GetLocalizationTag()), "Follower/NoAmmo/"..wpn.GetLocalizationTag());
 				}
 
 				if (!(flags & RLF_NOJUMP))
@@ -665,7 +665,8 @@ class FollowerWeapon
 		ChamberedRound = CRType_Chambered;
 		Mag = GetMaxMag();
 	}
-	virtual string GetName() { return "N/A"; } // [Ace] Name is used for LANGUAGE identification.
+	virtual string GetName() { return "N/A"; }
+	virtual string GetLocalizationTag() { return GetName(); }
 	virtual class<HDAmmo> GetAmmoType() { return null; }
 	virtual string GetAmmoName() { return "N/A"; }
 	virtual StateLabel GetFireState() { return null; }
@@ -784,7 +785,8 @@ class FW_ZM66 : FollowerWeapon
 
 class FW_RocketLauncher : FollowerWeapon
 {
-	override string GetName() { return "RL"; }
+	override string GetName() { return "Rocket Launcher"; }
+	override string GetLocalizationTag() { return "RL"; }
 	override class<HDAmmo> GetAmmoType() { return "HDRocketAmmo"; }
 	override string GetAmmoName() { return "Rocket Grenades"; }
 	override int GetMaxMag() { return 5; }
@@ -826,7 +828,8 @@ class FW_Liberator : FollowerWeapon
 
 class FW_Boss : FollowerWeapon
 {
-	override string GetName() { return "Boss"; }
+	override string GetName() { return "Boss Rifle"; }
+	override string GetLocalizationTag() { return "Boss"; }
 	override class<HDAmmo> GetAmmoType() { return "SevenMilAmmo"; }
 	override string GetAmmoName() { return "7mm Rounds"; }
 	override int GetMaxMag() { return 10; }
@@ -851,7 +854,8 @@ class FW_Boss : FollowerWeapon
 
 class FW_Bronto : FollowerWeapon
 {
-	override string GetName() { return "Bronto"; }
+	override string GetName() { return "Brontornis"; }
+	override string GetLocalizationTag() { return "Bronto"; }
 	override class<HDAmmo> GetAmmoType() { return "BrontornisRound"; }
 	override string GetAmmoName() { return "Brontornis Bolt"; }
 	override int GetMaxMag() { return 0; }
