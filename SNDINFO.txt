@@ -41,6 +41,9 @@ Follower/Order/Help3 FLWHELP3
 
 Follower/Carry/Success FLWCRYSC
 
+Follower/AmmoGive/SMG/TooMany FLWASMTM
+Follower/AmmoGive/SMG/Success FLWASMSC
+
 Follower/AmmoGive/Hunter/TooMany FLWAHNTM
 Follower/AmmoGive/Hunter/Success FLWAHNSC
 
@@ -59,6 +62,7 @@ Follower/AmmoGive/Boss/Success FLWABSSC
 Follower/AmmoGive/Bronto/TooMany FLWABRTM
 Follower/AmmoGive/Bronto/Success FLWABRSC
 
+Follower/NoAmmo/SMG FLWNOASM
 Follower/NoAmmo/Hunter FLWNOAHN
 Follower/NoAmmo/ZM66 FLWNOAZM
 Follower/NoAmmo/RL FLWNOARL
