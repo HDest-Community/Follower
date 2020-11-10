@@ -27,7 +27,6 @@ class FollowerHandler : EventHandler
 					// [Ace] These are here so that they are only called once when the follower is created.
 					Follower.GiveStartingItems();
 					Follower.InitWeapons();
-					break;
 				}
 			}
 			else if (Body)
