@@ -240,7 +240,6 @@ class FollowerHandler : EventHandler
 					break;
 
 				case 3:
-					// Back key is next weapon +
 					if (NumKey == Follower.Weapons.Size() + 1)
 					{
 						SendNetworkEvent("HDF_SetFollowerMenu", 1);
@@ -290,12 +289,6 @@ class FollowerHandler : EventHandler
 
 	override void NetworkProcess(ConsoleEvent e)
 	{
-		// [Ace] This possibly desyncs, but since multiplayer compatibility is out of the question now, I'll keep it.
-		if (e.Player != consoleplayer)
-		{
-			return;
-		}
-
 		if (e.Name ~== "HDF_ResetFollower")
 		{
 			// [Ace] This allows you to use the follower after big refactors without having to start a new game. This will re-create the actor object.
