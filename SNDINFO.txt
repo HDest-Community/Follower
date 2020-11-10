@@ -44,8 +44,8 @@ Follower/Carry/Success FLWCRYSC
 Follower/AmmoGive/Hunter/TooMany FLWAHNTM
 Follower/AmmoGive/Hunter/Success FLWAHNSC
 
-Follower/AmmoGive/ZM/TooMany FLWAZMTM
-Follower/AmmoGive/ZM/Success FLWAZMSC
+Follower/AmmoGive/ZM66/TooMany FLWAZMTM
+Follower/AmmoGive/ZM66/Success FLWAZMSC
 
 Follower/AmmoGive/RL/TooMany FLWARLTM
 Follower/AmmoGive/RL/Success FLWARLSC
@@ -60,7 +60,7 @@ Follower/AmmoGive/Bronto/TooMany FLWABRTM
 Follower/AmmoGive/Bronto/Success FLWABRSC
 
 Follower/NoAmmo/Hunter FLWNOAHN
-Follower/NoAmmo/ZM FLWNOAZM
+Follower/NoAmmo/ZM66 FLWNOAZM
 Follower/NoAmmo/RL FLWNOARL
 Follower/NoAmmo/Liberator FLWNOALB
 Follower/NoAmmo/Boss FLWNOABS
