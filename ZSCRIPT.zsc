@@ -225,6 +225,7 @@ class HDFollower : HDMobMan
 		Height 52;
 		HDFollower.MovementSpeed 3, 7;
 		Scale 1.00;
+		XScale 1.06;
 		PainChance 192;
 		MaxStepHeight 80;
 		MaxDropOffHeight 128;
