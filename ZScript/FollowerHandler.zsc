@@ -82,17 +82,44 @@ class FollowerHandler : EventHandler
 			case 1:
 				if (Follower.Health <= 0)
 				{
+					int RequiredSips = Follower.GetRequiredSips();
+					int RequiredBlood = Follower.GetRequiredBlood();
+					string BloodDanger;
+					if (RequiredBlood < 10)
+					{
+						BloodDanger = "\c[FLW_BloodGreen](Safe)\c-";
+					}
+					else if (RequiredBlood < 20)
+					{
+						BloodDanger = "\c[FLW_BloodPoison](Risky)\c-";
+					}
+					else if (RequiredBlood < 30)
+					{
+						BloodDanger = "\c[FLW_BloodYellow](Dangerous)\c-";
+					}
+					else if (RequiredBlood < 40)
+					{
+						BloodDanger = "\c[FLW_BloodOrange](Extremely Risky)\c-";
+					}
+					else if (RequiredBlood < 50)
+					{
+						BloodDanger = "\c[FLW_BloodRed](Almost Deadly)\c-";
+					}
+					else
+					{
+						BloodDanger = "\c[FLW_BloodBlack](Certain Death)\c-";
+					}
 					string Commands[] =
 					{
 						"1) Carry follower",
-						"2) "..(sb.CheckInventory("BluePotion", 1) ? "" : "\c[Red]").."Give blue potion\c-",
-						"3) Try to give blood \c[FLW_BloodRed](+10 wounds)\c-",
+						"2) "..(sb.CheckInventory("BluePotion", 1) ? "" : "\c[Red]").."Give blue potion\c- ".."\c[Blue]("..RequiredSips.."/12)\c-",
+						"3) Feed blood "..BloodDanger,
 						"4) "..BrassString
 					};
 
 					for (int i = 0; i < Commands.Size(); ++i)
 					{
-						DrawCommandRectangle(sb, pos, (270, RectangleHeight), MainFont, Commands[i], flags);
+						DrawCommandRectangle(sb, pos, (250, RectangleHeight), MainFont, Commands[i], flags);
 						pos.y += RectangleHeight + Spacing;
 					}
 				}

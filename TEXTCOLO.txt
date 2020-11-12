@@ -1,8 +1,43 @@
+FLW_BloodGreen
+{
+	#042201 #16c809
+
+	Console: #042201 #16c809
+}
+
+FLW_BloodPoison
+{
+	#1b2201 #94bf08
+
+	Console: #1b2201 #94bf08
+}
+
+FLW_BloodYellow
+{
+	#222202 #ffff00
+
+	Console: #222202 #ffff00
+}
+
+FLW_BloodOrange
+{
+	#2c1602 #e0720b
+
+	Console: #2c1602 #e0720b
+}
+
 FLW_BloodRed
 {
-	#660505 #ff0000
+	#3a0303 #ff0000
 
-	Console: #660505 #ff0000
+	Console: #3a0303 #ff0000
+}
+
+FLW_BloodBlack
+{
+	#000000 #333
+
+	Console: #000000 #333
 }
 
 FLW_WeaponBlue

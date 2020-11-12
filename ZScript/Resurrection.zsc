@@ -55,12 +55,10 @@ extend class HDFollower
 				break;
 
 			case RType_Blood:
-				HDBleedingWound.Inflict(LinkedPlayer, 22, 17, false, LinkedPlayer);
-				if (LinkedPlayer.woundcount < GetRequiredBlood())
-				{
-					ThinkMessage(LinkedPlayer, "$REVIVE_BLOOD_NOTENOUGH_PLR");
-					return false;
-				}
+				int RequiredBlood = GetRequiredBlood();
+				int CurrentWounds = LinkedPlayer.woundcount;
+				int RequiredWounds = (RequiredBlood - CurrentWounds) * 2;
+				HDBleedingWound.Inflict(LinkedPlayer, RequiredWounds + 3, 17, false, LinkedPlayer);
 				break;
 		}
 
@@ -88,7 +86,7 @@ extend class HDFollower
 		else // [Ace] Always check if player is bleeding if not currently healed by blues.
 		{
 			int RequiredBlood = GetRequiredBlood();
-			if (Distance3D(LinkedPlayer) < radius + MaxReviveDistance && LinkedPlayer.woundcount > RequiredBlood && IsFacedByPlayer() && PlayerIsCrouching())
+			if (Distance3D(LinkedPlayer) < radius + MaxReviveDistance && LinkedPlayer.woundcount > min(RequiredBlood, 40) && IsFacedByPlayer() && PlayerIsCrouching())
 			{
 				AbsorbedBlood++;
 				SpawnReviveParticles("FF1111");
@@ -98,7 +96,7 @@ extend class HDFollower
 				BloodReviveTicker++;
 			}
 
-			if (AbsorbedBlood >= 105 + RequiredBlood * 8 && level.time % 70 == 0)
+			if (AbsorbedBlood >= min(105 + RequiredBlood * 8, 350) && level.time % 70 == 0)
 			{
 				if (!A_RaiseSelf())
 				{
@@ -132,14 +130,14 @@ extend class HDFollower
 		}
 	}
 
-	private int GetRequiredSips() const
+	clearscope int GetRequiredSips()
 	{
-		return clamp(BodyDamage / 100, 2, 12);
+		return clamp(BodyDamage / 200, 2, 12);
 	}
 
-	private int GetRequiredBlood() const
+	clearscope int GetRequiredBlood()
 	{
-		return min(BloodReviveTicker / (35 * 4), 30);
+		return min(BloodReviveTicker / (35 * 3), 60);
 	}
 
 	const MaxReviveDistance = 24;
