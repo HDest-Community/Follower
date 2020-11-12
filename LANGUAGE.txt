@@ -116,7 +116,7 @@ AMMOGIVE_BOSS_SUCCESS_1 = "Shields-B-Gone.";
 AMMOGIVE_BOSS_SUCCESS_2 = "Great for sniping.";
 AMMOGIVE_BOSS_SUCCESS_3 = "Thanks, I'll try not to shoot you with it by accident.";
 
-AMMOGIVE_BRONTO_TOOMANY_1 = "I can only carry so much of thse.";
+AMMOGIVE_BRONTO_TOOMANY_1 = "I can only carry so many of thse.";
 AMMOGIVE_BRONTO_TOOMANY_2 = "One more and I'll start dropping them on the floor.";
 AMMOGIVE_BRONTO_TOOMANY_3 = "Sorry, got no room for those.";
 
