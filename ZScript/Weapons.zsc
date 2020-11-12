@@ -424,7 +424,7 @@ extend class HDFollower
 				SelWeapon.TryReloadMag();
 			}
 			#### H 0 A_JumpIf(!SelWeapon.TryChamberRound(), 2);
-			#### H 2 A_StartSound("weapons/rifleclick2", 8);
+			#### H 2 A_StartSound("weapons/rifleclick", 8);
 			#### H 0
 			{
 				bNOPAIN = false;
