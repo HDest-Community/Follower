@@ -823,7 +823,7 @@ class FW_RocketLauncher : FollowerWeapon
 
 	override bool CheckWeaponCondition(HDFollower caller, HDPlayerPawn plr, Actor trgt)
 	{
-		return caller.Distance3D(trgt) >= 42 * 11 && (plr.Distance3D(trgt) >= 42 * 15 || plr.Distance3D(trgt) >= 42 * 4 && !trgt.CheckSight(plr));
+		return caller.Distance3D(trgt) >= 42 * 10.60 && (plr.Distance3D(trgt) >= 42 * 15 || plr.Distance3D(trgt) >= 42 * 4 && !trgt.CheckSight(plr));
 	}
 }
 
