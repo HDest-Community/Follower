@@ -137,7 +137,7 @@ extend class HDFollower
 
 	clearscope int GetRequiredBlood()
 	{
-		return min(BloodReviveTicker / (35 * 3), 60);
+		return min(BloodReviveTicker / (35 * 4), 60);
 	}
 
 	const MaxReviveDistance = 24;
