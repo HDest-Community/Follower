@@ -178,9 +178,9 @@ class FollowerHandler : EventHandler
 				break;
 
 			case 4:
-				DrawCommandRectangle(sb, pos, (200, RectangleHeight), MainFont, "1) "..(sb.CheckInventory("PortableMedikit") ? "" : "\c[Red]").."Give Medikit\c- ".."("..Follower.SuturesLeft..", "..Follower.Medikits.."/"..Follower.MaxMedikits..")", flags); pos.y += RectangleHeight + Spacing;
-				DrawCommandRectangle(sb, pos, (200, RectangleHeight), MainFont, "2) "..(sb.CheckInventory("PortableStimpack") ? "" : "\c[Red]").."Give Stimpack\c- ".."("..Follower.Stimpacks.."/"..Follower.MaxStimpacks..")", flags); pos.y += RectangleHeight + Spacing;
-				DrawCommandRectangle(sb, pos, (200, RectangleHeight), MainFont, "3) Back...", flags);
+				DrawCommandRectangle(sb, pos, (205, RectangleHeight), MainFont, "1) "..(sb.CheckInventory("PortableMedikit") ? "" : "\c[Red]").."Give Medikit\c- ".."("..Follower.SuturesLeft..", "..Follower.Medikits.."/"..Follower.MaxMedikits..")", flags); pos.y += RectangleHeight + Spacing;
+				DrawCommandRectangle(sb, pos, (205, RectangleHeight), MainFont, "2) "..(sb.CheckInventory("PortableStimpack") ? "" : "\c[Red]").."Give Stimpack\c- ".."("..Follower.Stimpacks.."/"..Follower.MaxStimpacks..")", flags); pos.y += RectangleHeight + Spacing;
+				DrawCommandRectangle(sb, pos, (205, RectangleHeight), MainFont, "3) Back...", flags);
 				break;
 
 			case 5:
