@@ -1,3 +1,5 @@
+server bool hdf_debug = false;
+
 server bool hdf_collectbrass = true;
 
 server bool hdf_enablecomments = true;

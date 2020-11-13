@@ -133,7 +133,10 @@ extend class HDFollower
 		{
 			if (wpn.SpareAmmo > 0)
 			{
-				// Console.Printf("Trying to reload "..wpn.GetName()..".");
+				if (hdf_debug)
+				{
+					Console.Printf("Trying to reload "..wpn.GetName()..".");
+				}
 				SelWeapon = wpn;
 				Status = FStatus_InCombat;
 				SetStateLabel(wpn.GetReloadState());
@@ -253,7 +256,10 @@ extend class HDFollower
 			{
 				if (AimTimer++ > AdjustForDistance(Distance3D(CTarget), SelWeapon.GetAdjustmentMult()))
 				{
-					// Console.Printf("Trying to fire "..SelWeapon.GetName().." at "..CTarget.GetTag()..".");
+					if (hdf_debug)
+					{
+						Console.Printf("Trying to fire "..SelWeapon.GetName().." at "..CTarget.GetTag()..".");
+					}
 					AimTimer = 0;
 					SetStateLabel(SelWeapon.GetFireState());
 				}
