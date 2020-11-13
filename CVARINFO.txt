@@ -1,4 +1,4 @@
-server bool hdf_debug = false;
+server int hdf_debug = 0;
 
 server bool hdf_collectbrass = true;
 

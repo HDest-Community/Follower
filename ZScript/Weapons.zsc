@@ -133,7 +133,7 @@ extend class HDFollower
 		{
 			if (wpn.SpareAmmo > 0)
 			{
-				if (hdf_debug)
+				if (hdf_debug == 1)
 				{
 					Console.Printf("Trying to reload "..wpn.GetName()..".");
 				}
@@ -256,7 +256,7 @@ extend class HDFollower
 			{
 				if (AimTimer++ > AdjustForDistance(Distance3D(CTarget), SelWeapon.GetAdjustmentMult()))
 				{
-					if (hdf_debug)
+					if (hdf_debug == 1)
 					{
 						Console.Printf("Trying to fire "..SelWeapon.GetName().." at "..CTarget.GetTag()..".");
 					}
