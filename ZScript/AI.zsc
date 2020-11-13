@@ -10,7 +10,7 @@ extend class HDFollower
 {
 	private void AiThink()
 	{
-		if (hdf_debug == 2)
+		if (hdf_debug >= 2)
 		{
 			Console.Printf("Follower has %s out.\nCurrent status is %i.\nFollower is targeting %s.\n--------------------", SelWeapon ? SelWeapon.GetName() : "no weapon", Status, CTarget ? CTarget.GetTag() : "nothing");
 		}
