@@ -283,7 +283,7 @@ extend class HDFollower
 
 				if (!SelWeapon.TryChamberRound())
 				{
-					TryReloadWeapon(SelWeapon, flags: RLF_FORCE);
+					ClearWeapon();
 				}
 			}
 			#### H 1;
@@ -341,7 +341,7 @@ extend class HDFollower
 
  				if (!SelWeapon.TryChamberRound())
 				{
-					TryReloadWeapon(SelWeapon, flags: RLF_FORCE);
+					ClearWeapon();
 				}
 			}
 			#### H 1;
@@ -407,7 +407,7 @@ extend class HDFollower
 
 				if (!SelWeapon.TryChamberRound())
 				{
-					TryReloadWeapon(SelWeapon, flags: RLF_FORCE);
+					ClearWeapon();
 				}
 			}
 			#### H 5;
@@ -463,7 +463,7 @@ extend class HDFollower
 
 				if (!SelWeapon.TryChamberRound())
 				{
-					TryReloadWeapon(SelWeapon, flags: RLF_FORCE);
+					ClearWeapon();
 				}
 			}
 			#### H 20;
@@ -513,7 +513,7 @@ extend class HDFollower
 
 				if (!SelWeapon.TryChamberRound())
 				{
-					TryReloadWeapon(SelWeapon, flags: RLF_FORCE);
+					ClearWeapon();
 				}
 			}
 			#### H 3;
@@ -575,7 +575,7 @@ extend class HDFollower
 				A_StartSound("weapons/boltfwd", 8);
 				if (!SelWeapon.TryChamberRound())
 				{
-					TryReloadWeapon(SelWeapon, flags: RLF_FORCE);
+					ClearWeapon();
 				}
 			}
 			#### H 0
@@ -629,8 +629,7 @@ extend class HDFollower
 					A_AlertMonsters(flags: AMF_TARGETEMITTER);
 					A_Recoil(6);
 				}
-				
-				TryReloadWeapon(SelWeapon, flags: RLF_FORCE);
+				ClearWeapon();
 			}
 			#### H 10;
 			Goto See;
