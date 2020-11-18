@@ -69,16 +69,20 @@ extend class HDFollower
 				}
 				else if (Order < FOrder_Cover)
 				{
+					if (TGoal == LinkedPlayer && CanSeePlayer)
+					{
+						LastKnownPos = TGoal.Pos;
+					}
+
 					// [Ace] Go to player if they're too far away.
 					if (bFRIENDLY && Distance3D(LinkedPlayer) > MinPlayerRange && Distance3D(LinkedPlayer) < MaxPlayerRange)
 					{
-						// [Ace] If following the player and the player is nearby but suddenly goes around a corner, try to go around the same corner.
 						if (CanSeePlayer)
 						{
 							TGoal = LinkedPlayer;
-							LastKnownPos = TGoal.Pos;
 						}
-						else if (TGoal && TGoal.pos != LastKnownPos)
+						// [Ace] If following the player and the player is nearby but suddenly goes around a corner, try to go around the same corner.
+						else if (LastKnownPos != (0, 0, 0) && (!TGoal || TGoal && TGoal.pos != LastKnownPos))
 						{
 							TrySetGoal(LastKnownPos);
 						}
@@ -86,8 +90,6 @@ extend class HDFollower
 
 					if (!Moving && IdleTimer <= 0)
 					{
-						ResetIdleTimer();
-
 						// [Ace] Spawn a new idle spot.
 						vector3 SpotPos = Vec3Angle(random(16, 96), random(0, 359));
 						for (int i = 0; i < 100 && !TrySetGoal(SpotPos); ++i);
@@ -153,6 +155,7 @@ extend class HDFollower
 				A_Face(TGoal, 0, 0);
 			}
 
+			ResetIdleTimer();
 			A_ChangeVelocity(MovementSpeed, 0, vel.z, CVF_RELATIVE | CVF_REPLACE);
 			Moving = true;
 

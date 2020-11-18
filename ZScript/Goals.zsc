@@ -23,6 +23,7 @@ extend class HDFollower
 			TGoal.Destroy();
 		}
 		TGoal = null; // [Ace] Just in case it's the player.
+		LastKnownPos = (0, 0, 0);
 	}
 
 	const MaxGoalRange = 2048;
