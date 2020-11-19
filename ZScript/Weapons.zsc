@@ -336,7 +336,7 @@ extend class HDFollower
 					double ShotPower = HDShotgun.GetShotPower();
 					double Spread = 6 * ShotPower;
 					double SpeedFactor = 1.02857 * ShotPower;
-					int ShotHeight = GetShotHeight();
+					double ShotHeight = GetShotHeight();
 
 					HDBulletActor.FireBullet(self, "HDB_wad", ShotHeight);
 					let p = HDBulletActor.FireBullet(self,"HDB_00", ShotHeight, spread: Spread, speedfactor: SpeedFactor, amount: 10);
