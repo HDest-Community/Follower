@@ -41,7 +41,7 @@ extend class HDFollower
 		SelWeapon = null;
 	}
 
-	private int GetShotHeight()
+	private double GetShotHeight()
 	{
 		return height - 12;
 	}
