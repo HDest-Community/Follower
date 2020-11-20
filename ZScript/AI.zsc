@@ -109,7 +109,7 @@ extend class HDFollower
 		}
 
 		// [Ace] Movement. Always travel to goals if there are any. Status between moving and idle should not be set elsewhere.
-		if ((Status != FStatus_InCombat || Order == FOrder_GoAndCover) && TGoal && (TGoal is "PlayerPawn" && Distance2D(TGoal) > (Order == FOrder_ComeAndHelp && (NeedsMedic || NeedsHelp) ? MedicRange : MinPlayerRangeStop) || TGoal is "TargetGoal" && Distance2D(TGoal) > 16) && Distance2D(TGoal) < MaxGoalRange)
+		if (Status != FStatus_WaitingForArmor && (Status != FStatus_InCombat || Order == FOrder_GoAndCover) && TGoal && (TGoal is "PlayerPawn" && Distance2D(TGoal) > (Order == FOrder_ComeAndHelp && (NeedsMedic || NeedsHelp) ? MedicRange : MinPlayerRangeStop) || TGoal is "TargetGoal" && Distance2D(TGoal) > 16) && Distance2D(TGoal) < MaxGoalRange)
 		{
 			if (TGoal is "PlayerPawn" && Order == FOrder_ComeAndHelp && (NeedsMedic || NeedsHelp))
 			{

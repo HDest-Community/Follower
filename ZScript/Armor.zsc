@@ -53,7 +53,7 @@ extend class HDFollower
 				{
 					PrintMessage(GetResponse("$ARMORGIVE_UPGRADE"), "Follower/ArmorGive/Upgrade");
 				}
-				else if (FoundArmor.Mega == WornArmor.Mega && WornArmor.Durability < FoundArmor.Mags[0])
+				else if (FoundArmor.Mega == WornArmor.Mega && WornArmor.Durability < FoundArmor.Mags[0] % 1000)
 				{
 					PrintMessage(GetResponse("$ARMORGIVE_BETTERDURABILITY"), "Follower/ArmorGive/BetterDurability");
 				}
