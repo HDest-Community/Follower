@@ -145,22 +145,22 @@ class HDFollower : HDMobMan
 			TauntTimer--;
 		}
 
-		if (Status == FStatus_WaitingForArmor)
-		{
-			if (Distance3D(LinkedPlayer) > 512)
-			{
-				PrintMessage(GetResponse("$ARMORGIVE_RANAWAY"), "Follower/ArmorGive/RanAway");
-				Status = FStatus_None;
-			}
-			else if (level.time % 35 == 0)
-			{
-				A_Face(LinkedPlayer);
-				LookForArmor();
-			}
-		}
-
 		if (Health > 0)
 		{
+			if (Status == FStatus_WaitingForArmor)
+			{
+				if (Distance3D(LinkedPlayer) > 512)
+				{
+					PrintMessage(GetResponse("$ARMORGIVE_RANAWAY"), "Follower/ArmorGive/RanAway");
+					Status = FStatus_None;
+				}
+				else if (level.time % 35 == 0)
+				{
+					A_Face(LinkedPlayer);
+					LookForArmor();
+				}
+			}
+
 			if (Status != FStatus_InactiveOrDead && !InStateSequence(CurState, FindState("Spawn")))
 			{
 				AiThink();
