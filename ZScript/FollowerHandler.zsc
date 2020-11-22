@@ -184,9 +184,9 @@ class FollowerHandler : EventHandler
 				break;
 
 			case 5:
-				DrawCommandRectangle(sb, pos, (210, RectangleHeight), MainFont, "1) Report position", flags); pos.y += RectangleHeight + Spacing;
-				DrawCommandRectangle(sb, pos, (210, RectangleHeight), MainFont, "2) "..BrassString, flags); pos.y += RectangleHeight + Spacing;
-				DrawCommandRectangle(sb, pos, (210, RectangleHeight), MainFont, "3) Back...", flags);
+				DrawCommandRectangle(sb, pos, (235, RectangleHeight), MainFont, "1) Report position", flags); pos.y += RectangleHeight + Spacing;
+				DrawCommandRectangle(sb, pos, (235, RectangleHeight), MainFont, "2) "..BrassString, flags); pos.y += RectangleHeight + Spacing;
+				DrawCommandRectangle(sb, pos, (235, RectangleHeight), MainFont, "3) Back...", flags);
 				break;
 		}
 	}
