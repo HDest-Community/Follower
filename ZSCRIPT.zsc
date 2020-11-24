@@ -271,8 +271,7 @@ class HDFollower : HDMobMan
 			#### G 6
 			{
 				Status = FStatus_InactiveOrDead;
-				A_GiveInventory("HDFireDouse", 2);
-				A_TakeInventory("Heat", 2);
+				A_GiveInventory("HDFireDouse", 20);
 				A_StartSound(PainSound, CHAN_VOICE, CHANF_NOSTOP);
 			}
 			#### # 0
