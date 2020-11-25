@@ -246,6 +246,7 @@ class HDFollower : HDMobMan
 		+HDMOBBASE.NOBLURGAZE
 		HDMobBase.DownedFrame 14;
 		HDMobBase.MaxBloodLoss 400;
+		Obituary "%o suffered friendly fire from %k, but friendly fire, isn't.";
 		SeeSound "Follower/See";
 		PainSound "Follower/Pain";
 		DeathSound "Follower/Death";
