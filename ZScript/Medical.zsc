@@ -108,8 +108,13 @@ extend class HDFollower
 		Stimpacks++;
 	}
 
-	private bool IsHelpingPlayer() const
+	private bool IsHelpingPlayer()
 	{
+		if (Order != FOrder_ComeAndHelp)
+		{
+			return false;
+		}
+
 		static const StateLabel HealingStates[] =
 		{
 			"StapleHumptyDumptyBackTogetherAgain", "PatchUpEnd", "ApplyStim", "PullYouUp"
