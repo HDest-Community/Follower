@@ -36,6 +36,7 @@ extend class HDFollower
 					W = "FW_SMG"; UsedWeapons.Push(W);
 					W = "FW_ZM66"; UsedWeapons.Push(W);
 					EngageTarget(UsedWeapons, MTarget);
+					break;
 				}
 				else if (MTarget is "Necromancer")
 				{
@@ -45,10 +46,32 @@ extend class HDFollower
 					W = "FW_Boss"; UsedWeapons.Push(W);
 					W = "FW_Liberator"; UsedWeapons.Push(W);
 					EngageTarget(UsedWeapons, MTarget);
+					break;
 				}
-				else if (MTarget is "PainLord")
+				else if (MTarget is "PainLord" || MTarget is "PainBringer")
 				{
-					W = "FW_Bronto"; UsedWeapons.Push(W);
+					if (MTarget is "PainLord")
+					{
+						W = "FW_Bronto"; UsedWeapons.Push(W);
+					}
+					W = "FW_RocketLauncher"; UsedWeapons.Push(W);
+					W = "FW_Liberator"; UsedWeapons.Push(W);
+					W = "FW_Boss"; UsedWeapons.Push(W);
+					if (HDMobBase(MTarget).Shields > 100)
+					{
+						W = "FW_SMG"; UsedWeapons.Push(W);
+					}
+					W = "FW_ZM66"; UsedWeapons.Push(W);
+					W = "FW_Hunter"; UsedWeapons.Push(W);
+					if (HDMobBase(MTarget).Shields <= 100)
+					{
+						W = "FW_SMG"; UsedWeapons.Push(W);
+					}
+					EngageTarget(UsedWeapons, MTarget);
+					break;
+				}
+				else if (MTarget is "HDMobBase" && HDMobBase(MTarget).Shields > 150)
+				{
 					W = "FW_RocketLauncher"; UsedWeapons.Push(W);
 					W = "FW_Liberator"; UsedWeapons.Push(W);
 					W = "FW_Boss"; UsedWeapons.Push(W);
@@ -56,16 +79,7 @@ extend class HDFollower
 					W = "FW_ZM66"; UsedWeapons.Push(W);
 					W = "FW_Hunter"; UsedWeapons.Push(W);
 					EngageTarget(UsedWeapons, MTarget);
-				}
-				else if (MTarget is "PainBringer" || MTarget is "HDMobBase" && HDMobBase(MTarget).Shields > 150)
-				{
-					W = "FW_RocketLauncher"; UsedWeapons.Push(W);
-					W = "FW_Liberator"; UsedWeapons.Push(W);
-					W = "FW_Boss"; UsedWeapons.Push(W);
-					W = "FW_SMG"; UsedWeapons.Push(W);
-					W = "FW_ZM66"; UsedWeapons.Push(W);
-					W = "FW_Hunter"; UsedWeapons.Push(W);
-					EngageTarget(UsedWeapons, MTarget);
+					break;
 				}
 				else if (MTarget.FindInventory("HDArmourWorn"))
 				{
