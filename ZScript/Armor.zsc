@@ -15,13 +15,13 @@ extend class HDFollower
 			if (WornArmor)
 			{
 				A_DropInventory(WornArmor.GetClass());
-				PrintMessage(GetResponse("$ARMORGIVE_STRIP"), "Follower/ArmorGive/Strip");
+				PrintMessage(GetResponse("$ARMORGIVE_STRIP"), "Follower/ArmorGive/Strip", true);
 				Status = FStatus_None;
 				return;
 			}
 			else
 			{
-				PrintMessage(GetResponse("$ARMORGIVE_CANCEL"), "Follower/ArmorGive/Cancel");
+				PrintMessage(GetResponse("$ARMORGIVE_CANCEL"), "Follower/ArmorGive/Cancel", true);
 				Status = FStatus_None;
 				return;
 			}
@@ -31,7 +31,7 @@ extend class HDFollower
 
 		string Message = GetResponse("$ARMORGIVE_INIT")..(FindInventory("HDArmourWorn") ? " "..GetResponse("$ARMORGIVE_MAYBEDROP") : "");
 		string VoiceLine = FindInventory("HDArmourWorn") ? "Follower/ArmorGive/Init2" : "Follower/ArmorGive/Init1";
-		PrintMessage(Message, VoiceLine);
+		PrintMessage(Message, VoiceLine, true);
 	}
 
 	private void LookForArmor()
