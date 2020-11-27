@@ -3,7 +3,8 @@ server int hdf_debug = 0;
 server bool hdf_collectbrass = true;
 
 server bool hdf_enablecomments = true;
-server int hdf_feedbacktype = 1;
+server int hdf_printlevel_chat = 3;
+server int hdf_printlevel_voice = 3;
 
 server int hdf_extrabrass = 0;
 

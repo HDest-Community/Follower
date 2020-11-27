@@ -15,13 +15,13 @@ extend class HDFollower
 			if (WornArmor)
 			{
 				A_DropInventory(WornArmor.GetClass());
-				PrintMessage(GetResponse("$ARMORGIVE_STRIP"), "Follower/ArmorGive/Strip", true);
+				PrintMessage(GetResponse("$ARMORGIVE_STRIP"), "Follower/ArmorGive/Strip", PMType_General);
 				Status = FStatus_None;
 				return;
 			}
 			else
 			{
-				PrintMessage(GetResponse("$ARMORGIVE_CANCEL"), "Follower/ArmorGive/Cancel", true);
+				PrintMessage(GetResponse("$ARMORGIVE_CANCEL"), "Follower/ArmorGive/Cancel", PMType_Important);
 				Status = FStatus_None;
 				return;
 			}
@@ -31,7 +31,7 @@ extend class HDFollower
 
 		string Message = GetResponse("$ARMORGIVE_INIT")..(FindInventory("HDArmourWorn") ? " "..GetResponse("$ARMORGIVE_MAYBEDROP") : "");
 		string VoiceLine = FindInventory("HDArmourWorn") ? "Follower/ArmorGive/Init2" : "Follower/ArmorGive/Init1";
-		PrintMessage(Message, VoiceLine, true);
+		PrintMessage(Message, VoiceLine, PMType_Important);
 	}
 
 	private void LookForArmor()
@@ -44,22 +44,22 @@ extend class HDFollower
 		{
 			if (!WornArmor)
 			{
-				PrintMessage(GetResponse("$ARMORGIVE_NONE"), "Follower/ArmorGive/None");
+				PrintMessage(GetResponse("$ARMORGIVE_NONE"), "Follower/ArmorGive/None", PMType_General);
 			}
 			else if (WornArmor)
 			{
 				// [Ace] 1030 because mega armor's durability is calculated as 1000 + actual durability. Only while on the ground, though.
 				if (!WornArmor.Mega && FoundArmor.Mega && FoundArmor.Mags[0] >= 1030 || WornArmor.Mega && WornArmor.Durability < 20 && !FoundArmor.Mega && FoundArmor.Mags[0] > 60)
 				{
-					PrintMessage(GetResponse("$ARMORGIVE_UPGRADE"), "Follower/ArmorGive/Upgrade");
+					PrintMessage(GetResponse("$ARMORGIVE_UPGRADE"), "Follower/ArmorGive/Upgrade", PMType_General);
 				}
 				else if (FoundArmor.Mega == WornArmor.Mega && WornArmor.Durability < FoundArmor.Mags[0] % 1000)
 				{
-					PrintMessage(GetResponse("$ARMORGIVE_BETTERDURABILITY"), "Follower/ArmorGive/BetterDurability");
+					PrintMessage(GetResponse("$ARMORGIVE_BETTERDURABILITY"), "Follower/ArmorGive/BetterDurability", PMType_General);
 				}
 				else
 				{
-					PrintMessage(GetResponse("$ARMORGIVE_NOTHANKS"), "Follower/ArmorGive/NoThanks");
+					PrintMessage(GetResponse("$ARMORGIVE_NOTHANKS"), "Follower/ArmorGive/NoThanks", PMType_General);
 					Status = FStatus_None;
 					tracer = null;
 					return;

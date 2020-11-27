@@ -15,27 +15,6 @@ extend class HDFollower
 		RLF_NOJUMP	= 1 << 3
 	}
 
-	virtual void InitWeapons()
-	{
-		int WeaponFlags = hdf_loadout_weapons;
-		int StartingAmmoFlags = hdf_loadout_startingammo;
-
-		static const string AllWeapons[] = { "FW_SMG", "FW_Hunter", "FW_ZM66", "FW_RocketLauncher", "FW_Liberator", "FW_Boss", "FW_Bronto" };
-		for (int i = 0; i < AllWeapons.Size(); ++i)
-		{
-			class<FollowerWeapon> fw = AllWeapons[i];
-			if (fw && WeaponFlags & (1 << i))
-			{
-				FollowerWeapon wpn = FollowerWeapon(new(fw));
-				if (StartingAmmoFlags & (1 << i))
-				{
-					wpn.Init();
-				}
-				Weapons.Push(wpn);
-			}
-		}
-	}
-
 	private void ClearWeapon()
 	{
 		SelWeapon = null;
@@ -102,7 +81,7 @@ extend class HDFollower
 		else if (wpn.SpareAmmo >= wpn.GetMaxSpare())
 		{
 			TryReloadWeapon(wpn, wpn.GetMaxMag(), RLF_MANUAL);
-			PrintMessage(GetResponse("$AMMOGIVE_"..wpn.GetLocalizationTag().."_TOOMANY"), "Follower/AmmoGive/"..wpn.GetLocalizationTag().."/TooMany");
+			PrintMessage(GetResponse("$AMMOGIVE_"..wpn.GetLocalizationTag().."_TOOMANY"), "Follower/AmmoGive/"..wpn.GetLocalizationTag().."/TooMany", PMType_Important);
 			return;
 		}
 		else if (LinkedPlayer.CountInv(AmmoType) == 0)
@@ -117,7 +96,7 @@ extend class HDFollower
 		wpn.HasWarnedLowAmmo = false;
 		TryReloadWeapon(wpn, wpn.GetMaxMag(), RLF_MANUAL);
 
-		PrintMessage(GetResponse("$AMMOGIVE_"..wpn.GetLocalizationTag().."_SUCCESS"), "Follower/AmmoGive/"..wpn.GetLocalizationTag().."/Success");
+		PrintMessage(GetResponse("$AMMOGIVE_"..wpn.GetLocalizationTag().."_SUCCESS"), "Follower/AmmoGive/"..wpn.GetLocalizationTag().."/Success", PMType_General);
 	}
 
 	// [Ace] If weapon is out of ammo, reload.
@@ -147,7 +126,7 @@ extend class HDFollower
 				if (!(flags & RLF_SILENT) && (!wpn.HasWarnedLowAmmo || (flags & RLF_MANUAL)))
 				{
 					wpn.HasWarnedLowAmmo = true;
-					PrintMessage(GetResponse("$NOAMMO_"..wpn.GetLocalizationTag()), "Follower/NoAmmo/"..wpn.GetLocalizationTag());
+					PrintMessage(GetResponse("$NOAMMO_"..wpn.GetLocalizationTag()), "Follower/NoAmmo/"..wpn.GetLocalizationTag(), PMType_Critical);
 				}
 
 				if (!(flags & RLF_NOJUMP))

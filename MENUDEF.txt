@@ -43,8 +43,11 @@ OptionMenu "HDFollowerMenu"
 	StaticText ""
 
 	StaticText "----- Audio/Visual -----", "Teal"
-	Option "Feedback Type", "hdf_feedbacktype", "FeedbackType"
+	Option "Chat Responses", "hdf_printlevel_chat", "PrintLevel"
+	Option "Voice Responses", "hdf_printlevel_voice", "PrintLevel"
+	StaticText ""
 	Option "Enable Idle Comments", "hdf_enablecomments", "YesNo"
+	StaticText "Voice lines the follower will sometimes say when they move.", "White"
 	StaticText ""
 
 	StaticText "----- Miscellaneous -----", "Teal"
@@ -56,12 +59,12 @@ AddOptionMenu "OptionsMenu"
 	Submenu "HD Follower", "HDFollowerMenu"
 }
 
-OptionValue "FeedbackType"
+OptionValue "PrintLevel"
 {
-	0, "Disabled"
-	1, "Chat-only"
-	2, "Voice-only"
-	3, "Both" // [Ace] y tho?
+	0, "None"
+	1, "Critical only"
+	2, "Important only"
+	3, "All" // [Ace] y tho?
 }
 
 OptionValue "ArmorType"

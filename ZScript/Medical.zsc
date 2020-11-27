@@ -61,7 +61,7 @@ extend class HDFollower
 		}
 		else if (Medikits >= MaxMedikits)
 		{
-			PrintMessage(GetResponse("$MEDGIVE_TOOMANY"), "Follower/MedGive/TooMany");
+			PrintMessage(GetResponse("$MEDGIVE_TOOMANY"), "Follower/MedGive/TooMany", PMType_Important);
 			return;
 		}
 		else if (!LinkedPlayer.CheckInventory("PortableMedikit", 1))
@@ -72,7 +72,7 @@ extend class HDFollower
 
 		LinkedPlayer.A_TakeInventory("PortableMedikit", 1);
 		LinkedPlayer.A_GiveInventory("SecondBlood", 1);
-		PrintMessage(GetResponse("$MEDGIVE_SUCCESS"), "Follower/MedGive/Success");
+		PrintMessage(GetResponse("$MEDGIVE_SUCCESS"), "Follower/MedGive/Success", PMType_General);
 
 		Medikits++;
 		Stimpacks++;
@@ -93,7 +93,7 @@ extend class HDFollower
 		}
 		else if (Stimpacks >= MaxStimpacks)
 		{
-			PrintMessage(GetResponse("$STIMGIVE_TOOMANY"), "Follower/StimGive/TooMany");
+			PrintMessage(GetResponse("$STIMGIVE_TOOMANY"), "Follower/StimGive/TooMany", PMType_Important);
 			return;
 		}
 		else if (!PlayerStimpack)
@@ -103,7 +103,7 @@ extend class HDFollower
 		}
 
 		PlayerStimpack.TakeMag(false);
-		PrintMessage(GetResponse("$STIMGIVE_SUCCESS"), "Follower/StimGive/Success");
+		PrintMessage(GetResponse("$STIMGIVE_SUCCESS"), "Follower/StimGive/Success", PMType_General);
 
 		Stimpacks++;
 	}
@@ -236,7 +236,7 @@ extend class HDFollower
 				b.A_ChangeVelocity(3,1,2,CVF_RELATIVE);
 				b.A_StartSound("weapons/grenopen", 8);
 			}
-			#### J 0 PrintMessage(GetResponse("$MEDIC_STIMMED"), "Follower/Medic/Stimmed");
+			#### J 0 PrintMessage(GetResponse("$MEDIC_STIMMED"), "Follower/Medic/Stimmed", PMType_General);
 			Goto StapleHumptyDumptyBackTogetherAgain;
 	}
 }

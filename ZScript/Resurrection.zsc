@@ -79,7 +79,7 @@ extend class HDFollower
 				else
 				{
 					bFRIENDLY = true;
-					PrintMessage(GetResponse("$REVIVE_BLUES_SUCCESS"), "Follower/Revive/Blues/Success");
+					PrintMessage(GetResponse("$REVIVE_BLUES_SUCCESS"), "Follower/Revive/Blues/Success", PMType_Important);
 				}
 			}
 		}
@@ -106,7 +106,7 @@ extend class HDFollower
 				{
 					LinkedPlayer.AggravatedDamage += RequiredBlood;
 					bFRIENDLY = true;
-					PrintMessage(GetResponse("$REVIVE_BLOOD_SUCCESS"), "Follower/Revive/Blood/Success");
+					PrintMessage(GetResponse("$REVIVE_BLOOD_SUCCESS"), "Follower/Revive/Blood/Success", PMType_Important);
 				}
 			}
 		}

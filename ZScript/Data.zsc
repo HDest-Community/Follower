@@ -15,7 +15,7 @@ extend class HDFollower
 				return false;
 			}
 
-			PrintMessage(GetResponse("$CARRY_SUCCESS"), "Follower/Carry/Success");
+			PrintMessage(GetResponse("$CARRY_SUCCESS"), "Follower/Carry/Success", PMType_General);
 		}
 
 		let FData = FollowerBody(LinkedPlayer.GiveInventoryType("FollowerBody"));

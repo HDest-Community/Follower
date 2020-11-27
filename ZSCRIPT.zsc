@@ -20,6 +20,13 @@ class HDFSkinData play
 
 class HDFollower : HDMobMan
 {
+	enum PrintMessageType
+	{
+		PMType_Forced,
+		PMType_Critical,
+		PMType_Important,
+		PMType_General
+	}
 	// --------------------------------------------------
 	// NEVER GONNA TOUCH THESE PROBABLY
 	// --------------------------------------------------
@@ -79,20 +86,19 @@ class HDFollower : HDMobMan
 		Warp(LinkedPlayer, 16, flags: WARPF_NOCHECKPOSITION);
 	}
 
-	private void PrintMessage(string message, string voiceLine = "", bool force = false)
+	private void PrintMessage(string message, string voiceLine, PrintMessageType type)
 	{
-		int FeedbackType = hdf_feedbacktype;
-		if ((FeedbackType == 0 && !force) || Health <= 0)
+		if (Health <= 0)
 		{
 			return;
 		}
 
-		if (FeedbackType != 2)
+		if (type <= hdf_printlevel_chat)
 		{
 			LinkedPlayer.A_Log("\c[White]"..GetTag()..": \c[Green]"..message.."\c-");
 			LinkedPlayer.A_StartSound("misc/chat", 20, CHANF_LOCAL);
 		}
-		if (FeedbackType != 1)
+		if (type <= hdf_printlevel_voice)
 		{
 			LinkedPlayer.A_StartSound(voiceLine, 21, CHANF_LOCAL);
 		}
@@ -151,7 +157,7 @@ class HDFollower : HDMobMan
 			{
 				if (Distance3D(LinkedPlayer) > 512)
 				{
-					PrintMessage(GetResponse("$ARMORGIVE_RANAWAY"), "Follower/ArmorGive/RanAway");
+					PrintMessage(GetResponse("$ARMORGIVE_RANAWAY"), "Follower/ArmorGive/RanAway", PMType_Critical);
 					Status = FStatus_None;
 				}
 				else if (level.time % 35 == 0)

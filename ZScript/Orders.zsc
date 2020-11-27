@@ -25,20 +25,20 @@ extend class HDFollower
 		switch (newOrder)
 		{
 			case FOrder_Follow:
-				PrintMessage(GetResponse("$ORDER_FOLLOW"..Index), "Follower/Order/Follow"..Index);
+				PrintMessage(GetResponse("$ORDER_FOLLOW"..Index), "Follower/Order/Follow"..Index, PMType_General);
 				Order = FOrder_Follow;
 				ResetIdleTimer();
 				return true;
 
 			case FOrder_FollowIgnore:
-				PrintMessage(GetResponse("$ORDER_FOLLOWIGNORE"..Index), "Follower/Order/FollowIgnore"..Index);
+				PrintMessage(GetResponse("$ORDER_FOLLOWIGNORE"..Index), "Follower/Order/FollowIgnore"..Index, PMType_General);
 				HaulAss();
 				Order = FOrder_FollowIgnore;
 				ResetIdleTimer();
 				return true;
 
 			case FOrder_Cover:
-				PrintMessage(GetResponse("$ORDER_COVER"..Index), "Follower/Order/Cover"..Index);
+				PrintMessage(GetResponse("$ORDER_COVER"..Index), "Follower/Order/Cover"..Index, PMType_General);
 				Order = FOrder_Cover;
 				ClearGoal();
 				return true;
@@ -52,22 +52,22 @@ extend class HDFollower
 					HaulAss();
 					Order = FOrder_GoAndCover;
 					ActivateAsPlayer = true;
-					PrintMessage(GetResponse("$ORDER_GOANDCOVER2"), "Follower/Order/GoAndCover2");
+					PrintMessage(GetResponse("$ORDER_GOANDCOVER2"), "Follower/Order/GoAndCover2", PMType_General);
 					return true;
 				}
 				else
 				{
-					PrintMessage(GetResponse("$ORDER_GOANDCOVER1"), "Follower/Order/GoAndCover1");
+					PrintMessage(GetResponse("$ORDER_GOANDCOVER1"), "Follower/Order/GoAndCover1", PMType_General);
 					return false;
 				}
 
 			case FOrder_ComeAndHelp:
 				if (!PlayerNeedsMedic() && !PlayerIsIncapped())
 				{
-					PrintMessage(GetResponse("$ORDER_HELP3"), "Follower/Order/Help3");
+					PrintMessage(GetResponse("$ORDER_HELP3"), "Follower/Order/Help3", PMType_Important);
 					return true;
 				}
-				PrintMessage(GetResponse("$ORDER_HELP"..Index), "Follower/Order/Help"..Index);
+				PrintMessage(GetResponse("$ORDER_HELP"..Index), "Follower/Order/Help"..Index, PMType_Important);
 				HaulAss();
 				Order = FOrder_ComeAndHelp;
 				ResetIdleTimer();

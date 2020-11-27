@@ -127,6 +127,7 @@ class FollowerHandler : EventHandler
 				{
 					int Durability = 0;
 					bool Mega = false;
+					bool Waiting = Follower.Status == FStatus_WaitingForArmor;
 					let Armor = HDArmourWorn(Follower.FindInventory("HDArmourWorn"));
 					if (Armor)
 					{
@@ -140,13 +141,18 @@ class FollowerHandler : EventHandler
 						"2) Carry follower",
 						"3) Give ammo",
 						"4) Give supplies",
-						"5) Try/drop armor"..(Durability > 0 ? (Mega ? "\c[Blue]" : "\c[DarkGreen]").." ("..Durability..")": "").."\c-",
+						"5) "..(Waiting ? "Confirm/Cancel?" : "Use/drop armor"..(Durability > 0 ? (Mega ? "\c[Blue]" : "\c[DarkGreen]").." ("..Durability..")": "")).."\c-",
 						"6) Misc commands"
 					};
 
 					for (int i = 0; i < Commands.Size(); ++i)
 					{
-						DrawCommandRectangle(sb, pos, (Durability > 0 ? 190 : 150, RectangleHeight), MainFont, Commands[i], flags);
+						int RectangleWidth = 150;
+						if (!Waiting && Durability > 0)
+						{
+							RectangleWidth += 40;
+						}
+						DrawCommandRectangle(sb, pos, (RectangleWidth, RectangleHeight), MainFont, Commands[i], flags);
 						pos.y += RectangleHeight + Spacing;
 					}
 				}

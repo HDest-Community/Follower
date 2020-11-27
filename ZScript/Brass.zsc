@@ -36,7 +36,7 @@ extend class HDFollower
 
 		if (GetTotalBrass() == 0)
 		{
-			PrintMessage(GetResponse("$BRASS_NONE"), "Follower/Brass/None");
+			PrintMessage(GetResponse("$BRASS_NONE"), "Follower/Brass/None", PMType_Important);
 			return true;
 		}
 
@@ -64,7 +64,7 @@ extend class HDFollower
 			}
 
 			LinkedPlayer.A_GiveInventory("SevenMilBrass", TotalGiveAmount);
-			PrintMessage(GetResponse("$BRASS_SUCCESS"), "Follower/Brass/Success");
+			PrintMessage(GetResponse("$BRASS_SUCCESS"), "Follower/Brass/Success", PMType_General);
 		}
 		else
 		{

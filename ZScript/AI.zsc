@@ -231,7 +231,7 @@ extend class HDFollower
 		double a = (180 + LinkedPlayer.AngleTo(self) + 22.5) % 360;
 		
 		string CoordsMessage = String.Format("@ %i, %i, %i. Go %s!", pos.x, pos.y, pos.z, Directions[int(a / 45)]);
-		PrintMessage(CoordsMessage, "Follower/ReportPosition", true);
+		PrintMessage(CoordsMessage, "Follower/ReportPosition", PMType_Forced);
 	}
 
 	private void Taunt()
