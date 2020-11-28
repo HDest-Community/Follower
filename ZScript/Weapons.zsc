@@ -1,12 +1,5 @@
 extend class HDFollower
 {
-	enum CSFlags
-	{
-		CSF_FIRE	= 1 << 0,
-		CSF_RELOAD	= 1 << 1,
-		CSF_ALL		= CSF_FIRE | CSF_RELOAD
-	}
-
 	enum RLFlags
 	{
 		RLF_FORCE	= 1 << 0,
