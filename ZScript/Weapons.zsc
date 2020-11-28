@@ -283,12 +283,12 @@ extend class HDFollower
 			{
 				A_StartSound("weapons/rifleclick2");
 			}
-			#### H 0
+			#### H 25
 			{
+				A_StartSound("weapons/pocket", 8);
 				A_StartSound("weapons/rifleload");
-				HDMagAmmo.SpawnMag(self, "HD9mMag30", 0);
+				SelWeapon.TryEjectMag(self);
 			}
-			#### H 25 A_StartSound("weapons/pocket", 8);
 			#### H 10
 			{
 				A_StartSound("weapons/rifleload", 9);
@@ -407,7 +407,7 @@ extend class HDFollower
 			#### H 3
 			{
 				A_StartSound("weapons/rifleload");
-				HDMagAmmo.SpawnMag(self, "HD4mMag", 0);
+				SelWeapon.TryEjectMag(self);
 			}
 			#### H 35 A_StartSound("weapons/pocket", 8);
 			#### H 10
@@ -513,7 +513,7 @@ extend class HDFollower
 			#### H 8
 			{
 				A_StartSound ("weapons/rifleload", 8, CHANF_OVERLAP);
-				HDMagAmmo.SpawnMag(self, "HD7mMag", 0);
+				SelWeapon.TryEjectMag(self);
 			}
 			#### H 35 A_StartSound("weapons/pocket", 8);
 			#### H 10
@@ -650,7 +650,7 @@ extend class HDFollower
 	}
 }
 
-class FollowerWeapon
+class FollowerWeapon abstract
 {
 	enum CRType
 	{
@@ -669,16 +669,26 @@ class FollowerWeapon
 		ChamberedRound = CRType_Chambered;
 		Mag = GetMaxMag();
 	}
-	virtual string GetName() { return "N/A"; }
+	abstract string GetName();
+	abstract class<HDAmmo> GetAmmoType();
+	abstract string GetAmmoName();
+	abstract StateLabel GetFireState();
+	abstract StateLabel GetReloadState();
+	abstract int GetMaxMag(); // [Ace] Max mag being 0 means that spare ammo is treated as mag.
+	abstract int GetMaxSpare();
 	virtual string GetLocalizationTag() { return GetName(); }
-	virtual class<HDAmmo> GetAmmoType() { return null; }
-	virtual string GetAmmoName() { return "N/A"; }
-	virtual StateLabel GetFireState() { return null; }
-	virtual StateLabel GetReloadState() { return null; }
-	virtual int GetMaxMag() { return 0; } // [Ace] Max mag being 0 means that spare ammo is treated as mag.
-	virtual int GetMaxSpare() { return 0; }
+	virtual class<HDMagAmmo> GetMagType() { return null; }
 	virtual double GetAdjustmentMult() { return 1.0; }
 	virtual play bool CheckWeaponCondition(HDFollower caller, HDPlayerPawn plr, Actor trgt) { return true; }
+
+	virtual play void TryEjectMag(HDFollower dropper)
+	{
+		class<HDMagAmmo> MagType = GetMagType();
+		if (MagType && Mag <= 0)
+		{
+			HDMagAmmo.SpawnMag(dropper, MagType, 0);
+		}
+	}
 
 	clearscope int GetLoadedRounds()
 	{
@@ -733,6 +743,7 @@ class FW_SMG : FollowerWeapon
 	}
 	override string GetName() { return "SMG"; }
 	override class<HDAmmo> GetAmmoType() { return "HDPistolAmmo"; }
+	override class<HDMagAmmo> GetMagType() { return "HD9mMag30"; }
 	override string GetAmmoName() { return "9mm Rounds"; }
 	override int GetMaxMag() { return 30; }
 	override int GetMaxSpare() { return 300; }
@@ -779,6 +790,7 @@ class FW_ZM66 : FollowerWeapon
 	}
 	override string GetName() { return "ZM66"; }
 	override class<HDAmmo> GetAmmoType() { return "FourMilAmmo"; }
+	override class<HDMagAmmo> GetMagType() { return "HD4mMag"; }
 	override string GetAmmoName() { return "4mm Rounds"; }
 	override int GetMaxMag() { return 50; }
 	override int GetMaxSpare() { return 250; }
@@ -822,6 +834,7 @@ class FW_Liberator : FollowerWeapon
 {
 	override string GetName() { return "Liberator"; }
 	override class<HDAmmo> GetAmmoType() { return "SevenMilAmmo"; }
+	override class<HDMagAmmo> GetMagType() { return "HD7mMag"; }
 	override string GetAmmoName() { return "7mm Rounds"; }
 	override int GetMaxMag() { return 30; }
 	override int GetMaxSpare() { return 150; }
