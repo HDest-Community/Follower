@@ -57,7 +57,7 @@ extend class HDFollower
 				}
 				else
 				{
-					PrintMessage(GetResponse("$ORDER_GOANDCOVER1"), "Follower/Order/GoAndCover1", PMType_General);
+					PrintMessage(GetResponse("$ORDER_GOANDCOVER1"), "Follower/Order/GoAndCover1", PMType_Important);
 					return false;
 				}
 
