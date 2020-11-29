@@ -387,6 +387,7 @@ extend class HDFollower
 				if (!SelWeapon.TryChamberRound())
 				{
 					ClearWeapon();
+					SetStateLabel("See");
 				}
 			}
 			#### H 5;
