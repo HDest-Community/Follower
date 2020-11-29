@@ -59,7 +59,7 @@ extend class HDFollower
 				}
 				else
 				{
-					PrintMessage(GetResponse("$ARMORGIVE_NOTHANKS"), "Follower/ArmorGive/NoThanks", PMType_General);
+					PrintMessage(GetResponse("$ARMORGIVE_NOTHANKS"), "Follower/ArmorGive/NoThanks", PMType_Important);
 					Status = FStatus_None;
 					tracer = null;
 					return;
