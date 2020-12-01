@@ -93,7 +93,7 @@ class FollowerBody : HDPickup
 		}
 		
 		let plr = HDPlayerPawn(owner);
-		if (plr && plr.incapacitated > 0 && !NoExitDrop)
+		if (plr && plr.incapacitated > 0 && !NoExitDrop && !AlreadyTried)
 		{
 			FromIncap = true;
 			plr.UseInventory(self);
@@ -117,6 +117,7 @@ class FollowerBody : HDPickup
 
 	bool NoExitDrop; // [Ace] Don't drop if level is exited in incap.
 	bool FromIncap;
+	bool AlreadyTried;
 
 	int Outfit;
 
@@ -133,7 +134,6 @@ class FollowerBody : HDPickup
 	int Stunned;
 	int BloodReviveTicker;
 
-	// [Ace] They better all be the same size or you'll witness the console screen with red letters.
 	Array<FollowerWeapon> Weapons;
 
 	int Medikits;
@@ -152,7 +152,7 @@ class FollowerBody : HDPickup
 			TNT1 A 0
 			{
 				bool ReturnValue = false;
-				for (int i = 0; i < 200; ++i)
+				for (int i = 0; i < 100; ++i)
 				{
 					Actor a; bool success;
 
@@ -160,9 +160,16 @@ class FollowerBody : HDPickup
 					int RandAngle = invoker.FromIncap ? random(0, 359) : 0;
 					vector3 DropDest = Vec3Angle(Distance, angle + RandAngle);
 					Sector DropSec = level.PointInSector(DropDest.xy);
-					if (DropSec && pos.z - DropSec.floorplane.ZAtPoint(DropSec.centerspot) > GetDefaultByType("HDFollower").MaxStepHeight || !level.IsPointInLevel(DropDest))
+					if (DropSec && pos.z - DropSec.floorplane.ZAtPoint(DropSec.centerspot) > GetDefaultByType(GetReplacement("HDFollower")).MaxStepHeight || !level.IsPointInLevel(DropDest))
 					{
-						break;
+						if (invoker.FromIncap)
+						{
+							continue;
+						}
+						else
+						{
+							break;
+						}
 					}
 
 					[success, a] = A_SpawnItemEx(GetReplacement("HDFollower"), Distance, 0, random(8, 16), angle: RandAngle);
@@ -234,6 +241,10 @@ class FollowerBody : HDPickup
 				if (!ReturnValue)
 				{
 					HDFollower.ThinkMessage(self, "$CARRY_CANTDROP_PLR");
+					if (invoker.FromIncap)
+					{
+						invoker.AlreadyTried = true;
+					}
 				}
 				
 				return ReturnValue;
