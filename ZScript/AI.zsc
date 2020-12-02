@@ -69,9 +69,9 @@ extend class HDFollower
 				}
 				else if (Order < FOrder_Cover)
 				{
-					if (TGoal == LinkedPlayer && CanSeePlayer)
+					if (CanSeePlayer)
 					{
-						LastKnownPos = TGoal.Pos;
+						LastKnownPos = LinkedPlayer.Pos;
 					}
 
 					// [Ace] Go to player if they're too far away.
