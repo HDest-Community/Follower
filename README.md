@@ -31,8 +31,8 @@ For the most part the mechanics are fairly simple and straightforward. Documente
 
 ##### Incapacitation
 ---
-- If your follower is incapped, you can help them get up faster by crouching and looking at them. Just imagine you're helping them get up. Of course injecting them with a stim would also help with that.
-- If it's you who got incapped, the follower will rush to your aid (assuming there are no hostiles around) and help you get up fast, so it's a two-way street.
+- If your follower is incapped, you can help them get up faster by crouching and looking at them. Just imagine you're helping them get up. Of course, injecting them with a stim would also help with that.
+- If it's you who got incapped, the follower will rush to your aid when you manually give them the order (assuming there are no hostiles around), and help you get up faster, so it's a two-way street. If you are bleeding and you have given them a medikit, they will use it, but only if you are still in incap and unable to get up. If you are able to get up, the AI will assume you're capable of taking care of yourself from then on.
 
 ##### Orders
 ---
