@@ -75,10 +75,9 @@ class HDFollower : HDMobMan
 	bool IsDeadOrMissing()
 	{
 		bool FollowerDead = Health <= 0;
-		bool CarryingFollower = LinkedPlayer.CheckInventory("FollowerBody", 0);
 		bool TooFar = self.Distance2D(LinkedPlayer) >= 384;
 
-		return TooFar || FollowerDead && !CarryingFollower;
+		return TooFar || FollowerDead;
 	}
 
 	void WarpToPlayer()
