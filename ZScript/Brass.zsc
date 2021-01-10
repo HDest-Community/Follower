@@ -34,9 +34,11 @@ extend class HDFollower
 			return false;
 		}
 
+		string ATag = GetTag();
+
 		if (GetTotalBrass() == 0)
 		{
-			PrintMessage(GetResponse("$BRASS_NONE"), "Follower/Brass/None", PMType_Important);
+			PrintMessage(GetResponse("$"..ATag.."_BRASS_NONE"), "Follower/"..ATag.."/Brass/None", PMType_Important);
 			return true;
 		}
 
@@ -64,7 +66,7 @@ extend class HDFollower
 			}
 
 			LinkedPlayer.A_GiveInventory("SevenMilBrass", TotalGiveAmount);
-			PrintMessage(GetResponse("$BRASS_SUCCESS"), "Follower/Brass/Success", PMType_General);
+			PrintMessage(GetResponse("$"..ATag.."_BRASS_SUCCESS"), "Follower/"..ATag.."/Brass/Success", PMType_General);
 		}
 		else
 		{
@@ -73,12 +75,12 @@ extend class HDFollower
 		return true;
 	}
 
-	int GetTotalBrass() const
+	clearscope int GetTotalBrass()
 	{
 		return CountInv("SevenMilBrass") + StoredBrass;
 	}
 
-	int GetMaxBrass() const
+	clearscope int GetMaxBrass()
 	{
 		return 1000 + hdf_extrabrass;
 	}

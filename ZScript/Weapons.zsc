@@ -62,6 +62,8 @@ extend class HDFollower
 			return;
 		}
 
+		string ATag = GetTag();
+
 		class<Inventory> AmmoType = wpn.GetAmmoType();
 		int MaxGive = GetMaxGiveAmount(wpn);
 
@@ -74,7 +76,7 @@ extend class HDFollower
 		else if (wpn.SpareAmmo >= wpn.GetMaxSpare())
 		{
 			TryReloadWeapon(wpn, wpn.GetMaxMag(), RLF_MANUAL);
-			PrintMessage(GetResponse("$AMMOGIVE_"..wpn.GetLocalizationTag().."_TOOMANY"), "Follower/AmmoGive/"..wpn.GetLocalizationTag().."/TooMany", PMType_Important);
+			PrintMessage(GetResponse("$"..ATag.."_AMMOGIVE_"..wpn.GetLocalizationTag().."_TOOMANY"), "Follower/"..ATag.."/AmmoGive/"..wpn.GetLocalizationTag().."/TooMany", PMType_Important);
 			return;
 		}
 		else if (LinkedPlayer.CountInv(AmmoType) == 0)
@@ -89,7 +91,7 @@ extend class HDFollower
 		wpn.HasWarnedLowAmmo = false;
 		TryReloadWeapon(wpn, wpn.GetMaxMag(), RLF_MANUAL);
 
-		PrintMessage(GetResponse("$AMMOGIVE_"..wpn.GetLocalizationTag().."_SUCCESS"), "Follower/AmmoGive/"..wpn.GetLocalizationTag().."/Success", PMType_General);
+		PrintMessage(GetResponse("$"..ATag.."_AMMOGIVE_"..wpn.GetLocalizationTag().."_SUCCESS"), "Follower/"..ATag.."/AmmoGive/"..wpn.GetLocalizationTag().."/Success", PMType_General);
 	}
 
 	// [Ace] If weapon is out of ammo, reload.
@@ -99,6 +101,8 @@ extend class HDFollower
 		{
 			return;
 		}
+
+		string ATag = GetTag();
 
 		int MaxMag = wpn.GetMaxMag();
 		if (MaxMag > 0 && (wpn.Mag <= 0 || wpn.Mag < min) || MaxMag == 0 && wpn.ChamberedRound != FollowerWeapon.CRType_Chambered)
@@ -119,7 +123,7 @@ extend class HDFollower
 				if (!(flags & RLF_SILENT) && (!wpn.HasWarnedLowAmmo || (flags & RLF_MANUAL)))
 				{
 					wpn.HasWarnedLowAmmo = true;
-					PrintMessage(GetResponse("$NOAMMO_"..wpn.GetLocalizationTag()), "Follower/NoAmmo/"..wpn.GetLocalizationTag(), PMType_Critical);
+					PrintMessage(GetResponse("$"..ATag.."_NOAMMO_"..wpn.GetLocalizationTag()), "Follower/"..ATag.."/NoAmmo/"..wpn.GetLocalizationTag(), PMType_Critical);
 				}
 
 				if (!(flags & RLF_NOJUMP))
@@ -207,12 +211,17 @@ extend class HDFollower
 		A_Face(CTarget, 0, 0, flags: FAF_MIDDLE);
 
 		// [Ace] If you're incapped, follower can probably shoot over you. Otherwise it's not a good idea.
-		Actor ATarget = AimTarget();
-		if (ATarget && bFRIENDLY && (ATarget is "PlayerPawn" || ATarget.bFRIENDLY))
+		if (IsAimBlocked())
 		{
 			AimTimer = 0;
 			SetStateLabel("Aiming");
 		}
+	}
+
+	protected bool IsAimBlocked()
+	{
+		Actor ATarget = AimTarget();
+		return CTarget && ATarget && bFRIENDLY && (ATarget is "PlayerPawn" || ATarget.bFRIENDLY);
 	}
 
 	protected FollowerWeapon SelWeapon;
@@ -820,7 +829,17 @@ class FW_RocketLauncher : FollowerWeapon
 
 	override bool CheckWeaponCondition(HDFollower caller, HDPlayerPawn plr, Actor trgt)
 	{
-		return caller.Distance3D(trgt) >= 42 * 10.60 && (plr.Distance3D(trgt) >= 42 * 15 || plr.Distance3D(trgt) >= 42 * 4 && !trgt.CheckSight(plr));
+		bool OtherFollowersSafe = true;
+		for (int i = 0; i < caller.Handler.Followers.Size(); ++i)
+		{
+			HDFollower f = caller.Handler.Followers[i];
+			if (f.Distance3D(trgt) && trgt.CheckSight(f))
+			{
+				OtherFollowersSafe = false;
+				break;
+			}
+		}
+		return OtherFollowersSafe && caller.Distance3D(trgt) >= 42 * 10.60 && (plr.Distance3D(trgt) >= 42 * 15 || plr.Distance3D(trgt) >= 42 * 4 && !trgt.CheckSight(plr));
 	}
 }
 

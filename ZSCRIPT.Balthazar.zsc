@@ -1,0 +1,63 @@
+class FollowerBalthazar : HDFollower
+{
+	override void GiveStartingItems()
+	{
+		Medikits = hdf_loadout_balthazar_medikits;
+		Stimpacks = hdf_loadout_balthazar_stimpacks + Medikits;
+
+		int ArmorType = hdf_loadout_balthazar_armortype;
+		if (ArmorType > 0)
+		{
+			GiveArmour(1.0, ArmorType >= 2 ? 1.0 : 0.0, hdf_loadout_balthazar_armorcondition);
+		}
+	}
+
+	override void InitWeapons()
+	{
+		int WeaponFlags = hdf_loadout_balthazar_weapons;
+		int StartingAmmoFlags = hdf_loadout_balthazar_startingammo;
+
+		static const string AllWeapons[] = { "FW_SMG", "FW_Hunter", "FW_ZM66", "FW_RocketLauncher", "FW_Liberator", "FW_Boss", "FW_Bronto" };
+		for (int i = 0; i < AllWeapons.Size(); ++i)
+		{
+			class<FollowerWeapon> fw = AllWeapons[i];
+			if (fw && WeaponFlags & (1 << i))
+			{
+				FollowerWeapon wpn = FollowerWeapon(new(fw));
+				if (StartingAmmoFlags & (1 << i))
+				{
+					wpn.Init();
+				}
+				Weapons.Push(wpn);
+			}
+		}
+	}
+
+	Default
+	{
+		SeeSound "Follower/Balthazar/See";
+		PainSound "Follower/Balthazar/Pain";
+		DeathSound "Follower/Balthazar/Death";
+		Tag "Balthazar";
+		HDFollower.FollowerInfo 2, GENDER_MALE, 'FollowerBodyBalthazar', 'LeftBehindBalthazar';
+		Scale 0.9;
+	}
+
+	States
+	{
+		Spawn:
+			FLW2 A 0;
+			Goto Super::Spawn;
+	}
+}
+
+class LeftBehindBalthazar : LeftBehindFollower {}
+
+class FollowerBodyBalthazar : FollowerBody
+{
+	Default
+	{
+		Inventory.Icon "FOLLB0";
+		Tag "Balthazar";
+	}
+}

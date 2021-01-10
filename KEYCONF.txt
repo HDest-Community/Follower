@@ -1,6 +1,12 @@
 AddKeySection "HD Follower Keybinds" "HDFollowerKeys"
 AddMenuKey "Open Command Menu" "HDF_OpenMenu"
 
-alias "HDF_WarpToPlayer" "netevent HDF_WarpToPlayer"
-alias "HDF_ResetFollower" "netevent HDF_ResetFollower"
+alias "HDF_WarpFreylisToPlayer" "netevent HDF_WarpToPlayer 1"
+alias "HDF_WarpBalthazarToPlayer" "netevent HDF_WarpToPlayer 2"
+alias "HDF_WarpValnosToPlayer" "netevent HDF_WarpToPlayer 3"
+
+alias "HDF_ResetFreylis" "netevent HDF_ResetFollower 1"
+alias "HDF_ResetBalthazar" "netevent HDF_ResetFollower 2"
+alias "HDF_ResetValnos" "netevent HDF_ResetFollower 3"
+
 alias "HDF_OpenMenu" "netevent HDF_SetFollowerMenu 1"

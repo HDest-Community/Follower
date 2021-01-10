@@ -54,6 +54,8 @@ extend class HDFollower
 			return;
 		}
 
+		string ATag = GetTag();
+
 		if (Distance3D(LinkedPlayer) > radius + MaxInventoryDistance)
 		{
 			ThinkMessage(LinkedPlayer, "$MEDGIVE_FAR_PLR");
@@ -61,7 +63,7 @@ extend class HDFollower
 		}
 		else if (Medikits >= MaxMedikits)
 		{
-			PrintMessage(GetResponse("$MEDGIVE_TOOMANY"), "Follower/MedGive/TooMany", PMType_Important);
+			PrintMessage(GetResponse("$"..ATag.."_MEDGIVE_TOOMANY"), "Follower/"..ATag.."/MedGive/TooMany", PMType_Important);
 			return;
 		}
 		else if (!LinkedPlayer.CheckInventory("PortableMedikit", 1))
@@ -72,7 +74,7 @@ extend class HDFollower
 
 		LinkedPlayer.A_TakeInventory("PortableMedikit", 1);
 		LinkedPlayer.A_GiveInventory("SecondBlood", 1);
-		PrintMessage(GetResponse("$MEDGIVE_SUCCESS"), "Follower/MedGive/Success", PMType_General);
+		PrintMessage(GetResponse("$"..ATag.."_MEDGIVE_SUCCESS"), "Follower/"..ATag.."/MedGive/Success", PMType_General);
 
 		Medikits++;
 		Stimpacks++;
@@ -85,15 +87,17 @@ extend class HDFollower
 			return;
 		}
 		
+		string ATag = GetTag();
+
 		let PlayerStimpack = PortableStimpack(LinkedPlayer.FindInventory("PortableStimpack"));
 		if (Distance3D(LinkedPlayer) > radius + MaxInventoryDistance)
 		{
-			ThinkMessage(LinkedPlayer, "$STIMGIVE_FAR_PLR");
+			ThinkMessage(LinkedPlayer, "$"..ATag.."_STIMGIVE_FAR_PLR");
 			return;
 		}
 		else if (Stimpacks >= MaxStimpacks)
 		{
-			PrintMessage(GetResponse("$STIMGIVE_TOOMANY"), "Follower/StimGive/TooMany", PMType_Important);
+			PrintMessage(GetResponse("$"..ATag.."_STIMGIVE_TOOMANY"), "Follower/"..ATag.."/StimGive/TooMany", PMType_Important);
 			return;
 		}
 		else if (!PlayerStimpack)
@@ -103,7 +107,7 @@ extend class HDFollower
 		}
 
 		PlayerStimpack.TakeMag(false);
-		PrintMessage(GetResponse("$STIMGIVE_SUCCESS"), "Follower/StimGive/Success", PMType_General);
+		PrintMessage(GetResponse("$"..ATag.."_STIMGIVE_SUCCESS"), "Follower/"..ATag.."/StimGive/Success", PMType_General);
 
 		Stimpacks++;
 	}
@@ -236,7 +240,11 @@ extend class HDFollower
 				b.A_ChangeVelocity(3,1,2,CVF_RELATIVE);
 				b.A_StartSound("weapons/grenopen", 8);
 			}
-			#### J 0 PrintMessage(GetResponse("$MEDIC_STIMMED"), "Follower/Medic/Stimmed", PMType_General);
+			#### J 0
+			{
+				string ATag = GetTag();
+				PrintMessage(GetResponse("$"..ATag.."_MEDIC_STIMMED"), "Follower/"..ATag.."/Medic/Stimmed", PMType_General);
+			}
 			Goto StapleHumptyDumptyBackTogetherAgain;
 	}
 }

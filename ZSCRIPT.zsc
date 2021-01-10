@@ -13,12 +13,11 @@ version "4.5"
 #include "ZScript/Brass.zsc"
 #include "ZScript/Loadout.zsc"
 
-class HDFSkinData play
-{
-	virtual vector2 GetScale() { return (1, 1); }
-}
+#include "ZSCRIPT.Freylis.zsc"
+#include "ZSCRIPT.Balthazar.zsc"
+#include "ZSCRIPT.Valnos.zsc"
 
-class HDFollower : HDMobMan
+class HDFollower : HDMobMan abstract
 {
 	enum PrintMessageType
 	{
@@ -27,42 +26,16 @@ class HDFollower : HDMobMan
 		PMType_Important,
 		PMType_General
 	}
+
 	// --------------------------------------------------
 	// NEVER GONNA TOUCH THESE PROBABLY
 	// --------------------------------------------------
-
-	void NextOutfit()
-	{
-		if (Status == FStatus_InactiveOrDead)
-		{
-			return;
-		}
-
-		if (Outfits.Size() < 2)
-		{
-			LinkedPlayer.A_Log("There aren't any other outfits at the moment");
-			return;
-		}
-
-		++Outfit %= Outfits.Size();
-
-		sprite = GetSpriteIndex(Outfits[Outfit]);
-
-		string SoundString;
-		switch (Outfit)
-		{
-			default: SoundString = SeeSound; break;
-		}
-		A_StartSound(SoundString, CHAN_VOICE, CHANF_OVERLAP);
-
-		//SetStateLabel("Spawn");
-	}
 
 	private HDBleedingWound GetBleedThinker()
 	{
 		ThinkerIterator it = ThinkerIterator.Create("HDBleedingWound", STAT_DEFAULT);
 		HDBleedingWound BleedThinker;
-		while((BleedThinker = HDBleedingWound(it.Next())))
+		while ((BleedThinker = HDBleedingWound(it.Next())))
 		{
 			if (BleedThinker.bleeder == self)
 			{
@@ -80,6 +53,11 @@ class HDFollower : HDMobMan
 		return TooFar || FollowerDead;
 	}
 
+	clearscope bool CanInteractWith()
+	{
+		return Health > 0 && bFRIENDLY || Health <= 0;
+	}
+
 	void WarpToPlayer()
 	{
 		Warp(LinkedPlayer, 16, flags: WARPF_NOCHECKPOSITION);
@@ -87,7 +65,7 @@ class HDFollower : HDMobMan
 
 	private void PrintMessage(string message, string voiceLine, PrintMessageType type)
 	{
-		if (Health <= 0)
+		if (Health <= 0 || bSILENT)
 		{
 			return;
 		}
@@ -125,6 +103,20 @@ class HDFollower : HDMobMan
 		return AbsAngle(PAngle, PAngleTo) <= MaxFaceAngle;
 	}
 
+	clearscope string GetPronoun(bool upper)
+	{
+		// [Ace] Personal pronouns, objective case, third person singular.
+		switch (Gender)
+		{
+			case GENDER_MALE: return upper ? "Him" : "him";
+			case GENDER_FEMALE: return upper ? "Her" : "her";
+			case GENDER_NEUTRAL: return upper ? "It" : "it";
+			case GENDER_OTHER: return upper ? "Them" : "them";
+		}
+
+		return "??????";
+	}
+
 	// --------------------------------------------------
 	// TICKER
 	// --------------------------------------------------
@@ -156,7 +148,7 @@ class HDFollower : HDMobMan
 			{
 				if (Distance3D(LinkedPlayer) > 512)
 				{
-					PrintMessage(GetResponse("$ARMORGIVE_RANAWAY"), "Follower/ArmorGive/RanAway", PMType_Critical);
+					PrintMessage(GetResponse("$"..GetTag().MakeUpper().."_ARMORGIVE_RANAWAY"), "Follower/"..GetTag().."/ArmorGive/RanAway", PMType_Critical);
 					Status = FStatus_None;
 				}
 				else if (level.time % 35 == 0)
@@ -185,15 +177,15 @@ class HDFollower : HDMobMan
 	// INITIALIZATION
 	// --------------------------------------------------
 
+	override void BeginPlay()
+	{
+		Handler = FollowerHandler(EventHandler.Find('FollowerHandler'));
+
+		Super.BeginPlay();
+	}
+
 	override void PostBeginPlay()
 	{
-		// [Ace] Nuke self if duplicate.
-		if (CheckProximity("HDFollower", 65535, 1, flags: CPXF_ANCESTOR))
-		{
-			Destroy();
-			return;
-		}
-
 		ResetIdleTimer();
 		ResetTauntTimer();
 
@@ -203,25 +195,27 @@ class HDFollower : HDMobMan
 		Bloodloss = NewBloodloss;
 		BodyDamage = NewBodyDamage;
 		Stunned = NewStunned;
-
-		for (int i = 0; i < AllClasses.Size(); ++i)
-		{
-			if (AllClasses[i] is "HDFSkinData" && AllClasses[i].GetClassName() != 'HDFSkinData')
-			{
-				HDFSkinData Data = HDFSkinData(new(AllClasses[i]));
-				Scale = Data.GetScale();
-			}
-		}
 	}
 
 	const MaxInventoryDistance = 48;
 	const MaxFaceAngle = 20;
 
-	static const string Outfits[] = { "FWL1" };
-	int Outfit;
+	FollowerHandler Handler;
 
 	protected double MovementSpeed, MaxMovementSpeed;
 	property MovementSpeed: MovementSpeed, MaxMovementSpeed;
+
+	meta int ResurrectType;
+	property ResurrectType: ResurrectType;
+
+	meta int Index;
+	meta EPlayerGender Gender;
+	meta class<FollowerBody> DataClass;
+	meta class<LeftBehindFollower> MissingClass;
+	property FollowerInfo: Index, Gender, DataClass, MissingClass;
+
+	private int BehaviourFlags;
+	flagdef Silent: BehaviourFlags, 0;
 
 	Default
 	{
@@ -252,16 +246,14 @@ class HDFollower : HDMobMan
 		HDMobBase.DownedFrame 14;
 		HDMobBase.MaxBloodLoss 400;
 		Obituary "%o suffered friendly fire from %k, but friendly fire, isn't.";
-		SeeSound "Follower/See";
-		PainSound "Follower/Pain";
-		DeathSound "Follower/Death";
-		Tag "$FOLLOWER_NAME";
+		Species 'HDFollower';
+		HDFollower.ResurrectType RESF_BLUES | RESF_BLOOD;
 	}
 	
 	States
 	{
 		Spawn:
-			FLW1 A 1;
+			#### A 1;
 			Goto Idle;
 
 		Moving:
@@ -363,4 +355,4 @@ class HDFollower : HDMobMan
 	}
 }
 
-class LeftBehindFollower : Inventory { Default { +INVENTORY.UNDROPPABLE } }
+class LeftBehindFollower : Inventory abstract { Default { +INVENTORY.UNDROPPABLE } }

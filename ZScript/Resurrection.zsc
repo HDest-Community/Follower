@@ -1,13 +1,12 @@
-enum RType
-{
-	RType_None,
-	RType_Blues,
-	RType_Blood
-}
-
 extend class HDFollower
 {
-	bool TryRevive(RType type)
+	enum ResurrectionFlags
+	{
+		RESF_BLUES = 1 << 0,
+		RESF_BLOOD = 1 << 1
+	}
+
+	bool TryRevive(int type)
 	{
 		if (Distance3D(LinkedPlayer) > radius + MaxReviveDistance)
 		{
@@ -17,7 +16,12 @@ extend class HDFollower
 
 		switch (type)
 		{
-			case RType_Blues:
+			case 0:
+				if (!(ResurrectType & RESF_BLUES))
+				{
+					return false;
+				}
+
 				if (Blues > 0)
 				{
 					ThinkMessage(LinkedPlayer, "$REVIVE_BLUES_ALREADYWORKING_PLR");
@@ -54,7 +58,12 @@ extend class HDFollower
 				Blues = RequiredSips * 12;
 				break;
 
-			case RType_Blood:
+			case 1:
+				if (!(ResurrectType & RESF_BLOOD))
+				{
+					return false;
+				}
+
 				int RequiredBlood = GetRequiredBlood();
 				int CurrentWounds = LinkedPlayer.woundcount;
 				int RequiredWounds = (RequiredBlood - CurrentWounds) * 2;
@@ -67,6 +76,7 @@ extend class HDFollower
 
 	private void CheckRevive()
 	{
+		string ATag = GetTag();
 		if (Blues > 0)
 		{
 			SpawnReviveParticles("2222FF");
@@ -79,7 +89,7 @@ extend class HDFollower
 				else
 				{
 					bFRIENDLY = true;
-					PrintMessage(GetResponse("$REVIVE_BLUES_SUCCESS"), "Follower/Revive/Blues/Success", PMType_Important);
+					PrintMessage(GetResponse("$"..ATag.."_REVIVE_BLUES_SUCCESS"), "Follower/"..ATag.."/Revive/Blues/Success", PMType_Important);
 				}
 			}
 		}
@@ -106,7 +116,7 @@ extend class HDFollower
 				{
 					LinkedPlayer.AggravatedDamage += RequiredBlood;
 					bFRIENDLY = true;
-					PrintMessage(GetResponse("$REVIVE_BLOOD_SUCCESS"), "Follower/Revive/Blood/Success", PMType_Important);
+					PrintMessage(GetResponse("$"..ATag.."_REVIVE_BLOOD_SUCCESS"), "Follower/"..ATag.."/Revive/Blood/Success", PMType_Important);
 				}
 			}
 		}
@@ -130,12 +140,12 @@ extend class HDFollower
 		}
 	}
 
-	clearscope int GetRequiredSips()
+	virtual clearscope int GetRequiredSips()
 	{
 		return clamp(BodyDamage / 200, 2, 12);
 	}
 
-	clearscope int GetRequiredBlood()
+	virtual clearscope int GetRequiredBlood()
 	{
 		return min(BloodReviveTicker / (35 * 4), 60);
 	}

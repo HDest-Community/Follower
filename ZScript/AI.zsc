@@ -12,13 +12,15 @@ extend class HDFollower
 	{
 		if (hdf_debug >= 2)
 		{
-			Console.Printf("Follower has %s out.\nCurrent status is %i.\nFollower is targeting %s.\n--------------------", SelWeapon ? SelWeapon.GetName() : "no weapon", Status, CTarget ? CTarget.GetTag() : "nothing");
+			Console.Printf("Follower "..GetTag().." has %s out.\nCurrent status is %i.\nFollower is targeting %s.\n--------------------", SelWeapon ? SelWeapon.GetName() : "no weapon", Status, CTarget ? CTarget.GetTag() : "nothing");
 		}
 		bool CanSeeGoal = TGoal && CheckSight(TGoal, SF_SEEPASTSHOOTABLELINES); // [Ace] This can be either the player or a specific goal actor. It's for when it doesn't matter.
 		bool CanSeePlayer = CheckSight(LinkedPlayer, SF_SEEPASTSHOOTABLELINES);
 		bool NeedsHelp = PlayerIsIncapped(); // [Ace] You're just incapped.
 		bool NeedsMedic = PlayerNeedsMedic(); // [Ace] You're bleeding and incapped.
 		bool IsHelping = IsHelpingPlayer();
+		int NearbyFollowerCount = FollowersNearActor(self, 64);
+		int FollowerCount = Handler.Followers.Size();
 
 		if (Status != FStatus_InCombat)
 		{
@@ -75,7 +77,7 @@ extend class HDFollower
 					}
 
 					// [Ace] Go to player if they're too far away.
-					if (bFRIENDLY && Distance3D(LinkedPlayer) > MinPlayerRange && Distance3D(LinkedPlayer) < MaxPlayerRange)
+					if (bFRIENDLY && Distance3D(LinkedPlayer) > MinPlayerRange * (1 + FollowerCount / 3.0) && Distance3D(LinkedPlayer) < MaxPlayerRange)
 					{
 						if (CanSeePlayer)
 						{
@@ -88,7 +90,7 @@ extend class HDFollower
 						}
 					}
 
-					if (!Moving && IdleTimer <= 0)
+					if (!Moving && (IdleTimer <= 0 || IsSteppingOnSomeone() || NearbyFollowerCount > 0))
 					{
 						// [Ace] Spawn a new idle spot.
 						vector3 SpotPos = Vec3Angle(random(16, 96), random(0, 359));
@@ -108,8 +110,14 @@ extend class HDFollower
 			LookForEnemies();
 		}
 
+		// [Ace] Step to the side if something is blocking the view.
+		if (Status == FStatus_InCombat && IsAimBlocked())
+		{
+			A_ChangeVelocity(0, default.MovementSpeed / 1.5, vel.z, CVF_RELATIVE | CVF_REPLACE);
+		}
+
 		// [Ace] Movement. Always travel to goals if there are any. Status between moving and idle should not be set elsewhere.
-		if (Status != FStatus_WaitingForArmor && (Status != FStatus_InCombat || Order == FOrder_GoAndCover) && TGoal && (TGoal is "PlayerPawn" && Distance2D(TGoal) > (Order == FOrder_ComeAndHelp && (NeedsMedic || NeedsHelp) ? MedicRange : MinPlayerRangeStop) || TGoal is "TargetGoal" && Distance2D(TGoal) > 16) && Distance2D(TGoal) < MaxGoalRange)
+		if (Status != FStatus_WaitingForArmor && (Status != FStatus_InCombat || Order == FOrder_GoAndCover) && TGoal && (TGoal is "PlayerPawn" && Distance2D(TGoal) > (Order == FOrder_ComeAndHelp && (NeedsMedic || NeedsHelp) ? MedicRange : MinPlayerRangeStop * (1 + FollowerCount / 3.0)) || TGoal is "TargetGoal" && Distance2D(TGoal) > 16) && Distance2D(TGoal) < MaxGoalRange)
 		{
 			if (TGoal is "PlayerPawn" && Order == FOrder_ComeAndHelp && (NeedsMedic || NeedsHelp))
 			{
@@ -156,7 +164,9 @@ extend class HDFollower
 			}
 
 			ResetIdleTimer();
+
 			A_ChangeVelocity(MovementSpeed, 0, vel.z, CVF_RELATIVE | CVF_REPLACE);
+			A_RadiusThrust(128, 32, RTF_NOIMPACTDAMAGE, 32, 'HDFollower');
 			Moving = true;
 
 			// [Ace] Stop trying to reach goal shortly after losing LOS.
@@ -251,6 +261,40 @@ extend class HDFollower
 	private void ResetTauntTimer()
 	{
 		TauntTimer = random(35 * 10, 35 * 30);
+	}
+
+	private int FollowersNearActor(Actor a, double dist)
+	{
+		int Total = 0;
+		for (int i = 0; i < Handler.Followers.Size(); ++i)
+		{
+			if (Handler.Followers[i] != a && Handler.Followers[i].Distance3D(a) <= dist)
+			{
+				Total++;
+			}
+		}
+		return Total;
+	}
+
+	private bool IsSteppingOnSomeone()
+	{
+		if (bOnMobj)
+		{
+			if (Distance2D(LinkedPlayer) <= LinkedPlayer.Radius + 4)
+			{
+				return true;
+			}
+
+			for (int i = 0; i < Handler.Followers.Size(); ++i)
+			{
+				if (Distance2D(Handler.Followers[i]) <= Handler.Followers[i].Radius + 4)
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	const MinPlayerRangeStop = 96; // [Ace] If following the player, stop if closer than this distance.

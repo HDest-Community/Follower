@@ -2,4 +2,10 @@ Code:
 - Accensus
 
 Sprites:
-- HyperUltra64
+- HyperUltra64: Freylis, Valnos
+- HorrorMovieGuy: Cultist
+
+Sounds:
+- Blood (Monolith): Cultist Lines
+- Heroes of the Storm (Blizzard): Valnos Pain
+- Dynasty Warriors 8 (Koei Tecmo): Valnos Death

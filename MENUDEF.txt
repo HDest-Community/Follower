@@ -14,32 +14,9 @@ OptionMenu "HDFollowerMenu"
 	StaticText "doesn't target Strife's civilians.", "White"
 	StaticText ""
 
-	StaticText "----- Loadout (Weapons) -----", "Teal"
-	FlagOption "SMG", "hdf_loadout_weapons", "YesNo", 0
-	FlagOption "Hunter", "hdf_loadout_weapons", "YesNo", 1
-	FlagOption "ZM66", "hdf_loadout_weapons", "YesNo", 2
-	FlagOption "Rocket Launcher", "hdf_loadout_weapons", "YesNo", 3
-	FlagOption "Liberator", "hdf_loadout_weapons", "YesNo", 4
-	FlagOption "Boss", "hdf_loadout_weapons", "YesNo", 5
-	FlagOption "Bronto", "hdf_loadout_weapons", "YesNo", 6
-	StaticText ""
-
-	StaticText "----- Loadout (Starting Ammo) -----", "Teal"
-	FlagOption "SMG", "hdf_loadout_startingammo", "YesNo", 0
-	FlagOption "Hunter", "hdf_loadout_startingammo", "YesNo", 1
-	FlagOption "ZM66", "hdf_loadout_startingammo", "YesNo", 2
-	FlagOption "Rocket Launcher", "hdf_loadout_startingammo", "YesNo", 3
-	FlagOption "Liberator", "hdf_loadout_startingammo", "YesNo", 4
-	FlagOption "Boss", "hdf_loadout_startingammo", "YesNo", 5
-	FlagOption "Bronto", "hdf_loadout_startingammo", "YesNo", 6
-	StaticText ""
-
-	StaticText "----- Loadout (Items) -----", "Teal"
-	Slider "Medikits", "hdf_loadout_medikits", 0, 2, 1, 0
-	Slider "Stimpacks", "hdf_loadout_stimpacks", 0, 4, 1, 0
-	StaticText ""
-	Option "Armor", "hdf_loadout_armor", "ArmorType"
-
+	Submenu "Freylis Options", "HDFollowerMenuFreylis"
+	Submenu "Balthazar Options", "HDFollowerMenuBalthazar"
+	Submenu "Valnos Options", "HDFollowerMenuValnos"
 	StaticText ""
 
 	StaticText "----- Audio/Visual -----", "Teal"
@@ -47,11 +24,122 @@ OptionMenu "HDFollowerMenu"
 	Option "Voice Responses", "hdf_printlevel_voice", "PrintLevel"
 	StaticText ""
 	Option "Enable Idle Comments", "hdf_enablecomments", "YesNo"
-	StaticText "Voice lines the follower will sometimes say when they move.", "White"
+	StaticText "Voice lines the followers will sometimes say when they move.", "White"
+	StaticText ""
+}
+
+OptionMenu "HDFollowerMenuFreylis"
+{
+	Title "Follower Loadout - Freylis"
+
+	FlagOption "Enabled", "hdf_followers", "YesNo", 0
+	StaticText ""
+	SafeCommand "Teleport To Player", "HDF_WarpFreylisToPlayer"
+	SafeCommand "Create/Recreate Follower", "HDF_ResetFreylis"
 	StaticText ""
 
-	StaticText "----- Miscellaneous -----", "Teal"
-	SafeCommand "Teleport Follower To Player", "HDF_WarpToPlayer"
+	StaticText "----- Loadout (Weapons) -----", "Teal"
+	FlagOption "SMG", "hdf_loadout_freylis_weapons", "YesNo", 0
+	FlagOption "Hunter", "hdf_loadout_freylis_weapons", "YesNo", 1
+	FlagOption "ZM66", "hdf_loadout_freylis_weapons", "YesNo", 2
+	FlagOption "Rocket Launcher", "hdf_loadout_freylis_weapons", "YesNo", 3
+	FlagOption "Liberator", "hdf_loadout_freylis_weapons", "YesNo", 4
+	FlagOption "Boss", "hdf_loadout_freylis_weapons", "YesNo", 5
+	FlagOption "Bronto", "hdf_loadout_freylis_weapons", "YesNo", 6
+	StaticText ""
+
+	StaticText "----- Loadout (Starting Ammo) -----", "Teal"
+	FlagOption "SMG", "hdf_loadout_freylis_startingammo", "YesNo", 0
+	FlagOption "Hunter", "hdf_loadout_freylis_startingammo", "YesNo", 1
+	FlagOption "ZM66", "hdf_loadout_freylis_startingammo", "YesNo", 2
+	FlagOption "Rocket Launcher", "hdf_loadout_freylis_startingammo", "YesNo", 3
+	FlagOption "Liberator", "hdf_loadout_freylis_startingammo", "YesNo", 4
+	FlagOption "Boss", "hdf_loadout_freylis_startingammo", "YesNo", 5
+	FlagOption "Bronto", "hdf_loadout_freylis_startingammo", "YesNo", 6
+	StaticText ""
+
+	StaticText "----- Loadout (Items) -----", "Teal"
+	Slider "Medikits", "hdf_loadout_freylis_medikits", 0, 2, 1, 0
+	Slider "Stimpacks", "hdf_loadout_freylis_stimpacks", 0, 4, 1, 0
+	StaticText ""
+	Option "Armor", "hdf_loadout_freylis_armortype", "ArmorType"
+	Slider "Condition", "hdf_loadout_freylis_armorcondition", 0.01, 1.0, 0.01, 2
+}
+
+OptionMenu "HDFollowerMenuBalthazar"
+{
+	Title "Follower Loadout - Balthazar"
+
+	FlagOption "Enabled", "hdf_followers", "YesNo", 1
+	StaticText ""
+	SafeCommand "Teleport To Player", "HDF_WarpBalthazarToPlayer"
+	SafeCommand "Create/Recreate Follower", "HDF_ResetBalthazar"
+	StaticText ""
+
+	StaticText "----- Loadout (Weapons) -----", "Teal"
+	FlagOption "SMG", "hdf_loadout_balthazar_weapons", "YesNo", 0
+	FlagOption "Hunter", "hdf_loadout_balthazar_weapons", "YesNo", 1
+	FlagOption "ZM66", "hdf_loadout_balthazar_weapons", "YesNo", 2
+	FlagOption "Rocket Launcher", "hdf_loadout_balthazar_weapons", "YesNo", 3
+	FlagOption "Liberator", "hdf_loadout_balthazar_weapons", "YesNo", 4
+	FlagOption "Boss", "hdf_loadout_balthazar_weapons", "YesNo", 5
+	FlagOption "Bronto", "hdf_loadout_balthazar_weapons", "YesNo", 6
+	StaticText ""
+
+	StaticText "----- Loadout (Starting Ammo) -----", "Teal"
+	FlagOption "SMG", "hdf_loadout_balthazar_startingammo", "YesNo", 0
+	FlagOption "Hunter", "hdf_loadout_balthazar_startingammo", "YesNo", 1
+	FlagOption "ZM66", "hdf_loadout_balthazar_startingammo", "YesNo", 2
+	FlagOption "Rocket Launcher", "hdf_loadout_balthazar_startingammo", "YesNo", 3
+	FlagOption "Liberator", "hdf_loadout_balthazar_startingammo", "YesNo", 4
+	FlagOption "Boss", "hdf_loadout_balthazar_startingammo", "YesNo", 5
+	FlagOption "Bronto", "hdf_loadout_balthazar_startingammo", "YesNo", 6
+	StaticText ""
+
+	StaticText "----- Loadout (Items) -----", "Teal"
+	Slider "Medikits", "hdf_loadout_balthazar_medikits", 0, 2, 1, 0
+	Slider "Stimpacks", "hdf_loadout_balthazar_stimpacks", 0, 4, 1, 0
+	StaticText ""
+	Option "Armor", "hdf_loadout_balthazar_armortype", "ArmorType"
+	Slider "Condition", "hdf_loadout_balthazar_armorcondition", 0.01, 1.0, 0.01, 2
+}
+
+OptionMenu "HDFollowerMenuValnos"
+{
+	Title "Follower Loadout - Valnos"
+
+	FlagOption "Enabled", "hdf_followers", "YesNo", 2
+	StaticText ""
+	SafeCommand "Teleport To Player", "HDF_WarpValnosToPlayer"
+	SafeCommand "Create/Recreate Follower", "HDF_ResetValnos"
+	StaticText ""
+
+	StaticText "----- Loadout (Weapons) -----", "Teal"
+	FlagOption "SMG", "hdf_loadout_valnos_weapons", "YesNo", 0
+	FlagOption "Hunter", "hdf_loadout_valnos_weapons", "YesNo", 1
+	FlagOption "ZM66", "hdf_loadout_valnos_weapons", "YesNo", 2
+	FlagOption "Rocket Launcher", "hdf_loadout_valnos_weapons", "YesNo", 3
+	FlagOption "Liberator", "hdf_loadout_valnos_weapons", "YesNo", 4
+	FlagOption "Boss", "hdf_loadout_valnos_weapons", "YesNo", 5
+	FlagOption "Bronto", "hdf_loadout_valnos_weapons", "YesNo", 6
+	StaticText ""
+
+	StaticText "----- Loadout (Starting Ammo) -----", "Teal"
+	FlagOption "SMG", "hdf_loadout_valnos_startingammo", "YesNo", 0
+	FlagOption "Hunter", "hdf_loadout_valnos_startingammo", "YesNo", 1
+	FlagOption "ZM66", "hdf_loadout_valnos_startingammo", "YesNo", 2
+	FlagOption "Rocket Launcher", "hdf_loadout_valnos_startingammo", "YesNo", 3
+	FlagOption "Liberator", "hdf_loadout_valnos_startingammo", "YesNo", 4
+	FlagOption "Boss", "hdf_loadout_valnos_startingammo", "YesNo", 5
+	FlagOption "Bronto", "hdf_loadout_valnos_startingammo", "YesNo", 6
+	StaticText ""
+
+	StaticText "----- Loadout (Items) -----", "Teal"
+	Slider "Medikits", "hdf_loadout_valnos_medikits", 0, 2, 1, 0
+	Slider "Stimpacks", "hdf_loadout_valnos_stimpacks", 0, 4, 1, 0
+	StaticText ""
+	Option "Armor", "hdf_loadout_valnos_armortype", "ArmorType"
+	Slider "Condition", "hdf_loadout_valnos_armorcondition", 0.01, 1.0, 0.01, 2
 }
 
 AddOptionMenu "OptionsMenu"
@@ -64,7 +152,7 @@ OptionValue "PrintLevel"
 	0, "None"
 	1, "Critical only"
 	2, "Important only"
-	3, "All" // [Ace] y tho?
+	3, "All"
 }
 
 OptionValue "ArmorType"

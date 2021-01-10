@@ -1,0 +1,62 @@
+class FollowerFreylis : HDFollower
+{
+	override void GiveStartingItems()
+	{
+		Medikits = hdf_loadout_freylis_medikits;
+		Stimpacks = hdf_loadout_freylis_stimpacks + Medikits;
+
+		int ArmorType = hdf_loadout_freylis_armortype;
+		if (ArmorType > 0)
+		{
+			GiveArmour(1.0, ArmorType >= 2 ? 1.0 : 0.0, hdf_loadout_freylis_armorcondition);
+		}
+	}
+
+	override void InitWeapons()
+	{
+		int WeaponFlags = hdf_loadout_freylis_weapons;
+		int StartingAmmoFlags = hdf_loadout_freylis_startingammo;
+
+		static const string AllWeapons[] = { "FW_SMG", "FW_Hunter", "FW_ZM66", "FW_RocketLauncher", "FW_Liberator", "FW_Boss", "FW_Bronto" };
+		for (int i = 0; i < AllWeapons.Size(); ++i)
+		{
+			class<FollowerWeapon> fw = AllWeapons[i];
+			if (fw && WeaponFlags & (1 << i))
+			{
+				FollowerWeapon wpn = FollowerWeapon(new(fw));
+				if (StartingAmmoFlags & (1 << i))
+				{
+					wpn.Init();
+				}
+				Weapons.Push(wpn);
+			}
+		}
+	}
+
+	Default
+	{
+		SeeSound "Follower/Freylis/See";
+		PainSound "Follower/Freylis/Pain";
+		DeathSound "Follower/Freylis/Death";
+		Tag "Freylis";
+		HDFollower.FollowerInfo 1, GENDER_FEMALE, 'FollowerBodyFreylis', 'LeftBehindFreylis';
+	}
+
+	States
+	{
+		Spawn:
+			FLW1 A 0;
+			Goto Super::Spawn;
+	}
+}
+
+class LeftBehindFreylis : LeftBehindFollower {}
+
+class FollowerBodyFreylis : FollowerBody
+{
+	Default
+	{
+		Inventory.Icon "FOLLA0";
+		Tag "Freylis";
+	}
+}

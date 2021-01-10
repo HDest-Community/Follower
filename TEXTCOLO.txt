@@ -46,3 +46,10 @@ FLW_WeaponBlue
 
 	Console: #000000 #aed4ff
 }
+
+FLW_NameBlue
+{
+	#000000 #94ebff
+
+	Console: #000000 #94ebff
+}

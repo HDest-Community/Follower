@@ -21,24 +21,26 @@ extend class HDFollower
 			Status = FStatus_None;
 		}
 
+		string ATag = GetTag();
+
 		int Index = Order == newOrder ? 1 : 2;
 		switch (newOrder)
 		{
 			case FOrder_Follow:
-				PrintMessage(GetResponse("$ORDER_FOLLOW"..Index), "Follower/Order/Follow"..Index, PMType_General);
+				PrintMessage(GetResponse("$"..ATag.."_ORDER_FOLLOW"..Index), "Follower/"..ATag.."/Order/Follow"..Index, PMType_General);
 				Order = FOrder_Follow;
 				ResetIdleTimer();
 				return true;
 
 			case FOrder_FollowIgnore:
-				PrintMessage(GetResponse("$ORDER_FOLLOWIGNORE"..Index), "Follower/Order/FollowIgnore"..Index, PMType_General);
+				PrintMessage(GetResponse("$"..ATag.."_ORDER_FOLLOWIGNORE"..Index), "Follower/"..ATag.."/Order/FollowIgnore"..Index, PMType_General);
 				HaulAss();
 				Order = FOrder_FollowIgnore;
 				ResetIdleTimer();
 				return true;
 
 			case FOrder_Cover:
-				PrintMessage(GetResponse("$ORDER_COVER"..Index), "Follower/Order/Cover"..Index, PMType_General);
+				PrintMessage(GetResponse("$"..ATag.."_ORDER_COVER"..Index), "Follower/"..ATag.."/Order/Cover"..Index, PMType_General);
 				Order = FOrder_Cover;
 				ClearGoal();
 				return true;
@@ -52,22 +54,22 @@ extend class HDFollower
 					HaulAss();
 					Order = FOrder_GoAndCover;
 					ActivateAsPlayer = true;
-					PrintMessage(GetResponse("$ORDER_GOANDCOVER2"), "Follower/Order/GoAndCover2", PMType_General);
+					PrintMessage(GetResponse("$"..ATag.."_ORDER_GOANDCOVER2"), "Follower/"..ATag.."/Order/GoAndCover2", PMType_General);
 					return true;
 				}
 				else
 				{
-					PrintMessage(GetResponse("$ORDER_GOANDCOVER1"), "Follower/Order/GoAndCover1", PMType_Important);
+					PrintMessage(GetResponse("$"..ATag.."_ORDER_GOANDCOVER1"), "Follower/"..ATag.."/Order/GoAndCover1", PMType_Important);
 					return false;
 				}
 
 			case FOrder_ComeAndHelp:
 				if (!PlayerNeedsMedic() && !PlayerIsIncapped())
 				{
-					PrintMessage(GetResponse("$ORDER_HELP3"), "Follower/Order/Help3", PMType_Important);
+					PrintMessage(GetResponse("$"..ATag.."_ORDER_HELP3"), "Follower/"..ATag.."/Order/Help3", PMType_Important);
 					return true;
 				}
-				PrintMessage(GetResponse("$ORDER_HELP"..Index), "Follower/Order/Help"..Index, PMType_Important);
+				PrintMessage(GetResponse("$"..ATag.."_ORDER_HELP"..Index), "Follower/"..ATag.."/Order/Help"..Index, PMType_Important);
 				HaulAss();
 				Order = FOrder_ComeAndHelp;
 				ResetIdleTimer();

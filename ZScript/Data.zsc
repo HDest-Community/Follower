@@ -15,10 +15,16 @@ extend class HDFollower
 				return false;
 			}
 
-			PrintMessage(GetResponse("$CARRY_SUCCESS"), "Follower/Carry/Success", PMType_General);
+			string ATag = GetTag();
+			PrintMessage(GetResponse("$"..ATag.."_CARRY_SUCCESS"), "Follower/"..ATag.."/Carry/Success", PMType_General);
 		}
 
-		let FData = FollowerBody(LinkedPlayer.GiveInventoryType("FollowerBody"));
+		let Handler = FollowerHandler(EventHandler.Find("FollowerHandler"));
+		Handler.Followers.Delete(Handler.Followers.Find(self));
+
+		let FData = FollowerBody(LinkedPlayer.GiveInventoryType(DataClass));
+
+		FData.FollowerClass = GetClass();
 
 		for (int i = 0; i < Weapons.Size(); ++i)
 		{
@@ -54,17 +60,16 @@ extend class HDFollower
 			FData.Incapped = false;
 		}
 
-		FData.Outfit = Outfit;
 		FData.Medikits = Medikits;
 		FData.SuturesLeft = SuturesLeft;
 		FData.Stimpacks = Stimpacks;
 		FData.Order = Order;
 
-		let armor = HDArmourWorn(FindInventory("HDArmourWorn"));
-		if (armor)
+		let Armor = HDArmourWorn(FindInventory("HDArmourWorn"));
+		if (Armor)
 		{
-			FData.ArmorDurability = armor.Durability;
-			FData.ArmorMega = armor.Mega;
+			FData.ArmorDurability = Armor.Durability;
+			FData.ArmorMega = Armor.Mega;
 		}
 
 		FData.CollectedBrass = GetTotalBrass();
@@ -81,8 +86,9 @@ extend class HDFollower
 
 // [Ace] This is perhaps the only useful use of an inventory item.
 // Can't use a variable in EventHandler because it gets reset on map start, and can't use a variable in StaticEventHandler because it's not saved to save games.
+// Could use a static Thinker, but then the follower would be weightless.
 
-class FollowerBody : HDPickup
+class FollowerBody : HDPickup abstract
 {
 	override void DoEffect()
 	{
@@ -111,15 +117,13 @@ class FollowerBody : HDPickup
 		+INVENTORY.UNDROPPABLE
 		HDPickup.Bulk 500;
 		Inventory.MaxAmount 1;
-		Inventory.Icon "FOLLA0";
-		Tag "$FOLLOWER_NAME";
 	}
+
+	class<HDFollower> FollowerClass;
 
 	bool NoExitDrop; // [Ace] Don't drop if level is exited in incap.
 	bool FromIncap;
 	bool AlreadyTried;
-
-	int Outfit;
 
 	// Bleeding thinker stuff.
 	bool IsBleeding;
@@ -160,7 +164,7 @@ class FollowerBody : HDPickup
 					int RandAngle = invoker.FromIncap ? random(0, 359) : 0;
 					vector3 DropDest = Vec3Angle(Distance, angle + RandAngle);
 					Sector DropSec = level.PointInSector(DropDest.xy);
-					if (DropSec && pos.z - DropSec.floorplane.ZAtPoint(DropSec.centerspot) > GetDefaultByType(GetReplacement("HDFollower")).MaxStepHeight || !level.IsPointInLevel(DropDest))
+					if (DropSec && pos.z - DropSec.floorplane.ZAtPoint(DropSec.centerspot) > GetDefaultByType(invoker.FollowerClass).MaxStepHeight || !level.IsPointInLevel(DropDest))
 					{
 						if (invoker.FromIncap)
 						{
@@ -172,18 +176,18 @@ class FollowerBody : HDPickup
 						}
 					}
 
-					[success, a] = A_SpawnItemEx(GetReplacement("HDFollower"), Distance, 0, random(8, 16), angle: RandAngle);
+					[success, a] = A_SpawnItemEx(invoker.FollowerClass, Distance, 0, random(8, 16), angle: RandAngle);
 
 					if (success)
 					{
 						let Follower = HDFollower(a);
 						let Handler = FollowerHandler(EventHandler.Find("FollowerHandler"));
-						Handler.Follower = Follower;
+						Handler.InsertFollower(Follower);
+
 						Follower.LinkedPlayer = HDPlayerPawn(self);
 
 						Follower.Health = invoker.Health;
 						Follower.Order = invoker.Order;
-						Follower.Outfit = invoker.Outfit;
 
 						// [Ace] These aren't even transferred properly because the monsters' PostBeginPlay() calls ResetDamageCounters().
 						// This is needed so that they are.
