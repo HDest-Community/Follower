@@ -2,7 +2,7 @@ Code:
 - Accensus
 
 Sprites:
-- HyperUltra64: Freylis, Valnos
+- HyperUltra64: Freylis, Valnos (taken from Bullet-Eye)
 - HorrorMovieGuy: Cultist
 
 Sounds:
