@@ -369,7 +369,7 @@ class FollowerHandler : EventHandler
 							Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Followers));
 						}
 
-						if (NumKey - 1 < Commands.Size())
+						if (NumKey > 0 && NumKey - 1 < Commands.Size())
 						{
 							FollowerCommand cmd = Commands[NumKey - 1];
 							SendNetworkEvent(cmd.EventName, cmd.Args[0], cmd.Args[1], cmd.Args[2]);
@@ -389,7 +389,7 @@ class FollowerHandler : EventHandler
 							Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Followers));
 						}
 						
-						if (NumKey - 1 < Commands.Size())
+						if (NumKey > 0 && NumKey - 1 < Commands.Size())
 						{
 							FollowerCommand cmd = Commands[NumKey - 1];
 							SendNetworkEvent(cmd.EventName, cmd.Args[0], cmd.Args[1], cmd.Args[2]);
