@@ -22,12 +22,18 @@ extend class HDFollower
 			if (MTarget && (bFRIENDLY && !MTarget.bFRIENDLY || !bFRIENDLY && MTarget.bFRIENDLY) && MTarget.bISMONSTER && MTarget.bSHOOTABLE && MTarget != self && MTarget.Health > 0 && CheckSight(MTarget, SF_SEEPASTSHOOTABLELINES) && !TargetIsIncapped(MTarget))
 			{
 				// [Ace] Sometimes resurrected troops can have a ridiculous body damage and won't get attacked, but one single shot will blow them to pieces.
-				if (MTarget is "HERPBot" || MTarget is "DERPBot" || (!hdf_targetuncountable && !MTarget.bCOUNTKILL) || MTarget is "HDMobBase" && HDMobBase(MTarget).BodyDamage > MTarget.SpawnHealth())
+				if (MTarget is "HERPBot" || MTarget is "DERPBot" || (!hdf_targetuncountable && !MTarget.bCOUNTKILL) || MTarget is "HDMobBase" && HDMobBase(MTarget).BodyDamage > MTarget.SpawnHealth() * 2)
 				{
 					continue;
 				}
 
+				HDMobBase HDMon = HDMobBase(MTarget);
 				bool AlreadyTargeted = IsAttackedBySomeoneElse(MTarget);
+
+				if (hdf_debug >= 2)
+				{
+					Console.Printf("%s is attempting to target %s with %i bodydamage.", GetTag(), MTarget.GetClassName(), HDMon ? HDMon.BodyDamage : -1);
+				}
 
 				if (MTarget.bBOSS && (CheckTarget() && !CTarget.bBOSS || !CheckTarget()))
 				{
@@ -72,7 +78,7 @@ extend class HDFollower
 					EngageTarget(UsedWeapons, MTarget);
 					break;
 				}
-				else if (MTarget is "HDMobBase" && HDMobBase(MTarget).Shields > 150)
+				else if (MTarget is "HDMobBase" && HDMon.Shields > 150)
 				{
 					W = "FW_RocketLauncher"; UsedWeapons.Push(W);
 					W = "FW_Liberator"; UsedWeapons.Push(W);
