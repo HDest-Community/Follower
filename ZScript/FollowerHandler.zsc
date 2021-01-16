@@ -478,6 +478,7 @@ class FollowerHandler : EventHandler
 				if (Followers[i].Index == FollowerIndex)
 				{
 					Followers[i].Destroy();
+					Followers.Delete(i);
 					break;
 				}
 			}
