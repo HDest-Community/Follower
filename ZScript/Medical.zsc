@@ -92,7 +92,7 @@ extend class HDFollower
 		let PlayerStimpack = PortableStimpack(LinkedPlayer.FindInventory("PortableStimpack"));
 		if (Distance3D(LinkedPlayer) > radius + MaxInventoryDistance)
 		{
-			ThinkMessage(LinkedPlayer, "$"..ATag.."_STIMGIVE_FAR_PLR");
+			ThinkMessage(LinkedPlayer, "$STIMGIVE_FAR_PLR");
 			return;
 		}
 		else if (Stimpacks >= MaxStimpacks)
