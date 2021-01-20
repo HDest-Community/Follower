@@ -41,7 +41,3 @@ For the most part the mechanics are fairly simple and straightforward. Documente
 ### Modding
 ---
 - New followers can be added by inheriting from HDFollower and overriding the provided virtuals. Their arsenal can be changed if you like.
-
-### Incompatibilities
----
-- The mod is incompatible with Josh's AI Director. The only way to fix this properly involves side effects I do not like.
