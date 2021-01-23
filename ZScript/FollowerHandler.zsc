@@ -11,6 +11,8 @@ class FollowerHandler : EventHandler
 		FMenu_Miscellaneous
 	}
 
+	const InternalFollowers = 3;
+
 	Array<HDFollower> Followers;
 
 	private transient int FollowerMenuLevel;
@@ -93,7 +95,8 @@ class FollowerHandler : EventHandler
 		int FollowerSpawns = hdf_followers;
 		for (int i = 0; i < FollowerClasses.Size(); ++i)
 		{
-			if (FollowerSpawns & (1 << i))
+			// [Ace] FollowerSpawns only affects built-in followers.
+			if (FollowerSpawns & (1 << i) || i > InternalFollowers - 1)
 			{
 				CreateFollower(FollowerClasses[i], e.PlayerNumber);
 			}
