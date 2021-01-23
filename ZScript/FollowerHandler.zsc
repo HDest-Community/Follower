@@ -197,6 +197,7 @@ class FollowerHandler : EventHandler
 
 					DrawTextRectangle(sb, pos, (250, RectangleHeight), MainFont, SelFollower.GetTag(), flags, Font.FindFontColor('FLW_NameBlue'));
 					pos.y += RectangleHeight + Spacing;
+
 					for (int i = 0; i < Commands.Size(); ++i)
 					{
 						DrawTextRectangle(sb, pos, (250, RectangleHeight), MainFont, (i + 1)..") "..Commands[i], flags);
@@ -235,6 +236,14 @@ class FollowerHandler : EventHandler
 
 					DrawTextRectangle(sb, pos, (RectangleWidth, RectangleHeight), MainFont, SelFollower.GetTag(), flags, Font.FindFontColor('FLW_NameBlue'));
 					pos.y += RectangleHeight + Spacing;
+					
+					if (Followers.Size() == 1 && Followers[0].CanInteractWith())
+					{
+						vector3 Diff = level.Vec3Diff(Followers[0].pos, Followers[0].LinkedPlayer.pos);
+						DrawTextRectangle(sb, pos, (RectangleWidth, RectangleHeight), MainFont, String.Format("%i, %i, %i", abs(diff.x), abs(diff.y), abs(diff.z)), flags, Font.CR_DARKGRAY);
+						pos.y += RectangleHeight + Spacing;
+					}
+
 					for (int i = 0; i < Commands.Size(); ++i)
 					{
 						DrawTextRectangle(sb, pos, (RectangleWidth, RectangleHeight), MainFont, (i + 1)..") "..Commands[i], flags);
