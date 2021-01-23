@@ -41,3 +41,4 @@ For the most part the mechanics are fairly simple and straightforward. Documente
 ### Modding
 ---
 - New followers can be added by inheriting from HDFollower and overriding the provided virtuals. Their arsenal can be changed if you like.
+- When making new followers, use a higher index. Internally, the three followers use indices 1-3. To prevent conflicts, use a number that's not one of those. The index in MENUDEF, KEYCONF, and HDFollower.FollowerInfo needs to be the same number in all three places.
