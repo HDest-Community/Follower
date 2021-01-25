@@ -38,6 +38,7 @@ class FollowerHandler : EventHandler
 				else
 				{
 					InsIndex = i;
+					break;
 				}
 			}
 		}
