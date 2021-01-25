@@ -77,7 +77,14 @@ class HDFollower : HDMobMan abstract
 		}
 		if (type <= hdf_printlevel_voice)
 		{
-			LinkedPlayer.A_StartSound(voiceLine, 21, CHANF_LOCAL);
+			if (Distance3D(LinkedPlayer) < 512)
+			{
+				A_StartSound(voiceLine, 21);
+			}
+			else
+			{
+				LinkedPlayer.A_StartSound(voiceLine, 21, CHANF_LOCAL);
+			}
 		}
 	}
 
