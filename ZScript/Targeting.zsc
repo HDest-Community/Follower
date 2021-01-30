@@ -22,7 +22,7 @@ extend class HDFollower
 			if (MTarget && (bFRIENDLY && !MTarget.bFRIENDLY || !bFRIENDLY && MTarget.bFRIENDLY) && MTarget.bISMONSTER && MTarget.bSHOOTABLE && MTarget != self && MTarget.Health > 0 && CheckSight(MTarget, SF_SEEPASTSHOOTABLELINES) && !TargetIsIncapped(MTarget))
 			{
 				// [Ace] Sometimes resurrected troops can have a ridiculous body damage and won't get attacked, but one single shot will blow them to pieces.
-				if (MTarget is "HERPBot" || MTarget is "DERPBot" || (!hdf_targetuncountable && !MTarget.bCOUNTKILL) || MTarget is "HDMobBase" && HDMobBase(MTarget).BodyDamage > MTarget.SpawnHealth() * 2)
+				if (MTarget is "HERPBot" || MTarget is "DERPBot" || (!hdf_targetuncountable && !MTarget.bCOUNTKILL) || MTarget is "HDMobBase" && HDMobBase(MTarget).BodyDamage > MTarget.SpawnHealth() * 1.2)
 				{
 					continue;
 				}
