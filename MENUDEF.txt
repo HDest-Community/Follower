@@ -150,6 +150,8 @@ OptionMenu "HDFollowerMenuCustom"
 
 	StaticText "This is where you will find the submenus for custom followers."
 	StaticText "Provided you loaded any in the first place."
+	StaticText "----- Available Followers -----", "Teal"
+
 }
 
 AddOptionMenu "OptionsMenu"
