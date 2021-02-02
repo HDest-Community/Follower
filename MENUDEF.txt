@@ -18,6 +18,8 @@ OptionMenu "HDFollowerMenu"
 	Submenu "Balthazar Options", "HDFollowerMenuBalthazar"
 	Submenu "Valnos Options", "HDFollowerMenuValnos"
 	StaticText ""
+	Submenu "Custom Followers", "HDFollowerMenuCustom"
+	StaticText ""
 
 	StaticText "----- Audio/Visual -----", "Teal"
 	Option "Chat Responses", "hdf_printlevel_chat", "PrintLevel"
@@ -140,6 +142,14 @@ OptionMenu "HDFollowerMenuValnos"
 	StaticText ""
 	Option "Armor", "hdf_loadout_valnos_armortype", "ArmorType"
 	Slider "Condition", "hdf_loadout_valnos_armorcondition", 0.01, 1.0, 0.01, 2
+}
+
+OptionMenu "HDFollowerMenuCustom"
+{
+	Title "Custom Followers Menus"
+
+	StaticText "This is where you will find the submenus for custom followers."
+	StaticText "Provided you loaded any in the first place."
 }
 
 AddOptionMenu "OptionsMenu"
