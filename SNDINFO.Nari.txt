@@ -1,0 +1,29 @@
+Follower/Nari/Death1 FL6DETH1
+Follower/Nari/Death2 FL6DETH2
+Follower/Nari/Death3 FL6DETH3
+
+$random Follower/Nari/Death
+{
+	Follower/Nari/Death1
+	Follower/Nari/Death2
+	Follower/Nari/Death3
+}
+
+Follower/Nari/Pain1 FL6PAIN1
+Follower/Nari/Pain2 FL6PAIN2
+Follower/Nari/Pain3 FL6PAIN3
+Follower/Nari/Pain4 FL6PAIN4
+Follower/Nari/Pain5 FL6PAIN5
+Follower/Nari/Pain6 FL6PAIN6
+Follower/Nari/Pain7 FL6PAIN7
+
+$random Follower/Nari/Pain
+{
+	Follower/Nari/Pain1
+	Follower/Nari/Pain2
+	Follower/Nari/Pain3
+	Follower/Nari/Pain4
+	Follower/Nari/Pain5
+	Follower/Nari/Pain6
+	Follower/Nari/Pain7
+}

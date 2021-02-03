@@ -13,9 +13,12 @@ version "4.5"
 #include "ZScript/Brass.zsc"
 #include "ZScript/Loadout.zsc"
 
-#include "ZSCRIPT.Freylis.zsc"
-#include "ZSCRIPT.Balthazar.zsc"
-#include "ZSCRIPT.Valnos.zsc"
+#include "ZScript/Followers/Freylis.zsc"
+#include "ZScript/Followers/Balthazar.zsc"
+#include "ZScript/Followers/Valnos.zsc"
+#include "ZScript/Followers/Daina.zsc"
+#include "ZScript/Followers/Sewie.zsc"
+#include "ZScript/Followers/Nari.zsc"
 
 class HDFollower : HDMobMan abstract
 {

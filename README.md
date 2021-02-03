@@ -41,6 +41,6 @@ For the most part the mechanics are fairly simple and straightforward. Documente
 ### Modding
 ---
 - New followers can be added by inheriting from HDFollower and overriding the provided virtuals. Their arsenal can be changed if you like.
-- When making new followers, use a higher index. Internally, the three followers use indices 1-3. To prevent conflicts, use a number that's not one of those. The index in KEYCONF and HDFollower.FollowerInfo needs to be the same number in both places. This index controls which follower gets manipulated by the commands and where they get put in the list.
+- When making new followers, use a higher index. Internally, the three followers use indices 1-6. To prevent conflicts, use a number that's not one of those. The index in KEYCONF and HDFollower.FollowerInfo needs to be the same number in both places. This index controls which follower gets manipulated by the commands and where they get put in the list.
 - Do **NOT** add an `hdf_followers` option. This is an internal CVar and its only purpose is to allow players to control the built-in followers. If you don't want an addon follower to show up, don't load the addon.
 - There is a soft limit on 9 followers. This is because the menu is incapable of handling more than that. A redesign would be necessary to allow more than 9 followers.

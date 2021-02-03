@@ -1,0 +1,205 @@
+[enu default]
+
+NARI_ORDER_FOLLOW1_1 = "I'm already following you.";
+NARI_ORDER_FOLLOW1_2 = "Right behind you.";
+NARI_ORDER_FOLLOW1_3 = "I'm already sticking close.";
+
+NARI_ORDER_FOLLOW2_1 = "Roger that, I'll stick close.";
+NARI_ORDER_FOLLOW2_2 = "Following the leader!";
+NARI_ORDER_FOLLOW2_3 = "Lead the way.";
+
+NARI_ORDER_FOLLOWIGNORE1_1 = "I'm already ignoring hostiles.";
+NARI_ORDER_FOLLOWIGNORE1_2 = "I'm already paying no attention to the baddies.";
+NARI_ORDER_FOLLOWIGNORE1_3 = "Don't have to tell me twice.";
+
+NARI_ORDER_FOLLOWIGNORE2_1 = "Doing a tactical retreat, are we?";
+NARI_ORDER_FOLLOWIGNORE2_2 = "Let's run!";
+NARI_ORDER_FOLLOWIGNORE2_3 = "Yeah, we should probably get the hell outta here.";
+
+NARI_ORDER_COVER1_1 = "I'm already covering your back.";
+NARI_ORDER_COVER1_2 = "Already on it.";
+NARI_ORDER_COVER1_3 = "Stop worrying, nobody is going to shoot you.";
+
+NARI_ORDER_COVER2_1 = "Don't worry, I got your six.";
+NARI_ORDER_COVER2_2 = "Your back is safe.";
+NARI_ORDER_COVER2_3 = "I'll stay here and guard you.";
+
+NARI_ORDER_GOANDCOVER1_1 = "I can't go there.";
+NARI_ORDER_GOANDCOVER1_2 = "Sorry, I can't reach that.";
+NARI_ORDER_GOANDCOVER1_3 = "No can do.";
+
+NARI_ORDER_GOANDCOVER2_1 = "On my way!";
+NARI_ORDER_GOANDCOVER2_2 = "Whatever you say.";
+NARI_ORDER_GOANDCOVER2_3 = "Going!";
+
+NARI_ORDER_HELP1_1 = "I'm already coming.";
+NARI_ORDER_HELP1_2 = "I know, just hold on.";
+NARI_ORDER_HELP1_3 = "Just a little longer.";
+
+NARI_ORDER_HELP2_1 = "I'm coming.";
+NARI_ORDER_HELP2_2 = "I'll be right there!";
+NARI_ORDER_HELP2_3 = "Put pressure on that wound.";
+
+NARI_ORDER_HELP3_1 = "I don't see anything wrong.";
+NARI_ORDER_HELP3_2 = "Are you sure you need help?";
+NARI_ORDER_HELP3_3 = "If you want me to come, there are easier ways to do that.";
+
+NARI_CARRY_SUCCESS_1 = "Be gentle, okay?";
+NARI_CARRY_SUCCESS_2 = "Wheeeee!";
+NARI_CARRY_SUCCESS_3 = "This is fun!";
+
+NARI_AMMOGIVE_SMG_TOOMANY_1 = "Please stop, I can't carry anymore.";
+NARI_AMMOGIVE_SMG_TOOMANY_2 = "Oh no, I am full on nine mil.";
+NARI_AMMOGIVE_SMG_TOOMANY_3 = "Too many!";
+
+NARI_AMMOGIVE_SMG_SUCCESS_1 = "Yes! Candy!";
+NARI_AMMOGIVE_SMG_SUCCESS_2 = "Oh my, that's a lot of ammo.";
+NARI_AMMOGIVE_SMG_SUCCESS_3 = "I feel like asking for more";
+
+NARI_AMMOGIVE_HUNTER_TOOMANY_1 = "I have enough shells.";
+NARI_AMMOGIVE_HUNTER_TOOMANY_2 = "I'm good on those for now.";
+NARI_AMMOGIVE_HUNTER_TOOMANY_3 = "No, thanks.";
+
+NARI_AMMOGIVE_HUNTER_SUCCESS_1 = "Mmm, shells.";
+NARI_AMMOGIVE_HUNTER_SUCCESS_2 = "Thank you.";
+NARI_AMMOGIVE_HUNTER_SUCCESS_3 = "My Hunter appreciates it.";
+
+NARI_AMMOGIVE_ZM66_TOOMANY_1 = "I can't carry more of this.";
+NARI_AMMOGIVE_ZM66_TOOMANY_2 = "I already have enough of that.";
+NARI_AMMOGIVE_ZM66_TOOMANY_3 = "Sorry, inventory is full.";
+
+NARI_AMMOGIVE_ZM66_SUCCESS_1 = "Terrible penetration, but it's better than nothing.";
+NARI_AMMOGIVE_ZM66_SUCCESS_2 = "Let's hope we don't run into any shielded enemies.";
+NARI_AMMOGIVE_ZM66_SUCCESS_3 = "At least there's plenty of those.";
+
+NARI_AMMOGIVE_RL_TOOMANY_1 = "They're too heavy to carry more.";
+NARI_AMMOGIVE_RL_TOOMANY_2 = "Nah, you can keep the rest.";
+NARI_AMMOGIVE_RL_TOOMANY_3 = "Sorry, not interested right now.";
+
+NARI_AMMOGIVE_RL_SUCCESS_1 = "Perfect.";
+NARI_AMMOGIVE_RL_SUCCESS_2 = "Could do with some more explosions.";
+NARI_AMMOGIVE_RL_SUCCESS_3 = "Heh, they remind me of something.";
+
+NARI_AMMOGIVE_LIBERATOR_TOOMANY_1 = "I'd love to carry more of those, but I can't.";
+NARI_AMMOGIVE_LIBERATOR_TOOMANY_2 = "Thanks, but nah.";
+NARI_AMMOGIVE_LIBERATOR_TOOMANY_3 = "I'll do with what I have.";
+
+NARI_AMMOGIVE_LIBERATOR_SUCCESS_1 = "I love it.";
+NARI_AMMOGIVE_LIBERATOR_SUCCESS_2 = "Highly appreciated.";
+NARI_AMMOGIVE_LIBERATOR_SUCCESS_3 = "Aw yeah!";
+
+NARI_AMMOGIVE_BOSS_TOOMANY_1 = "I can't carry more of this.";
+NARI_AMMOGIVE_BOSS_TOOMANY_2 = "I already have enough of that.";
+NARI_AMMOGIVE_BOSS_TOOMANY_3 = "Sorry, inventory is full.";
+
+NARI_AMMOGIVE_BOSS_SUCCESS_1 = "This will be very useful for shielded enemies.";
+NARI_AMMOGIVE_BOSS_SUCCESS_2 = "They won't know what hit them.";
+NARI_AMMOGIVE_BOSS_SUCCESS_3 = "Powerful.";
+
+NARI_AMMOGIVE_BRONTO_TOOMANY_1 = "I can't carry more of this.";
+NARI_AMMOGIVE_BRONTO_TOOMANY_2 = "I already have enough of that.";
+NARI_AMMOGIVE_BRONTO_TOOMANY_3 = "Sorry, inventory is full.";
+
+NARI_AMMOGIVE_BRONTO_SUCCESS_1 = "I'll be sure to put this to good use.";
+NARI_AMMOGIVE_BRONTO_SUCCESS_2 = "These kick like a bitch, but delete big baddies.";
+NARI_AMMOGIVE_BRONTO_SUCCESS_3 = "Small, but effective.";
+
+NARI_NOAMMO_SMG_1 = "My SMG is complaining.";
+NARI_NOAMMO_SMG_2 = "My SMG demands more candy.";
+NARI_NOAMMO_SMG_3 = "Got more nine mil?";
+
+NARI_NOAMMO_HUNTER_1 = "Hunter can no longer hunt.";
+NARI_NOAMMO_HUNTER_2 = "Spare some shells?";
+NARI_NOAMMO_HUNTER_3 = "Oh no, I'm out of shells.";
+
+NARI_NOAMMO_ZM66_1 = "I'm out of ammo. Spare some 4mm mags?";
+NARI_NOAMMO_ZM66_2 = "Out of four mil. Got any?";
+NARI_NOAMMO_ZM66_3 = "ZM is dry, need a refill.";
+
+NARI_NOAMMO_RL_1 = "Just launched my last rocket grenade.";
+NARI_NOAMMO_RL_2 = "I'll need more rocket grenades, hon.";
+NARI_NOAMMO_RL_3 = "Got more boom-booms?";
+
+NARI_NOAMMO_LIBERATOR_1 = "My libby has libbed its last.";
+NARI_NOAMMO_LIBERATOR_2 = "I'll need some seven mil for my Liberator.";
+NARI_NOAMMO_LIBERATOR_3 = "Hey, do you happen to have any seven mil?";
+
+NARI_NOAMMO_BOSS_1 = "There goes my seven mil ammo. I hope you have any left.";
+NARI_NOAMMO_BOSS_2 = "So much for the Boss. I'm out.";
+NARI_NOAMMO_BOSS_3 = "Spare any loose seven mil rounds?";
+
+NARI_NOAMMO_BRONTO_1 = "That was the last bolt. Got any on you?";
+NARI_NOAMMO_BRONTO_2 = "I'm out of bronto bolts.";
+NARI_NOAMMO_BRONTO_3 = "I don't have anything to take care of big baddies anymore.";
+
+NARI_MEDGIVE_TOOMANY_1 = "Sorry, I'm already carrying too many medikits.";
+NARI_MEDGIVE_TOOMANY_2 = "That's enough medikits.";
+NARI_MEDGIVE_TOOMANY_3 = "I can't carry anymore.";
+
+NARI_MEDGIVE_SUCCESS_1 = "Thanks, now I can patch you up if needed. Oh, and you can keep the blood bag.";
+NARI_MEDGIVE_SUCCESS_2 = "Oh nice, a medikit. Here, take this. I don't need the blood.";
+NARI_MEDGIVE_SUCCESS_3 = "Let's hope we won't need this.";
+
+NARI_MEDIC_STIMMED_1 = "Here, this will make the pain more bearable.";
+NARI_MEDIC_STIMMED_2 = "This should ease your suffering.";
+NARI_MEDIC_STIMMED_3 = "Hold still while I stim you.";
+
+NARI_STIMGIVE_TOOMANY_1 = "Sorry, I'm already carrying too many stimpacks.";
+NARI_STIMGIVE_TOOMANY_2 = "That's enough stimpacks.";
+NARI_STIMGIVE_TOOMANY_3 = "I can't carry anymore.";
+
+NARI_STIMGIVE_SUCCESS_1 = "Thanks, this will get you back up in no time.";
+NARI_STIMGIVE_SUCCESS_2 = "These should speed up your recovery.";
+NARI_STIMGIVE_SUCCESS_3 = "Thanks, this will get you back up in no time.";
+
+NARI_REVIVE_BLUES_SUCCESS_1 = "Huh? What happened? How long have I been gone for?";
+NARI_REVIVE_BLUES_SUCCESS_2 = "I don't recall anything. Did I pass out?";
+NARI_REVIVE_BLUES_SUCCESS_3 = "Ow, my head hurts.";
+
+NARI_REVIVE_BLOOD_SUCCESS_1 = "Mmm, delicious. Thanks!";
+NARI_REVIVE_BLOOD_SUCCESS_2 = "Uhm... You're bleeding.";
+NARI_REVIVE_BLOOD_SUCCESS_3 = "You taste funny. Have you been using blood bags lately?";
+
+NARI_ARMORGIVE_INIT_1 = "Oh, you have something for me? I'll wait for you to drop it.";
+NARI_ARMORGIVE_INIT_2 = "Sure, just drop it here.";
+NARI_ARMORGIVE_INIT_3 = "Gimme gimme!";
+
+NARI_ARMORGIVE_MAYBEDROP_1 = "Unless you want me to take off my armor?";
+NARI_ARMORGIVE_MAYBEDROP_2 = "Or should I take off my armor?";
+NARI_ARMORGIVE_MAYBEDROP_3 = "Or do you want my armor?";
+
+NARI_ARMORGIVE_CANCEL_1 = "I see you've changed your mind.";
+NARI_ARMORGIVE_CANCEL_2 = "Alright then.";
+NARI_ARMORGIVE_CANCEL_3 = "Suit yourself.";
+
+NARI_ARMORGIVE_STRIP_1 = "Stop hogging all the armor.";
+NARI_ARMORGIVE_STRIP_2 = "I feel so naked.";
+NARI_ARMORGIVE_STRIP_3 = "I'll miss that.";
+
+NARI_ARMORGIVE_NONE_1 = "Looks sturdy. Thank you.";
+NARI_ARMORGIVE_NONE_2 = "Cool armor. Thanks!";
+NARI_ARMORGIVE_NONE_3 = "I like protection.";
+
+NARI_ARMORGIVE_UPGRADE_1 = "I needed that upgrade. Thank you.";
+NARI_ARMORGIVE_UPGRADE_2 = "Wonderful!";
+NARI_ARMORGIVE_UPGRADE_3 = "Awesome.";
+
+NARI_ARMORGIVE_BETTERDURABILITY_1 = "Thanks, this will last much longer than my old armor.";
+NARI_ARMORGIVE_BETTERDURABILITY_2 = "Much better!";
+NARI_ARMORGIVE_BETTERDURABILITY_3 = "This gives me a much better sense of security. Thanks.";
+
+NARI_ARMORGIVE_NOTHANKS_1 = "My current armor is better. You can keep that one.";
+NARI_ARMORGIVE_NOTHANKS_2 = "I don't like that one, it's dented.";
+NARI_ARMORGIVE_NOTHANKS_3 = "I like my armor.";
+
+NARI_ARMORGIVE_RANAWAY_1 = "Doesn't look like you're planning to give me anything.";
+NARI_ARMORGIVE_RANAWAY_2 = "Hey, where are you going!?";
+NARI_ARMORGIVE_RANAWAY_3 = "Wait up!";
+
+NARI_BRASS_NONE_1 = "I don't have any left.";
+NARI_BRASS_NONE_2 = "Sorry, got nothing.";
+NARI_BRASS_NONE_3 = "Nope. Nothing.";
+
+NARI_BRASS_SUCCESS_1 = "Here, I've been holding onto these for you.";
+NARI_BRASS_SUCCESS_2 = "Use them wisely, okay?";
+NARI_BRASS_SUCCESS_3 = "Are you going to buy me flowers with those?";

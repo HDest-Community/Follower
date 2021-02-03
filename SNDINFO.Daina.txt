@@ -1,0 +1,24 @@
+Follower/Daina/Death FL4DETH1
+
+Follower/Daina/Pain1 FL4PAIN1
+Follower/Daina/Pain2 FL4PAIN2
+Follower/Daina/Pain3 FL4PAIN3
+Follower/Daina/Pain4 FL4PAIN4
+Follower/Daina/Pain5 FL4PAIN5
+Follower/Daina/Pain6 FL4PAIN6
+Follower/Daina/Pain7 FL4PAIN7
+Follower/Daina/Pain8 FL4PAIN8
+Follower/Daina/Pain9 FL4PAIN9
+
+$random Follower/Daina/Pain
+{
+	Follower/Daina/Pain1
+	Follower/Daina/Pain2
+	Follower/Daina/Pain3
+	Follower/Daina/Pain4
+	Follower/Daina/Pain5
+	Follower/Daina/Pain6
+	Follower/Daina/Pain7
+	Follower/Daina/Pain8
+	Follower/Daina/Pain9
+}

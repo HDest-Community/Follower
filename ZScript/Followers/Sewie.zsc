@@ -1,0 +1,62 @@
+class FollowerSewie : HDFollower
+{
+	override void GiveStartingItems()
+	{
+		Medikits = hdf_loadout_sewie_medikits;
+		Stimpacks = hdf_loadout_sewie_stimpacks + Medikits;
+
+		int ArmorType = hdf_loadout_sewie_armortype;
+		if (ArmorType > 0)
+		{
+			GiveArmour(1.0, ArmorType >= 2 ? 1.0 : 0.0, hdf_loadout_sewie_armorcondition);
+		}
+	}
+
+	override void InitWeapons()
+	{
+		int WeaponFlags = hdf_loadout_sewie_weapons;
+		int StartingAmmoFlags = hdf_loadout_sewie_startingammo;
+
+		static const string AllWeapons[] = { "FW_SMG", "FW_Hunter", "FW_ZM66", "FW_RocketLauncher", "FW_Liberator", "FW_Boss", "FW_Bronto" };
+		for (int i = 0; i < AllWeapons.Size(); ++i)
+		{
+			class<FollowerWeapon> fw = AllWeapons[i];
+			if (fw && WeaponFlags & (1 << i))
+			{
+				FollowerWeapon wpn = FollowerWeapon(new(fw));
+				if (StartingAmmoFlags & (1 << i))
+				{
+					wpn.Init();
+				}
+				Weapons.Push(wpn);
+			}
+		}
+	}
+
+	Default
+	{
+		SeeSound "Follower/Sewie/See";
+		PainSound "Follower/Sewie/Pain";
+		DeathSound "Follower/Sewie/Death";
+		Tag "Sewie";
+		HDFollower.FollowerInfo 5, GENDER_FEMALE, 'FollowerBodySewie', 'LeftBehindSewie';
+	}
+
+	States
+	{
+		Spawn:
+			FLW5 A 0;
+			Goto Super::Spawn;
+	}
+}
+
+class LeftBehindSewie : LeftBehindFollower {}
+
+class FollowerBodySewie : FollowerBody
+{
+	Default
+	{
+		Inventory.Icon "FOLLE0";
+		Tag "Sewie";
+	}
+}

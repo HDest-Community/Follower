@@ -4,6 +4,7 @@ Code:
 Sprites:
 - HyperUltra64: Freylis, Valnos (taken from Bullet-Eye)
 - HorrorMovieGuy: Cultist
+- Hege Cactus: Daina, Sewie, and Nari. All taken from his mod, La Tailor Girl.
 
 Sounds:
 - Blood (Monolith): Cultist Lines

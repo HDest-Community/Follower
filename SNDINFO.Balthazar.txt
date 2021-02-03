@@ -1,0 +1,33 @@
+Follower/Balthazar/Death1 FL2DETH1
+
+Follower/Balthazar/Pain1 FL2PAIN1
+Follower/Balthazar/Pain2 FL2PAIN2
+
+$random Follower/Balthazar/Pain
+{
+	Follower/Balthazar/Pain1
+	Follower/Balthazar/Pain2
+}
+
+Follower/Balthazar/See1 FL2SEE1
+Follower/Balthazar/See2 FL2SEE2
+Follower/Balthazar/See3 FL2SEE3
+Follower/Balthazar/See4 FL2SEE4
+Follower/Balthazar/See5 FL2SEE5
+Follower/Balthazar/See6 FL2SEE6
+Follower/Balthazar/See7 FL2SEE7
+Follower/Balthazar/See8 FL2SEE8
+Follower/Balthazar/See9 FL2SEE9
+
+$random Follower/Balthazar/See
+{
+	Follower/Balthazar/See1
+	Follower/Balthazar/See2
+	Follower/Balthazar/See3
+	Follower/Balthazar/See4
+	Follower/Balthazar/See5
+	Follower/Balthazar/See6
+	Follower/Balthazar/See7
+	Follower/Balthazar/See8
+	Follower/Balthazar/See9
+}

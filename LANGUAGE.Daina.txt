@@ -1,0 +1,205 @@
+[enu default]
+
+DAINA_ORDER_FOLLOW1_1 = "I'm already following you.";
+DAINA_ORDER_FOLLOW1_2 = "Right behind you.";
+DAINA_ORDER_FOLLOW1_3 = "I'm already sticking close.";
+
+DAINA_ORDER_FOLLOW2_1 = "Roger that, I'll stick close.";
+DAINA_ORDER_FOLLOW2_2 = "Following the leader!";
+DAINA_ORDER_FOLLOW2_3 = "Lead the way.";
+
+DAINA_ORDER_FOLLOWIGNORE1_1 = "I'm already ignoring hostiles.";
+DAINA_ORDER_FOLLOWIGNORE1_2 = "I'm already paying no attention to the baddies.";
+DAINA_ORDER_FOLLOWIGNORE1_3 = "Don't have to tell me twice.";
+
+DAINA_ORDER_FOLLOWIGNORE2_1 = "Doing a tactical retreat, are we?";
+DAINA_ORDER_FOLLOWIGNORE2_2 = "Let's run!";
+DAINA_ORDER_FOLLOWIGNORE2_3 = "Yeah, we should probably get the hell outta here.";
+
+DAINA_ORDER_COVER1_1 = "I'm already covering your back.";
+DAINA_ORDER_COVER1_2 = "Already on it.";
+DAINA_ORDER_COVER1_3 = "Stop worrying, nobody is going to shoot you."; // [Ace] And then you get shot.
+
+DAINA_ORDER_COVER2_1 = "Don't worry, I got your six.";
+DAINA_ORDER_COVER2_2 = "Your back is safe.";
+DAINA_ORDER_COVER2_3 = "I'll stay here and guard you.";
+
+DAINA_ORDER_GOANDCOVER1_1 = "I can't go there.";
+DAINA_ORDER_GOANDCOVER1_2 = "Sorry, I can't reach that.";
+DAINA_ORDER_GOANDCOVER1_3 = "No can do.";
+
+DAINA_ORDER_GOANDCOVER2_1 = "On my way!";
+DAINA_ORDER_GOANDCOVER2_2 = "Whatever you say.";
+DAINA_ORDER_GOANDCOVER2_3 = "Going!";
+
+DAINA_ORDER_HELP1_1 = "I'm already coming.";
+DAINA_ORDER_HELP1_2 = "I know, just hold on.";
+DAINA_ORDER_HELP1_3 = "Just a little longer.";
+
+DAINA_ORDER_HELP2_1 = "I'm coming.";
+DAINA_ORDER_HELP2_2 = "I'll be right there!";
+DAINA_ORDER_HELP2_3 = "Put pressure on that wound.";
+
+DAINA_ORDER_HELP3_1 = "I don't see anything wrong.";
+DAINA_ORDER_HELP3_2 = "Are you sure you need help?";
+DAINA_ORDER_HELP3_3 = "If you want me to come, there are easier ways to do that.";
+
+DAINA_CARRY_SUCCESS_1 = "Be gentle, okay?";
+DAINA_CARRY_SUCCESS_2 = "Wheeeee!";
+DAINA_CARRY_SUCCESS_3 = "This is fun!";
+
+DAINA_AMMOGIVE_SMG_TOOMANY_1 = "Please stop, I can't carry anymore.";
+DAINA_AMMOGIVE_SMG_TOOMANY_2 = "Oh no, I am full on nine mil.";
+DAINA_AMMOGIVE_SMG_TOOMANY_3 = "Too many!";
+
+DAINA_AMMOGIVE_SMG_SUCCESS_1 = "Yes! Candy!";
+DAINA_AMMOGIVE_SMG_SUCCESS_2 = "Oh my, that's a lot of ammo.";
+DAINA_AMMOGIVE_SMG_SUCCESS_3 = "I feel like asking for more";
+
+DAINA_AMMOGIVE_HUNTER_TOOMANY_1 = "I have enough shells.";
+DAINA_AMMOGIVE_HUNTER_TOOMANY_2 = "I'm good on those for now.";
+DAINA_AMMOGIVE_HUNTER_TOOMANY_3 = "No, thanks.";
+
+DAINA_AMMOGIVE_HUNTER_SUCCESS_1 = "Mmm, shells.";
+DAINA_AMMOGIVE_HUNTER_SUCCESS_2 = "Thank you.";
+DAINA_AMMOGIVE_HUNTER_SUCCESS_3 = "My Hunter appreciates it.";
+
+DAINA_AMMOGIVE_ZM66_TOOMANY_1 = "I can't carry more of this.";
+DAINA_AMMOGIVE_ZM66_TOOMANY_2 = "I already have enough of that.";
+DAINA_AMMOGIVE_ZM66_TOOMANY_3 = "Sorry, inventory is full.";
+
+DAINA_AMMOGIVE_ZM66_SUCCESS_1 = "Terrible penetration, but it's better than nothing.";
+DAINA_AMMOGIVE_ZM66_SUCCESS_2 = "Let's hope we don't run into any shielded enemies.";
+DAINA_AMMOGIVE_ZM66_SUCCESS_3 = "At least there's plenty of those.";
+
+DAINA_AMMOGIVE_RL_TOOMANY_1 = "They're too heavy to carry more.";
+DAINA_AMMOGIVE_RL_TOOMANY_2 = "Nah, you can keep the rest.";
+DAINA_AMMOGIVE_RL_TOOMANY_3 = "Sorry, not interested right now.";
+
+DAINA_AMMOGIVE_RL_SUCCESS_1 = "Perfect.";
+DAINA_AMMOGIVE_RL_SUCCESS_2 = "Could do with some more explosions.";
+DAINA_AMMOGIVE_RL_SUCCESS_3 = "Heh, they remind me of something.";
+
+DAINA_AMMOGIVE_LIBERATOR_TOOMANY_1 = "I'd love to carry more of those, but I can't.";
+DAINA_AMMOGIVE_LIBERATOR_TOOMANY_2 = "Thanks, but nah.";
+DAINA_AMMOGIVE_LIBERATOR_TOOMANY_3 = "I'll do with what I have.";
+
+DAINA_AMMOGIVE_LIBERATOR_SUCCESS_1 = "I love it.";
+DAINA_AMMOGIVE_LIBERATOR_SUCCESS_2 = "Highly appreciated.";
+DAINA_AMMOGIVE_LIBERATOR_SUCCESS_3 = "Aw yeah!";
+
+DAINA_AMMOGIVE_BOSS_TOOMANY_1 = "I can't carry more of this.";
+DAINA_AMMOGIVE_BOSS_TOOMANY_2 = "I already have enough of that.";
+DAINA_AMMOGIVE_BOSS_TOOMANY_3 = "Sorry, inventory is full.";
+
+DAINA_AMMOGIVE_BOSS_SUCCESS_1 = "This will be very useful for shielded enemies.";
+DAINA_AMMOGIVE_BOSS_SUCCESS_2 = "They won't know what hit them.";
+DAINA_AMMOGIVE_BOSS_SUCCESS_3 = "Powerful.";
+
+DAINA_AMMOGIVE_BRONTO_TOOMANY_1 = "I can't carry more of this.";
+DAINA_AMMOGIVE_BRONTO_TOOMANY_2 = "I already have enough of that.";
+DAINA_AMMOGIVE_BRONTO_TOOMANY_3 = "Sorry, inventory is full.";
+
+DAINA_AMMOGIVE_BRONTO_SUCCESS_1 = "I'll be sure to put this to good use.";
+DAINA_AMMOGIVE_BRONTO_SUCCESS_2 = "These kick like a bitch, but delete big baddies.";
+DAINA_AMMOGIVE_BRONTO_SUCCESS_3 = "Small, but effective.";
+
+DAINA_NOAMMO_SMG_1 = "My SMG is complaining.";
+DAINA_NOAMMO_SMG_2 = "My SMG demands more candy.";
+DAINA_NOAMMO_SMG_3 = "Got more nine mil?";
+
+DAINA_NOAMMO_HUNTER_1 = "Hunter can no longer hunt.";
+DAINA_NOAMMO_HUNTER_2 = "Spare some shells?";
+DAINA_NOAMMO_HUNTER_3 = "Oh no, I'm out of shells.";
+
+DAINA_NOAMMO_ZM66_1 = "I'm out of ammo. Spare some 4mm mags?";
+DAINA_NOAMMO_ZM66_2 = "Out of four mil. Got any?";
+DAINA_NOAMMO_ZM66_3 = "ZM is dry, need a refill.";
+
+DAINA_NOAMMO_RL_1 = "Just launched my last rocket grenade.";
+DAINA_NOAMMO_RL_2 = "I'll need more rocket grenades, hon.";
+DAINA_NOAMMO_RL_3 = "Got more boom-booms?";
+
+DAINA_NOAMMO_LIBERATOR_1 = "My libby has libbed its last.";
+DAINA_NOAMMO_LIBERATOR_2 = "I'll need some seven mil for my Liberator.";
+DAINA_NOAMMO_LIBERATOR_3 = "Hey, do you happen to have any seven mil?";
+
+DAINA_NOAMMO_BOSS_1 = "There goes my seven mil ammo. I hope you have any left.";
+DAINA_NOAMMO_BOSS_2 = "So much for the Boss. I'm out.";
+DAINA_NOAMMO_BOSS_3 = "Spare any loose seven mil rounds?";
+
+DAINA_NOAMMO_BRONTO_1 = "That was the last bolt. Got any on you?";
+DAINA_NOAMMO_BRONTO_2 = "I'm out of bronto bolts.";
+DAINA_NOAMMO_BRONTO_3 = "I don't have anything to take care of big baddies anymore.";
+
+DAINA_MEDGIVE_TOOMANY_1 = "Sorry, I'm already carrying too many medikits.";
+DAINA_MEDGIVE_TOOMANY_2 = "That's enough medikits.";
+DAINA_MEDGIVE_TOOMANY_3 = "I can't carry anymore.";
+
+DAINA_MEDGIVE_SUCCESS_1 = "Thanks, now I can patch you up if needed. Oh, and you can keep the blood bag.";
+DAINA_MEDGIVE_SUCCESS_2 = "Oh nice, a medikit. Here, take this. I don't need the blood.";
+DAINA_MEDGIVE_SUCCESS_3 = "Let's hope we won't need this.";
+
+DAINA_MEDIC_STIMMED_1 = "Here, this will make the pain more bearable.";
+DAINA_MEDIC_STIMMED_2 = "This should ease your suffering.";
+DAINA_MEDIC_STIMMED_3 = "Hold still while I stim you.";
+
+DAINA_STIMGIVE_TOOMANY_1 = "Sorry, I'm already carrying too many stimpacks.";
+DAINA_STIMGIVE_TOOMANY_2 = "That's enough stimpacks.";
+DAINA_STIMGIVE_TOOMANY_3 = "I can't carry anymore.";
+
+DAINA_STIMGIVE_SUCCESS_1 = "Thanks, this will get you back up in no time.";
+DAINA_STIMGIVE_SUCCESS_2 = "These should speed up your recovery.";
+DAINA_STIMGIVE_SUCCESS_3 = "Thanks, this will get you back up in no time.";
+
+DAINA_REVIVE_BLUES_SUCCESS_1 = "Huh? What happened? How long have I been gone for?";
+DAINA_REVIVE_BLUES_SUCCESS_2 = "I don't recall anything. Did I pass out?";
+DAINA_REVIVE_BLUES_SUCCESS_3 = "Ow, my head hurts.";
+
+DAINA_REVIVE_BLOOD_SUCCESS_1 = "Mmm, delicious. Thanks!";
+DAINA_REVIVE_BLOOD_SUCCESS_2 = "Uhm... You're bleeding.";
+DAINA_REVIVE_BLOOD_SUCCESS_3 = "You taste funny. Have you been using blood bags lately?";
+
+DAINA_ARMORGIVE_INIT_1 = "Oh, you have something for me? I'll wait for you to drop it.";
+DAINA_ARMORGIVE_INIT_2 = "Sure, just drop it here.";
+DAINA_ARMORGIVE_INIT_3 = "Gimme gimme!";
+
+DAINA_ARMORGIVE_MAYBEDROP_1 = "Unless you want me to take off my armor?";
+DAINA_ARMORGIVE_MAYBEDROP_2 = "Or should I take off my armor?";
+DAINA_ARMORGIVE_MAYBEDROP_3 = "Or do you want my armor?";
+
+DAINA_ARMORGIVE_CANCEL_1 = "I see you've changed your mind.";
+DAINA_ARMORGIVE_CANCEL_2 = "Alright then.";
+DAINA_ARMORGIVE_CANCEL_3 = "Suit yourself.";
+
+DAINA_ARMORGIVE_STRIP_1 = "Stop hogging all the armor.";
+DAINA_ARMORGIVE_STRIP_2 = "I feel so naked.";
+DAINA_ARMORGIVE_STRIP_3 = "I'll miss that.";
+
+DAINA_ARMORGIVE_NONE_1 = "Looks sturdy. Thank you.";
+DAINA_ARMORGIVE_NONE_2 = "Cool armor. Thanks!";
+DAINA_ARMORGIVE_NONE_3 = "I like protection.";
+
+DAINA_ARMORGIVE_UPGRADE_1 = "I needed that upgrade. Thank you.";
+DAINA_ARMORGIVE_UPGRADE_2 = "Wonderful!";
+DAINA_ARMORGIVE_UPGRADE_3 = "Awesome.";
+
+DAINA_ARMORGIVE_BETTERDURABILITY_1 = "Thanks, this will last much longer than my old armor.";
+DAINA_ARMORGIVE_BETTERDURABILITY_2 = "Much better!";
+DAINA_ARMORGIVE_BETTERDURABILITY_3 = "This gives me a much better sense of security. Thanks.";
+
+DAINA_ARMORGIVE_NOTHANKS_1 = "My current armor is better. You can keep that one.";
+DAINA_ARMORGIVE_NOTHANKS_2 = "I don't like that one, it's dented.";
+DAINA_ARMORGIVE_NOTHANKS_3 = "I like my armor.";
+
+DAINA_ARMORGIVE_RANAWAY_1 = "Doesn't look like you're planning to give me anything.";
+DAINA_ARMORGIVE_RANAWAY_2 = "Hey, where are you going!?";
+DAINA_ARMORGIVE_RANAWAY_3 = "Wait up!";
+
+DAINA_BRASS_NONE_1 = "I don't have any left.";
+DAINA_BRASS_NONE_2 = "Sorry, got nothing.";
+DAINA_BRASS_NONE_3 = "Nope. Nothing.";
+
+DAINA_BRASS_SUCCESS_1 = "Here, I've been holding onto these for you.";
+DAINA_BRASS_SUCCESS_2 = "Use them wisely, okay?";
+DAINA_BRASS_SUCCESS_3 = "Are you going to buy me flowers with those?";

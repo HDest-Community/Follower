@@ -1,0 +1,63 @@
+class FollowerDaina : HDFollower
+{
+	override void GiveStartingItems()
+	{
+		Medikits = hdf_loadout_daina_medikits;
+		Stimpacks = hdf_loadout_daina_stimpacks + Medikits;
+
+		int ArmorType = hdf_loadout_daina_armortype;
+		if (ArmorType > 0)
+		{
+			GiveArmour(1.0, ArmorType >= 2 ? 1.0 : 0.0, hdf_loadout_daina_armorcondition);
+		}
+	}
+
+	override void InitWeapons()
+	{
+		int WeaponFlags = hdf_loadout_daina_weapons;
+		int StartingAmmoFlags = hdf_loadout_daina_startingammo;
+
+		static const string AllWeapons[] = { "FW_SMG", "FW_Hunter", "FW_ZM66", "FW_RocketLauncher", "FW_Liberator", "FW_Boss", "FW_Bronto" };
+		for (int i = 0; i < AllWeapons.Size(); ++i)
+		{
+			class<FollowerWeapon> fw = AllWeapons[i];
+			if (fw && WeaponFlags & (1 << i))
+			{
+				FollowerWeapon wpn = FollowerWeapon(new(fw));
+				if (StartingAmmoFlags & (1 << i))
+				{
+					wpn.Init();
+				}
+				Weapons.Push(wpn);
+			}
+		}
+	}
+
+	Default
+	{
+		SeeSound "Follower/Daina/See";
+		PainSound "Follower/Daina/Pain";
+		DeathSound "Follower/Daina/Death";
+		Tag "Daina";
+		HDFollower.FollowerInfo 4, GENDER_FEMALE, 'FollowerBodyDaina', 'LeftBehindDaina';
+		HDFollower.ResurrectType RESF_BLUES;
+	}
+
+	States
+	{
+		Spawn:
+			FLW4 A 0;
+			Goto Super::Spawn;
+	}
+}
+
+class LeftBehindDaina : LeftBehindFollower {}
+
+class FollowerBodyDaina : FollowerBody
+{
+	Default
+	{
+		Inventory.Icon "FOLLD0";
+		Tag "Daina";
+	}
+}

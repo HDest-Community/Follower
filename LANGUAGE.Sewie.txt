@@ -1,0 +1,205 @@
+[enu default]
+
+SEWIE_ORDER_FOLLOW1_1 = "I'm already following you.";
+SEWIE_ORDER_FOLLOW1_2 = "Right behind you.";
+SEWIE_ORDER_FOLLOW1_3 = "I'm already sticking close.";
+
+SEWIE_ORDER_FOLLOW2_1 = "Roger that, I'll stick close.";
+SEWIE_ORDER_FOLLOW2_2 = "Following the leader!";
+SEWIE_ORDER_FOLLOW2_3 = "Lead the way.";
+
+SEWIE_ORDER_FOLLOWIGNORE1_1 = "I'm already ignoring hostiles.";
+SEWIE_ORDER_FOLLOWIGNORE1_2 = "I'm already paying no attention to the baddies.";
+SEWIE_ORDER_FOLLOWIGNORE1_3 = "Don't have to tell me twice.";
+
+SEWIE_ORDER_FOLLOWIGNORE2_1 = "Doing a tactical retreat, are we?";
+SEWIE_ORDER_FOLLOWIGNORE2_2 = "Let's run!";
+SEWIE_ORDER_FOLLOWIGNORE2_3 = "Yeah, we should probably get the hell outta here.";
+
+SEWIE_ORDER_COVER1_1 = "I'm already covering your back.";
+SEWIE_ORDER_COVER1_2 = "Already on it.";
+SEWIE_ORDER_COVER1_3 = "Stop worrying, nobody is going to shoot you.";
+
+SEWIE_ORDER_COVER2_1 = "Don't worry, I got your six.";
+SEWIE_ORDER_COVER2_2 = "Your back is safe.";
+SEWIE_ORDER_COVER2_3 = "I'll stay here and guard you.";
+
+SEWIE_ORDER_GOANDCOVER1_1 = "I can't go there.";
+SEWIE_ORDER_GOANDCOVER1_2 = "Sorry, I can't reach that.";
+SEWIE_ORDER_GOANDCOVER1_3 = "No can do.";
+
+SEWIE_ORDER_GOANDCOVER2_1 = "On my way!";
+SEWIE_ORDER_GOANDCOVER2_2 = "Whatever you say.";
+SEWIE_ORDER_GOANDCOVER2_3 = "Going!";
+
+SEWIE_ORDER_HELP1_1 = "I'm already coming.";
+SEWIE_ORDER_HELP1_2 = "I know, just hold on.";
+SEWIE_ORDER_HELP1_3 = "Just a little longer.";
+
+SEWIE_ORDER_HELP2_1 = "I'm coming.";
+SEWIE_ORDER_HELP2_2 = "I'll be right there!";
+SEWIE_ORDER_HELP2_3 = "Put pressure on that wound.";
+
+SEWIE_ORDER_HELP3_1 = "I don't see anything wrong.";
+SEWIE_ORDER_HELP3_2 = "Are you sure you need help?";
+SEWIE_ORDER_HELP3_3 = "If you want me to come, there are easier ways to do that.";
+
+SEWIE_CARRY_SUCCESS_1 = "Be gentle, okay?";
+SEWIE_CARRY_SUCCESS_2 = "Wheeeee!";
+SEWIE_CARRY_SUCCESS_3 = "This is fun!";
+
+SEWIE_AMMOGIVE_SMG_TOOMANY_1 = "Please stop, I can't carry anymore.";
+SEWIE_AMMOGIVE_SMG_TOOMANY_2 = "Oh no, I am full on nine mil.";
+SEWIE_AMMOGIVE_SMG_TOOMANY_3 = "Too many!";
+
+SEWIE_AMMOGIVE_SMG_SUCCESS_1 = "Yes! Candy!";
+SEWIE_AMMOGIVE_SMG_SUCCESS_2 = "Oh my, that's a lot of ammo.";
+SEWIE_AMMOGIVE_SMG_SUCCESS_3 = "I feel like asking for more";
+
+SEWIE_AMMOGIVE_HUNTER_TOOMANY_1 = "I have enough shells.";
+SEWIE_AMMOGIVE_HUNTER_TOOMANY_2 = "I'm good on those for now.";
+SEWIE_AMMOGIVE_HUNTER_TOOMANY_3 = "No, thanks.";
+
+SEWIE_AMMOGIVE_HUNTER_SUCCESS_1 = "Mmm, shells.";
+SEWIE_AMMOGIVE_HUNTER_SUCCESS_2 = "Thank you.";
+SEWIE_AMMOGIVE_HUNTER_SUCCESS_3 = "My Hunter appreciates it.";
+
+SEWIE_AMMOGIVE_ZM66_TOOMANY_1 = "I can't carry more of this.";
+SEWIE_AMMOGIVE_ZM66_TOOMANY_2 = "I already have enough of that.";
+SEWIE_AMMOGIVE_ZM66_TOOMANY_3 = "Sorry, inventory is full.";
+
+SEWIE_AMMOGIVE_ZM66_SUCCESS_1 = "Terrible penetration, but it's better than nothing.";
+SEWIE_AMMOGIVE_ZM66_SUCCESS_2 = "Let's hope we don't run into any shielded enemies.";
+SEWIE_AMMOGIVE_ZM66_SUCCESS_3 = "At least there's plenty of those.";
+
+SEWIE_AMMOGIVE_RL_TOOMANY_1 = "They're too heavy to carry more.";
+SEWIE_AMMOGIVE_RL_TOOMANY_2 = "Nah, you can keep the rest.";
+SEWIE_AMMOGIVE_RL_TOOMANY_3 = "Sorry, not interested right now.";
+
+SEWIE_AMMOGIVE_RL_SUCCESS_1 = "Perfect.";
+SEWIE_AMMOGIVE_RL_SUCCESS_2 = "Could do with some more explosions.";
+SEWIE_AMMOGIVE_RL_SUCCESS_3 = "Heh, they remind me of something.";
+
+SEWIE_AMMOGIVE_LIBERATOR_TOOMANY_1 = "I'd love to carry more of those, but I can't.";
+SEWIE_AMMOGIVE_LIBERATOR_TOOMANY_2 = "Thanks, but nah.";
+SEWIE_AMMOGIVE_LIBERATOR_TOOMANY_3 = "I'll do with what I have.";
+
+SEWIE_AMMOGIVE_LIBERATOR_SUCCESS_1 = "I love it.";
+SEWIE_AMMOGIVE_LIBERATOR_SUCCESS_2 = "Highly appreciated.";
+SEWIE_AMMOGIVE_LIBERATOR_SUCCESS_3 = "Aw yeah!";
+
+SEWIE_AMMOGIVE_BOSS_TOOMANY_1 = "I can't carry more of this.";
+SEWIE_AMMOGIVE_BOSS_TOOMANY_2 = "I already have enough of that.";
+SEWIE_AMMOGIVE_BOSS_TOOMANY_3 = "Sorry, inventory is full.";
+
+SEWIE_AMMOGIVE_BOSS_SUCCESS_1 = "This will be very useful for shielded enemies.";
+SEWIE_AMMOGIVE_BOSS_SUCCESS_2 = "They won't know what hit them.";
+SEWIE_AMMOGIVE_BOSS_SUCCESS_3 = "Powerful.";
+
+SEWIE_AMMOGIVE_BRONTO_TOOMANY_1 = "I can't carry more of this.";
+SEWIE_AMMOGIVE_BRONTO_TOOMANY_2 = "I already have enough of that.";
+SEWIE_AMMOGIVE_BRONTO_TOOMANY_3 = "Sorry, inventory is full.";
+
+SEWIE_AMMOGIVE_BRONTO_SUCCESS_1 = "I'll be sure to put this to good use.";
+SEWIE_AMMOGIVE_BRONTO_SUCCESS_2 = "These kick like a bitch, but delete big baddies.";
+SEWIE_AMMOGIVE_BRONTO_SUCCESS_3 = "Small, but effective.";
+
+SEWIE_NOAMMO_SMG_1 = "My SMG is complaining.";
+SEWIE_NOAMMO_SMG_2 = "My SMG demands more candy.";
+SEWIE_NOAMMO_SMG_3 = "Got more nine mil?";
+
+SEWIE_NOAMMO_HUNTER_1 = "Hunter can no longer hunt.";
+SEWIE_NOAMMO_HUNTER_2 = "Spare some shells?";
+SEWIE_NOAMMO_HUNTER_3 = "Oh no, I'm out of shells.";
+
+SEWIE_NOAMMO_ZM66_1 = "I'm out of ammo. Spare some 4mm mags?";
+SEWIE_NOAMMO_ZM66_2 = "Out of four mil. Got any?";
+SEWIE_NOAMMO_ZM66_3 = "ZM is dry, need a refill.";
+
+SEWIE_NOAMMO_RL_1 = "Just launched my last rocket grenade.";
+SEWIE_NOAMMO_RL_2 = "I'll need more rocket grenades, hon.";
+SEWIE_NOAMMO_RL_3 = "Got more boom-booms?";
+
+SEWIE_NOAMMO_LIBERATOR_1 = "My libby has libbed its last.";
+SEWIE_NOAMMO_LIBERATOR_2 = "I'll need some seven mil for my Liberator.";
+SEWIE_NOAMMO_LIBERATOR_3 = "Hey, do you happen to have any seven mil?";
+
+SEWIE_NOAMMO_BOSS_1 = "There goes my seven mil ammo. I hope you have any left.";
+SEWIE_NOAMMO_BOSS_2 = "So much for the Boss. I'm out.";
+SEWIE_NOAMMO_BOSS_3 = "Spare any loose seven mil rounds?";
+
+SEWIE_NOAMMO_BRONTO_1 = "That was the last bolt. Got any on you?";
+SEWIE_NOAMMO_BRONTO_2 = "I'm out of bronto bolts.";
+SEWIE_NOAMMO_BRONTO_3 = "I don't have anything to take care of big baddies anymore.";
+
+SEWIE_MEDGIVE_TOOMANY_1 = "Sorry, I'm already carrying too many medikits.";
+SEWIE_MEDGIVE_TOOMANY_2 = "That's enough medikits.";
+SEWIE_MEDGIVE_TOOMANY_3 = "I can't carry anymore.";
+
+SEWIE_MEDGIVE_SUCCESS_1 = "Thanks, now I can patch you up if needed. Oh, and you can keep the blood bag.";
+SEWIE_MEDGIVE_SUCCESS_2 = "Oh nice, a medikit. Here, take this. I don't need the blood.";
+SEWIE_MEDGIVE_SUCCESS_3 = "Let's hope we won't need this.";
+
+SEWIE_MEDIC_STIMMED_1 = "Here, this will make the pain more bearable.";
+SEWIE_MEDIC_STIMMED_2 = "This should ease your suffering.";
+SEWIE_MEDIC_STIMMED_3 = "Hold still while I stim you.";
+
+SEWIE_STIMGIVE_TOOMANY_1 = "Sorry, I'm already carrying too many stimpacks.";
+SEWIE_STIMGIVE_TOOMANY_2 = "That's enough stimpacks.";
+SEWIE_STIMGIVE_TOOMANY_3 = "I can't carry anymore.";
+
+SEWIE_STIMGIVE_SUCCESS_1 = "Thanks, this will get you back up in no time.";
+SEWIE_STIMGIVE_SUCCESS_2 = "These should speed up your recovery.";
+SEWIE_STIMGIVE_SUCCESS_3 = "Thanks, this will get you back up in no time.";
+
+SEWIE_REVIVE_BLUES_SUCCESS_1 = "Huh? What happened? How long have I been gone for?";
+SEWIE_REVIVE_BLUES_SUCCESS_2 = "I don't recall anything. Did I pass out?";
+SEWIE_REVIVE_BLUES_SUCCESS_3 = "Ow, my head hurts.";
+
+SEWIE_REVIVE_BLOOD_SUCCESS_1 = "Mmm, delicious. Thanks!";
+SEWIE_REVIVE_BLOOD_SUCCESS_2 = "Uhm... You're bleeding.";
+SEWIE_REVIVE_BLOOD_SUCCESS_3 = "You taste funny. Have you been using blood bags lately?";
+
+SEWIE_ARMORGIVE_INIT_1 = "Oh, you have something for me? I'll wait for you to drop it.";
+SEWIE_ARMORGIVE_INIT_2 = "Sure, just drop it here.";
+SEWIE_ARMORGIVE_INIT_3 = "Gimme gimme!";
+
+SEWIE_ARMORGIVE_MAYBEDROP_1 = "Unless you want me to take off my armor?";
+SEWIE_ARMORGIVE_MAYBEDROP_2 = "Or should I take off my armor?";
+SEWIE_ARMORGIVE_MAYBEDROP_3 = "Or do you want my armor?";
+
+SEWIE_ARMORGIVE_CANCEL_1 = "I see you've changed your mind.";
+SEWIE_ARMORGIVE_CANCEL_2 = "Alright then.";
+SEWIE_ARMORGIVE_CANCEL_3 = "Suit yourself.";
+
+SEWIE_ARMORGIVE_STRIP_1 = "Stop hogging all the armor.";
+SEWIE_ARMORGIVE_STRIP_2 = "I feel so naked.";
+SEWIE_ARMORGIVE_STRIP_3 = "I'll miss that.";
+
+SEWIE_ARMORGIVE_NONE_1 = "Looks sturdy. Thank you.";
+SEWIE_ARMORGIVE_NONE_2 = "Cool armor. Thanks!";
+SEWIE_ARMORGIVE_NONE_3 = "I like protection.";
+
+SEWIE_ARMORGIVE_UPGRADE_1 = "I needed that upgrade. Thank you.";
+SEWIE_ARMORGIVE_UPGRADE_2 = "Wonderful!";
+SEWIE_ARMORGIVE_UPGRADE_3 = "Awesome.";
+
+SEWIE_ARMORGIVE_BETTERDURABILITY_1 = "Thanks, this will last much longer than my old armor.";
+SEWIE_ARMORGIVE_BETTERDURABILITY_2 = "Much better!";
+SEWIE_ARMORGIVE_BETTERDURABILITY_3 = "This gives me a much better sense of security. Thanks.";
+
+SEWIE_ARMORGIVE_NOTHANKS_1 = "My current armor is better. You can keep that one.";
+SEWIE_ARMORGIVE_NOTHANKS_2 = "I don't like that one, it's dented.";
+SEWIE_ARMORGIVE_NOTHANKS_3 = "I like my armor.";
+
+SEWIE_ARMORGIVE_RANAWAY_1 = "Doesn't look like you're planning to give me anything.";
+SEWIE_ARMORGIVE_RANAWAY_2 = "Hey, where are you going!?";
+SEWIE_ARMORGIVE_RANAWAY_3 = "Wait up!";
+
+SEWIE_BRASS_NONE_1 = "I don't have any left.";
+SEWIE_BRASS_NONE_2 = "Sorry, got nothing.";
+SEWIE_BRASS_NONE_3 = "Nope. Nothing.";
+
+SEWIE_BRASS_SUCCESS_1 = "Here, I've been holding onto these for you.";
+SEWIE_BRASS_SUCCESS_2 = "Use them wisely, okay?";
+SEWIE_BRASS_SUCCESS_3 = "Are you going to buy me flowers with those?";
