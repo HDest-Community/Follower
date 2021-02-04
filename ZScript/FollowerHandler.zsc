@@ -11,7 +11,7 @@ class FollowerHandler : EventHandler
 		FMenu_Miscellaneous
 	}
 
-	const InternalFollowers = 3;
+	const InternalFollowers = 6;
 
 	Array<HDFollower> Followers;
 
