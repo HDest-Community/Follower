@@ -29,6 +29,7 @@ extend class HDFollower
 
 				HDMobBase HDMon = HDMobBase(MTarget);
 				bool AlreadyTargeted = IsAttackedBySomeoneElse(MTarget);
+				let Shields = MTarget.FindInventory('HDMagicShield');
 
 				if (hdf_debug >= 2)
 				{
@@ -65,20 +66,20 @@ extend class HDFollower
 					W = "FW_RocketLauncher"; UsedWeapons.Push(W);
 					W = "FW_Liberator"; UsedWeapons.Push(W);
 					W = "FW_Boss"; UsedWeapons.Push(W);
-					if (HDMobBase(MTarget).Shields > 100)
+					if (Shields && Shields.Amount > 100)
 					{
 						W = "FW_SMG"; UsedWeapons.Push(W);
 					}
 					W = "FW_ZM66"; UsedWeapons.Push(W);
 					W = "FW_Hunter"; UsedWeapons.Push(W);
-					if (HDMobBase(MTarget).Shields <= 100)
+					if (!Shields || Shields.Amount <= 100)
 					{
 						W = "FW_SMG"; UsedWeapons.Push(W);
 					}
 					EngageTarget(UsedWeapons, MTarget);
 					break;
 				}
-				else if (MTarget is "HDMobBase" && HDMon.Shields > 150)
+				else if (MTarget is "HDMobBase" && Shields && Shields.Amount > 150)
 				{
 					W = "FW_RocketLauncher"; UsedWeapons.Push(W);
 					W = "FW_Liberator"; UsedWeapons.Push(W);
