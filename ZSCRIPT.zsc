@@ -135,12 +135,7 @@ class HDFollower : HDMobMan abstract
 	{
 		Super.Tick();
 
-		if (!LinkedPlayer)
-		{
-			return;
-		}
-
-		if (bFRIENDLY && Health > 0 && LinkedPlayer.Health <= 0)
+		if (!LinkedPlayer || bFRIENDLY && Health > 0 && LinkedPlayer.Health <= 0)
 		{
 			return;
 		}
