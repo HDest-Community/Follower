@@ -1,0 +1,149 @@
+// --------------------------------------------------
+// FREYLIS
+// --------------------------------------------------
+
+Follower/Freylis/Death1 FL1DETH1
+
+Follower/Freylis/Pain1 FL1PAIN1
+Follower/Freylis/Pain2 FL1PAIN2
+Follower/Freylis/Pain3 FL1PAIN3
+Follower/Freylis/Pain4 FL1PAIN4
+
+$random Follower/Freylis/Pain
+{
+	Follower/Freylis/Pain1
+	Follower/Freylis/Pain2
+	Follower/Freylis/Pain3
+	Follower/Freylis/Pain4
+}
+
+// --------------------------------------------------
+// BALTHAZAR
+// --------------------------------------------------
+
+Follower/Balthazar/Death1 FL2DETH1
+
+Follower/Balthazar/Pain1 FL2PAIN1
+Follower/Balthazar/Pain2 FL2PAIN2
+
+$random Follower/Balthazar/Pain
+{
+	Follower/Balthazar/Pain1
+	Follower/Balthazar/Pain2
+}
+
+Follower/Balthazar/See1 FL2SEE1
+Follower/Balthazar/See2 FL2SEE2
+Follower/Balthazar/See3 FL2SEE3
+Follower/Balthazar/See4 FL2SEE4
+Follower/Balthazar/See5 FL2SEE5
+Follower/Balthazar/See6 FL2SEE6
+Follower/Balthazar/See7 FL2SEE7
+Follower/Balthazar/See8 FL2SEE8
+Follower/Balthazar/See9 FL2SEE9
+
+$random Follower/Balthazar/See
+{
+	Follower/Balthazar/See1
+	Follower/Balthazar/See2
+	Follower/Balthazar/See3
+	Follower/Balthazar/See4
+	Follower/Balthazar/See5
+	Follower/Balthazar/See6
+	Follower/Balthazar/See7
+	Follower/Balthazar/See8
+	Follower/Balthazar/See9
+}
+
+// --------------------------------------------------
+// DAINA
+// --------------------------------------------------
+
+Follower/Daina/Death FL4DETH1
+
+Follower/Daina/Pain1 FL4PAIN1
+Follower/Daina/Pain2 FL4PAIN2
+Follower/Daina/Pain3 FL4PAIN3
+Follower/Daina/Pain4 FL4PAIN4
+Follower/Daina/Pain5 FL4PAIN5
+Follower/Daina/Pain6 FL4PAIN6
+Follower/Daina/Pain7 FL4PAIN7
+Follower/Daina/Pain8 FL4PAIN8
+Follower/Daina/Pain9 FL4PAIN9
+
+$random Follower/Daina/Pain
+{
+	Follower/Daina/Pain1
+	Follower/Daina/Pain2
+	Follower/Daina/Pain3
+	Follower/Daina/Pain4
+	Follower/Daina/Pain5
+	Follower/Daina/Pain6
+	Follower/Daina/Pain7
+	Follower/Daina/Pain8
+	Follower/Daina/Pain9
+}
+
+// --------------------------------------------------
+// SEWIE
+// --------------------------------------------------
+
+Follower/Sewie/Death1 FL5DETH1
+Follower/Sewie/Death2 FL5DETH2
+
+$random Follower/Sewie/Death
+{
+	Follower/Sewie/Death1
+	Follower/Sewie/Death2
+}
+
+Follower/Sewie/Pain1 FL5PAIN1
+Follower/Sewie/Pain2 FL5PAIN2
+Follower/Sewie/Pain3 FL5PAIN3
+Follower/Sewie/Pain4 FL5PAIN4
+Follower/Sewie/Pain5 FL5PAIN5
+Follower/Sewie/Pain6 FL5PAIN6
+
+$random Follower/Sewie/Pain
+{
+	Follower/Sewie/Pain1
+	Follower/Sewie/Pain2
+	Follower/Sewie/Pain3
+	Follower/Sewie/Pain4
+	Follower/Sewie/Pain5
+	Follower/Sewie/Pain6
+}
+
+// --------------------------------------------------
+// NARI
+// --------------------------------------------------
+
+Follower/Nari/Death1 FL6DETH1
+Follower/Nari/Death2 FL6DETH2
+Follower/Nari/Death3 FL6DETH3
+
+$random Follower/Nari/Death
+{
+	Follower/Nari/Death1
+	Follower/Nari/Death2
+	Follower/Nari/Death3
+}
+
+Follower/Nari/Pain1 FL6PAIN1
+Follower/Nari/Pain2 FL6PAIN2
+Follower/Nari/Pain3 FL6PAIN3
+Follower/Nari/Pain4 FL6PAIN4
+Follower/Nari/Pain5 FL6PAIN5
+Follower/Nari/Pain6 FL6PAIN6
+Follower/Nari/Pain7 FL6PAIN7
+
+$random Follower/Nari/Pain
+{
+	Follower/Nari/Pain1
+	Follower/Nari/Pain2
+	Follower/Nari/Pain3
+	Follower/Nari/Pain4
+	Follower/Nari/Pain5
+	Follower/Nari/Pain6
+	Follower/Nari/Pain7
+}
