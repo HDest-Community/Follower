@@ -1,3 +1,9 @@
+class FollowerCommand ui
+{
+	string EventName;
+	int Args[3];
+}
+
 class FollowerHandler : EventHandler
 {
 	enum FollowerMenus
@@ -10,6 +16,10 @@ class FollowerHandler : EventHandler
 		FMenu_Supplies,
 		FMenu_Miscellaneous
 	}
+
+	// ----------------------------------------------------------
+	// CORE
+	// ----------------------------------------------------------
 
 	const InternalFollowers = 6;
 
@@ -103,6 +113,78 @@ class FollowerHandler : EventHandler
 			}
 		}
 	}
+
+	override void WorldUnloaded(WorldEvent e)
+	{
+		for (int i = 0; i < Followers.Size(); ++i)
+		{
+			HDFollower SelFollower = Followers[i];
+			if (SelFollower)
+			{
+				if (SelFollower.IsDeadOrMissing())
+				{
+					SelFollower.LinkedPlayer.A_GiveInventory(SelFollower.MissingClass);
+				}
+				else
+				{
+					SelFollower.PackFollower(true);
+				}
+			}
+		}
+	}
+
+	override void WorldLinePreActivated(WorldEvent e)
+	{
+		// [Ace] This only prints the warning. Tokens are given when you actually exit the level.
+		if (e.Thing is "PlayerPawn" && (e.ActivatedLine.special == 74 || e.ActivatedLine.special == 243 || e.ActivatedLine.special == 244) && !CanExitNow)
+		{
+			Array<HDFollower> MissingFollowers;
+			for (int i = 0; i < Followers.Size(); ++i)
+			{
+				if (Followers[i].IsDeadOrMissing())
+				{
+					MissingFollowers.Push(Followers[i]);
+				}
+			}
+			int MSize = MissingFollowers.Size();
+
+			if (MSize > 0)
+			{
+				// [Ace] Gotta have that proper grammar.
+				string FNames = "";
+				for (int i = 0; i < MSize; ++i)
+				{
+					FNames = FNames..MissingFollowers[i].GetTag();
+
+					if (i + 2 == MSize)
+					{
+						FNames = FNames..(MSize > 2 ? "," : "").." and ";
+					}
+					else if (i + 2 < MSize)
+					{
+						FNames = FNames..", ";
+					}
+				}
+
+				e.Thing.A_Print("\c[White]You shouldn't leave "..FNames.." behind.\c-\n\n\c[White]Activate the exit again within two seconds to exit the level and leave "..(MSize > 1 ? "them" : MissingFollowers[0].GetPronoun(false)).." to the monsters.\c-", 4);
+				e.ShouldActivate = false;
+				CanExitNow = true;
+				WarningResetTimer = 70;
+			}	
+		}
+	}
+
+	override void WorldTick()
+	{
+		if (CanExitNow && --WarningResetTimer <= 0)
+		{
+			CanExitNow = false;
+		}
+	}
+
+	// ----------------------------------------------------------
+	// UI
+	// ----------------------------------------------------------
 
 	override void RenderOverlay(RenderEvent e)
 	{
@@ -344,6 +426,10 @@ class FollowerHandler : EventHandler
 		sb.DrawString(fnt, AmmoString, pos, flags, Font.CR_WHITE);
 	}
 
+	// ----------------------------------------------------------
+	// INPUT
+	// ----------------------------------------------------------
+
 	override bool InputProcess(InputEvent e)
 	{
 		if (FollowerMenuLevel > 0 && e.Type == InputEvent.Type_KeyDown)
@@ -469,11 +555,27 @@ class FollowerHandler : EventHandler
 		return false;
 	}
 
+	// [Ace] The only reason this is used is to allow dynamic menus with a variable number of options. That's literally the only reason.
+	ui FollowerCommand CreateCommand(string evName, int arg1 = 0, int arg2 = 0, int arg3 = 0)
+	{
+		let Command = new('FollowerCommand');
+		Command.EventName = evName;
+		Command.Args[0] = arg1;
+		Command.Args[1] = arg2;
+		Command.Args[2] = arg3;
+		return Command;
+	}
+
+	// ----------------------------------------------------------
+	// COMMANDS
+	// ----------------------------------------------------------
+
 	override void NetworkProcess(ConsoleEvent e)
 	{
 		if (e.Name ~== "HDF_ResetFollower" && e.Args[0] > 0)
 		{
 			Array<class<HDFollower> > FollowerClasses;
+
 			// [Ace] Find all follower classes first.
 			for (int i = 0; i < AllActorClasses.Size(); ++i)
 			{
@@ -513,14 +615,11 @@ class FollowerHandler : EventHandler
 		}
 
 		// [Ace] This is an obvious cheat, so don't use it unless you absolutely HAVE to.
-		if (e.Name ~== "HDF_WarpToPlayer" && e.Args[0])
+		if (e.Name ~== "HDF_WarpToPlayer")
 		{
-			int FollowerIndex = e.Args[0];
-
-			// [Ace] Destroy the class that is being reset, if applicable.
 			for (int i = 0; i < Followers.Size(); ++i)
 			{
-				if (Followers[i].Index == FollowerIndex)
+				if (Followers[i].Index == e.Args[0])
 				{
 					Followers[i].WarpToPlayer();
 					break;
@@ -632,88 +731,20 @@ class FollowerHandler : EventHandler
 		}
 	}
 
-	override void WorldUnloaded(WorldEvent e)
+	// ----------------------------------------------------------
+	// INFORMATION
+	// ----------------------------------------------------------
+
+	int FollowingFollowersCount()
 	{
+		int Total = 0;
 		for (int i = 0; i < Followers.Size(); ++i)
 		{
-			HDFollower SelFollower = Followers[i];
-			if (SelFollower)
+			if (Followers[i].Order == FOrder_Follow || Followers[i].Order == FOrder_FollowIgnore)
 			{
-				if (SelFollower.IsDeadOrMissing())
-				{
-					SelFollower.LinkedPlayer.A_GiveInventory(SelFollower.MissingClass);
-				}
-				else
-				{
-					SelFollower.PackFollower(true);
-				}
+				Total++;
 			}
 		}
+		return Total;
 	}
-
-	override void WorldLinePreActivated(WorldEvent e)
-	{
-		// [Ace] This only prints the warning. Tokens are given when you actually exit the level.
-		if (e.Thing is "PlayerPawn" && (e.ActivatedLine.special == 74 || e.ActivatedLine.special == 243 || e.ActivatedLine.special == 244) && !CanExitNow)
-		{
-			Array<HDFollower> MissingFollowers;
-			for (int i = 0; i < Followers.Size(); ++i)
-			{
-				if (Followers[i].IsDeadOrMissing())
-				{
-					MissingFollowers.Push(Followers[i]);
-				}
-			}
-			int MSize = MissingFollowers.Size();
-
-			if (MSize > 0)
-			{
-				// [Ace] Gotta have that proper grammar.
-				string FNames = "";
-				for (int i = 0; i < MSize; ++i)
-				{
-					FNames = FNames..MissingFollowers[i].GetTag();
-
-					if (i + 2 == MSize)
-					{
-						FNames = FNames..(MSize > 2 ? "," : "").." and ";
-					}
-					else if (i + 2 < MSize)
-					{
-						FNames = FNames..", ";
-					}
-				}
-
-				e.Thing.A_Print("\c[White]You shouldn't leave "..FNames.." behind.\c-\n\n\c[White]Activate the exit again within two seconds to exit the level and leave "..(MSize > 1 ? "them" : MissingFollowers[0].GetPronoun(false)).." to the monsters.\c-", 4);
-				e.ShouldActivate = false;
-				CanExitNow = true;
-				WarningResetTimer = 70;
-			}	
-		}
-	}
-
-	override void WorldTick()
-	{
-		if (CanExitNow && --WarningResetTimer <= 0)
-		{
-			CanExitNow = false;
-		}
-	}
-
-	// [Ace] The only reason this is used is to allow dynamic menus with a variable number of options. That's literally the only reason.
-	static ui FollowerCommand CreateCommand(string evName, int arg1 = 0, int arg2 = 0, int arg3 = 0)
-	{
-		let Command = new('FollowerCommand');
-		Command.EventName = evName;
-		Command.Args[0] = arg1;
-		Command.Args[1] = arg2;
-		Command.Args[2] = arg3;
-		return Command;
-	}
-}
-
-class FollowerCommand ui
-{
-	string EventName;
-	int Args[3];
 }

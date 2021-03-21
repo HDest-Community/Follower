@@ -19,8 +19,8 @@ extend class HDFollower
 		bool NeedsHelp = PlayerIsIncapped(); // [Ace] You're just incapped.
 		bool NeedsMedic = PlayerNeedsMedic(); // [Ace] You're bleeding and incapped.
 		bool IsHelping = IsHelpingPlayer();
-		int FollowerIndex = Handler.Followers.Find(self);
-		int NearbyFollowerCount = FollowersNearActor(LinkedPlayer, MinPlayerRangeStop);
+		int FIndex = Handler.Followers.Find(self);
+		int FNPCount = FollowersNearPlayer(MinPlayerRangeStop * Handler.FollowingFollowersCount());
 
 		if (Status != FStatus_InCombat)
 		{
@@ -77,7 +77,7 @@ extend class HDFollower
 					}
 
 					// [Ace] Go to player if they're too far away.
-					if (bFRIENDLY && Distance3D(LinkedPlayer) > MinPlayerRange * (1 + min(NearbyFollowerCount, FollowerIndex)) && Distance3D(LinkedPlayer) < MaxPlayerRange)
+					if (bFRIENDLY && Distance3D(LinkedPlayer) > MinPlayerRange * (1 + min(FNPCount, FIndex)) && Distance3D(LinkedPlayer) < MaxPlayerRange)
 					{
 						if (CanSeePlayer)
 						{
@@ -117,7 +117,7 @@ extend class HDFollower
 		}
 
 		// [Ace] Movement. Always travel to goals if there are any. Status between moving and idle should not be set elsewhere.
-		if (Status != FStatus_WaitingForArmor && (Status != FStatus_InCombat || Order == FOrder_GoAndCover) && TGoal && (TGoal is "PlayerPawn" && Distance2D(TGoal) > (Order == FOrder_ComeAndHelp && (NeedsMedic || NeedsHelp) ? MedicRange : MinPlayerRangeStop * (1 + min(NearbyFollowerCount, FollowerIndex))) || TGoal is "TargetGoal" && Distance2D(TGoal) > 16) && Distance2D(TGoal) < MaxGoalRange)
+		if (Status != FStatus_WaitingForArmor && (Status != FStatus_InCombat || Order == FOrder_GoAndCover) && TGoal && (TGoal is "PlayerPawn" && Distance2D(TGoal) > (Order == FOrder_ComeAndHelp && (NeedsMedic || NeedsHelp) ? MedicRange : MinPlayerRangeStop * (1 + min(FNPCount, FIndex))) || TGoal is "TargetGoal" && Distance2D(TGoal) > 16) && Distance2D(TGoal) < MaxGoalRange)
 		{
 			if (TGoal is "PlayerPawn" && Order == FOrder_ComeAndHelp && (NeedsMedic || NeedsHelp))
 			{
@@ -263,12 +263,12 @@ extend class HDFollower
 		TauntTimer = random(35 * 10, 35 * 30);
 	}
 
-	private int FollowersNearActor(Actor a, double dist)
+	private int FollowersNearPlayer(double dist)
 	{
 		int Total = 0;
 		for (int i = 0; i < Handler.Followers.Size(); ++i)
 		{
-			if (Handler.Followers[i] != a && Handler.Followers[i].Distance3D(a) <= dist)
+			if (Handler.Followers[i] != self && Handler.Followers[i].Distance3D(LinkedPlayer) <= dist)
 			{
 				Total++;
 			}
@@ -280,14 +280,14 @@ extend class HDFollower
 	{
 		if (bOnMobj)
 		{
-			if (Distance2D(LinkedPlayer) <= LinkedPlayer.Radius + 4)
+			if (Distance2D(LinkedPlayer) <= LinkedPlayer.Radius + Radius)
 			{
 				return true;
 			}
 
 			for (int i = 0; i < Handler.Followers.Size(); ++i)
 			{
-				if (Distance2D(Handler.Followers[i]) <= Handler.Followers[i].Radius + 4)
+				if (Distance2D(Handler.Followers[i]) <= Handler.Followers[i].Radius + Radius)
 				{
 					return true;
 				}
