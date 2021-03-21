@@ -56,6 +56,27 @@ $random Follower/Balthazar/See
 }
 
 // --------------------------------------------------
+// VALNOS
+// --------------------------------------------------
+
+Follower/Valnos/Death1 FL3DETH1
+
+Follower/Valnos/Pain1 FL3PAIN1
+Follower/Valnos/Pain2 FL3PAIN2
+Follower/Valnos/Pain3 FL3PAIN3
+Follower/Valnos/Pain4 FL3PAIN4
+Follower/Valnos/Pain5 FL3PAIN5
+
+$random Follower/Valnos/Pain
+{
+	Follower/Valnos/Pain1
+	Follower/Valnos/Pain2
+	Follower/Valnos/Pain3
+	Follower/Valnos/Pain4
+	Follower/Valnos/Pain5
+}
+
+// --------------------------------------------------
 // DAINA
 // --------------------------------------------------
 
