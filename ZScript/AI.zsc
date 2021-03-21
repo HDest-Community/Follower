@@ -19,8 +19,8 @@ extend class HDFollower
 		bool NeedsHelp = PlayerIsIncapped(); // [Ace] You're just incapped.
 		bool NeedsMedic = PlayerNeedsMedic(); // [Ace] You're bleeding and incapped.
 		bool IsHelping = IsHelpingPlayer();
-		int NearbyFollowerCount = FollowersNearActor(self, 64);
-		int FollowerCount = Handler.Followers.Size();
+		int FollowerIndex = Handler.Followers.Find(self);
+		int NearbyFollowerCount = FollowersNearActor(LinkedPlayer, MinPlayerRangeStop);
 
 		if (Status != FStatus_InCombat)
 		{
@@ -77,7 +77,7 @@ extend class HDFollower
 					}
 
 					// [Ace] Go to player if they're too far away.
-					if (bFRIENDLY && Distance3D(LinkedPlayer) > MinPlayerRange * (1 + FollowerCount / 3.0) && Distance3D(LinkedPlayer) < MaxPlayerRange)
+					if (bFRIENDLY && Distance3D(LinkedPlayer) > MinPlayerRange * (1 + min(NearbyFollowerCount, FollowerIndex)) && Distance3D(LinkedPlayer) < MaxPlayerRange)
 					{
 						if (CanSeePlayer)
 						{
@@ -90,7 +90,7 @@ extend class HDFollower
 						}
 					}
 
-					if (!Moving && (IdleTimer <= 0 || IsSteppingOnSomeone() || NearbyFollowerCount > 0))
+					if (!Moving && (IdleTimer <= 0 || IsSteppingOnSomeone()))
 					{
 						// [Ace] Spawn a new idle spot.
 						vector3 SpotPos = Vec3Angle(random(16, 96), random(0, 359));
@@ -117,7 +117,7 @@ extend class HDFollower
 		}
 
 		// [Ace] Movement. Always travel to goals if there are any. Status between moving and idle should not be set elsewhere.
-		if (Status != FStatus_WaitingForArmor && (Status != FStatus_InCombat || Order == FOrder_GoAndCover) && TGoal && (TGoal is "PlayerPawn" && Distance2D(TGoal) > (Order == FOrder_ComeAndHelp && (NeedsMedic || NeedsHelp) ? MedicRange : MinPlayerRangeStop * (1 + FollowerCount / 3.0)) || TGoal is "TargetGoal" && Distance2D(TGoal) > 16) && Distance2D(TGoal) < MaxGoalRange)
+		if (Status != FStatus_WaitingForArmor && (Status != FStatus_InCombat || Order == FOrder_GoAndCover) && TGoal && (TGoal is "PlayerPawn" && Distance2D(TGoal) > (Order == FOrder_ComeAndHelp && (NeedsMedic || NeedsHelp) ? MedicRange : MinPlayerRangeStop * (1 + min(NearbyFollowerCount, FollowerIndex))) || TGoal is "TargetGoal" && Distance2D(TGoal) > 16) && Distance2D(TGoal) < MaxGoalRange)
 		{
 			if (TGoal is "PlayerPawn" && Order == FOrder_ComeAndHelp && (NeedsMedic || NeedsHelp))
 			{
