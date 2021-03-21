@@ -93,8 +93,15 @@ extend class HDFollower
 					if (!Moving && (IdleTimer <= 0 || IsSteppingOnSomeone()))
 					{
 						// [Ace] Spawn a new idle spot.
-						vector3 SpotPos = Vec3Angle(random(16, 96), random(0, 359));
-						for (int i = 0; i < 100 && !TrySetGoal(SpotPos); ++i);
+						for (int i = 0; i < 100; ++i)
+						{
+							vector3 SpotPos = Vec3Angle(random(16, 96), random(0, 359));
+							if (TrySetGoal(SpotPos))
+							{
+								break;
+							}
+						}
+						ResetIdleTimer();
 					}
 				}
 
@@ -166,7 +173,7 @@ extend class HDFollower
 			ResetIdleTimer();
 
 			A_ChangeVelocity(MovementSpeed, 0, vel.z, CVF_RELATIVE | CVF_REPLACE);
-			A_RadiusThrust(128, 32, RTF_NOIMPACTDAMAGE, 32, 'HDFollower');
+			A_RadiusThrust(128, 16, RTF_NOIMPACTDAMAGE, 16, 'HDFollower');
 			Moving = true;
 
 			// [Ace] Stop trying to reach goal shortly after losing LOS.
