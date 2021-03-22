@@ -90,6 +90,8 @@ extend class HDFollower
 					EngageTarget(UsedWeapons, MTarget);
 					break;
 				}
+
+				// [Ace] Intentionally don't break the loop in case one of the next monsters is a high priority one.
 				else if (MTarget.FindInventory("HDArmourWorn") && !AlreadyTargeted) // [Ace] Don't focus fire on trash.
 				{
 					W = "FW_Liberator"; UsedWeapons.Push(W);
@@ -123,7 +125,7 @@ extend class HDFollower
 		}
 	}
 
-	protected virtual bool CheckTarget() const
+	protected virtual bool CheckTarget()
 	{
 		// [Ace] Don't target if:
 		// - Follower is friendly and target is friendly or player;
@@ -142,7 +144,7 @@ extend class HDFollower
 		return (FriendlyCheck || HostileCHeck) && CTarget.Health > 0 && CheckSight(CTarget, SF_SEEPASTSHOOTABLELINES) && !TargetIsIncapped(CTarget) && CTarget.bSHOOTABLE;
 	}
 
-	protected bool TargetIsIncapped(Actor other) const
+	protected bool TargetIsIncapped(Actor other)
 	{
 		return other && other.InStateSequence(other.CurState, other.FindState("Falldown"));
 	}
