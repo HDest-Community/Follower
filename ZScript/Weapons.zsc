@@ -214,9 +214,9 @@ extend class HDFollower
 		A_Face(CTarget, 0, 0, flags: FAF_MIDDLE);
 
 		// [Ace] If you're incapped, follower can probably shoot over you. Otherwise it's not a good idea.
-		AimBlocked = IsAimBlocked();
-		if (AimBlocked)
+		if (IsAimBlocked())
 		{
+			A_ChangeVelocity(0, default.MovementSpeed / 1.5, vel.z, CVF_RELATIVE | CVF_REPLACE);
 			AimTimer = 0;
 			SetStateLabel("Aiming");
 		}

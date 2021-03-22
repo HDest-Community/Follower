@@ -119,12 +119,6 @@ extend class HDFollower
 			LookForEnemies();
 		}
 
-		// [Ace] Step to the side if something is blocking the view.
-		if (Status == FStatus_InCombat && AimBlocked)
-		{
-			A_ChangeVelocity(0, default.MovementSpeed / 1.5, vel.z, CVF_RELATIVE | CVF_REPLACE);
-		}
-
 		// [Ace] Movement. Always travel to goals if there are any. Status between moving and idle should not be set elsewhere.
 		if (Status != FStatus_WaitingForArmor && (Status != FStatus_InCombat || Order == FOrder_GoAndCover) && TGoal && (TGoal is "PlayerPawn" && Distance2D(TGoal) > (Order == FOrder_ComeAndHelp && (NeedsMedic || NeedsHelp) ? MedicRange : MinPlayerRangeStop * DistMult) || TGoal is "TargetGoal" && Distance2D(TGoal) > 16) && Distance2D(TGoal) < MaxGoalRange)
 		{
@@ -175,7 +169,7 @@ extend class HDFollower
 			ResetIdleTimer();
 
 			A_ChangeVelocity(MovementSpeed, 0, vel.z, CVF_RELATIVE | CVF_REPLACE);
-			A_RadiusThrust(128, Radius + 4, RTF_NOIMPACTDAMAGE, Radius + 4, 'HDFollower');
+			A_RadiusThrust(128, int(Radius + 4), RTF_NOIMPACTDAMAGE, int(Radius + 4), 'HDFollower');
 			Moving = true;
 
 			// [Ace] Stop trying to reach goal shortly after losing LOS.
@@ -313,7 +307,6 @@ extend class HDFollower
 	HDPlayerPawn LinkedPlayer;
 	protected Actor CTarget;
 	private Actor TGoal;
-	private bool AimBlocked;
 
 	private bool Moving;
 	FStatus Status;
