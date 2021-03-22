@@ -31,7 +31,7 @@ extend class HDFollower
 				bool AlreadyTargeted = IsAttackedBySomeoneElse(MTarget);
 				let Shields = MTarget.FindInventory('HDMagicShield');
 
-				if (hdf_debug == 2)
+				if (hdf_debug == 1)
 				{
 					Console.Printf("%s is attempting to target %s with %i bodydamage.", GetTag(), MTarget.GetClassName(), HDMon ? HDMon.BodyDamage : -1);
 				}

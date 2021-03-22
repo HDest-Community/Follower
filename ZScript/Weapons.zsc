@@ -164,20 +164,18 @@ extend class HDFollower
 			int MaxMag = ActualWeapons[i].GetMaxMag();
 			if (ActualWeapons[i].SpareAmmo > 0)
 			{
-				if (hdf_debug == 1)
-				{
-					Console.Printf("Highest with spare is "..ActualWeapons[i].GetName()..".");
-				}
 				HighestWithSpare = ActualWeapons[i];
 			}
 			if (ActualWeapons[i].Mag > 0 || ActualWeapons[i].ChamberedRound == FollowerWeapon.CRType_Chambered)
 			{
-				if (hdf_debug == 1)
-				{
-					Console.Printf("Highest with ammo is "..ActualWeapons[i].GetName()..".");
-				}
 				HighestWithAmmo = ActualWeapons[i];
 			}
+		}
+
+		if (hdf_debug == 1)
+		{
+			Console.Printf("Highest with spare is "..(HighestWithSpare ? HighestWithSpare.GetName() : "nothing")..".");
+			Console.Printf("Highest with ammo is "..(HighestWithAmmo ? HighestWithAmmo.GetName() : "nothing")..".");
 		}
 
 		if (HighestWithAmmo)
