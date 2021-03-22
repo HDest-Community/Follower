@@ -106,6 +106,10 @@ extend class HDFollower
 						ResetIdleTimer();
 					}
 				}
+				else if (Order == FOrder_Cover && Distance3D(LinkedPlayer) < 128)
+				{
+					A_Face(LinkedPlayer, 45);
+				}
 
 				if (hdf_collectbrass)
 				{
