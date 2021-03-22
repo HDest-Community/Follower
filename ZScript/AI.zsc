@@ -175,7 +175,7 @@ extend class HDFollower
 			ResetIdleTimer();
 
 			A_ChangeVelocity(MovementSpeed, 0, vel.z, CVF_RELATIVE | CVF_REPLACE);
-			A_RadiusThrust(128, 16, RTF_NOIMPACTDAMAGE, 16, 'HDFollower');
+			A_RadiusThrust(128, Radius + 4, RTF_NOIMPACTDAMAGE, Radius + 4, 'HDFollower');
 			Moving = true;
 
 			// [Ace] Stop trying to reach goal shortly after losing LOS.
