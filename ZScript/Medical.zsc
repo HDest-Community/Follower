@@ -237,7 +237,7 @@ extend class HDFollower
 				a.target = plr;
 
 				Actor b = Spawn("SpentStim", pos + (0, 0, height - 8), ALLOW_REPLACE);
-				b.A_ChangeVelocity(3,1,2,CVF_RELATIVE);
+				b.A_ChangeVelocity(3, 1, 2, CVF_RELATIVE);
 				b.A_StartSound("weapons/grenopen", 8);
 			}
 			#### J 0

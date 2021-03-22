@@ -109,7 +109,7 @@ extend class HDFollower
 		{
 			if (wpn.SpareAmmo > 0)
 			{
-				if (hdf_debug >= 1)
+				if (hdf_debug == 1)
 				{
 					Console.Printf("Trying to reload "..wpn.GetName()..".");
 				}
@@ -164,7 +164,7 @@ extend class HDFollower
 			int MaxMag = ActualWeapons[i].GetMaxMag();
 			if (ActualWeapons[i].SpareAmmo > 0)
 			{
-				if (hdf_debug >= 1)
+				if (hdf_debug == 1)
 				{
 					Console.Printf("Highest with spare is "..ActualWeapons[i].GetName()..".");
 				}
@@ -172,7 +172,7 @@ extend class HDFollower
 			}
 			if (ActualWeapons[i].Mag > 0 || ActualWeapons[i].ChamberedRound == FollowerWeapon.CRType_Chambered)
 			{
-				if (hdf_debug >= 1)
+				if (hdf_debug == 1)
 				{
 					Console.Printf("Highest with ammo is "..ActualWeapons[i].GetName()..".");
 				}
@@ -208,10 +208,16 @@ extend class HDFollower
 			return;
 		}
 
+		if (hdf_debug == 1)
+		{
+			Console.Printf("Aiming at %s.", CTarget.GetClassName());
+		}
+
 		A_Face(CTarget, 0, 0, flags: FAF_MIDDLE);
 
 		// [Ace] If you're incapped, follower can probably shoot over you. Otherwise it's not a good idea.
-		if (IsAimBlocked())
+		AimBlocked = IsAimBlocked();
+		if (AimBlocked)
 		{
 			AimTimer = 0;
 			SetStateLabel("Aiming");
@@ -221,7 +227,16 @@ extend class HDFollower
 	protected bool IsAimBlocked()
 	{
 		Actor ATarget = AimTarget();
-		return CTarget && ATarget && bFRIENDLY && (ATarget is "PlayerPawn" || ATarget.bFRIENDLY);
+		bool Condition = CTarget && ATarget && bFRIENDLY && (ATarget is "PlayerPawn" || ATarget.bFRIENDLY);
+		if (Condition)
+		{
+			if (hdf_debug == 1)
+			{
+				Console.Printf("Aim is being blocked by %s.", ATarget.GetClassName());
+			}
+			return true;
+		}
+		return false;
 	}
 
 	protected FollowerWeapon SelWeapon;
@@ -244,7 +259,7 @@ extend class HDFollower
 			{
 				if (AimTimer++ > AdjustForDistance(Distance3D(CTarget), SelWeapon.GetAdjustmentMult()))
 				{
-					if (hdf_debug >= 1)
+					if (hdf_debug == 1)
 					{
 						Console.Printf("Trying to fire "..SelWeapon.GetName().." at "..CTarget.GetTag()..".");
 					}

@@ -10,7 +10,7 @@ extend class HDFollower
 {
 	private void AiThink()
 	{
-		if (hdf_debug >= 2)
+		if (hdf_debug == 3)
 		{
 			Console.Printf("Follower "..GetTag().." has %s out.\nCurrent status is %i.\nFollower is targeting %s.\n--------------------", SelWeapon ? SelWeapon.GetName() : "no weapon", Status, CTarget ? CTarget.GetTag() : "nothing");
 		}
@@ -114,13 +114,13 @@ extend class HDFollower
 			}
 		}
 		
-		if ((Status != FStatus_InCombat || !SelWeapon) && (!bFRIENDLY || Order == FOrder_Follow || Order == FOrder_Cover || Order == FOrder_ComeAndHelp) && GetAge() % 8 == 0)
+		if ((Status != FStatus_InCombat || !SelWeapon) && (!bFRIENDLY || Order == FOrder_Follow || Order == FOrder_Cover || Order == FOrder_ComeAndHelp))
 		{
 			LookForEnemies();
 		}
 
 		// [Ace] Step to the side if something is blocking the view.
-		if (Status == FStatus_InCombat && IsAimBlocked())
+		if (Status == FStatus_InCombat && AimBlocked)
 		{
 			A_ChangeVelocity(0, default.MovementSpeed / 1.5, vel.z, CVF_RELATIVE | CVF_REPLACE);
 		}
@@ -313,6 +313,7 @@ extend class HDFollower
 	HDPlayerPawn LinkedPlayer;
 	protected Actor CTarget;
 	private Actor TGoal;
+	private bool AimBlocked;
 
 	private bool Moving;
 	FStatus Status;
