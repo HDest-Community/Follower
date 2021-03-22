@@ -249,12 +249,11 @@ class HDFollower : HDMobMan abstract
 		+NOTELESTOMP
 		+BLOCKASPLAYER
 		+NOTRIGGER
-		+FIXMAPTHINGPOS
 		+SEEINVISIBLE
 		+BOSSDEATH
 		//+HDMOBBASE.HASHELMET
 		+HDMOBBASE.NOBLURGAZE
-		HDMobBase.DownedFrame 14;
+		HDMobBase.DownedFrame 17;
 		HDMobBase.MaxBloodLoss 400;
 		Species 'HDFollower';
 		HDFollower.ResurrectType RESF_BLUES | RESF_BLOOD;
