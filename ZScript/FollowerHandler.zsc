@@ -55,6 +55,20 @@ class FollowerHandler : EventHandler
 		Followers.Insert(InsIndex, flw);
 	}
 
+	void RemoveFollower(HDFollower flw, bool permanent = false)
+	{
+		int Index = Followers.Find(flw);
+		if (Index != Followers.Size())
+		{
+			if (permanent)
+			{
+				flw.LinkedPlayer.A_GiveInventory(flw.MissingClass);
+			}
+			flw.Destroy();
+			Followers.Delete(Index);
+		}
+	}
+
 	private void CreateFollower(class<HDFollower> flw, int playerNum)
 	{
 		let plr = players[playerNum].mo;
@@ -235,6 +249,11 @@ class FollowerHandler : EventHandler
 				break;
 
 			case FMenu_Main:
+				if (!SelFollower)
+				{
+					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
+					return;
+				}
 				if (SelFollower.Health <= 0)
 				{
 					int RequiredSips = SelFollower.GetRequiredSips();
@@ -339,6 +358,11 @@ class FollowerHandler : EventHandler
 				break;
 
 			case FMenu_Orders:
+				if (!SelFollower)
+				{
+					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
+					return;
+				}
 				static const string Orders[] = { "Follow", "Follow and ignore hostiles", "Stay and provide cover", "Go there and provide cover", "Come and help me" };
 
 				DrawTextRectangle(sb, pos, (240, RectangleHeight), MainFont, SelFollower.GetTag(), flags, Font.FindFontColor('FLW_NameBlue'));
@@ -352,6 +376,11 @@ class FollowerHandler : EventHandler
 				break;
 
 			case FMenu_Weapons:
+				if (!SelFollower)
+				{
+					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
+					return;
+				}
 				int WeaponSize = SelFollower.Weapons.Size();
 				int WeaponBlockSize = RectangleHeight * 3 - 5;
 				if (WeaponSize > 4)
@@ -370,6 +399,11 @@ class FollowerHandler : EventHandler
 				break;
 
 			case FMenu_Supplies:
+				if (!SelFollower)
+				{
+					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
+					return;
+				}
 				DrawTextRectangle(sb, pos, (205, RectangleHeight), MainFont, SelFollower.GetTag(), flags, Font.FindFontColor('FLW_NameBlue')); pos.y += RectangleHeight + Spacing;
 				DrawTextRectangle(sb, pos, (205, RectangleHeight), MainFont, "1) "..(sb.CheckInventory("PortableMedikit") ? "" : "\c[Red]").."Give Medikit\c- ".."("..SelFollower.SuturesLeft..", "..SelFollower.Medikits.."/"..SelFollower.MaxMedikits..")", flags); pos.y += RectangleHeight + Spacing;
 				DrawTextRectangle(sb, pos, (205, RectangleHeight), MainFont, "2) "..(sb.CheckInventory("PortableStimpack") ? "" : "\c[Red]").."Give Stimpack\c- ".."("..SelFollower.Stimpacks.."/"..SelFollower.MaxStimpacks..")", flags); pos.y += RectangleHeight + Spacing;
@@ -377,6 +411,11 @@ class FollowerHandler : EventHandler
 				break;
 
 			case FMenu_Miscellaneous:
+				if (!SelFollower)
+				{
+					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
+					return;
+				}
 				DrawTextRectangle(sb, pos, (235, RectangleHeight), MainFont, SelFollower.GetTag(), flags, Font.FindFontColor('FLW_NameBlue')); pos.y += RectangleHeight + Spacing;
 				DrawTextRectangle(sb, pos, (235, RectangleHeight), MainFont, "1) "..BrassString, flags); pos.y += RectangleHeight + Spacing;
 				DrawTextRectangle(sb, pos, (235, RectangleHeight), MainFont, "2) Back...", flags);
@@ -587,17 +626,19 @@ class FollowerHandler : EventHandler
 
 			int FollowerIndex = e.Args[0];
 
-			// [Ace] Destroy the class that is being reset, if applicable.
+			// [Ace; 23.03.2021]
+			// The problem with FollowerIndex, in hindsight, is that if two followers shame the same index, only the first one would get deleted.
+			// I should have used class name for filtering. Unfortunately, it's too late. Not without breaking all of the existing follower sub-addons. Ah well.
+
+			// [Ace] Destroy the class that is being reset, if applicable, then recreate it.
 			for (int i = 0; i < Followers.Size(); ++i)
 			{
 				if (Followers[i].Index == FollowerIndex)
 				{
-					Followers[i].Destroy();
-					Followers.Delete(i);
+					RemoveFollower(Followers[i]);
 					break;
 				}
 			}
-
 			for (int i = 0; i < FollowerClasses.Size(); ++i)
 			{
 				if (GetDefaultByType(FollowerClasses[i]).Index == FollowerIndex)

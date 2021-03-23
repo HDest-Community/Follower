@@ -135,7 +135,32 @@ class HDFollower : HDMobMan abstract
 	{
 		Super.Tick();
 
-		if (!LinkedPlayer || bFRIENDLY && Health > 0 && LinkedPlayer.Health <= 0)
+		if (!LinkedPlayer) // [Ace] If this ever goes null, something is horribly wrong.
+		{
+			return;
+		}
+
+		if (!OhanaMode) { OhanaMode = CVar.GetCVar('hdf_ohana'); }
+
+		if (OhanaMode.GetBool() && Distance3D(LinkedPlayer) > 840)
+		{
+			OhanaTicker++;
+			if (OhanaTicker >= OhanaDeathTime && Health > 0)
+			{
+				A_Die();
+			}
+			else if (OhanaTicker >= OhanaDisappearTime)
+			{
+				Handler.RemoveFollower(self, true);
+				return;
+			}
+		}
+		else
+		{
+			OhanaTicker = 0;
+		}
+
+		if (bFRIENDLY && Health > 0 && LinkedPlayer.Health <= 0)
 		{
 			return;
 		}
@@ -209,6 +234,11 @@ class HDFollower : HDMobMan abstract
 
 	const MaxInventoryDistance = 48;
 	const MaxFaceAngle = 20;
+
+	private transient CVar OhanaMode;
+	private int OhanaTicker;
+	const OhanaDeathTime = 35 * 60 * 5;
+	const OhanaDisappearTime = 35 * 60 * 15;
 
 	FollowerHandler Handler;
 
