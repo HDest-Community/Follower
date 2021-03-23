@@ -130,19 +130,16 @@ class FollowerHandler : EventHandler
 
 	override void WorldUnloaded(WorldEvent e)
 	{
-		for (int i = 0; i < Followers.Size(); ++i)
+		while (Followers.Size() > 0)
 		{
-			HDFollower SelFollower = Followers[i];
-			if (SelFollower)
+			HDFollower SelFollower = Followers[0];
+			if (SelFollower.IsDeadOrMissing())
 			{
-				if (SelFollower.IsDeadOrMissing())
-				{
-					SelFollower.LinkedPlayer.A_GiveInventory(SelFollower.MissingClass);
-				}
-				else
-				{
-					SelFollower.PackFollower(true);
-				}
+				SelFollower.LinkedPlayer.A_GiveInventory(SelFollower.MissingClass);
+			}
+			else
+			{
+				SelFollower.PackFollower(true);
 			}
 		}
 	}
