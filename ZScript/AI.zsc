@@ -275,7 +275,7 @@ extend class HDFollower
 		int Total = 0;
 		for (int i = 0; i < Handler.Followers.Size(); ++i)
 		{
-			if (Handler.Followers[i] != self && Handler.Followers[i].Distance3D(LinkedPlayer) <= dist)
+			if (Handler.Followers[i].Health > 0 && Handler.Followers[i] != self && Handler.Followers[i].Distance3D(LinkedPlayer) <= dist)
 			{
 				Total++;
 			}
