@@ -191,7 +191,7 @@ class HDFollower : HDMobMan abstract
 				}
 			}
 
-			if (level.time % 5 == 0 && Status != FStatus_InactiveOrDead && !InStateSequence(CurState, FindState("Spawn")))
+			if (level.time % 3 == 0 && Status != FStatus_InactiveOrDead && !InStateSequence(CurState, FindState("Spawn")))
 			{
 				AiThink();
 			}

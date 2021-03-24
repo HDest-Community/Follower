@@ -116,8 +116,21 @@ extend class HDFollower
 				}
 			}
 		}
+
+		// [Ace] Crouching. One day I will implement proper sprites for this. Today is not that day.
+		if (Status == FStatus_None && Order < FOrder_Cover && LinkedPlayer.player.crouchfactor < 1.0)
+		{
+			CrouchFactor = min(CrouchFactor + 0.20, 0.5);
+		}
+		else if (CrouchFactor > 0)
+		{
+			CrouchFactor = max(CrouchFactor - 0.17, 0);
+		}
+
+		scale.y = default.scale.y * (1.0 - CrouchFactor);
+		A_SetSize(-1, default.Height * (1.0 - CrouchFactor));
 		
-		if ((Status != FStatus_InCombat || !SelWeapon) && (!bFRIENDLY || Order == FOrder_Follow || Order == FOrder_Cover || Order == FOrder_ComeAndHelp))
+		if ((Status != FStatus_InCombat || !SelWeapon) && (!bFRIENDLY || Order == FOrder_Follow || Order == FOrder_Cover || Order == FOrder_ComeAndHelp) && GetAge() % 3 == 0)
 		{
 			LookForEnemies();
 		}
@@ -326,4 +339,5 @@ extend class HDFollower
 	private double DistanceToPlayer; 
 	private bool PNeedsHelp;
 	private bool PNeedsMedic;
+	private double CrouchFactor;
 }
