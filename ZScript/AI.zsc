@@ -325,7 +325,7 @@ extend class HDFollower
 	private int NoSightTics; // [Ace] Used with CheckSight.
 
 	private bool CanSeePlayer;
-	private int DistanceToPlayer; 
+	private double DistanceToPlayer; 
 	private bool PNeedsHelp;
 	private bool PNeedsMedic;
 }

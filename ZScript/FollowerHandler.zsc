@@ -157,8 +157,8 @@ class FollowerHandler : EventHandler
 					MissingFollowers.Push(Followers[i]);
 				}
 			}
+			
 			int MSize = MissingFollowers.Size();
-
 			if (MSize > 0)
 			{
 				// [Ace] Gotta have that proper grammar.
