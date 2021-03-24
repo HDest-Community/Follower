@@ -4,7 +4,7 @@ extend class HDFollower
 	{
 		if (!force)
 		{
-			if (Distance3D(LinkedPlayer) > radius + 40)
+			if (DistanceToPlayer > radius + 40)
 			{
 				ThinkMessage(LinkedPlayer, "$CARRY_FAR_PLR");
 				return false;

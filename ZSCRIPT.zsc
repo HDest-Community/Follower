@@ -142,7 +142,7 @@ class HDFollower : HDMobMan abstract
 
 		if (!OhanaMode) { OhanaMode = CVar.GetCVar('hdf_ohana'); }
 
-		if (OhanaMode.GetBool() && Distance3D(LinkedPlayer) > 840)
+		if (OhanaMode.GetBool() && (CanSeePlayer && DistanceToPlayer > 840 || !CanSeePlayer && DistanceToPlayer > 210))
 		{
 			OhanaTicker++;
 			if (OhanaTicker >= OhanaDeathTime && Health > 0)

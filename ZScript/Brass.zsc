@@ -28,7 +28,7 @@ extend class HDFollower
 
 	bool TryCollectBrass()
 	{
-		if (Distance3D(LinkedPlayer) > radius + MaxInventoryDistance)
+		if (DistanceToPlayer > radius + MaxInventoryDistance)
 		{
 			ThinkMessage(LinkedPlayer, "$BRASS_FAR_PLR");
 			return false;

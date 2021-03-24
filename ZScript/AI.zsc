@@ -16,9 +16,10 @@ extend class HDFollower
 		}
 
 		bool CanSeeGoal = TGoal && CheckSight(TGoal, SF_SEEPASTSHOOTABLELINES); // [Ace] This can be either the player or a specific goal actor. It's for when it doesn't matter.
-		bool CanSeePlayer = CheckSight(LinkedPlayer, SF_SEEPASTSHOOTABLELINES);
-		bool NeedsHelp = PlayerIsIncapped(); // [Ace] You're just incapped.
-		bool NeedsMedic = PlayerNeedsMedic(); // [Ace] You're bleeding and incapped.
+		CanSeePlayer = CheckSight(LinkedPlayer, SF_SEEPASTSHOOTABLELINES);
+		DistanceToPlayer = DistanceToPlayer;
+		PNeedsHelp = PlayerIsIncapped(); // [Ace] You're just incapped.
+		PNeedsMedic = PlayerNeedsMedic(); // [Ace] You're bleeding and incapped.
 		bool IsHelping = IsHelpingPlayer();
 		int FIndex = Handler.Followers.Find(self);
 		int FNPCount = FollowersNearPlayer(MinPlayerRangeStop * Handler.FollowingFollowersCount());
@@ -49,15 +50,15 @@ extend class HDFollower
 
 			if (Status == FStatus_None)
 			{
-				if (Order == FOrder_ComeAndHelp && bFRIENDLY && Distance3D(LinkedPlayer) < 512 && CanSeePlayer)
+				if (Order == FOrder_ComeAndHelp && bFRIENDLY && DistanceToPlayer < 512 && CanSeePlayer)
 				{
-					if (Distance3D(LinkedPlayer) < MedicRange && !IsHelping) // [Ace] Start stapling if close enough. Minimum distance is 22. Don't go any lower or follower will be stuck walking towards you.
+					if (DistanceToPlayer < MedicRange && !IsHelping) // [Ace] Start stapling if close enough. Minimum distance is 22. Don't go any lower or follower will be stuck walking towards you.
 					{
-						if (NeedsMedic)
+						if (PNeedsMedic)
 						{
 							SetStateLabel("StapleHumptyDumptyBackTogetherAgain");
 						}
-						else if (NeedsHelp)
+						else if (PNeedsHelp)
 						{
 							SetStateLabel("PullYouUp");
 						}
@@ -79,7 +80,7 @@ extend class HDFollower
 					}
 
 					// [Ace] Go to player if they're too far away.
-					if (bFRIENDLY && Distance3D(LinkedPlayer) > MinPlayerRange * DistMult && Distance3D(LinkedPlayer) < MaxPlayerRange)
+					if (bFRIENDLY && DistanceToPlayer > MinPlayerRange * DistMult && DistanceToPlayer < MaxPlayerRange)
 					{
 						if (CanSeePlayer)
 						{
@@ -106,7 +107,7 @@ extend class HDFollower
 						ResetIdleTimer();
 					}
 				}
-				else if (Order == FOrder_Cover && Distance3D(LinkedPlayer) < 128)
+				else if (Order == FOrder_Cover && DistanceToPlayer < 128)
 				{
 					A_Face(LinkedPlayer, 45);
 				}
@@ -124,9 +125,9 @@ extend class HDFollower
 		}
 
 		// [Ace] Movement. Always travel to goals if there are any. Status between moving and idle should not be set elsewhere.
-		if (Status != FStatus_WaitingForArmor && (Status != FStatus_InCombat || Order == FOrder_GoAndCover) && TGoal && (TGoal is "PlayerPawn" && Distance2D(TGoal) > (Order == FOrder_ComeAndHelp && (NeedsMedic || NeedsHelp) ? MedicRange : MinPlayerRangeStop * DistMult) || TGoal is "TargetGoal" && Distance2D(TGoal) > 16) && Distance2D(TGoal) < MaxGoalRange)
+		if (Status != FStatus_WaitingForArmor && (Status != FStatus_InCombat || Order == FOrder_GoAndCover) && TGoal && (TGoal is "PlayerPawn" && Distance2D(TGoal) > (Order == FOrder_ComeAndHelp && (PNeedsMedic || PNeedsHelp) ? MedicRange : MinPlayerRangeStop * DistMult) || TGoal is "TargetGoal" && Distance2D(TGoal) > 16) && Distance2D(TGoal) < MaxGoalRange)
 		{
-			if (TGoal is "PlayerPawn" && Order == FOrder_ComeAndHelp && (NeedsMedic || NeedsHelp))
+			if (TGoal is "PlayerPawn" && Order == FOrder_ComeAndHelp && (PNeedsMedic || PNeedsHelp))
 			{
 				// [Ace] Don't slow down if player is bleeding out their ass or needs help getting up.
 				if (tics == 2)
@@ -275,7 +276,7 @@ extend class HDFollower
 		int Total = 0;
 		for (int i = 0; i < Handler.Followers.Size(); ++i)
 		{
-			if (Handler.Followers[i].Health > 0 && Handler.Followers[i] != self && Handler.Followers[i].Distance3D(LinkedPlayer) <= dist)
+			if (Handler.Followers[i].Health > 0 && Handler.Followers[i] != self && Handler.Followers[i].DistanceToPlayer <= dist)
 			{
 				Total++;
 			}
@@ -322,4 +323,9 @@ extend class HDFollower
 	private int IdleTimer;
 	private bool ActivateAsPlayer;
 	private int NoSightTics; // [Ace] Used with CheckSight.
+
+	private bool CanSeePlayer;
+	private int DistanceToPlayer; 
+	private bool PNeedsHelp;
+	private bool PNeedsMedic;
 }

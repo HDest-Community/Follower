@@ -67,7 +67,7 @@ extend class HDFollower
 		class<Inventory> AmmoType = wpn.GetAmmoType();
 		int MaxGive = GetMaxGiveAmount(wpn);
 
-		if (Distance3D(LinkedPlayer) > radius + MaxInventoryDistance)
+		if (DistanceToPlayer > radius + MaxInventoryDistance)
 		{
 			TryReloadWeapon(wpn, wpn.GetMaxMag(), RLF_MANUAL);
 			ThinkMessage(LinkedPlayer, "$AMMOGIVE_FAR_PLR");

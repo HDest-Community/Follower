@@ -64,7 +64,7 @@ extend class HDFollower
 				}
 
 			case FOrder_ComeAndHelp:
-				if (!PlayerNeedsMedic() && !PlayerIsIncapped())
+				if (!PNeedsMedic && !PNeedsHelp)
 				{
 					PrintMessage(GetResponse("$"..ATag.."_ORDER_HELP3"), "Follower/"..ATag.."/Order/Help3", PMType_Important);
 					return true;
