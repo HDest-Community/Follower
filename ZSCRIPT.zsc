@@ -233,6 +233,16 @@ class HDFollower : HDMobMan abstract
 		Bloodloss = NewBloodloss;
 		BodyDamage = NewBodyDamage;
 		Stunned = NewStunned;
+
+		// [Ace] Same as above. For some reason HDMagicShield gets nuked if given while unpacking the follower.
+		if (Shields > 0)
+		{
+			let ShieldInv = GiveInventoryType('HDMagicShield');
+			ShieldInv.Amount = Shields;
+			ShieldInv.MaxAmount = MaxShields;
+			ShieldInv.bQUICKTORETALIATE = NoShieldsDegeneration;
+			ShieldInv.bSTANDSTILL = RegenerateShields;
+		}
 	}
 
 	const MaxInventoryDistance = 48;

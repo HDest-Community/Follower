@@ -72,6 +72,15 @@ extend class HDFollower
 			FData.ArmorMega = Armor.Mega;
 		}
 
+		let Shields = FindInventory('HDMagicShield');
+		if (Shields)
+		{
+			FData.Shields = Shields.Amount;
+			FData.MaxShields = Shields.MaxAmount;
+			FData.RegenerateShields = Shields.bQUICKTORETALIATE;
+			FData.NoShieldsDegeneration = Shields.bSTANDSTILL;
+		}
+
 		FData.CollectedBrass = GetTotalBrass();
 
 		Destroy();
@@ -82,6 +91,10 @@ extend class HDFollower
 	int NewBloodloss;
 	int NewStunned;
 	int NewBodyDamage;
+
+	int Shields;
+	bool RegenerateShields;
+	bool NoShieldsDegeneration;
 }
 
 // [Ace] This is perhaps the only useful use of an inventory item.
@@ -148,6 +161,11 @@ class FollowerBody : HDPickup abstract
 	int ArmorDurability;
 	bool ArmorMega;
 
+	int Shields;
+	int MaxShields;
+	bool RegenerateShields;
+	bool NoShieldsDegeneration;
+
 	int CollectedBrass;
 
 	States
@@ -194,6 +212,11 @@ class FollowerBody : HDPickup abstract
 						Follower.NewBloodloss = invoker.Bloodloss;
 						Follower.NewStunned = invoker.Stunned;
 						Follower.NewBodyDamage = invoker.BodyDamage;
+
+						Follower.Shields = invoker.Shields;
+						Follower.MaxShields = invoker.MaxShields;
+						Follower.RegenerateShields = invoker.RegenerateShields;
+						Follower.NoShieldsDegeneration = invoker.NoShieldsDegeneration;
 
 						for (int i = 0; i < invoker.Weapons.Size(); ++i)
 						{
