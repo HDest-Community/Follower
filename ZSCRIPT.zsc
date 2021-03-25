@@ -294,6 +294,7 @@ class HDFollower : HDMobMan abstract
 		+NOTRIGGER
 		+SEEINVISIBLE
 		+BOSSDEATH
+		+NOFEAR
 		//+HDMOBBASE.HASHELMET
 		+HDMOBBASE.NOBLURGAZE
 		HDMobBase.DownedFrame 17;
