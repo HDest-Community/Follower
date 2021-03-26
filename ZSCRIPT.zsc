@@ -101,9 +101,9 @@ class HDFollower : HDMobMan abstract
 		other.A_Print(StringTable.Localize(message));
 	}
 
-	private bool PlayerIsCrouching()
+	private clearscope bool PlayerIsCrouching()
 	{
-		return LinkedPlayer.player.crouchfactor <= 0.5;
+		return LinkedPlayer.player.crouchfactor < 1.0;
 	}
 
 	private bool IsFacedByPlayer()
@@ -350,6 +350,8 @@ class HDFollower : HDMobMan abstract
 				A_SetSize(-1, deathheight);
 				A_StartSound(PainSound, CHAN_VOICE);
 				ClearWeapon();
+				scale = default.scale;
+				CrouchFactor = 0;
 			}
 			#### N 4 A_StartSound(DeathSound, CHAN_VOICE);
 			#### O 4;
@@ -397,6 +399,8 @@ class HDFollower : HDMobMan abstract
 				ClearTarget();
 				ClearWeapon();
 				Status = FStatus_InactiveOrDead;
+				scale = default.scale;
+				CrouchFactor = 0;
 			}
 			#### N 6 A_StartSound(DeathSound, CHAN_VOICE);
 			#### O 5;
