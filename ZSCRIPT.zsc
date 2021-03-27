@@ -261,7 +261,7 @@ class HDFollower : HDMobMan abstract
 	meta int ResurrectType;
 	property ResurrectType: ResurrectType;
 
-	meta int Index;
+	meta uint Index;
 	meta EPlayerGender Gender;
 	meta class<FollowerBody> DataClass;
 	meta class<LeftBehindFollower> MissingClass;
