@@ -130,7 +130,7 @@ extend class HDFollower
 		scale.y = default.scale.y * (1.0 - CrouchFactor);
 		A_SetSize(-1, default.Height * (1.0 - CrouchFactor));
 		
-		if ((Status != FStatus_InCombat || !SelWeapon) && (!bFRIENDLY || Order == FOrder_Follow || Order == FOrder_Cover || Order == FOrder_ComeAndHelp) && GetAge() % 3 == 0)
+		if ((Status != FStatus_InCombat || !SelWeapon) && (!bFRIENDLY || Order == FOrder_Follow || Order == FOrder_Cover || Order == FOrder_ComeAndHelp))
 		{
 			LookForEnemies();
 		}
