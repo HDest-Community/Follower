@@ -40,7 +40,6 @@ class FollowerDaina : HDFollower
 		DeathSound "Follower/Daina/Death";
 		Tag "Daina";
 		HDFollower.FollowerInfo 4, GENDER_FEMALE, 'FollowerBodyDaina', 'LeftBehindDaina';
-		HDFollower.ResurrectType RESF_BLUES;
 	}
 
 	States
