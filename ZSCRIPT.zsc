@@ -151,6 +151,8 @@ class HDFollower : HDMobMan abstract
 			if (OhanaTicker >= OhanaDeathTime && Health > 0)
 			{
 				A_Die();
+				BodyDamage = 10000;
+				BloodReviveTicker = 10000;
 			}
 			else if (OhanaTicker >= OhanaDisappearTime)
 			{
