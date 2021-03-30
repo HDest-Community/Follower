@@ -212,6 +212,7 @@ extend class HDFollower
 
 			if (vel.xy.length() < 0.15)
 			{
+				ClearGoal(true);
 				A_ChangeVelocity(0, 0, vel.z, CVF_REPLACE);
 				Moving = false;
 			}

@@ -16,14 +16,18 @@ extend class HDFollower
 		}
 	}
 
-	private void ClearGoal()
+	private void ClearGoal(bool keepLastPos = false)
 	{
 		if (TGoal is 'TargetGoal')
 		{
 			TGoal.Destroy();
 		}
 		TGoal = null; // [Ace] Just in case it's the player.
-		LastKnownPos = (0, 0, 0);
+
+		if (!keepLastPos)
+		{
+			LastKnownPos = (0, 0, 0);
+		}
 	}
 
 	const MaxGoalRange = 2048;
