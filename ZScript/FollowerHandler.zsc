@@ -680,6 +680,7 @@ class FollowerHandler : EventHandler
 				{
 					SelFollower = Followers[0];
 					FollowerMenuLevel = FMenu_Main;
+					SelFollower.LinkedPlayer = HDPlayerPawn(players[e.Player].mo);
 				}
 				else
 				{
@@ -699,6 +700,7 @@ class FollowerHandler : EventHandler
 			if (SelFollower.CanInteractWith())
 			{
 				FollowerMenuLevel = FMenu_Main;
+				SelFollower.LinkedPlayer = HDPlayerPawn(players[e.Player].mo);
 			}
 			return;
 		}
