@@ -60,9 +60,9 @@ class FollowerHandler : EventHandler
 		int Index = Followers.Find(flw);
 		if (Index != Followers.Size())
 		{
-			if (permanent)
+			if (permanent && players[Net_Arbitrator].mo)
 			{
-				flw.LinkedPlayer.A_GiveInventory(flw.MissingClass);
+				players[Net_Arbitrator].mo.A_GiveInventory(flw.MissingClass);
 			}
 			flw.Destroy();
 			Followers.Delete(Index);
