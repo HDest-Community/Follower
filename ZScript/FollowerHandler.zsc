@@ -135,7 +135,7 @@ class FollowerHandler : EventHandler
 			HDFollower SelFollower = Followers[0];
 			if (SelFollower.IsDeadOrMissing())
 			{
-				SelFollower.LinkedPlayer.A_GiveInventory(SelFollower.MissingClass);
+				RemoveFollower(SelFollower, true);
 			}
 			else
 			{
