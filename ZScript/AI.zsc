@@ -188,6 +188,11 @@ extend class HDFollower
 			A_RadiusThrust(128, int(Radius + 4), RTF_NOIMPACTDAMAGE, int(Radius + 4), 'HDFollower');
 			Moving = true;
 
+			// [Ace] Ascend/descend ladders.
+			bool NearLadder = CheckProximity('hdladdertop', radius + 32) || CheckProximity('hdladderbottom', radius + 32);
+			MaxDropOffHeight = default.MaxDropOffHeight + (NearLadder ? LADDER_MAX : 0);
+			bFLOORHUGGER = NearLadder;
+
 			// [Ace] Stop trying to reach goal shortly after losing LOS.
 			if (!CanSeeGoal && ++NoSightTics == 35 * 3)
 			{
