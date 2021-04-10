@@ -87,7 +87,7 @@ class FollowerHandler : EventHandler
 					let Follower = HDFollower(a);
 					InsertFollower(Follower);
 					
-					Follower.LinkedPlayer = HDPlayerPawn(plr);
+					Follower.ChangeLinkedPlayer(HDPlayerPawn(plr));
 
 					// [Ace] These are here so that they are only called once when the follower is created.
 					Follower.GiveStartingItems();
@@ -680,7 +680,7 @@ class FollowerHandler : EventHandler
 				{
 					SelFollower = Followers[0];
 					FollowerMenuLevel = FMenu_Main;
-					SelFollower.LinkedPlayer = HDPlayerPawn(players[e.Player].mo);
+					SelFollower.ChangeLinkedPlayer(HDPlayerPawn(players[e.Player].mo));
 				}
 				else
 				{
@@ -700,7 +700,7 @@ class FollowerHandler : EventHandler
 			if (SelFollower.CanInteractWith())
 			{
 				FollowerMenuLevel = FMenu_Main;
-				SelFollower.LinkedPlayer = HDPlayerPawn(players[e.Player].mo);
+				SelFollower.ChangeLinkedPlayer(HDPlayerPawn(players[e.Player].mo));
 			}
 			return;
 		}

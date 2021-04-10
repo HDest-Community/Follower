@@ -127,6 +127,12 @@ class HDFollower : HDMobMan abstract
 		return "??????";
 	}
 
+	void ChangeLinkedPlayer(HDPlayerPawn plr)
+	{
+		LinkedPlayer = plr;
+		master = plr; // [Ace] War Trophies compatibility.
+	}
+
 	// --------------------------------------------------
 	// TICKER
 	// --------------------------------------------------

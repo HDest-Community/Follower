@@ -202,7 +202,7 @@ class FollowerBody : HDPickup abstract
 						let Handler = FollowerHandler(EventHandler.Find("FollowerHandler"));
 						Handler.InsertFollower(Follower);
 
-						Follower.LinkedPlayer = HDPlayerPawn(self);
+						Follower.ChangeLinkedPlayer(HDPlayerPawn(self));
 
 						Follower.Health = invoker.Health;
 						Follower.Order = invoker.Order;
