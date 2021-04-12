@@ -39,6 +39,7 @@ class FollowerBalthazar : HDFollower
 		PainSound "Follower/Balthazar/Pain";
 		DeathSound "Follower/Balthazar/Death";
 		Tag "Balthazar";
+		+HDMOBBASE.HASHELMET
 		HDFollower.FollowerInfo 2, GENDER_MALE, 'FollowerBodyBalthazar', 'LeftBehindBalthazar';
 		Scale 0.9;
 	}

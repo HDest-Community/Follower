@@ -303,7 +303,6 @@ class HDFollower : HDMobMan abstract
 		+SEEINVISIBLE
 		+BOSSDEATH
 		+NOFEAR
-		//+HDMOBBASE.HASHELMET
 		+HDMOBBASE.NOBLURGAZE
 		HDMobBase.DownedFrame 17;
 		HDMobBase.MaxBloodLoss 400;
