@@ -156,7 +156,7 @@ extend class HDFollower
 		for (int i = ActualWeapons.Size() - 1; i >= 0; --i)
 		{
 			// [Ace] Ignore weapons that don't fulfill the required condition. When it comes to, say, a rocket launcher, this is the check that makes sure you don't get blasted to bits by accident.
-			if (!ActualWeapons[i].CheckWeaponCondition(self, LinkedPlayer, other))
+			if (!ActualWeapons[i].CheckWeaponCondition(self, other))
 			{
 				continue;
 			}
@@ -199,7 +199,7 @@ extend class HDFollower
 	protected void Aim()
 	{
 		// [Ace] Stop aiming if target is no longer valid, weapon is deselected, or the condition is not met.
-		if (!CheckTarget() || !SelWeapon || !SelWeapon.CheckWeaponCondition(self, LinkedPlayer, CTarget))
+		if (!CheckTarget() || !SelWeapon || !SelWeapon.CheckWeaponCondition(self, CTarget))
 		{
 			SetStateLabel("Idle");
 			Status = FStatus_None;
@@ -695,7 +695,7 @@ class FollowerWeapon abstract
 	virtual string GetLocalizationTag() { return GetName(); }
 	virtual class<HDMagAmmo> GetMagType() { return null; }
 	virtual double GetAdjustmentMult() { return 1.0; }
-	virtual play bool CheckWeaponCondition(HDFollower caller, HDPlayerPawn plr, Actor trgt) { return true; }
+	virtual play bool CheckWeaponCondition(HDFollower caller, Actor trgt) { return true; }
 
 	virtual play void TryEjectMag(HDFollower dropper)
 	{
@@ -840,7 +840,7 @@ class FW_RocketLauncher : FollowerWeapon
 		return true;
 	}
 
-	override bool CheckWeaponCondition(HDFollower caller, HDPlayerPawn plr, Actor trgt)
+	override bool CheckWeaponCondition(HDFollower caller, Actor trgt)
 	{
 		bool OtherFollowersSafe = true;
 		for (int i = 0; i < caller.Handler.Followers.Size(); ++i)
@@ -852,7 +852,22 @@ class FW_RocketLauncher : FollowerWeapon
 				break;
 			}
 		}
-		return OtherFollowersSafe && caller.Distance3D(trgt) >= 42 * 10.60 && (plr.Distance3D(trgt) >= 42 * 15 || plr.Distance3D(trgt) >= 42 * 4 && !trgt.CheckSight(plr));
+		bool OtherPlayersSafe = true;
+		for (int i = 0; i < MAXPLAYERS; ++i)
+		{
+			let plr = HDPlayerPawn(players[i].mo);
+			if (plr)
+			{
+				bool HasSight = plr.CheckSight(trgt);
+				double Dist = plr.Distance3D(trgt);
+				if (caller.Distance3D(trgt) < 42 * 10.60 || Dist < 42 * 3 || Dist < 42 * 15 && HasSight)
+				{
+					OtherPlayersSafe = false;
+					break;
+				}
+			}
+		}
+		return OtherFollowersSafe && OtherPlayersSafe;
 	}
 }
 
