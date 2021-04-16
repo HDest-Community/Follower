@@ -298,6 +298,7 @@ class HDFollower : HDMobMan abstract
 		+NODROPOFF
 		+NOBLOCKMONST
 		+NOTELESTOMP
+		+NOTELEFRAG // [Ace] Because starting levels can telefrag the followers in multiplayer if there isn't enough space.
 		+BLOCKASPLAYER
 		+NOTRIGGER
 		+SEEINVISIBLE
