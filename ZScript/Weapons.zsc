@@ -13,6 +13,11 @@ extend class HDFollower
 		SelWeapon = null;
 	}
 
+	private double GetShotHeight()
+	{
+		return height - HDCONST_CROWNTOSHOULDER;
+	}
+
 	private int AdjustForDistance(double distance, double mult = 1.0) const
 	{
 		return int(clamp((distance / 64.0) * mult, 4, 70));
@@ -283,7 +288,7 @@ extend class HDFollower
  				if (SelWeapon.TryFireRound(true))
  				{
  					A_StartSound("weapons/smg", CHAN_WEAPON);
-					HDBulletActor.FireBullet(self, "HDB_9", speedfactor: 1.1);
+					HDBulletActor.FireBullet(self, "HDB_9", GetShotHeight(), speedfactor: 1.1);
 					A_SpawnItemEx("HDSpent9mm", cos(pitch) * 10, 0, height - 8 - sin(pitch) * 10, vel.x, vel.y, vel.z, 0, SXF_ABSOLUTEMOMENTUM | SXF_NOCHECKPOSITION | SXF_TRANSFERPITCH);
  				}
 
@@ -335,9 +340,10 @@ extend class HDFollower
 					double ShotPower = HDShotgun.GetShotPower();
 					double Spread = 6 * ShotPower;
 					double SpeedFactor = 1.02857 * ShotPower;
+					double ShotHeight = GetShotHeight();
 
-					HDBulletActor.FireBullet(self, "HDB_wad");
-					let p = HDBulletActor.FireBullet(self,"HDB_00", spread: Spread, speedfactor: SpeedFactor, amount: 10);
+					HDBulletActor.FireBullet(self, "HDB_wad", ShotHeight);
+					let p = HDBulletActor.FireBullet(self,"HDB_00", ShotHeight, spread: Spread, speedfactor: SpeedFactor, amount: 10);
 					DistantNoise.Make(p, "world/shotgunfar");
 					A_StartSound("weapons/hunter", CHAN_WEAPON);
 
@@ -406,7 +412,7 @@ extend class HDFollower
 				if (SelWeapon.TryFireRound(true))
 				{
 					A_StartSound("weapons/rifle", CHAN_WEAPON);
-					HDBulletActor.FireBullet(self, "HDB_426");
+					HDBulletActor.FireBullet(self, "HDB_426", GetShotHeight());
 					A_AlertMonsters(flags: AMF_TARGETEMITTER);
 				}
 
@@ -454,7 +460,7 @@ extend class HDFollower
 				if (SelWeapon.TryFireRound(true))
 				{
 					GyroGrenade Proj;
-					Proj = GyroGrenade(Spawn("GyroGrenade", pos, ALLOW_REPLACE));
+					Proj = GyroGrenade(Spawn("GyroGrenade", pos + (0, 0, GetShotHeight()), ALLOW_REPLACE));
 					Proj.angle = angle;
 					Proj.target = self;
 					Proj.master = self;
@@ -512,7 +518,7 @@ extend class HDFollower
 				if (SelWeapon.TryFireRound(true))
 				{
 					A_StartSound("weapons/bigrifle", CHAN_WEAPON);
-					HDBulletActor.FireBullet(self, "HDB_776");
+					HDBulletActor.FireBullet(self, "HDB_776", GetShotHeight());
 					A_AlertMonsters(flags: AMF_TARGETEMITTER);
 					A_SpawnItemEx("HDSpent7mm", cos(pitch) * 12, 0, height - 8 - sin(pitch) * 12, cos(pitch) * 3, 0.2 * randompick(-1, 1), -sin(pitch) * 3, 0, SXF_NOCHECKPOSITION | SXF_TRANSFERPITCH);
 				}
@@ -560,7 +566,7 @@ extend class HDFollower
 				if (SelWeapon.TryFireRound(false))
 				{
 					A_StartSound("weapons/bigrifle2", CHAN_WEAPON);
-					HDBulletActor.FireBullet(self, "HDB_776", speedfactor: 0.99);
+					HDBulletActor.FireBullet(self, "HDB_776", GetShotHeight(), speedfactor: 0.99);
 					A_AlertMonsters(flags: AMF_TARGETEMITTER);
 				}
 			}
@@ -631,7 +637,7 @@ extend class HDFollower
 					A_StartSound("weapons/bronto",CHAN_WEAPON);
 					A_StartSound("weapons/bronto",CHAN_WEAPON, CHANF_OVERLAP);
 					A_StartSound("weapons/bronto2",CHAN_WEAPON, CHANF_OVERLAP);
-					HDBulletActor.FireBullet(self, "HDB_Bronto");
+					HDBulletActor.FireBullet(self, "HDB_Bronto", GetShotHeight());
 					A_AlertMonsters(flags: AMF_TARGETEMITTER);
 					A_Recoil(6);
 				}
@@ -878,8 +884,7 @@ class FW_RocketLauncher : FollowerWeapon
 				}
 			}
 		}
-
-		Console.Printf("%i, %i", OtherFollowersSafe, OtherPlayersSafe);
+		
 		return OtherFollowersSafe && OtherPlayersSafe;
 	}
 }
