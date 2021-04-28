@@ -719,11 +719,19 @@ class FollowerHandler : EventHandler
 			}
 			else if (e.Args[0] == FMenu_Followers)
 			{
-				if (Followers.Size() == 1 && Followers[0].CanInteractWith())
+				let plr = HDPlayerPawn(players[e.Player].mo);
+				let AimedFollower = HDFollower(plr.AimTarget());
+				if (AimedFollower)
+				{
+					SelFollower[e.Player] = AimedFollower;
+					FollowerMenuLevel[e.Player] = FMenu_Main;
+					AimedFollower.ChangeLinkedPlayer(plr);
+				}
+				else if (Followers.Size() == 1 && Followers[0].CanInteractWith())
 				{
 					SelFollower[e.Player] = Followers[0];
 					FollowerMenuLevel[e.Player] = FMenu_Main;
-					SelFollower[e.Player].ChangeLinkedPlayer(HDPlayerPawn(players[e.Player].mo));
+					SelFollower[e.Player].ChangeLinkedPlayer(plr);
 				}
 				else
 				{
