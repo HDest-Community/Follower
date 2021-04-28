@@ -678,6 +678,9 @@ extend class HDFollower
 
 class FollowerWeapon abstract
 {
+	// [Ace; 28.04.2021]
+	// This should have been Empty -> Spent -> Chambered, but changing it now will break followers
+	// and would require recreating them. Ah well.
 	enum CRType
 	{
 		CRType_Empty,
@@ -719,6 +722,12 @@ class FollowerWeapon abstract
 	clearscope int GetLoadedRounds()
 	{
 		return Mag + (ChamberedRound == CRType_Chambered);
+	}
+
+	// [Ace] Chamber + mag.
+	clearscope bool IsFullyLoaded()
+	{
+		return ChamberedRound == CRType_Chambered && Mag == GetMaxMag();
 	}
 
 	bool TryFireRound(bool eject)

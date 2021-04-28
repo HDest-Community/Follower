@@ -498,7 +498,7 @@ class FollowerHandler : EventHandler
 		pos += (2, 2);
 		int FontHeight = fnt.mFont.GetHeight();
 		sb.DrawString(fnt, index..") "..wpn.GetName(), pos, flags, Font.FindFontColor('FLW_WeaponBlue')); pos.y += FontHeight + 1;
-		sb.DrawString(fnt, wpn.GetLoadedRounds()..", "..wpn.SpareAmmo.."/"..wpn.GetMaxSpare(), pos, flags, Font.CR_WHITE); pos.y += FontHeight + 1;
+		sb.DrawString(fnt, (wpn.IsFullyLoaded() ? "\c[DarkGreen]" : "")..wpn.GetLoadedRounds().."\c-, "..wpn.SpareAmmo.."/"..wpn.GetMaxSpare(), pos, flags, Font.CR_WHITE); pos.y += FontHeight + 1;
 
 		int MaxGiveAmount = flw.GetMaxGiveAmount(wpn);
 		string AmmoString = (MaxGiveAmount > 0 ? "\c[Green]" : "\c[Red]").."+"..MaxGiveAmount.." "..wpn.GetAmmoName().."\c-";
