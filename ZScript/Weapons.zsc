@@ -235,10 +235,10 @@ extend class HDFollower
 	protected bool IsAimBlocked()
 	{
 		Actor ATarget = AimTarget();
-		bool Condition = CTarget && ATarget && bFRIENDLY && (ATarget is "PlayerPawn" || ATarget.bFRIENDLY);
+		bool Condition = CTarget && bFRIENDLY && (ATarget is "PlayerPawn" || ATarget is 'HDFollower');
 		if (Condition)
 		{
-			if (hdf_debug == 1)
+			if (hdf_debug == 2)
 			{
 				Console.Printf("Aim is being blocked by %s.", ATarget.GetClassName());
 			}
