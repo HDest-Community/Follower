@@ -11,6 +11,8 @@ server int hdf_printlevel_voice = 3;
 
 server bool hdf_targetuncountable = true;
 
+user bool hdf_droponstart = true;
+
 server int hdf_followers = 7;
 
 server int hdf_loadout_freylis_weapons = 100;

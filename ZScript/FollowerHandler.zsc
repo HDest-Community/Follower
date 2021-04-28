@@ -157,7 +157,7 @@ class FollowerHandler : EventHandler
 				{
 					CreateFollower(FollowerClasses[i], Net_Arbitrator);
 				}
-				else
+				else if (CVar.GetCVar('hdf_droponstart', FollowersInInv[Index].owner.player).GetBool())
 				{
 					FollowersInInv[Index].owner.UseInventory(FollowersInInv[Index]);
 					FollowersInInv.Delete(Index);
