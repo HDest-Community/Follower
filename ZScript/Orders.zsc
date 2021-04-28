@@ -47,7 +47,7 @@ extend class HDFollower
 
 			case FOrder_GoAndCover:
 				FLineTraceData TraceData;
-				LinkedPlayer.LineTrace(LinkedPlayer.Angle, MaxGoalRange * 2, LinkedPlayer.Pitch, TRF_THRUACTORS, LinkedPlayer.Height - 8, data: TraceData);
+				LinkedPlayer.LineTrace(LinkedPlayer.angle, MaxGoalRange * 2, LinkedPlayer.pitch, TRF_THRUACTORS, LinkedPlayer.Height - 8, data: TraceData);
 				if ((TraceData.HitType == TraceData.TRACE_HitFloor || TraceData.HitType == TraceData.TRACE_HitWall) && TrySetGoal(TraceData.HitLocation, true))
 				{
 					// [Ace] Drop whatever they're doing and haul ass to their destination.

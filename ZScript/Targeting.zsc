@@ -2,6 +2,11 @@ extend class HDFollower
 {
 	protected virtual void LookForEnemies()
 	{
+		if (!TargetUncountable)
+		{
+			TargetUncountable = CVar.GetCVar('hdf_targetuncountable');
+		}
+
 		let TheEye = BlockThingsIterator.Create(self, MaxTargetRange);
 		while (TheEye.Next())
 		{
@@ -22,7 +27,7 @@ extend class HDFollower
 			if (MTarget && (bFRIENDLY && !MTarget.bFRIENDLY || !bFRIENDLY && MTarget.bFRIENDLY) && MTarget.bISMONSTER && MTarget.bSHOOTABLE && MTarget != self && MTarget.Health > 0 && CheckSight(MTarget, SF_SEEPASTSHOOTABLELINES) && !TargetIsIncapped(MTarget))
 			{
 				// [Ace] Sometimes resurrected troops can have a ridiculous body damage and won't get attacked, but one single shot will blow them to pieces.
-				if (MTarget is "HERPBot" || MTarget is "DERPBot" || (!hdf_targetuncountable && !MTarget.bCOUNTKILL) || MTarget is "HDMobBase" && HDMobBase(MTarget).BodyDamage > MTarget.SpawnHealth() * 1.2)
+				if (MTarget is "HERPBot" || MTarget is "DERPBot" || (!TargetUncountable.GetBool() && !MTarget.bCOUNTKILL) || MTarget is "HDMobBase" && HDMobBase(MTarget).BodyDamage > MTarget.SpawnHealth() * 1.2)
 				{
 					continue;
 				}
@@ -34,6 +39,15 @@ extend class HDFollower
 				if (hdf_debug == 1)
 				{
 					Console.Printf("%s is attempting to target %s with %i bodydamage.", GetTag(), MTarget.GetClassName(), HDMon ? HDMon.BodyDamage : -1);
+				}
+
+				if (!CanHitTarget(MTarget))
+				{
+					if (hdf_debug == 1)
+					{
+						Console.Printf("Failed to target %s.", MTarget.GetClassName());
+					}
+					continue;
 				}
 
 				if (MTarget.bBOSS && (CheckTarget() && !CTarget.bBOSS || !CheckTarget()))
@@ -166,4 +180,20 @@ extend class HDFollower
 
 		return false;
 	}
+
+	private bool CanHitTarget(Actor a)
+	{
+		double OldAngle = angle;
+		double OldPitch = pitch;
+		A_Face(a, 0, 0, flags: FAF_MIDDLE);
+
+		FLineTraceData TraceData;
+		LineTrace(angle, MaxTargetRange, pitch, TRF_NOSKY, Height - HDCONST_CROWNTOSHOULDER, data: TraceData);
+		angle = OldAngle;
+		pitch = OldPitch;
+
+		return TraceData.HitActor == a;
+	}
+
+	protected transient CVar TargetUncountable;
 }
