@@ -721,7 +721,7 @@ class FollowerHandler : EventHandler
 			{
 				let plr = HDPlayerPawn(players[e.Player].mo);
 				let AimedFollower = HDFollower(plr.AimTarget());
-				if (AimedFollower)
+				if (AimedFollower && e.IsManual)
 				{
 					SelFollower[e.Player] = AimedFollower;
 					FollowerMenuLevel[e.Player] = FMenu_Main;
