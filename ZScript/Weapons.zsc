@@ -225,7 +225,7 @@ extend class HDFollower
 
 		// [Ace] If you're incapped, follower can probably shoot over you. Otherwise it's not a good idea.
 		double BlockDist = AimBlocked();
-		if (BlockDist < 42 * 3)
+		if (BlockDist > 0 && BlockDist < 42 * 3)
 		{
 			A_ChangeVelocity(0, default.MovementSpeed / 1.5, vel.z, CVF_RELATIVE | CVF_REPLACE);
 			AimTimer = 0;
