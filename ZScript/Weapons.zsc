@@ -224,7 +224,8 @@ extend class HDFollower
 		A_Face(CTarget, 0, 0, flags: FAF_MIDDLE);
 
 		// [Ace] If you're incapped, follower can probably shoot over you. Otherwise it's not a good idea.
-		if (IsAimBlocked())
+		double BlockDist = AimBlocked();
+		if (BlockDist < 42 * 3)
 		{
 			A_ChangeVelocity(0, default.MovementSpeed / 1.5, vel.z, CVF_RELATIVE | CVF_REPLACE);
 			AimTimer = 0;
@@ -232,7 +233,7 @@ extend class HDFollower
 		}
 	}
 
-	protected bool IsAimBlocked()
+	protected double AimBlocked()
 	{
 		Actor ATarget = AimTarget();
 		bool Condition = CTarget && bFRIENDLY && (ATarget is "PlayerPawn" || ATarget is 'HDFollower');
@@ -242,9 +243,9 @@ extend class HDFollower
 			{
 				Console.Printf("Aim is being blocked by %s.", ATarget.GetClassName());
 			}
-			return true;
+			return Distance3D(ATarget);
 		}
-		return false;
+		return 0;
 	}
 
 	protected FollowerWeapon SelWeapon;
