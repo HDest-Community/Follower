@@ -56,9 +56,9 @@ class HDFollower : HDMobMan abstract
 		return TooFar || FollowerDead;
 	}
 
-	clearscope bool CanInteractWith()
+	clearscope bool CanInteractWith(bool validIfDead = true)
 	{
-		return Health > 0 && bFRIENDLY || Health <= 0;
+		return Health > 0 && bFRIENDLY || Health <= 0 && validIfDead;
 	}
 
 	void WarpToPlayer()

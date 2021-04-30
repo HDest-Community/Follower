@@ -279,11 +279,12 @@ class FollowerHandler : EventHandler
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
 					return;
 				}
-				int FollowerBlockSize = RectangleHeight * 2 - 2;
 				int FSize = Followers.Size();
 				for (int i = 0; i < FSize; ++i)
 				{
-					DrawFollowerRectangle(sb, pos, (150, FollowerBlockSize), MainFont, i + 1, Followers[i], flags); pos.y += FollowerBlockSize + Spacing;
+					bool Valid = Followers[i].CanInteractWith(false);
+					int FollowerBlockSize = Valid ? RectangleHeight * 2 - 2 : RectangleHeight;
+					DrawFollowerRectangle(sb, pos, (150, FollowerBlockSize), MainFont, i + 1, Followers[i], Valid, flags); pos.y += FollowerBlockSize + Spacing;
 				}
 				//DrawTextRectangle(sb, pos, (250, RectangleHeight), MainFont, FSize..") Select all", flags);
 				break;
@@ -382,10 +383,10 @@ class FollowerHandler : EventHandler
 					DrawTextRectangle(sb, pos, (RectangleWidth, RectangleHeight), MainFont, SelFollower[consoleplayer].GetTag(), flags, Font.FindFontColor('FLW_NameBlue'));
 					pos.y += RectangleHeight + Spacing;
 					
-					if (Followers.Size() == 1 && Followers[0].CanInteractWith())
+					if (Followers.Size() == 1 && SelFollower[consoleplayer].CanInteractWith(false))
 					{
-						vector3 Diff = level.Vec3Diff(Followers[0].pos, Followers[0].LinkedPlayer.pos);
-						DrawTextRectangle(sb, pos, (RectangleWidth, RectangleHeight), MainFont, String.Format("%i, %i, %i", abs(diff.x), abs(diff.y), abs(diff.z)), flags, Font.CR_DARKGRAY);
+						double Dist = SelFollower[consoleplayer].Distance3D(SelFollower[consoleplayer].LinkedPlayer) / 42.0;
+						DrawTextRectangle(sb, pos, (RectangleWidth, RectangleHeight), MainFont, String.Format("%.2fm", Dist), flags, Font.CR_DARKGRAY);
 						pos.y += RectangleHeight + Spacing;
 					}
 
@@ -463,21 +464,19 @@ class FollowerHandler : EventHandler
 		}
 	}
 
-	private ui void DrawFollowerRectangle(BaseStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, int index, HDFollower flw, int flags)
+	private ui void DrawFollowerRectangle(BaseStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, int index, HDFollower flw, bool valid, int flags)
 	{
-		bool Valid = flw.CanInteractWith();
-
-		sb.Fill(Valid ? Color(64, 128, 192, 255) : Color(64, 255, 16, 16), pos.x, pos.y, size.x, size.y, flags);
+		sb.Fill(valid ? Color(64, 128, 192, 255) : Color(64, 255, 16, 16), pos.x, pos.y, size.x, size.y, flags);
 		sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 
 		pos += (2, 2);
 		int FontHeight = fnt.mFont.GetHeight();
 		sb.DrawString(fnt, index..") "..flw.GetTag(), pos, flags, Font.FindFontColor('FLW_NameBlue')); pos.y += FontHeight + 1;
 
-		if (Valid)
+		if (valid)
 		{
-			vector3 Diff = level.Vec3Diff(flw.pos, flw.LinkedPlayer.pos);
-			sb.DrawString(fnt, String.Format("%i, %i, %i", abs(diff.x), abs(diff.y), abs(diff.z)), pos, flags, Font.CR_DARKGRAY); pos.y += FontHeight + 1;
+			double Dist = flw.Distance3D(flw.LinkedPlayer) / 42.0;
+			sb.DrawString(fnt, String.Format("%.2fm", Dist), pos, flags, Font.CR_DARKGRAY); pos.y += FontHeight + 1;
 		}
 	}
 
@@ -721,7 +720,7 @@ class FollowerHandler : EventHandler
 			{
 				let plr = HDPlayerPawn(players[e.Player].mo);
 				let AimedFollower = HDFollower(plr.AimTarget());
-				if (AimedFollower && e.IsManual)
+				if (AimedFollower && AimedFollower.CanInteractWith() && e.IsManual)
 				{
 					SelFollower[e.Player] = AimedFollower;
 					FollowerMenuLevel[e.Player] = FMenu_Main;
