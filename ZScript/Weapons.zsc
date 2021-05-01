@@ -239,7 +239,7 @@ extend class HDFollower
 	protected double AimBlocked()
 	{
 		Actor ATarget = AimTarget();
-		bool Condition = CTarget && bFRIENDLY && ATarget.bFRIENDLY && (ATarget is "PlayerPawn" || ATarget is 'HDFollower');
+		bool Condition = ATarget && CTarget && bFRIENDLY && ATarget.bFRIENDLY && (ATarget is "PlayerPawn" || ATarget is 'HDFollower');
 		if (Condition)
 		{
 			if (hdf_debug == 2)
