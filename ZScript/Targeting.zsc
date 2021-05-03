@@ -52,7 +52,10 @@ extend class HDFollower
 
 				if (MTarget.bBOSS && (CheckTarget() && !CTarget.bBOSS || !CheckTarget()))
 				{
-					W = "FW_Bronto"; UsedWeapons.Push(W);
+					if (!AlreadyTargeted)
+					{
+						W = "FW_Bronto"; UsedWeapons.Push(W);
+					}
 					W = "FW_RocketLauncher"; UsedWeapons.Push(W);
 					W = "FW_Liberator"; UsedWeapons.Push(W);
 					W = "FW_Boss"; UsedWeapons.Push(W);
@@ -61,7 +64,7 @@ extend class HDFollower
 					EngageTarget(UsedWeapons, MTarget);
 					break;
 				}
-				else if (MTarget is "Necromancer")
+				else if (MTarget is "Necromancer" && !AlreadyTargeted)
 				{
 					W = "FW_ZM66"; UsedWeapons.Push(W);
 					W = "FW_Hunter"; UsedWeapons.Push(W);
@@ -73,11 +76,14 @@ extend class HDFollower
 				}
 				else if (MTarget is "PainLord" || MTarget is "PainBringer")
 				{
-					if (MTarget is "PainLord")
+					if (!AlreadyTargeted)
 					{
-						W = "FW_Bronto"; UsedWeapons.Push(W);
+						if (MTarget is "PainLord")
+						{
+							W = "FW_Bronto"; UsedWeapons.Push(W);
+						}
+						W = "FW_RocketLauncher"; UsedWeapons.Push(W);
 					}
-					W = "FW_RocketLauncher"; UsedWeapons.Push(W);
 					W = "FW_Liberator"; UsedWeapons.Push(W);
 					W = "FW_Boss"; UsedWeapons.Push(W);
 					if (Shields && Shields.Amount > 100)
