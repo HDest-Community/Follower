@@ -238,15 +238,15 @@ extend class HDFollower
 
 	protected double AimBlocked()
 	{
-		Actor ATarget = AimTarget();
-		bool Condition = ATarget && CTarget && bFRIENDLY && ATarget.bFRIENDLY && (ATarget is "PlayerPawn" || ATarget is 'HDFollower');
-		if (Condition)
+		FLineTraceData TraceData;
+		LineTrace(angle, MaxTargetRange, pitch, TRF_NOSKY, Height - HDCONST_CROWNTOSHOULDER, data: TraceData);
+		if (TraceData.HitActor && bFRIENDLY && (TraceData.HitActor is "PlayerPawn" || TraceData.HitActor is 'HDFollower' && TraceData.HitActor.bFRIENDLY))
 		{
 			if (hdf_debug == 2)
 			{
-				Console.Printf("Aim is being blocked by %s.", ATarget.GetClassName());
+				Console.Printf("Aim is being blocked by %s.", TraceData.HitActor.GetClassName());
 			}
-			return Distance3D(ATarget);
+			return Distance3D(TraceData.HitActor);
 		}
 		return 0;
 	}
