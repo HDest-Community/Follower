@@ -38,6 +38,10 @@ For the most part the mechanics are fairly simple and straightforward. Documente
 ---
 - Orders are mostly straightforward except for some details, such as "go there and cover me", which will make the follower stop whatever they're doing and run to their destination. Be sure to cover them if you can because they won't engage any enemies on the way.
 
+##### Recruiting
+---
+- Friendly/converted marines can be recruited. Aim at them and open the follower menu.
+
 ### Modding
 ---
 - New followers can be added by inheriting from HDFollower and overriding the provided virtuals. Their arsenal can be changed if you like.
