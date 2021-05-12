@@ -1,0 +1,696 @@
+class FollowerCommand ui
+{
+	string EventName;
+	int Args[3];
+}
+
+extend class FollowerHandler
+{
+	private transient ui HUDFont MainFont;
+	private transient ui int FollowerPage[MAXPLAYERS];
+
+	// [Ace] The only reason this is used is to allow dynamic menus with a variable number of options. That's literally the only reason.
+	private ui FollowerCommand CreateCommand(string evName, int arg1 = 0, int arg2 = 0, int arg3 = 0)
+	{
+		let Command = new('FollowerCommand');
+		Command.EventName = evName;
+		Command.Args[0] = arg1;
+		Command.Args[1] = arg2;
+		Command.Args[2] = arg3;
+		return Command;
+	}
+
+	private ui string GetTruncatedText(string text, int length)
+	{
+		if (text.Length() > length)
+		{
+			string TruncatedName = text.Mid(0, length);
+			TruncatedName.DeleteLastCharacter();
+			if (TruncatedName.ByteAt(TruncatedName.Length() - 1) == 32)
+			{
+				TruncatedName.DeleteLastCharacter();
+			}
+			text = TruncatedName.."...";
+		}
+
+		return text;
+	}
+
+	override void UiTick()
+	{
+		Super.UiTick();
+
+		if (FollowerMenuLevel[consoleplayer] == FMenu_Closed)
+		{
+			FollowerPage[consoleplayer] = 0;
+		}
+	}
+	
+	override void RenderOverlay(RenderEvent e)
+	{
+		MainFont = HUDFont.Create("CONFONT");
+
+		int OriginalWidth = StatusBar.HorizontalResolution;
+		int OriginalHeight = StatusBar.VerticalResolution;
+
+		StatusBar.BeginHUD(1.0, true);
+		StatusBar.SetSize(StatusBar.RelTop, 640, 480);
+
+		if (FollowerMenuLevel[consoleplayer] > FMenu_Closed && Followers.Size() > 0 && !AutomapActive && GameState == GS_LEVEL)
+		{
+			DrawCommandMenu(StatusBar, (0, 40), StatusBar.DI_SCREEN_LEFT | StatusBar.DI_SCREEN_VCENTER | StatusBar.DI_TEXT_ALIGN_LEFT);
+		}
+
+		// --------------- PRETEND WE WERE NEVER HERE ---------------
+
+		StatusBar.BeginHUD(1.0, false);
+		StatusBar.SetSize(StatusBar.RelTop, OriginalWidth, OriginalHeight);
+	}
+
+	private ui void DrawCommandMenu(BaseStatusBar sb, vector2 pos, int flags)
+	{
+		vector2 OriginalPos = pos;
+		int RectangleHeight = MainFont.mFont.GetHeight() + 4;
+		int Spacing = 1;
+
+		// [Ace] Up here because it's used by several menus.
+		string BrassString;
+		if (SelFollower[consoleplayer])
+		{
+			int Brass = SelFollower[consoleplayer].GetTotalBrass();
+			int MaxBrass = SelFollower[consoleplayer].GetMaxBrass();
+			BrassString = (Brass > 0 ? "" : "\c[Red]").."Collect brass\c- ".."("..Brass.."/"..MaxBrass..")";
+		}
+
+		switch (FollowerMenuLevel[consoleplayer])
+		{
+			case FMenu_Recruitment:
+				if (!SelMarine[consoleplayer])
+				{
+					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
+					return;
+				}
+
+				Array<string> Commands;
+				Commands.Push("Recruit?");
+				Commands.Push("Cancel");
+
+				DrawTextRectangle(sb, pos, (150, RectangleHeight), MainFont, GetTruncatedText(SelMarine[consoleplayer].nickname, 16), flags, Font.FindFontColor('FLW_NameBlue'));
+				pos.y += RectangleHeight + Spacing;
+
+				for (int i = 0; i < Commands.Size(); ++i)
+				{
+					DrawTextRectangle(sb, pos, (150, RectangleHeight), MainFont, (i + 1)..") "..Commands[i], flags);
+					pos.y += RectangleHeight + Spacing;
+				}
+				break;
+
+			case FMenu_Followers:
+				if (Followers.Size() == 0)
+				{
+					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
+					return;
+				}
+				
+				int FSize = Followers.Size();
+				int RelSize = min(8, FSize - 8 * FollowerPage[consoleplayer]);
+				if (RelSize > 4)
+				{
+					pos.y -= (RectangleHeight * 2 - 2) * 4;
+				}
+
+				int LastIndex = 0;
+				for (int i = 8 * FollowerPage[consoleplayer]; i < min(8 * (FollowerPage[consoleplayer] + 1), FSize); ++i)
+				{
+					LastIndex++;
+					bool Valid = Followers[i].CanInteractWith(false);
+					int FollowerBlockSize = Valid ? RectangleHeight * 2 - 2 : RectangleHeight;
+					DrawFollowerRectangle(sb, pos, (200, FollowerBlockSize), MainFont, LastIndex, Followers[i], Valid, flags);
+					pos.y += FollowerBlockSize + Spacing;
+				}
+				if (FSize > 8 * (FollowerPage[consoleplayer] + 1))
+				{
+					LastIndex++;
+					DrawTextRectangle(sb, pos, (200, RectangleHeight), MainFont, LastIndex..") Next...", flags);
+					pos.y += RectangleHeight + Spacing;
+				}
+				if (FollowerPage[consoleplayer] > 0)
+				{
+					LastIndex++;
+					if (LastIndex == 10)
+					{
+						LastIndex = 0;
+					}
+					DrawTextRectangle(sb, pos, (200, RectangleHeight), MainFont, LastIndex..") Back...", flags);
+					pos.y += RectangleHeight + Spacing;
+				}
+				break;
+
+			case FMenu_Main:
+				if (!SelFollower[consoleplayer])
+				{
+					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
+					return;
+				}
+				if (SelFollower[consoleplayer].Health <= 0)
+				{
+					int RequiredSips = SelFollower[consoleplayer].GetRequiredSips();
+					int RequiredBlood = SelFollower[consoleplayer].GetRequiredBlood();
+					string BloodDanger;
+					if (RequiredBlood < 10)
+					{
+						BloodDanger = "\c[FLW_BloodGreen](Safe)\c-";
+					}
+					else if (RequiredBlood < 20)
+					{
+						BloodDanger = "\c[FLW_BloodPoison](Risky)\c-";
+					}
+					else if (RequiredBlood < 30)
+					{
+						BloodDanger = "\c[FLW_BloodYellow](Dangerous)\c-";
+					}
+					else if (RequiredBlood < 40)
+					{
+						BloodDanger = "\c[FLW_BloodOrange](Extremely Risky)\c-";
+					}
+					else if (RequiredBlood < 50)
+					{
+						BloodDanger = "\c[FLW_BloodRed](Almost Deadly)\c-";
+					}
+					else
+					{
+						BloodDanger = "\c[FLW_BloodBlack](Certain Death)\c-";
+					}
+
+					Array<string> Commands;
+					Commands.Push("Carry follower");
+					if (SelFollower[consoleplayer].ResurrectType & HDFollower.RESF_BLUES)
+					{
+						Commands.Push((sb.CheckInventory("BluePotion", 1) ? "" : "\c[Red]").."Give blue potion\c- ".."\c[Blue]("..RequiredSips.."/12)\c-");
+					}
+					if (SelFollower[consoleplayer].ResurrectType & HDFollower.RESF_BLOOD)
+					{
+						Commands.Push("Feed blood "..BloodDanger);
+					}
+					Commands.Push(BrassString);
+					if (Followers.Size() > 1)
+					{
+						Commands.Push("Back...");
+					}
+
+					DrawTextRectangle(sb, pos, (250, RectangleHeight), MainFont, GetTruncatedText(SelFollower[consoleplayer].GetDisplayName(), 16), flags, Font.FindFontColor('FLW_NameBlue'));
+					pos.y += RectangleHeight + Spacing;
+
+					for (int i = 0; i < Commands.Size(); ++i)
+					{
+						DrawTextRectangle(sb, pos, (250, RectangleHeight), MainFont, (i + 1)..") "..Commands[i], flags);
+						pos.y += RectangleHeight + Spacing;
+					}
+				}
+				else if (SelFollower[consoleplayer].bFRIENDLY)
+				{
+					int Durability = 0;
+					bool Mega = false;
+					bool Waiting = SelFollower[consoleplayer].Status == FStatus_WaitingForArmor;
+					let Armor = HDArmourWorn(SelFollower[consoleplayer].FindInventory("HDArmourWorn"));
+					if (Armor)
+					{
+						Durability = Armor.Durability;
+						Mega = Armor.Mega;
+					}
+
+					Array<string> Commands;
+					Commands.Push("Orders");
+					Commands.Push("Carry follower");
+					Commands.Push("Give ammo");
+					Commands.Push("Give supplies");
+					Commands.Push((Waiting ? "Confirm/Cancel?" : "Use/drop armor"..(Durability > 0 ? (Mega ? "\c[Blue]" : "\c[DarkGreen]").." ("..Durability..")": "")).."\c-");
+					Commands.Push("Misc commands");
+					if (Followers.Size() > 1)
+					{
+						Commands.Push("Back...");
+					}
+
+					int RectangleWidth = 150;
+					if (!Waiting && Durability > 0)
+					{
+						RectangleWidth += 40;
+					}
+
+					DrawTextRectangle(sb, pos, (RectangleWidth, RectangleHeight), MainFont, GetTruncatedText(SelFollower[consoleplayer].GetDisplayName(), 16), flags, Font.FindFontColor('FLW_NameBlue'));
+					pos.y += RectangleHeight + Spacing;
+					
+					if (Followers.Size() == 1 && SelFollower[consoleplayer].CanInteractWith(false))
+					{
+						double Dist = SelFollower[consoleplayer].Distance3D(SelFollower[consoleplayer].LinkedPlayer) / 42.0;
+						DrawTextRectangle(sb, pos, (RectangleWidth, RectangleHeight), MainFont, String.Format("%.2fm", Dist), flags, Font.CR_DARKGRAY);
+						pos.y += RectangleHeight + Spacing;
+					}
+
+					for (int i = 0; i < Commands.Size(); ++i)
+					{
+						DrawTextRectangle(sb, pos, (RectangleWidth, RectangleHeight), MainFont, (i + 1)..") "..Commands[i], flags);
+						pos.y += RectangleHeight + Spacing;
+					}
+				}
+				break;
+
+			case FMenu_Orders:
+				if (!SelFollower[consoleplayer])
+				{
+					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
+					return;
+				}
+				static const string Orders[] = { "Follow", "Follow and ignore hostiles", "Stay and provide cover", "Go there and provide cover", "Come and help me" };
+
+				DrawTextRectangle(sb, pos, (240, RectangleHeight), MainFont, GetTruncatedText(SelFollower[consoleplayer].GetDisplayName(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
+				pos.y += RectangleHeight + Spacing;
+				for (int i = 0; i < Orders.Size(); ++i)
+				{
+					DrawTextRectangle(sb, pos, (240, RectangleHeight), MainFont, (i + 1)..") "..(SelFollower[consoleplayer].Order == i ? "\c[Green]" : "")..Orders[i].."\c-", flags);
+					pos.y += RectangleHeight + Spacing;
+				}
+				DrawTextRectangle(sb, pos, (240, RectangleHeight), MainFont, (Orders.Size() + 1)..") Back...", flags);
+				break;
+
+			case FMenu_Weapons:
+				if (!SelFollower[consoleplayer])
+				{
+					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
+					return;
+				}
+				int WeaponSize = SelFollower[consoleplayer].Weapons.Size();
+				int WeaponBlockSize = RectangleHeight * 3 - 5;
+				if (WeaponSize > 4)
+				{
+					pos.y -= WeaponBlockSize * (WeaponSize - 4);
+				}
+
+				DrawTextRectangle(sb, pos, (160, RectangleHeight), MainFont, GetTruncatedText(SelFollower[consoleplayer].GetDisplayName(), 16), flags, Font.FindFontColor('FLW_NameBlue'));
+				pos.y += RectangleHeight + Spacing;
+				for (int i = 0; i < WeaponSize; ++i)
+				{
+					DrawWeaponRectangle(sb, pos, (160, WeaponBlockSize), MainFont, i + 1, SelFollower[consoleplayer], flags);
+					pos.y += WeaponBlockSize + Spacing;
+				}
+				DrawTextRectangle(sb, pos, (160, RectangleHeight), MainFont, ((WeaponSize + 1 % 10))..") Back...", flags);
+				break;
+
+			case FMenu_Supplies:
+				if (!SelFollower[consoleplayer])
+				{
+					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
+					return;
+				}
+				DrawTextRectangle(sb, pos, (205, RectangleHeight), MainFont, GetTruncatedText(SelFollower[consoleplayer].GetDisplayName(), 22), flags, Font.FindFontColor('FLW_NameBlue')); pos.y += RectangleHeight + Spacing;
+				DrawTextRectangle(sb, pos, (205, RectangleHeight), MainFont, "1) "..(sb.CheckInventory("PortableMedikit") ? "" : "\c[Red]").."Give Medikit\c- ".."("..SelFollower[consoleplayer].SuturesLeft..", "..SelFollower[consoleplayer].Medikits.."/"..SelFollower[consoleplayer].MaxMedikits..")", flags); pos.y += RectangleHeight + Spacing;
+				DrawTextRectangle(sb, pos, (205, RectangleHeight), MainFont, "2) "..(sb.CheckInventory("PortableStimpack") ? "" : "\c[Red]").."Give Stimpack\c- ".."("..SelFollower[consoleplayer].Stimpacks.."/"..SelFollower[consoleplayer].MaxStimpacks..")", flags); pos.y += RectangleHeight + Spacing;
+				DrawTextRectangle(sb, pos, (205, RectangleHeight), MainFont, "3) Back...", flags);
+				break;
+
+			case FMenu_Miscellaneous:
+				if (!SelFollower[consoleplayer])
+				{
+					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
+					return;
+				}
+				DrawTextRectangle(sb, pos, (235, RectangleHeight), MainFont, GetTruncatedText(SelFollower[consoleplayer].GetDisplayName(), 30), flags, Font.FindFontColor('FLW_NameBlue')); pos.y += RectangleHeight + Spacing;
+				DrawTextRectangle(sb, pos, (235, RectangleHeight), MainFont, "1) "..BrassString, flags); pos.y += RectangleHeight + Spacing;
+				DrawTextRectangle(sb, pos, (235, RectangleHeight), MainFont, "2) Back...", flags);
+				break;
+		}
+	}
+
+	private ui void DrawFollowerRectangle(BaseStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, int index, HDFollower flw, bool valid, int flags)
+	{
+		sb.Fill(valid ? Color(64, 128, 192, 255) : Color(64, 255, 16, 16), pos.x, pos.y, size.x, size.y, flags);
+		sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
+
+		pos += (2, 2);
+		int FontHeight = fnt.mFont.GetHeight();
+		sb.DrawString(fnt, index..") "..GetTruncatedText(flw.GetDisplayName(), 20), pos, flags, Font.FindFontColor('FLW_NameBlue')); pos.y += FontHeight + 1;
+
+		if (valid)
+		{
+			double Dist = flw.Distance3D(flw.LinkedPlayer) / 42.0;
+			sb.DrawString(fnt, String.Format("%.2fm", Dist), pos, flags, Font.CR_DARKGRAY); pos.y += FontHeight + 1;
+		}
+	}
+
+	private ui void DrawTextRectangle(BaseStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, string command, int flags, int col = Font.CR_WHITE)
+	{
+		sb.Fill(Color(64, 128, 192, 255), pos.x, pos.y, size.x, size.y, flags);
+		sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
+		sb.DrawString(fnt, command, (pos.x + 2, pos.y + (size.y - fnt.mFont.GetHeight()) / 2), flags, col); 
+	}
+
+	private ui void DrawWeaponRectangle(BaseStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, int index, HDFollower flw, int flags)
+	{
+		sb.Fill(Color(64, 128, 192, 255), pos.x, pos.y, size.x, size.y, flags);
+		sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
+
+		FollowerWeapon wpn = flw.GetWeaponByIndex(index - 1);
+
+		pos += (2, 2);
+		int FontHeight = fnt.mFont.GetHeight();
+		sb.DrawString(fnt, index..") "..wpn.GetName(), pos, flags, Font.FindFontColor('FLW_WeaponBlue')); pos.y += FontHeight + 1;
+		sb.DrawString(fnt, (wpn.IsFullyLoaded() ? "\c[DarkGreen]" : "")..wpn.GetLoadedRounds().."\c-, "..wpn.SpareAmmo.."/"..wpn.GetMaxSpare(), pos, flags, Font.CR_WHITE); pos.y += FontHeight + 1;
+
+		int MaxGiveAmount = flw.GetMaxGiveAmount(wpn);
+		string AmmoString = (MaxGiveAmount > 0 ? "\c[Green]" : "\c[Red]").."+"..MaxGiveAmount.." "..wpn.GetAmmoName().."\c-";
+		sb.DrawString(fnt, AmmoString, pos, flags, Font.CR_WHITE);
+	}
+
+	override bool InputProcess(InputEvent e)
+	{
+		if (FollowerMenuLevel[consoleplayer] > 0 && e.Type == InputEvent.Type_KeyDown)
+		{
+			int NumKey = e.KeyChar - 48;
+			if (NumKey == 0)
+			{
+				NumKey = 10;
+			}
+
+			switch (FollowerMenuLevel[consoleplayer])
+			{
+				case FMenu_Recruitment:
+					switch (NumKey)
+					{
+						case 1: SendNetworkEvent("HDF_ConfirmRecruitment"); break;
+						case 2: SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed); break;
+					}
+					break;
+
+				case FMenu_Followers:
+					int FSize = Followers.Size();
+					int RelSize = min(8, FSize - 8 * FollowerPage[consoleplayer]);
+					bool HasMorePages = FSize > 8 * (FollowerPage[consoleplayer] + 1);
+
+					if (NumKey == RelSize + 1 && HasMorePages)
+					{
+						FollowerPage[consoleplayer]++;
+					}
+					else if (FollowerPage[consoleplayer] > 0 && NumKey == RelSize + (HasMorePages ? 2 : 1))
+					{
+						FollowerPage[consoleplayer]--;
+					}
+					else if (NumKey > 0 && (NumKey - 1) < RelSize)
+					{
+						SendNetworkEvent("HDF_SelectFollower", (NumKey + 8 * FollowerPage[consoleplayer]) - 1);
+					}
+					break;
+
+				case FMenu_Main:
+					if (SelFollower[consoleplayer].Health <= 0)
+					{
+						Array<FollowerCommand> Commands;
+						Commands.Push(CreateCommand("HDF_CarryFollower"));
+						if (SelFollower[consoleplayer].ResurrectType & HDFollower.RESF_BLUES)
+						{
+							Commands.Push(CreateCommand("HDF_TryRevive", 0));
+						}
+						if (SelFollower[consoleplayer].ResurrectType & HDFollower.RESF_BLOOD)
+						{
+							Commands.Push(CreateCommand("HDF_TryRevive", 1));
+						}
+						Commands.Push(CreateCommand("HDF_CollectBrass"));
+						if (Followers.Size() > 1)
+						{
+							Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Followers));
+						}
+
+						if (NumKey > 0 && NumKey - 1 < Commands.Size())
+						{
+							FollowerCommand cmd = Commands[NumKey - 1];
+							SendNetworkEvent(cmd.EventName, cmd.Args[0], cmd.Args[1], cmd.Args[2]);
+						}
+					}
+					else if (SelFollower[consoleplayer].bFRIENDLY)
+					{
+						Array<FollowerCommand> Commands;
+						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Orders));
+						Commands.Push(CreateCommand("HDF_CarryFollower"));
+						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Weapons));
+						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Supplies));
+						Commands.Push(CreateCommand("HDF_TryArmor"));
+						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Miscellaneous));
+						if (Followers.Size() > 1)
+						{
+							Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Followers));
+						}
+						
+						if (NumKey > 0 && NumKey - 1 < Commands.Size())
+						{
+							FollowerCommand cmd = Commands[NumKey - 1];
+							SendNetworkEvent(cmd.EventName, cmd.Args[0], cmd.Args[1], cmd.Args[2]);
+						}
+					}
+					break;
+					
+				case FMenu_Orders:
+					switch (NumKey)
+					{
+						case 1: SendNetworkEvent("HDF_ChangeOrders", FOrder_Follow); break;
+						case 2: SendNetworkEvent("HDF_ChangeOrders", FOrder_FollowIgnore); break;
+						case 3: SendNetworkEvent("HDF_ChangeOrders", FOrder_Cover); break;
+						case 4: SendNetworkEvent("HDF_ChangeOrders", FOrder_GoAndCover); break;
+						case 5: SendNetworkEvent("HDF_ChangeOrders", FOrder_ComeAndHelp); break;
+						case 6: SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Main); break;
+					}
+					break;
+
+				case FMenu_Weapons:
+					if (NumKey == (SelFollower[consoleplayer].Weapons.Size() + 1) % 10)
+					{
+						SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Main);
+					}
+					else
+					{
+						SendNetworkEvent("HDF_GiveAmmo", NumKey - 1);
+					}
+					break;
+
+				case FMenu_Supplies:
+					switch (NumKey)
+					{
+						case 1: SendNetworkEvent("HDF_GiveSupplies", 0); break;
+						case 2: SendNetworkEvent("HDF_GiveSupplies", 1); break;
+						case 3: SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Main); break;
+					}
+					break;
+
+				case FMenu_Miscellaneous:
+					switch (NumKey)
+					{
+						case 1: SendNetworkEvent("HDF_CollectBrass"); break;
+						case 2: SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Main); break;
+					}
+					break;
+			}
+
+			// [Ace] Block 0-9 keys from affecting the world.
+			if (NumKey >= 0 && NumKey <= 10)
+			{
+				return true;
+			}
+
+			// [Ace] Exit.
+			int Key1, Key2;
+			[Key1, Key2] = Bindings.GetKeysForCommand("HDF_OpenMenu");
+			if (e.KeyScan == Key1 || e.KeyScan == Key2)
+			{
+				SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	override void NetworkProcess(ConsoleEvent e)
+	{
+		if (e.Name ~== "HDF_ResetFollower" && e.Args[0] > 0)
+		{
+			Array<class<HDFollower> > FollowerClasses;
+
+			// [Ace] Find all follower classes first.
+			for (int i = 0; i < AllActorClasses.Size(); ++i)
+			{
+				if (AllActorClasses[i] is 'HDFollower' && AllActorClasses[i].GetClassName() != 'HDFollower')
+				{
+					FollowerClasses.Push((class<HDFollower>)(AllActorClasses[i]));
+				}
+			}
+
+			int FollowerIndex = e.Args[0];
+
+			// [Ace; 23.03.2021]
+			// The problem with FollowerIndex, in hindsight, is that if two followers shame the same index, only the first one would get deleted.
+			// I should have used class name for filtering. Unfortunately, it's too late. Not without breaking all of the existing follower sub-addons. Ah well.
+
+			// [Ace] Destroy the class that is being reset, if applicable, then recreate it.
+			for (int i = 0; i < Followers.Size(); ++i)
+			{
+				if (Followers[i].Index == FollowerIndex)
+				{
+					RemoveFollower(Followers[i]);
+					break;
+				}
+			}
+			for (int i = 0; i < FollowerClasses.Size(); ++i)
+			{
+				if (GetDefaultByType(FollowerClasses[i]).Index == FollowerIndex)
+				{
+					CreateFollower(FollowerClasses[i], e.Player);
+					break;
+				}
+			}
+			return;
+		}
+
+		if (e.Name ~== "HDF_ConfirmRecruitment")
+		{
+			FollowerMenuLevel[e.Player] = FMenu_Closed;
+			RecruitMarine(SelMarine[e.Player], e.Player);
+		}
+
+		// [Ace] Always allow to open the follower menu to the first page or close it.
+		if (e.Name ~== "HDF_SetFollowerMenu")
+		{
+			if (e.Args[0] == FMenu_Closed)
+			{
+				FollowerMenuLevel[e.Player] = FMenu_Closed;
+				return;
+			}
+			else if (e.Args[0] == FMenu_Followers)
+			{
+				let plr = HDPlayerPawn(players[e.Player].mo);
+				Actor ATarget = plr.AimTarget();
+				if (ATarget is 'HDMarine' && ATarget.bFRIENDLY && !IsPuppet(ATarget))
+				{
+					FollowerMenuLevel[e.Player] = FMenu_Recruitment;
+					SelMarine[e.Player] = HDMarine(ATarget);
+				}
+				else
+				{
+					HDFollower flw = HDFollower(ATarget);
+					if (flw && flw.CanInteractWith() && e.IsManual)
+					{
+						SelFollower[e.Player] = flw;
+						FollowerMenuLevel[e.Player] = FMenu_Main;
+						flw.ChangeLinkedPlayer(plr);
+					}
+					else if (Followers.Size() == 1 && Followers[0].CanInteractWith())
+					{
+						SelFollower[e.Player] = Followers[0];
+						FollowerMenuLevel[e.Player] = FMenu_Main;
+						SelFollower[e.Player].ChangeLinkedPlayer(plr);
+					}
+					else if (Followers.Size() > 0)
+					{
+						FollowerMenuLevel[e.Player] = FMenu_Followers;
+					}
+				}
+			}
+			else if (SelFollower[e.Player])
+			{
+				FollowerMenuLevel[e.Player] = e.Args[0];
+			}
+			return;
+		}
+
+		if (Followers.Size() == 0)
+		{
+			return;
+		}
+
+		// [Ace] This is an obvious cheat, so don't use it unless you absolutely HAVE to.
+		if (e.Name ~== "HDF_WarpToPlayer")
+		{
+			for (int i = 0; i < Followers.Size(); ++i)
+			{
+				if (Followers[i].Index == e.Args[0])
+				{
+					Followers[i].WarpToPlayer();
+					break;
+				}
+			}
+			return;
+		}
+
+		if (e.Name ~== "HDF_SelectFollower")
+		{
+			SelFollower[e.Player] = Followers[e.Args[0]];
+			if (SelFollower[e.Player].CanInteractWith())
+			{
+				FollowerMenuLevel[e.Player] = FMenu_Main;
+				SelFollower[e.Player].ChangeLinkedPlayer(HDPlayerPawn(players[e.Player].mo));
+			}
+			return;
+		}
+
+		if (!SelFollower[e.Player] || !SelFollower[e.Player].CanInteractWith())
+		{
+			return;
+		}
+
+		// [Ace] These commands cannot be used if alive and hostile.
+		if (e.Name ~== "HDF_CarryFollower")
+		{
+			if (SelFollower[e.Player].PackFollower())
+			{
+				FollowerMenuLevel[e.Player] = FMenu_Closed;
+			}
+			return;
+		}
+
+		if (e.Name ~== "HDF_TryRevive")
+		{
+			if (SelFollower[e.Player].TryRevive(e.Args[0]))
+			{
+				FollowerMenuLevel[e.Player] = FMenu_Closed;
+			}
+			return;
+		}
+
+		if (e.Name ~== "HDF_CollectBrass")
+		{
+			if (SelFollower[e.Player].TryCollectBrass())
+			{
+				FollowerMenuLevel[e.Player] = FMenu_Closed;
+			}
+			return;
+		}
+
+		if (e.Name ~== "HDF_GiveAmmo")
+		{
+			SelFollower[e.Player].TryGiveAmmo(e.Args[0]);
+			return;
+		}
+
+		if (e.Name ~== "HDF_TryArmor")
+		{
+			SelFollower[e.Player].TryUseArmor();
+			FollowerMenuLevel[e.Player] = FMenu_Closed;
+			return;
+		}
+
+		if (e.Name ~== "HDF_GiveSupplies")
+		{
+			switch (e.Args[0])
+			{
+				case 0: SelFollower[e.Player].TryGiveMedikit(); break;
+				case 1: SelFollower[e.Player].TryGiveStimpack(); break;
+			}
+			return;
+		}
+
+		if (e.Name ~== "HDF_ChangeOrders")
+		{
+			if (SelFollower[e.Player].ChangeOrders(e.Args[0]))
+			{
+				FollowerMenuLevel[e.Player] = FMenu_Closed;
+			}
+			return;
+		}
+	}
+}

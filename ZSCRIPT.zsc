@@ -1,6 +1,9 @@
 version "4.5"
 
 #include "ZScript/FollowerHandler.zsc"
+#include "ZScript/CommandMenu.zsc"
+#include "ZScript/Management.zsc"
+#include "ZScript/Recruitment.zsc"
 #include "ZScript/Data.zsc"
 #include "ZScript/Resurrection.zsc"
 #include "ZScript/Armor.zsc"
@@ -19,6 +22,9 @@ version "4.5"
 #include "ZScript/Followers/Daina.zsc"
 #include "ZScript/Followers/Sewie.zsc"
 #include "ZScript/Followers/Nari.zsc"
+
+// [Ace] Needs to be last or else it messes with the Enabled check in the creation loop in FollowerHandler::WorldLoaded().
+#include "ZScript/Followers/RecruitedMarine.zsc"
 
 class HDFollower : HDMobMan abstract
 {
@@ -125,6 +131,11 @@ class HDFollower : HDMobMan abstract
 		}
 
 		return "??????";
+	}
+
+	clearscope string GetDisplayName()
+	{
+		return DisplayName != "" ? DisplayName : GetTag();
 	}
 
 	void ChangeLinkedPlayer(HDPlayerPawn plr)
@@ -269,10 +280,12 @@ class HDFollower : HDMobMan abstract
 	meta int ResurrectType;
 	property ResurrectType: ResurrectType;
 
+	string DisplayName;
+
 	meta uint Index;
-	meta EPlayerGender Gender;
+	int Gender;
 	meta class<FollowerBody> DataClass;
-	meta class<LeftBehindFollower> MissingClass;
+	meta class<LeftBehindFollower> MissingClass; // [Ace] If this is null, assume follower is non-essential. Like marines.
 	property FollowerInfo: Index, Gender, DataClass, MissingClass;
 
 	private int BehaviourFlags;
@@ -384,9 +397,9 @@ class HDFollower : HDMobMan abstract
 			#### M 6 Taunt();
 			#### A 0
 			{
-				ThinkerIterator it = ThinkerIterator.Create("AngelFire", STAT_DEFAULT);
+				ThinkerIterator it = ThinkerIterator.Create('AngelFire', STAT_DEFAULT);
 				AngelFire f;
-				while((f = AngelFire(it.Next())))
+				while ((f = AngelFire(it.Next())))
 				{
 					if (f.master && f.master == self)
 					{

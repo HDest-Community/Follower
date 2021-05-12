@@ -3,6 +3,7 @@
 CARRY_FAR_PLR = "I'll have to get closer for that.";
 CARRY_NOTFACING_PLR = "I need to be facing my buddy to do that.";
 CARRY_CANTDROP_PLR = "I can't place my buddy here.";
+CARRY_TOOMANY_PLR = "I can't carry any more.";
 AMMOGIVE_FAR_PLR = "I'll need to get closer to do that.";
 AMMOGIVE_NOTENOUGH_PLR = "I don't have enough ammo for that.";
 MEDGIVE_FAR_PLR = "I'm too far away to do that.";

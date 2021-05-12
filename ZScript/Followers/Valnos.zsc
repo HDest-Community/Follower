@@ -17,7 +17,7 @@ class FollowerValnos : HDFollower
 		int WeaponFlags = hdf_loadout_valnos_weapons;
 		int StartingAmmoFlags = hdf_loadout_valnos_startingammo;
 
-		static const string AllWeapons[] = { "FW_SMG", "FW_Hunter", "FW_ZM66", "FW_RocketLauncher", "FW_Liberator", "FW_Boss", "FW_Bronto" };
+		static const Name AllWeapons[] = { 'FW_SMG', 'FW_Hunter', 'FW_ZM66', 'FW_RocketLauncher', 'FW_Liberator', 'FW_Boss', 'FW_Bronto' };
 		for (int i = 0; i < AllWeapons.Size(); ++i)
 		{
 			class<FollowerWeapon> fw = AllWeapons[i];

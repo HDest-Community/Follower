@@ -1,142 +1,13 @@
-extend class HDFollower
+class FollowerData play
 {
-	bool PackFollower(bool force = false)
-	{
-		if (!force)
-		{
-			if (DistanceToPlayer > radius + 40)
-			{
-				ThinkMessage(LinkedPlayer, "$CARRY_FAR_PLR");
-				return false;
-			}
-			else if (!IsFacedByPlayer())
-			{
-				ThinkMessage(LinkedPlayer, "$CARRY_NOTFACING_PLR");
-				return false;
-			}
-
-			string ATag = GetTag();
-			PrintMessage(GetResponse("$"..ATag.."_CARRY_SUCCESS"), "Follower/"..ATag.."/Carry/Success", PMType_General);
-		}
-
-		let Handler = FollowerHandler(EventHandler.Find("FollowerHandler"));
-		Handler.Followers.Delete(Handler.Followers.Find(self));
-
-		let FData = FollowerBody(LinkedPlayer.GiveInventoryType(DataClass));
-
-		FData.FollowerClass = GetClass();
-
-		for (int i = 0; i < Weapons.Size(); ++i)
-		{
-			FData.Weapons.Push(Weapons[i]);
-		}
-
-		if (!force)
-		{
-			FData.Health = Health;
-			FData.Bloodloss = Bloodloss;
-			FData.Stunned = Stunned;
-			FData.BodyDamage = BodyDamage;
-			FData.BloodReviveTicker = BloodReviveTicker;
-			FData.Incapped = InStateSequence(CurState, FindState("Falldown"));
-
-			HDBleedingWound BleedThinker = GetBleedThinker();
-			if (BleedThinker)
-			{
-				FData.IsBleeding = true;
-				FData.BleedPoints = BleedThinker.BleedPoints;
-				FData.BleedRate = BleedThinker.BleedRate;
-				FData.HitVital = BleedThinker.HitVital;
-				FData.Source = BleedThinker.Source;
-			}
-		}
-		else // [Ace] If it's forced, it means it's level end. In that case heal everything. This also only works if they're alive because you have to pick them up manually if they're dead.
-		{
-			FData.NoExitDrop = true;
-			FData.Health = default.Health;
-			FData.Bloodloss = 0;
-			FData.Stunned = 0;
-			FData.BodyDamage = 0;
-			FData.Incapped = false;
-		}
-
-		FData.Medikits = Medikits;
-		FData.SuturesLeft = SuturesLeft;
-		FData.Stimpacks = Stimpacks;
-		FData.Order = Order;
-
-		let Armor = HDArmourWorn(FindInventory("HDArmourWorn"));
-		if (Armor)
-		{
-			FData.ArmorDurability = Armor.Durability;
-			FData.ArmorMega = Armor.Mega;
-		}
-
-		let Shields = FindInventory('HDMagicShield');
-		if (Shields)
-		{
-			FData.Shields = Shields.Amount;
-			FData.MaxShields = Shields.MaxAmount;
-			FData.RegenerateShields = Shields.bQUICKTORETALIATE;
-			FData.NoShieldsDegeneration = Shields.bSTANDSTILL;
-		}
-
-		FData.CollectedBrass = GetTotalBrass();
-
-		Destroy();
-
-		return true;
-	}
-
-	int NewBloodloss;
-	int NewStunned;
-	int NewBodyDamage;
-
-	int Shields;
-	bool RegenerateShields;
-	bool NoShieldsDegeneration;
-}
-
-// [Ace] This is perhaps the only useful use of an inventory item.
-// Can't use a variable in EventHandler because it gets reset on map start, and can't use a variable in StaticEventHandler because it's not saved to save games.
-// Could use a static Thinker, but then the follower would be weightless.
-
-class FollowerBody : HDPickup abstract
-{
-	override void DoEffect()
-	{
-		if (!owner)
-		{
-			Destroy();
-			return;
-		}
-		
-		let plr = HDPlayerPawn(owner);
-		if (plr && plr.incapacitated > 0 && !NoExitDrop && !AlreadyTried)
-		{
-			FromIncap = true;
-			plr.UseInventory(self);
-		}
-		Super.DoEffect();
-	}
-
-	Default
-	{
-		-HDPICKUP.DROPTRANSLATION
-		-HDPICKUP.FITSINBACKPACK
-		+HDPICKUP.CHEATNOGIVE
-		+HDPICKUP.NOTINPOCKETS
-		+INVENTORY.INVBAR
-		+INVENTORY.UNDROPPABLE
-		HDPickup.Bulk 500;
-		Inventory.MaxAmount 1;
-	}
-
 	class<HDFollower> FollowerClass;
 
-	bool NoExitDrop; // [Ace] Don't drop if level is exited in incap.
-	bool FromIncap;
-	bool AlreadyTried;
+	string DisplayName;
+	int Gender;
+	string Sounds[3];
+	int SpriteTranslation;
+
+	int Health;
 
 	// Bleeding thinker stuff.
 	bool IsBleeding;
@@ -167,12 +38,168 @@ class FollowerBody : HDPickup abstract
 	bool NoShieldsDegeneration;
 
 	int CollectedBrass;
+}
+
+extend class HDFollower
+{
+	bool PackFollower(bool force = false)
+	{
+		if (LinkedPlayer.CountInv(DataClass) == GetDefaultByType(DataClass).MaxAmount)
+		{
+			ThinkMessage(LinkedPlayer, "$CARRY_TOOMANY_PLR");
+			return false;
+		}
+
+		if (!force)
+		{
+			if (DistanceToPlayer > radius + 40)
+			{
+				ThinkMessage(LinkedPlayer, "$CARRY_FAR_PLR");
+				return false;
+			}
+			else if (!IsFacedByPlayer())
+			{
+				ThinkMessage(LinkedPlayer, "$CARRY_NOTFACING_PLR");
+				return false;
+			}
+
+			string ATag = GetTag();
+			PrintMessage(GetResponse("$"..ATag.."_CARRY_SUCCESS"), "Follower/"..ATag.."/Carry/Success", PMType_General);
+		}
+
+		let Handler = FollowerHandler(EventHandler.Find("FollowerHandler"));
+		Handler.Followers.Delete(Handler.Followers.Find(self));
+
+		let FData = new('FollowerData');
+		LinkedPlayer.A_GiveInventory(DataClass);
+		let FBody = FollowerBody(LinkedPlayer.FindInventory(DataClass));
+
+		FData.FollowerClass = GetClass();
+
+		FData.DisplayName = GetDisplayName();
+		FData.Gender = Gender;
+		FData.Sounds[0] = SeeSound;
+		FData.Sounds[1] = PainSound;
+		FData.Sounds[2] = DeathSound;
+		FData.SpriteTranslation = self.Translation;
+
+		for (int i = 0; i < Weapons.Size(); ++i)
+		{
+			FData.Weapons.Push(Weapons[i]);
+		}
+
+		if (!force)
+		{
+			FData.Health = Health;
+			FData.Bloodloss = Bloodloss;
+			FData.Stunned = Stunned;
+			FData.BodyDamage = BodyDamage;
+			FData.BloodReviveTicker = BloodReviveTicker;
+			FData.Incapped = InStateSequence(CurState, FindState("Falldown"));
+
+			HDBleedingWound BleedThinker = GetBleedThinker();
+			if (BleedThinker)
+			{
+				FData.IsBleeding = true;
+				FData.BleedPoints = BleedThinker.BleedPoints;
+				FData.BleedRate = BleedThinker.BleedRate;
+				FData.HitVital = BleedThinker.HitVital;
+				FData.Source = BleedThinker.Source;
+			}
+		}
+		else // [Ace] If it's forced, it means it's level end. In that case heal everything. This also only works if they're alive because you have to pick them up manually if they're dead.
+		{
+			FBody.NoExitDrop = true;
+			FData.Health = default.Health;
+			FData.Bloodloss = 0;
+			FData.Stunned = 0;
+			FData.BodyDamage = 0;
+			FData.Incapped = false;
+		}
+
+		FData.Medikits = Medikits;
+		FData.SuturesLeft = SuturesLeft;
+		FData.Stimpacks = Stimpacks;
+		FData.Order = Order;
+
+		let Armor = HDArmourWorn(FindInventory("HDArmourWorn"));
+		if (Armor)
+		{
+			FData.ArmorDurability = Armor.Durability;
+			FData.ArmorMega = Armor.Mega;
+		}
+
+		let Shields = FindInventory('HDMagicShield');
+		if (Shields)
+		{
+			FData.Shields = Shields.Amount;
+			FData.MaxShields = Shields.MaxAmount;
+			FData.RegenerateShields = Shields.bQUICKTORETALIATE;
+			FData.NoShieldsDegeneration = Shields.bSTANDSTILL;
+		}
+
+		FData.CollectedBrass = GetTotalBrass();
+
+		FBody.Data.Push(FData);
+		Destroy();
+		return true;
+	}
+
+	int NewBloodloss;
+	int NewStunned;
+	int NewBodyDamage;
+
+	int Shields;
+	bool RegenerateShields;
+	bool NoShieldsDegeneration;
+}
+
+// [Ace] This is perhaps the only useful use of an inventory item.
+// Can't use a variable in EventHandler because it gets reset on map start, and can't use a variable in StaticEventHandler because it's not saved to save games.
+// Could use a static Thinker, but then the follower would be weightless.
+class FollowerBody : HDPickup abstract
+{
+	override void DoEffect()
+	{
+		if (!owner)
+		{
+			Destroy();
+			return;
+		}
+		
+		let plr = HDPlayerPawn(owner);
+		if (plr && plr.incapacitated > 0 && !NoExitDrop && !AlreadyTried)
+		{
+			FromIncap = true;
+			plr.UseInventory(self);
+		}
+		Super.DoEffect();
+	}
+
+	Array<FollowerData> Data;
+	bool NoExitDrop; // [Ace] Don't drop if level is exited in incap.
+	bool FromIncap;
+	bool AlreadyTried;
+
+	Default
+	{
+		-HDPICKUP.DROPTRANSLATION
+		-HDPICKUP.FITSINBACKPACK
+		+HDPICKUP.CHEATNOGIVE
+		+HDPICKUP.NOTINPOCKETS
+		+INVENTORY.INVBAR
+		+INVENTORY.UNDROPPABLE
+		HDPickup.Bulk 500;
+		Inventory.MaxAmount 1;
+	}
 
 	States
 	{
 		Use:
 			TNT1 A 0
 			{
+				FollowerData LData = invoker.Data[invoker.Data.Size() - 1];
+
 				bool ReturnValue = false;
 				for (int i = 0; i < 100; ++i)
 				{
@@ -182,7 +209,7 @@ class FollowerBody : HDPickup abstract
 					int RandAngle = invoker.FromIncap || level.time < 2 ? random(0, 359) : 0;
 					vector3 DropDest = Vec3Angle(Distance, angle + RandAngle);
 					Sector DropSec = level.PointInSector(DropDest.xy);
-					if (DropSec && pos.z - DropSec.floorplane.ZAtPoint(DropSec.centerspot) > GetDefaultByType(invoker.FollowerClass).MaxStepHeight || !level.IsPointInLevel(DropDest))
+					if (DropSec && pos.z - DropSec.floorplane.ZAtPoint(DropSec.centerspot) > GetDefaultByType(LData.FollowerClass).MaxStepHeight || !level.IsPointInLevel(DropDest))
 					{
 						if (invoker.FromIncap || level.time < 2)
 						{
@@ -194,7 +221,7 @@ class FollowerBody : HDPickup abstract
 						}
 					}
 
-					[success, a] = A_SpawnItemEx(invoker.FollowerClass, Distance, 0, random(8, 16), angle: RandAngle);
+					[success, a] = A_SpawnItemEx(LData.FollowerClass, Distance, 0, random(8, 16), angle: RandAngle);
 
 					if (success)
 					{
@@ -204,47 +231,54 @@ class FollowerBody : HDPickup abstract
 
 						Follower.ChangeLinkedPlayer(HDPlayerPawn(self));
 
-						Follower.Health = invoker.Health;
-						Follower.Order = invoker.Order;
+						Follower.DisplayName = LData.DisplayName;
+						Follower.Gender = LData.Gender;
+						Follower.SeeSound = LData.Sounds[0];
+						Follower.PainSound = LData.Sounds[1];
+						Follower.DeathSound = LData.Sounds[2];
+						Follower.Translation = LData.SpriteTranslation;
+
+						Follower.Health = LData.Health;
+						Follower.Order = LData.Order;
 
 						// [Ace] These aren't even transferred properly because the monsters' PostBeginPlay() calls ResetDamageCounters().
 						// This is needed so that they are.
-						Follower.NewBloodloss = invoker.Bloodloss;
-						Follower.NewStunned = invoker.Stunned;
-						Follower.NewBodyDamage = invoker.BodyDamage;
+						Follower.NewBloodloss = LData.Bloodloss;
+						Follower.NewStunned = LData.Stunned;
+						Follower.NewBodyDamage = LData.BodyDamage;
 
-						Follower.Shields = invoker.Shields;
-						Follower.MaxShields = invoker.MaxShields;
-						Follower.RegenerateShields = invoker.RegenerateShields;
-						Follower.NoShieldsDegeneration = invoker.NoShieldsDegeneration;
+						Follower.Shields = LData.Shields;
+						Follower.MaxShields = LData.MaxShields;
+						Follower.RegenerateShields = LData.RegenerateShields;
+						Follower.NoShieldsDegeneration = LData.NoShieldsDegeneration;
 
-						for (int i = 0; i < invoker.Weapons.Size(); ++i)
+						for (int i = 0; i < LData.Weapons.Size(); ++i)
 						{
-							Follower.Weapons.Push(invoker.Weapons[i]);
+							Follower.Weapons.Push(LData.Weapons[i]);
 						}
 						
-						Follower.Medikits = invoker.Medikits;
-						Follower.SuturesLeft = invoker.SuturesLeft;
-						Follower.Stimpacks = invoker.Stimpacks;
+						Follower.Medikits = LData.Medikits;
+						Follower.SuturesLeft = LData.SuturesLeft;
+						Follower.Stimpacks = LData.Stimpacks;
 
-						if (invoker.ArmorDurability > 0)
+						if (LData.ArmorDurability > 0)
 						{
 							let Armor = HDArmourWorn(Follower.GiveInventoryType("HDArmourWorn"));
-							Armor.Durability = invoker.ArmorDurability;
-							Armor.Mega = invoker.ArmorMega;
+							Armor.Durability = LData.ArmorDurability;
+							Armor.Mega = LData.ArmorMega;
 						}
 
-						if (invoker.IsBleeding)
+						if (LData.IsBleeding)
 						{
-							HDBleedingWound.Inflict(Follower, invoker.BleedPoints, invoker.BleedRate, invoker.HitVital, invoker.Source);
+							HDBleedingWound.Inflict(Follower, LData.BleedPoints, LData.BleedRate, LData.HitVital, LData.Source);
 						}
 
-						if (invoker.Incapped)
+						if (LData.Incapped)
 						{
 							Follower.SetStateLabel("Falldown");
 						}
 
-						if (invoker.Health <= 0)
+						if (LData.Health <= 0)
 						{
 							Follower.bPUSHABLE = false;
 							Follower.DeathSound = "";
@@ -253,13 +287,14 @@ class FollowerBody : HDPickup abstract
 							Follower.Status = FStatus_InactiveOrDead;
 						}
 
-						if (invoker.CollectedBrass > 0)
+						if (LData.CollectedBrass > 0)
 						{
-							Follower.StoredBrass = invoker.CollectedBrass;
+							Follower.StoredBrass = LData.CollectedBrass;
 						}
 
-						Follower.BloodReviveTicker = invoker.BloodReviveTicker;
+						Follower.BloodReviveTicker = LData.BloodReviveTicker;
 
+						invoker.Data.Pop();
 						ReturnValue = true;
 						break;
 					}

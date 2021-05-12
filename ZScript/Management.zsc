@@ -1,0 +1,81 @@
+extend class FollowerHandler
+{
+	const InternalFollowers = 6;
+	Array<HDFollower> Followers;
+
+	void InsertFollower(HDFollower flw)
+	{
+		int InsIndex = 0;
+		int FollowerCount = Followers.Size();
+		if (FollowerCount > 0)
+		{
+			for (int i = 0; i < FollowerCount; ++i)
+			{
+				if (flw.Index >= Followers[i].Index)
+				{
+					InsIndex = i + 1;
+				}
+				else
+				{
+					InsIndex = i;
+					break;
+				}
+			}
+		}
+		Followers.Insert(InsIndex, flw);
+	}
+
+	void RemoveFollower(HDFollower flw, bool permanent = false, bool noDestroy = false)
+	{
+		int Index = Followers.Find(flw);
+		if (Index != Followers.Size())
+		{
+			if (permanent && flw.MissingClass && players[Net_Arbitrator].mo)
+			{
+				players[Net_Arbitrator].mo.A_GiveInventory(flw.MissingClass);
+			}
+			if (!noDestroy)
+			{
+				flw.Destroy();
+			}
+			Followers.Delete(Index);
+		}
+	}
+
+	private HDFollower CreateFollower(class<HDFollower> flw, int playerNum, vector3 pos = (0, 0, 0))
+	{
+		let plr = players[playerNum].mo;
+		if (plr)
+		{
+			let FollowerDef = GetDefaultByType(flw);
+
+			// [Ace] New map who dis? Spawn a new follower.
+			if (!FollowerDef.MissingClass || !plr.CheckInventory(FollowerDef.MissingClass, 1))
+			{
+				Actor a; bool success;
+				if (pos == (0, 0, 0))
+				{
+					[success, a] = plr.A_SpawnItemEx(flw, random(16, 48), 0, random(0, 32), angle: random(0, 359), flags: SXF_NOCHECKPOSITION);
+				}
+				else
+				{
+					a = Actor.Spawn(flw, pos);
+					success = true;
+				}
+				if (success)
+				{
+					let Follower = HDFollower(a);
+					InsertFollower(Follower);
+					
+					Follower.ChangeLinkedPlayer(HDPlayerPawn(plr));
+
+					// [Ace] These are here so that they are only called once when the follower is created.
+					Follower.GiveStartingItems();
+					Follower.InitWeapons();
+					return Follower;
+				}
+			}
+		}
+		return null;
+	}
+}

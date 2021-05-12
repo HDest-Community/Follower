@@ -12,7 +12,7 @@ extend class HDFollower
 	{
 		if (hdf_debug == 3)
 		{
-			Console.Printf("Follower "..GetTag().." has %s out.\nCurrent status is %i.\nFollower is targeting %s.\n--------------------", SelWeapon ? SelWeapon.GetName() : "no weapon", Status, CTarget ? CTarget.GetTag() : "nothing");
+			Console.Printf("Follower "..GetDisplayName().." has %s out.\nCurrent status is %i.\nFollower is targeting %s.\n--------------------", SelWeapon ? SelWeapon.GetName() : "no weapon", Status, CTarget ? CTarget.GetTag() : "nothing");
 		}
 
 		bool CanSeeGoal = TGoal && CheckSight(TGoal, SF_SEEPASTSHOOTABLELINES); // [Ace] This can be either the player or a specific goal actor. It's for when it doesn't matter.

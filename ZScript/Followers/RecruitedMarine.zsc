@@ -1,0 +1,40 @@
+class RecruitedMarine : HDFollower
+{
+	override void InitWeapons()
+	{
+		static const Name AllWeapons[] = { 'FW_SMG', 'FW_Hunter', 'FW_ZM66', 'FW_RocketLauncher' };
+		for (int i = 0; i < AllWeapons.Size(); ++i)
+		{
+			class<FollowerWeapon> fw = AllWeapons[i];
+			if (fw)
+			{
+				FollowerWeapon wpn = FollowerWeapon(new(fw));
+				Weapons.Push(wpn);
+			}
+		}
+	}
+
+	Default
+	{
+		Tag "Marine";
+		HDFollower.FollowerInfo 100000000, GENDER_MALE, 'FollowerBodyMarine', '';
+		HDFollower.ResurrectType RESF_BLUES;
+	}
+
+	States
+	{
+		Spawn:
+			FLWM A 0;
+			Goto Super::Spawn;
+	}
+}
+
+class FollowerBodyMarine : FollowerBody
+{
+	Default
+	{
+		Inventory.MaxAmount 50; // [Ace] Stop hoarding marines, damn it.
+		Inventory.Icon "FOLLZ0";
+		Tag "Marine";
+	}
+}

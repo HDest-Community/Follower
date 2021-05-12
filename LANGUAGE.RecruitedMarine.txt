@@ -1,0 +1,165 @@
+[enu default]
+
+MARINE_ORDER_FOLLOW1_1 = "I'm already following you, sir.";
+MARINE_ORDER_FOLLOW1_2 = "Already got your back, sir.";
+MARINE_ORDER_FOLLOW1_3 = "Negative, commander.";
+
+MARINE_ORDER_FOLLOW2_1 = "Yes, sir!";
+MARINE_ORDER_FOLLOW2_2 = "Right behind you, commander.";
+MARINE_ORDER_FOLLOW2_3 = "Roger that, sir.";
+
+MARINE_ORDER_FOLLOWIGNORE1_1 = "Acknowledged.";
+MARINE_ORDER_FOLLOWIGNORE1_2 = "I'm already ignoring hostiles, sir.";
+MARINE_ORDER_FOLLOWIGNORE1_3 = "I'm blind to hostiles, commander";
+
+MARINE_ORDER_FOLLOWIGNORE2_1 = "Fine, but I'm not shooting if you get dropped.";
+MARINE_ORDER_FOLLOWIGNORE2_2 = "You know what? I agree. Let's bail.";
+MARINE_ORDER_FOLLOWIGNORE2_3 = "I'll conserve ammo, but it's not like it's rare.";
+
+MARINE_ORDER_COVER1_1 = "Your back is already safe, commander.";
+MARINE_ORDER_COVER1_2 = "Already on it, sir.";
+MARINE_ORDER_COVER1_3 = "If I see anything, I'll shoot it, sir.";
+
+MARINE_ORDER_COVER2_1 = "Nothing will get past me, sir.";
+MARINE_ORDER_COVER2_2 = "Yes, commander.";
+MARINE_ORDER_COVER2_3 = "As you say, commander.";
+
+MARINE_ORDER_GOANDCOVER1_1 = "I cannot reach that spot, commander.";
+MARINE_ORDER_GOANDCOVER1_2 = "I'm afraid that's impossible, sir.";
+MARINE_ORDER_GOANDCOVER1_3 = "That is beyond my abilities, sir.";
+
+MARINE_ORDER_GOANDCOVER2_1 = "On my way, sir.";
+MARINE_ORDER_GOANDCOVER2_2 = "Going there ASAP.";
+MARINE_ORDER_GOANDCOVER2_3 = "Sir! Yes, sir!";
+
+MARINE_ORDER_HELP1_1 = "Hang in there, commander.";
+MARINE_ORDER_HELP1_2 = "I'm already on my way, sir.";
+MARINE_ORDER_HELP1_3 = "Just a little longer, sir.";
+
+MARINE_ORDER_HELP2_1 = "Hold on tight, sir.";
+MARINE_ORDER_HELP2_2 = "Stay with me, commander.";
+MARINE_ORDER_HELP2_3 = "You'll be okay, sir.";
+
+MARINE_ORDER_HELP3_1 = "I see nothing wrong, sir.";
+MARINE_ORDER_HELP3_2 = "You're in good shape, commander.";
+MARINE_ORDER_HELP3_3 = "I don't think my help is necessary, sir.";
+
+MARINE_CARRY_SUCCESS_1 = "I don't know about this, sir.";
+MARINE_CARRY_SUCCESS_2 = "Are you sure about this, commander?";
+MARINE_CARRY_SUCCESS_3 = "S-sir?";
+
+MARINE_AMMOGIVE_SMG_TOOMANY_1 = "I have more than enough, commander.";
+MARINE_AMMOGIVE_SMG_TOOMANY_2 = "I think that's enough, sir.";
+MARINE_AMMOGIVE_SMG_TOOMANY_3 = "There's no more room for that, commander.";
+
+MARINE_AMMOGIVE_SMG_SUCCESS_1 = "I appreciate it, commander.";
+MARINE_AMMOGIVE_SMG_SUCCESS_2 = "This ammo goes fast.";
+MARINE_AMMOGIVE_SMG_SUCCESS_3 = "Thank you, sir.";
+
+MARINE_AMMOGIVE_HUNTER_TOOMANY_1 = "No more room for that, sir.";
+MARINE_AMMOGIVE_HUNTER_TOOMANY_2 = "I can't take any more, commander.";
+MARINE_AMMOGIVE_HUNTER_TOOMANY_3 = "All maxed out, sir.";
+
+MARINE_AMMOGIVE_HUNTER_SUCCESS_1 = "Ah, my favourite. Thank you, sir.";
+MARINE_AMMOGIVE_HUNTER_SUCCESS_2 = "Good stuff, commander.";
+MARINE_AMMOGIVE_HUNTER_SUCCESS_3 = "I'll put these to good use, sir.";
+
+MARINE_AMMOGIVE_ZM66_TOOMANY_1 = "No more space, sir.";
+MARINE_AMMOGIVE_ZM66_TOOMANY_2 = "Out of space, sir.";
+MARINE_AMMOGIVE_ZM66_TOOMANY_3 = "Sorry, can't do, sir.";
+
+MARINE_AMMOGIVE_ZM66_SUCCESS_1 = "Thank you, commander.";
+MARINE_AMMOGIVE_ZM66_SUCCESS_2 = "These will be useful.";
+MARINE_AMMOGIVE_ZM66_SUCCESS_3 = "I could use some of that, sir.";
+
+MARINE_AMMOGIVE_RL_TOOMANY_1 = "Thanks, but I'll pass, sir.";
+MARINE_AMMOGIVE_RL_TOOMANY_2 = "My pockets are full, commander.";
+MARINE_AMMOGIVE_RL_TOOMANY_3 = "Negative, sir.";
+
+MARINE_AMMOGIVE_RL_SUCCESS_1 = "Please stay out of the blast radius, sir.";
+MARINE_AMMOGIVE_RL_SUCCESS_2 = "Greatly appreciated, commander.";
+MARINE_AMMOGIVE_RL_SUCCESS_3 = "Ah, commander, you shouldn't have.";
+
+MARINE_NOAMMO_SMG_1 = "SMG is out.";
+MARINE_NOAMMO_SMG_2 = "No more SMG ammo, sir.";
+MARINE_NOAMMO_SMG_3 = "I need more nine mil, commander.";
+
+MARINE_NOAMMO_HUNTER_1 = "Hunter is out.";
+MARINE_NOAMMO_HUNTER_2 = "No more shells, sir.";
+MARINE_NOAMMO_HUNTER_3 = "I need more shells, commander.";
+
+MARINE_NOAMMO_ZM66_1 = "ZM is out.";
+MARINE_NOAMMO_ZM66_2 = "No more ZM ammo, sir.";
+MARINE_NOAMMO_ZM66_3 = "I need more four mil, commander.";
+
+MARINE_NOAMMO_RL_1 = "Rocket launcher is out.";
+MARINE_NOAMMO_RL_2 = "No more rocket grenades, sir.";
+MARINE_NOAMMO_RL_3 = "I need more rocket grenades, commander.";
+
+MARINE_MEDGIVE_TOOMANY_1 = "My supply storage is full, sir.";
+MARINE_MEDGIVE_TOOMANY_2 = "That would be impossible, commander.";
+MARINE_MEDGIVE_TOOMANY_3 = "Sorry, sir, I can't carry any more.";
+
+MARINE_MEDGIVE_SUCCESS_1 = "You can count on me, sir.";
+MARINE_MEDGIVE_SUCCESS_2 = "I don't have professional training, commander, but I'll do my best.";
+MARINE_MEDGIVE_SUCCESS_3 = "I'll take care of those wounds, commander.";
+
+MARINE_MEDIC_STIMMED_1 = "The fight isn't over yet, commander.";
+MARINE_MEDIC_STIMMED_2 = "This will help you, sir.";
+MARINE_MEDIC_STIMMED_3 = "Let's get you back into the fight, sir.";
+
+MARINE_STIMGIVE_TOOMANY_1 = "Sorry, sir, I can't carry any more.";
+MARINE_STIMGIVE_TOOMANY_2 = "I'm out of room for stims, commander.";
+MARINE_STIMGIVE_TOOMANY_3 = "You keep it, sir.";
+
+MARINE_STIMGIVE_SUCCESS_1 = "Will use if necessary, sir.";
+MARINE_STIMGIVE_SUCCESS_2 = "I'll be sure to use this when appropriate.";
+MARINE_STIMGIVE_SUCCESS_3 = "This will help if you get downed, commander.";
+
+MARINE_REVIVE_BLUES_SUCCESS_1 = "Apologies for dying, sir. Won't happen again!";
+MARINE_REVIVE_BLUES_SUCCESS_2 = "I can't believe I got killed in action.";
+MARINE_REVIVE_BLUES_SUCCESS_3 = "I died? Damn.";
+
+MARINE_ARMORGIVE_INIT_1 = "Armor, sir? Wouldn't say no to that.";
+MARINE_ARMORGIVE_INIT_2 = "Just drop it right here, sir.";
+MARINE_ARMORGIVE_INIT_3 = "Would be appreciated, commander.";
+
+MARINE_ARMORGIVE_MAYBEDROP_1 = "Or should I take mine off?";
+MARINE_ARMORGIVE_MAYBEDROP_2 = "Oh, do you mean you'd like my armor?";
+MARINE_ARMORGIVE_MAYBEDROP_3 = "Or I can give you mine if you want.";
+
+MARINE_ARMORGIVE_CANCEL_1 = "Understood, sir.";
+MARINE_ARMORGIVE_CANCEL_2 = "No worries, sir.";
+MARINE_ARMORGIVE_CANCEL_3 = "Acknowledged.";
+
+MARINE_ARMORGIVE_STRIP_1 = "Please cover me until I find a new one, sir.";
+MARINE_ARMORGIVE_STRIP_2 = "Here you go, commander.";
+MARINE_ARMORGIVE_STRIP_3 = "Roger that, commander.";
+
+MARINE_ARMORGIVE_NONE_1 = "Thank you, commander.";
+MARINE_ARMORGIVE_NONE_2 = "That's lot better.";
+MARINE_ARMORGIVE_NONE_3 = "You're the best, commander.";
+
+MARINE_ARMORGIVE_UPGRADE_1 = "Thank you, sir.";
+MARINE_ARMORGIVE_UPGRADE_2 = "Awesome.";
+MARINE_ARMORGIVE_UPGRADE_3 = "Good stuff, sir.";
+
+MARINE_ARMORGIVE_BETTERDURABILITY_1 = "Much obliged, sir.";
+MARINE_ARMORGIVE_BETTERDURABILITY_2 = "Bless you, commander.";
+MARINE_ARMORGIVE_BETTERDURABILITY_3 = "This will last much longer.";
+
+MARINE_ARMORGIVE_NOTHANKS_1 = "Thanks, but I'll pass, sir.";
+MARINE_ARMORGIVE_NOTHANKS_2 = "You can keep that one, sir.";
+MARINE_ARMORGIVE_NOTHANKS_3 = "Mine is better, commander.";
+
+MARINE_ARMORGIVE_RANAWAY_1 = "Good one, sir.";
+MARINE_ARMORGIVE_RANAWAY_2 = "You got me, sir.";
+MARINE_ARMORGIVE_RANAWAY_3 = "Let me know if you change your mind, commander.";
+
+MARINE_BRASS_NONE_1 = "I'm afraid I don't have any on me, sir.";
+MARINE_BRASS_NONE_2 = "I'm all of brass, commander";
+MARINE_BRASS_NONE_3 = "That is impossible, sir.";
+
+MARINE_BRASS_SUCCESS_1 = "Go ahead, commander.";
+MARINE_BRASS_SUCCESS_2 = "Here you go, sir.";
+MARINE_BRASS_SUCCESS_3 = "Happy to give you what I've collected.";

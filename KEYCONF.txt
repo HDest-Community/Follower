@@ -15,4 +15,4 @@ alias "HDF_ResetDaina" "netevent HDF_ResetFollower 4"
 alias "HDF_ResetSewie" "netevent HDF_ResetFollower 5"
 alias "HDF_ResetNari" "netevent HDF_ResetFollower 6"
 
-alias "HDF_OpenMenu" "netevent HDF_SetFollowerMenu 1"
+alias "HDF_OpenMenu" "netevent HDF_SetFollowerMenu 2"
