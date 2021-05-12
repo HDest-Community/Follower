@@ -573,7 +573,7 @@ extend class FollowerHandler
 				else
 				{
 					HDFollower flw = HDFollower(ATarget);
-					if (flw && flw.CanInteractWith() && e.IsManual)
+					if (flw && flw.CanInteractWith() && e.IsManual && CVar.GetCVar('hdf_quickaccess', players[e.Player]).GetBool())
 					{
 						SelFollower[e.Player] = flw;
 						FollowerMenuLevel[e.Player] = FMenu_Main;
