@@ -166,7 +166,7 @@ extend class HDFollower
 
 	protected bool TargetIsIncapped(Actor other)
 	{
-		return other && other.InStateSequence(other.CurState, other.FindState("Falldown"));
+		return other && other.InStateSequence(other.CurState, other.FindState('Falldown'));
 	}
 
 	private void ClearTarget()

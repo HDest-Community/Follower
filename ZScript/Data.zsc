@@ -95,7 +95,7 @@ extend class HDFollower
 			FData.Stunned = Stunned;
 			FData.BodyDamage = BodyDamage;
 			FData.BloodReviveTicker = BloodReviveTicker;
-			FData.Incapped = InStateSequence(CurState, FindState("Falldown"));
+			FData.Incapped = InStateSequence(CurState, FindState('Falldown'));
 
 			HDBleedingWound BleedThinker = GetBleedThinker();
 			if (BleedThinker)
@@ -275,7 +275,7 @@ class FollowerBody : HDPickup abstract
 
 						if (LData.Incapped)
 						{
-							Follower.SetStateLabel("Falldown");
+							Follower.SetStateLabel('Falldown');
 						}
 
 						if (LData.Health <= 0)

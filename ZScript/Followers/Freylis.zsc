@@ -40,6 +40,7 @@ class FollowerFreylis : HDFollower
 		DeathSound "Follower/Freylis/Death";
 		Tag "Freylis";
 		HDFollower.FollowerInfo 1, GENDER_FEMALE, 'FollowerBodyFreylis', 'LeftBehindFreylis';
+		XScale 1.06;
 	}
 
 	States

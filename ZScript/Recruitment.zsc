@@ -7,7 +7,18 @@ extend class FollowerHandler
 			return;
 		}
 
+		if (!m.bFRIENDLY && random(0, 1))
+		{
+			m.DamageMobj(m, m, m.SpawnHealth() * 5, 'bleedout', DMG_FORCED | DMG_NO_PAIN | DMG_THRUSTLESS | DMG_NO_FACTOR);
+			return;
+		}
+
 		HDFollower Recruit = CreateFollower('RecruitedMarine', owningPlayer, m.pos);
+		if (!m.bFRIENDLY)
+		{
+			m.bFRIENDLY = true;
+			m.SetNickname();
+		}
 
 		int Gender = 0;
 		string snd = m.PainSound;
@@ -19,6 +30,8 @@ extend class FollowerHandler
 		{
 			Gender = 2;
 		}
+		Recruit.angle = m.angle;
+		Recruit.Health = m.Health;
 		Recruit.Gender = Gender;
 		Recruit.PainSound = m.PainSound;
 		Recruit.DeathSound = m.DeathSound;
@@ -31,6 +44,12 @@ extend class FollowerHandler
 			let NewArmor = HDArmourWorn(Recruit.GiveInventoryType('HDArmourWorn'));
 			NewArmor.Durability = Armor.Durability;
 			NewArmor.Mega = Armor.Mega;
+		}
+
+		if (m.InStateSequence(m.CurState, m.FindState('Falldown')))
+		{
+			Recruit.Status = FStatus_InactiveOrDead;
+			Recruit.SetStateLabel('Standup');
 		}
 
 		m.Destroy();
