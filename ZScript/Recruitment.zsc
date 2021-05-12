@@ -7,18 +7,50 @@ extend class FollowerHandler
 			return;
 		}
 
-		if (!m.bFRIENDLY && random(0, 1))
+		if (!m.bFRIENDLY && random(0, 2))
 		{
-			m.DamageMobj(m, m, m.SpawnHealth() * 5, 'bleedout', DMG_FORCED | DMG_NO_PAIN | DMG_THRUSTLESS | DMG_NO_FACTOR);
+			string msg = "Go to hell, sucker.";
+			switch(random[msgrand](1, 3))
+			{
+				case 1: msg = "Kiss my ass."; break;
+				case 2: msg = "Go fuck yourself."; break;
+				case 3: msg = "HA HA HA *cough* I'd rather die."; break;
+			}
+			players[owningPlayer].mo.A_Log("\c[White]Marine: \c[Green]"..msg.."\c-");
+			players[owningPlayer].mo.A_StartSound("misc/chat", 20, CHANF_LOCAL);
+			m.A_SpawnItemEx("HDFragGrenade", 2, 0, 2, 1, 0, 2, 0, SXF_NOCHECKPOSITION | SXF_TRANSFERPOINTERS);
+			m.A_SpawnItemEx("HDFragSpoon", 2, 0, 2,random(1, 2), 0, random(8, 16), random(-12, 12), SXF_NOCHECKPOSITION);
+			m.bNOTDMATCH = true; // [Ace] Used to prevent actor from getting persuaded again.
 			return;
 		}
-
-		HDFollower Recruit = CreateFollower('RecruitedMarine', owningPlayer, m.pos);
-		if (!m.bFRIENDLY)
+		else if (!m.bFRIENDLY)
 		{
+			string msg = "Alright, fine.";
+			switch(random[msgrand](1, 3))
+			{
+				case 1: msg = "Don't kill me. I'll fight on your side."; break;
+				case 2: msg = "You win."; break;
+				case 3: msg = "The pay was bad anyway."; break;
+			}
+			players[owningPlayer].mo.A_Log("\c[White]Marine: \c[Green]"..msg.."\c-");
+			players[owningPlayer].mo.A_StartSound("misc/chat", 20, CHANF_LOCAL);
 			m.bFRIENDLY = true;
 			m.SetNickname();
 		}
+		else
+		{
+			string msg = "Lead the way.";
+			switch(random[msgrand](1, 3))
+			{
+				case 1: msg = "At your service."; break;
+				case 2: msg = "At your command."; break;
+				case 3: msg = "Point and I'll shoot."; break;
+			}
+			players[owningPlayer].mo.A_Log("\c[White]Marine: \c[Green]"..msg.."\c-");
+			players[owningPlayer].mo.A_StartSound("misc/chat", 20, CHANF_LOCAL);
+		}
+
+		HDFollower Recruit = CreateFollower('RecruitedMarine', owningPlayer, m.pos);
 
 		int Gender = 0;
 		string snd = m.PainSound;

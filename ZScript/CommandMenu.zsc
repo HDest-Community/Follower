@@ -547,7 +547,7 @@ extend class FollowerHandler
 			return;
 		}
 
-		if (e.Name ~== "HDF_ConfirmRecruitment")
+		if (e.Name ~== "HDF_ConfirmRecruitment" && !e.IsManual)
 		{
 			FollowerMenuLevel[e.Player] = FMenu_Closed;
 			RecruitMarine(SelMarine[e.Player], e.Player);
@@ -565,7 +565,7 @@ extend class FollowerHandler
 			{
 				let plr = HDPlayerPawn(players[e.Player].mo);
 				Actor ATarget = plr.AimTarget();
-				if (ATarget is 'HDMarine' && plr.Distance3D(ATarget) <= 42 * 2 && ATarget.Health > 0 && !IsPuppet(ATarget) && (ATarget.bFRIENDLY || ATarget.InStateSequence(ATarget.CurState, ATarget.FindState('Falldown')) && HDMarine(ATarget).Stunned > 70))
+				if (ATarget is 'HDMarine' && !ATarget.bNOTDMATCH && plr.Distance3D(ATarget) <= 42 * 2 && ATarget.Health > 0 && !IsPuppet(ATarget) && (ATarget.bFRIENDLY || ATarget.InStateSequence(ATarget.CurState, ATarget.FindState('Falldown')) && HDMarine(ATarget).Stunned > 70))
 				{
 					FollowerMenuLevel[e.Player] = FMenu_Recruitment;
 					SelMarine[e.Player] = HDMarine(ATarget);
