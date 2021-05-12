@@ -40,7 +40,11 @@ For the most part the mechanics are fairly simple and straightforward. Documente
 
 ##### Recruiting
 ---
-- Friendly/converted marines can be recruited. Aim at them and open the follower menu.
+- You can now recruit friendly/converted marines as followers. Does not work if the marines were resurrected. If it's smoking, forget about it. Marines basically function the exact same way as regular followers, and you can command them as such. A few exceptions exist:
+1. They are expendable, so you won't get any notification for leaving any behind when moving between maps. You can, however, carry them between maps to create an army. Of course, at some point it is going to become hell to manage.
+2. They don't have the full arsenal the regular followers have.
+3. All marines are stored as a single inventory item in first-in-last-out order.
+4. Their index in the follower list is also not static. Marines are sorted in the order they were recruited/placed.
 
 ### Modding
 ---
