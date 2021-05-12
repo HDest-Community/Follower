@@ -56,7 +56,7 @@ extend class FollowerHandler
 		StatusBar.BeginHUD(1.0, true);
 		StatusBar.SetSize(StatusBar.RelTop, 640, 480);
 
-		if (FollowerMenuLevel[consoleplayer] > FMenu_Closed && Followers.Size() > 0 && !AutomapActive && GameState == GS_LEVEL)
+		if (FollowerMenuLevel[consoleplayer] > FMenu_Closed && !AutomapActive && GameState == GS_LEVEL)
 		{
 			DrawCommandMenu(StatusBar, (0, 40), StatusBar.DI_SCREEN_LEFT | StatusBar.DI_SCREEN_VCENTER | StatusBar.DI_TEXT_ALIGN_LEFT);
 		}
