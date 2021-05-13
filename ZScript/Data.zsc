@@ -263,7 +263,7 @@ class FollowerBody : HDPickup abstract
 
 						if (LData.ArmorDurability > 0)
 						{
-							let Armor = HDArmourWorn(Follower.GiveInventoryType("HDArmourWorn"));
+							let Armor = HDArmourWorn(Follower.GiveInventoryType('HDArmourWorn'));
 							Armor.Durability = LData.ArmorDurability;
 							Armor.Mega = LData.ArmorMega;
 						}
@@ -282,7 +282,7 @@ class FollowerBody : HDPickup abstract
 						{
 							Follower.bPUSHABLE = false;
 							Follower.DeathSound = "";
-							Follower.SetStateLabel("Death");
+							Follower.SetStateLabel('Death');
 							Follower.bCORPSE = true;
 							Follower.Status = FStatus_InactiveOrDead;
 						}

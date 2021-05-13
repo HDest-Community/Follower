@@ -135,6 +135,18 @@ extend class HDFollower
 		return false;
 	}
 
+	protected void DropAllSupplies()
+	{
+		for (int i = 0; i < Medikits; ++i)
+		{
+			A_SpawnItemEx('PortableMedikit', random(0, 16), 0, 0, frandom(1.0, 2.0), 0, frandom(2.0, 5.0), random(0, 359), SXF_NOCHECKPOSITION);
+		}
+		for (int i = 0; i < Stimpacks; ++i)
+		{
+			A_SpawnItemEx('PortableStimpack', random(0, 16), 0, 0, frandom(1.0, 2.0), 0, frandom(2.0, 5.0), random(0, 359), SXF_NOCHECKPOSITION);
+		}
+	}
+
 	const MinIncap = 40;
 
 	int SuturesLeft;
@@ -156,7 +168,7 @@ extend class HDFollower
 				if (!PNeedsHelp)
 				{
 					ClearGoal();
-					SetStateLabel("Idle");
+					SetStateLabel('Idle');
 					return;
 				}
 
@@ -179,13 +191,13 @@ extend class HDFollower
 				if (CanApplyStim())
 				{
 					Stimpacks--;
-					SetStateLabel("ApplyStim");
+					SetStateLabel('ApplyStim');
 					return;
 				}
 				if (!PNeedsMedic)
 				{
 					ClearGoal();
-					SetStateLabel("PullYouUp");
+					SetStateLabel('PullYouUp');
 					return;
 				}
 
@@ -208,7 +220,7 @@ extend class HDFollower
 				plr.A_StartSound("misc/smallslop", CHAN_BODY, CHANF_OVERLAP);
 				if(!random(0, 6))
 				{
-					SetStateLabel("PatchUpEnd");
+					SetStateLabel('PatchUpEnd');
 				}
 				plr.GiveBody(1);
 				plr.DamageMobj(invoker, null, 1, 'staples', DMG_FORCED);

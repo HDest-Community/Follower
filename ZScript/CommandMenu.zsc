@@ -193,6 +193,10 @@ extend class FollowerHandler
 						Commands.Push("Feed blood "..BloodDanger);
 					}
 					Commands.Push(BrassString);
+					if (SelFollower[consoleplayer].bCANDISMISS)
+					{
+						Commands.Push("\c[FLW_BloodRed]Dismiss\c-");
+					}
 					if (Followers.Size() > 1)
 					{
 						Commands.Push("Back...");
@@ -419,6 +423,10 @@ extend class FollowerHandler
 							Commands.Push(CreateCommand("HDF_TryRevive", 1));
 						}
 						Commands.Push(CreateCommand("HDF_CollectBrass"));
+						if (SelFollower[consoleplayer].bCANDISMISS)
+						{
+							Commands.Push(CreateCommand("HDF_DismissFollower"));
+						}
 						if (Followers.Size() > 1)
 						{
 							Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Followers));
@@ -556,6 +564,12 @@ extend class FollowerHandler
 		{
 			FollowerMenuLevel[e.Player] = FMenu_Closed;
 			RecruitMarine(SelMarine[e.Player], e.Player);
+		}
+
+		if (e.Name ~== "HDF_DismissFollower" && !e.IsManual)
+		{
+			FollowerMenuLevel[e.Player] = FMenu_Closed;
+			RemoveFollower(SelFollower[e.Player], true);
 		}
 
 		// [Ace] Always allow to open the follower menu to the first page or close it.

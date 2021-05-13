@@ -83,7 +83,7 @@ extend class HDFollower
 	{
 		ClearTarget();
 		ClearWeapon();
-		SetStateLabel("Idle"); // [Ace] Surely putting this here can't backfire. Right? :uhh:
+		SetStateLabel('Idle'); // [Ace] Surely putting this here can't backfire. Right? :uhh:
 		Status = FStatus_None;
 	}
 }

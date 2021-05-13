@@ -53,6 +53,26 @@ extend class HDFollower
 		return null;
 	}
 
+	protected void DropAllAmmo()
+	{
+		for (int i = 0; i < Weapons.Size(); ++i)
+		{
+			class<HDAmmo> AType = Weapons[i].GetAmmoType();
+			if (!AType)
+			{
+				continue;
+			}
+
+			Actor a; bool success;
+			int TotalAmmo = Weapons[i].GetLoadedRounds() + Weapons[i].SpareAmmo;
+			if (TotalAmmo > 0)
+			{
+				[success, a] = A_SpawnItemEx(AType, random(0, 16), 0, 0, frandom(1.0, 2.0), 0, frandom(2.0, 5.0), random(0, 359), SXF_NOCHECKPOSITION);
+				Inventory(a).Amount = TotalAmmo;
+			}
+		}
+	}
+
 	// [Ace] It's an int because it's used in NetworkProcess.
 	void TryGiveAmmo(int wpnIndex)
 	{
@@ -136,7 +156,7 @@ extend class HDFollower
 				if (!(flags & RLF_NOJUMP))
 				{
 					ClearWeapon();
-					SetStateLabel("Idle");
+					SetStateLabel('Idle');
 				}
 				return false;
 			}
@@ -202,7 +222,7 @@ extend class HDFollower
 		if (other && SelWeapon)
 		{
 			CTarget = other;
-			SetStateLabel("See");
+			SetStateLabel('See');
 		}
 	}
 
@@ -211,7 +231,7 @@ extend class HDFollower
 		// [Ace] Stop aiming if target is no longer valid, weapon is deselected, or the condition is not met.
 		if (!CheckTarget() || !SelWeapon || !SelWeapon.CheckWeaponCondition(self, CTarget))
 		{
-			SetStateLabel("Idle");
+			SetStateLabel('Idle');
 			Status = FStatus_None;
 			return;
 		}
@@ -232,7 +252,7 @@ extend class HDFollower
 				A_ChangeVelocity(0, default.MovementSpeed / 1.5, vel.z, CVF_RELATIVE | CVF_REPLACE);
 			}
 			AimTimer = 0;
-			SetStateLabel("Aiming");
+			SetStateLabel('Aiming');
 		}
 	}
 
@@ -378,11 +398,11 @@ extend class HDFollower
 				{
 					if (SelWeapon.ChamberedRound == FollowerWeapon.CRType_Chambered)
 					{
-						SetStateLabel("See");
+						SetStateLabel('See');
 					}
 					else
 					{
-						SetStateLabel("ChamberRoundHunter");
+						SetStateLabel('ChamberRoundHunter');
 					}
 					bNOPAIN = false;
 				}
@@ -423,7 +443,7 @@ extend class HDFollower
 				if (!SelWeapon.TryChamberRound())
 				{
 					ClearWeapon();
-					SetStateLabel("See");
+					SetStateLabel('See');
 				}
 			}
 			#### H 5;
@@ -505,7 +525,7 @@ extend class HDFollower
 				}
 				else
 				{
-					SetStateLabel("See");
+					SetStateLabel('See');
 					bNOPAIN = false;
 				}
 			}
@@ -618,11 +638,11 @@ extend class HDFollower
 				{
 					if (SelWeapon.ChamberedRound == FollowerWeapon.CRType_Chambered)
 					{
-						SetStateLabel("See");
+						SetStateLabel('See');
 					}
 					else
 					{
-						SetStateLabel("ChamberRoundBoss");
+						SetStateLabel('ChamberRoundBoss');
 					}
 					bNOPAIN = false;
 				}

@@ -39,11 +39,11 @@ extend class HDFollower
 			{
 				if (!Moving && !IsInIdleState())
 				{
-					SetStateLabel("Idle");
+					SetStateLabel('Idle');
 				}
 				else if (Moving && !IsInMovingState())
 				{
-					SetStateLabel("Moving");
+					SetStateLabel('Moving');
 				}
 			}
 
@@ -55,11 +55,11 @@ extend class HDFollower
 					{
 						if (PNeedsMedic)
 						{
-							SetStateLabel("StapleHumptyDumptyBackTogetherAgain");
+							SetStateLabel('StapleHumptyDumptyBackTogetherAgain');
 						}
 						else if (PNeedsHelp)
 						{
-							SetStateLabel("PullYouUp");
+							SetStateLabel('PullYouUp');
 						}
 						else
 						{
@@ -245,12 +245,12 @@ extend class HDFollower
 
 	private bool IsInIdleState()
 	{
-		return InStateSequence(CurState, FindState("Idle"));
+		return InStateSequence(CurState, FindState('Idle'));
 	}
 
 	private bool IsInMovingState()
 	{
-		return InStateSequence(CurState, FindState("Moving"));
+		return InStateSequence(CurState, FindState('Moving'));
 	}
 
 	void ReportPosition()
