@@ -19,9 +19,10 @@ extend class HDFollower
 		PNeedsHelp = PlayerIsIncapped(); // [Ace] You're just incapped.
 		PNeedsMedic = PlayerNeedsMedic(); // [Ace] You're bleeding and incapped.
 		bool IsHelping = IsHelpingPlayer();
+		int FFCount = Handler.FollowingFollowersCount();
 		int FIndex = Handler.Followers.Find(self);
 		int FNPCount = FollowersNearPlayer(MinPlayerRangeStop + MinPlayerRangeStop * Handler.FollowingFollowersCount());
-		double DistMult = 1 + min(FNPCount, FIndex) / 1.6;
+		double DistMult = 1 + min(FNPCount, FIndex, FFCount - 1) / 1.6;
 
 		if (Status != FStatus_InCombat)
 		{
