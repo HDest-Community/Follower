@@ -18,9 +18,9 @@ extend class FollowerHandler
 			}
 			players[owningPlayer].mo.A_Log("\c[White]Marine: \c[Green]"..msg.."\c-");
 			players[owningPlayer].mo.A_StartSound("misc/chat", 20, CHANF_LOCAL);
+			m.DamageMobj(m, m, m.Health, 'maxhpdrain', DMG_FORCED);
 			m.A_SpawnItemEx("HDFragGrenade", 2, 0, 2, 1, 0, 2, 0, SXF_NOCHECKPOSITION | SXF_TRANSFERPOINTERS);
 			m.A_SpawnItemEx("HDFragSpoon", 2, 0, 2,random(1, 2), 0, random(8, 16), random(-12, 12), SXF_NOCHECKPOSITION);
-			m.bNOTDMATCH = true; // [Ace] Used to prevent actor from getting persuaded again.
 			return;
 		}
 		else if (!m.bFRIENDLY)
