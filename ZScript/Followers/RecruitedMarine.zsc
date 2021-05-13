@@ -20,6 +20,7 @@ class RecruitedMarine : HDFollower
 		+HDMOBBASE.HASHELMET
 		+HDFOLLOWER.CANDISMISS
 		HDFollower.FollowerInfo 100000000, GENDER_MALE, 'FollowerBodyMarine', '';
+		HDFollower.ResurrectType 0;
 	}
 
 	States
