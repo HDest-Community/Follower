@@ -17,6 +17,7 @@ class RecruitedMarine : HDFollower
 	Default
 	{
 		Tag "Marine";
+		+HDMOBBASE.HASHELMET
 		HDFollower.FollowerInfo 100000000, GENDER_MALE, 'FollowerBodyMarine', '';
 		HDFollower.ResurrectType RESF_BLUES;
 	}
