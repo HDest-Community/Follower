@@ -53,23 +53,27 @@ extend class HDFollower
 		return null;
 	}
 
-	protected void DropAllAmmo()
+	void DropAllAmmo()
 	{
 		for (int i = 0; i < Weapons.Size(); ++i)
 		{
-			class<HDAmmo> AType = Weapons[i].GetAmmoType();
+			FollowerWeapon fw = Weapons[i];
+			class<HDAmmo> AType = fw.GetAmmoType();
 			if (!AType)
 			{
 				continue;
 			}
 
 			Actor a; bool success;
-			int TotalAmmo = Weapons[i].GetLoadedRounds() + Weapons[i].SpareAmmo;
+			int TotalAmmo = fw.GetLoadedRounds() + fw.SpareAmmo;
 			if (TotalAmmo > 0)
 			{
 				[success, a] = A_SpawnItemEx(AType, random(0, 16), 0, 0, frandom(1.0, 2.0), 0, frandom(2.0, 5.0), random(0, 359), SXF_NOCHECKPOSITION);
 				Inventory(a).Amount = TotalAmmo;
 			}
+			fw.ChamberedRound = FollowerWeapon.CRType_Empty;
+			fw.Mag = 0;
+			fw.SpareAmmo = 0;
 		}
 	}
 

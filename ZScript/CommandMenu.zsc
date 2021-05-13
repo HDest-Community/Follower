@@ -85,6 +85,7 @@ extend class FollowerHandler
 		switch (FollowerMenuLevel[consoleplayer])
 		{
 			case FMenu_Recruitment:
+			{
 				if (!SelMarine[consoleplayer])
 				{
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
@@ -104,8 +105,10 @@ extend class FollowerHandler
 					pos.y += RectangleHeight + Spacing;
 				}
 				break;
+			}
 
 			case FMenu_Followers:
+			{
 				if (Followers.Size() == 0)
 				{
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
@@ -145,8 +148,10 @@ extend class FollowerHandler
 					pos.y += RectangleHeight + Spacing;
 				}
 				break;
+			}
 
 			case FMenu_Main:
+			{
 				if (!SelFollower[consoleplayer])
 				{
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
@@ -258,8 +263,10 @@ extend class FollowerHandler
 					}
 				}
 				break;
+			}
 
 			case FMenu_Orders:
+			{
 				if (!SelFollower[consoleplayer])
 				{
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
@@ -276,8 +283,10 @@ extend class FollowerHandler
 				}
 				DrawTextRectangle(sb, pos, (240, RectangleHeight), MainFont, (Orders.Size() + 1)..") Back...", flags);
 				break;
+			}
 
 			case FMenu_Weapons:
+			{
 				if (!SelFollower[consoleplayer])
 				{
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
@@ -299,8 +308,10 @@ extend class FollowerHandler
 				}
 				DrawTextRectangle(sb, pos, (160, RectangleHeight), MainFont, ((WeaponSize + 1 % 10))..") Back...", flags);
 				break;
+			}
 
 			case FMenu_Supplies:
+			{
 				if (!SelFollower[consoleplayer])
 				{
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
@@ -311,17 +322,32 @@ extend class FollowerHandler
 				DrawTextRectangle(sb, pos, (205, RectangleHeight), MainFont, "2) "..(sb.CheckInventory("PortableStimpack") ? "" : "\c[Red]").."Give Stimpack\c- ".."("..SelFollower[consoleplayer].Stimpacks.."/"..SelFollower[consoleplayer].MaxStimpacks..")", flags); pos.y += RectangleHeight + Spacing;
 				DrawTextRectangle(sb, pos, (205, RectangleHeight), MainFont, "3) Back...", flags);
 				break;
+			}
 
 			case FMenu_Miscellaneous:
+			{
 				if (!SelFollower[consoleplayer])
 				{
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
 					return;
 				}
-				DrawTextRectangle(sb, pos, (235, RectangleHeight), MainFont, GetTruncatedText(SelFollower[consoleplayer].GetDisplayName(), 30), flags, Font.FindFontColor('FLW_NameBlue')); pos.y += RectangleHeight + Spacing;
-				DrawTextRectangle(sb, pos, (235, RectangleHeight), MainFont, "1) "..BrassString, flags); pos.y += RectangleHeight + Spacing;
-				DrawTextRectangle(sb, pos, (235, RectangleHeight), MainFont, "2) Back...", flags);
+
+				Array<string> Commands;
+				Commands.Push(BrassString);
+				Commands.Push("Drop all ammo");
+				Commands.Push("Drop all supplies");
+				Commands.Push("Back...");
+
+				DrawTextRectangle(sb, pos, (235, RectangleHeight), MainFont, GetTruncatedText(SelFollower[consoleplayer].GetDisplayName(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
+				pos.y += RectangleHeight + Spacing;
+
+				for (int i = 0; i < Commands.Size(); ++i)
+				{
+					DrawTextRectangle(sb, pos, (235, RectangleHeight), MainFont, (i + 1)..") "..Commands[i], flags);
+					pos.y += RectangleHeight + Spacing;
+				}
 				break;
+			}
 		}
 	}
 
@@ -496,7 +522,9 @@ extend class FollowerHandler
 					switch (NumKey)
 					{
 						case 1: SendNetworkEvent("HDF_CollectBrass"); break;
-						case 2: SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Main); break;
+						case 2: SendNetworkEvent("HDF_DropStuff", 0); break;
+						case 3: SendNetworkEvent("HDF_DropStuff", 1); break;
+						case 4: SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Main); break;
 					}
 					break;
 			}
@@ -710,6 +738,15 @@ extend class FollowerHandler
 				FollowerMenuLevel[e.Player] = FMenu_Closed;
 			}
 			return;
+		}
+
+		if (e.Name ~== "HDF_DropStuff")
+		{
+			switch (e.Args[0])
+			{
+				case 0: SelFollower[e.Player].DropAllAmmo(); break;
+				case 1: SelFollower[e.Player].DropAllSupplies(); break;
+			}
 		}
 	}
 

@@ -135,7 +135,7 @@ extend class HDFollower
 		return false;
 	}
 
-	protected void DropAllSupplies()
+	void DropAllSupplies()
 	{
 		for (int i = 0; i < Medikits; ++i)
 		{
@@ -145,6 +145,8 @@ extend class HDFollower
 		{
 			A_SpawnItemEx('PortableStimpack', random(0, 16), 0, 0, frandom(1.0, 2.0), 0, frandom(2.0, 5.0), random(0, 359), SXF_NOCHECKPOSITION);
 		}
+		Medikits = 0;
+		Stimpacks = 0;
 	}
 
 	const MinIncap = 40;
