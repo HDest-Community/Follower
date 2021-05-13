@@ -209,7 +209,7 @@ extend class HDFollower
 		}
 		else // [Ace] Deceleration.
 		{
-			vel.xy *= 0.98;
+			vel.xy *= 0.96;
 
 			if (Order == FOrder_GoAndCover && vel.xy.length() < 0.65)
 			{
@@ -251,23 +251,6 @@ extend class HDFollower
 	private bool IsInMovingState()
 	{
 		return InStateSequence(CurState, FindState('Moving'));
-	}
-
-	void ReportPosition()
-	{
-		if (Status == FStatus_InactiveOrDead)
-		{
-			return;
-		}
-		
-		// [Ace] Originally suggested and coded by bogus. I did some refactors.
-		static const string Directions[] = { "West", "South-West", "South", "South-East", "East", "North-East", "North", "North-West" };
-
-		// [Ace] It's much easier to get the angle from the player to the follower, otherwise you need to add +180 to flip the direction.
-		double a = (180 + LinkedPlayer.AngleTo(self) + 22.5) % 360;
-		
-		string CoordsMessage = String.Format("@ %i, %i, %i. Go %s!", pos.x, pos.y, pos.z, Directions[int(a / 45)]);
-		PrintMessage(CoordsMessage, "Follower/ReportPosition", PMType_Forced);
 	}
 
 	private void Taunt()
