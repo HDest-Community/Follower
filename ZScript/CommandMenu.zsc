@@ -336,6 +336,10 @@ extend class FollowerHandler
 				Commands.Push(BrassString);
 				Commands.Push("Drop all ammo");
 				Commands.Push("Drop all supplies");
+				if (SelFollower[consoleplayer].bCANDISMISS)
+				{
+					Commands.Push("\c[FLW_BloodRed]Dismiss\c-");
+				}
 				Commands.Push("Back...");
 
 				DrawTextRectangle(sb, pos, (235, RectangleHeight), MainFont, GetTruncatedText(SelFollower[consoleplayer].GetDisplayName(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
@@ -409,14 +413,17 @@ extend class FollowerHandler
 			switch (FollowerMenuLevel[consoleplayer])
 			{
 				case FMenu_Recruitment:
+				{
 					switch (NumKey)
 					{
 						case 1: SendNetworkEvent("HDF_ConfirmRecruitment"); break;
 						case 2: SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed); break;
 					}
 					break;
+				}
 
 				case FMenu_Followers:
+				{
 					int FSize = Followers.Size();
 					int RelSize = min(8, FSize - 8 * FollowerPage[consoleplayer]);
 					bool HasMorePages = FSize > 8 * (FollowerPage[consoleplayer] + 1);
@@ -434,8 +441,10 @@ extend class FollowerHandler
 						SendNetworkEvent("HDF_SelectFollower", (NumKey + 8 * FollowerPage[consoleplayer]) - 1);
 					}
 					break;
+				}
 
 				case FMenu_Main:
+				{
 					if (SelFollower[consoleplayer].Health <= 0)
 					{
 						Array<FollowerCommand> Commands;
@@ -485,8 +494,10 @@ extend class FollowerHandler
 						}
 					}
 					break;
+				}
 					
 				case FMenu_Orders:
+				{
 					switch (NumKey)
 					{
 						case 1: SendNetworkEvent("HDF_ChangeOrders", FOrder_Follow); break;
@@ -497,8 +508,10 @@ extend class FollowerHandler
 						case 6: SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Main); break;
 					}
 					break;
+				}
 
 				case FMenu_Weapons:
+				{
 					if (NumKey == (SelFollower[consoleplayer].Weapons.Size() + 1) % 10)
 					{
 						SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Main);
@@ -508,8 +521,10 @@ extend class FollowerHandler
 						SendNetworkEvent("HDF_GiveAmmo", NumKey - 1);
 					}
 					break;
+				}
 
 				case FMenu_Supplies:
+				{
 					switch (NumKey)
 					{
 						case 1: SendNetworkEvent("HDF_GiveSupplies", 0); break;
@@ -517,16 +532,27 @@ extend class FollowerHandler
 						case 3: SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Main); break;
 					}
 					break;
+				}
 
 				case FMenu_Miscellaneous:
-					switch (NumKey)
+				{
+					Array<FollowerCommand> Commands;
+					Commands.Push(CreateCommand("HDF_CollectBrass"));
+					Commands.Push(CreateCommand("HDF_DropStuff", 0));
+					Commands.Push(CreateCommand("HDF_DropStuff", 1));
+					if (SelFollower[consoleplayer].bCANDISMISS)
 					{
-						case 1: SendNetworkEvent("HDF_CollectBrass"); break;
-						case 2: SendNetworkEvent("HDF_DropStuff", 0); break;
-						case 3: SendNetworkEvent("HDF_DropStuff", 1); break;
-						case 4: SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Main); break;
+						Commands.Push(CreateCommand("HDF_DismissFollower"));
+					}
+					Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Main));
+					
+					if (NumKey > 0 && NumKey - 1 < Commands.Size())
+					{
+						FollowerCommand cmd = Commands[NumKey - 1];
+						SendNetworkEvent(cmd.EventName, cmd.Args[0], cmd.Args[1], cmd.Args[2]);
 					}
 					break;
+				}
 			}
 
 			// [Ace] Block 0-9 keys from affecting the world.
@@ -597,6 +623,7 @@ extend class FollowerHandler
 		if (e.Name ~== "HDF_DismissFollower" && !e.IsManual)
 		{
 			FollowerMenuLevel[e.Player] = FMenu_Closed;
+			Console.Printf("kek");
 			SelFollower[e.Player].Dismiss();
 		}
 
