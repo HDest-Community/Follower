@@ -569,7 +569,7 @@ extend class FollowerHandler
 		if (e.Name ~== "HDF_DismissFollower" && !e.IsManual)
 		{
 			FollowerMenuLevel[e.Player] = FMenu_Closed;
-			RemoveFollower(SelFollower[e.Player], true);
+			SelFollower[e.Player].Dismiss();
 		}
 
 		// [Ace] Always allow to open the follower menu to the first page or close it.
