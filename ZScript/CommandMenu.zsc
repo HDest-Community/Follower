@@ -349,12 +349,17 @@ extend class FollowerHandler
 		sb.Fill(Color(64, 128, 192, 255), pos.x, pos.y, size.x, size.y, flags);
 		sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 
+
 		FollowerWeapon wpn = flw.GetWeaponByIndex(index - 1);
+		int MaxSpare = wpn.GetMaxSpare();
+
+		double AmPercent = wpn.SpareAmmo / double(MaxSpare);
+		sb.Fill(GetPercentColor(AmPercent), pos.x + 1, pos.y + 1, (size.x - 2) * AmPercent, size.y - 2, flags);
 
 		pos += (2, 2);
 		int FontHeight = fnt.mFont.GetHeight();
 		sb.DrawString(fnt, index..") "..wpn.GetName(), pos, flags, Font.FindFontColor('FLW_WeaponBlue')); pos.y += FontHeight + 1;
-		sb.DrawString(fnt, (wpn.IsFullyLoaded() ? "\c[DarkGreen]" : "")..wpn.GetLoadedRounds().."\c-, "..wpn.SpareAmmo.."/"..wpn.GetMaxSpare(), pos, flags, Font.CR_WHITE); pos.y += FontHeight + 1;
+		sb.DrawString(fnt, (wpn.IsFullyLoaded() ? "\c[DarkGreen]" : "")..wpn.GetLoadedRounds().."\c-, "..wpn.SpareAmmo.."/"..MaxSpare, pos, flags, Font.CR_WHITE); pos.y += FontHeight + 1;
 
 		int MaxGiveAmount = flw.GetMaxGiveAmount(wpn);
 		string AmmoString = (MaxGiveAmount > 0 ? "\c[Green]" : "\c[Red]").."+"..MaxGiveAmount.." "..wpn.GetAmmoName().."\c-";
@@ -691,6 +696,26 @@ extend class FollowerHandler
 				FollowerMenuLevel[e.Player] = FMenu_Closed;
 			}
 			return;
+		}
+	}
+
+	private Color GetPercentColor(double percent) const
+	{
+		if (percent >= 0.75)
+		{
+			return Color(32, 0, 255, 0);
+		}	
+		else if (percent >= 0.50)
+		{
+			return Color(32, 255, 255, 0);
+		}
+		else if (percent >= 0.25)
+		{
+			return Color(32, 255, 128, 0);
+		}
+		else
+		{
+			return Color(32, 255, 0, 0);
 		}
 	}
 }
