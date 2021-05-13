@@ -1,17 +1,5 @@
 class FollowerHandler : EventHandler
 {
-	enum FollowerMenus
-	{
-		FMenu_Closed,
-		FMenu_Recruitment,
-		FMenu_Followers,
-		FMenu_Main,
-		FMenu_Orders,
-		FMenu_Weapons,
-		FMenu_Supplies,
-		FMenu_Miscellaneous
-	}
-
 	// ----------------------------------------------------------
 	// CORE
 	// ----------------------------------------------------------

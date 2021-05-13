@@ -6,6 +6,18 @@ class FollowerCommand ui
 
 extend class FollowerHandler
 {
+	enum FollowerMenus
+	{
+		FMenu_Closed,
+		FMenu_Recruitment,
+		FMenu_Followers,
+		FMenu_Main,
+		FMenu_Orders,
+		FMenu_Weapons,
+		FMenu_Supplies,
+		FMenu_Miscellaneous
+	}
+	
 	private transient ui HUDFont MainFont;
 	private transient ui int FollowerPage[MAXPLAYERS];
 
