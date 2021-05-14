@@ -26,8 +26,11 @@ For the most part the mechanics are fairly simple and straightforward. Documente
 
 ##### Multiselecting
 ---
-- Left Shift + Menu Key allows you to select multiple followers. Acts as a modifier and works either with the number keys or with Quick Access.
-- Left Control + Left Shift + Menu Key acts as "select all". Only works if the menu isn't open.
+- `Shift` allows you to select multiple followers. Acts as a modifier and works either with the number keys or with Quick Access;
+- `Ctrl + Shift + A` select all;
+- `Ctrl + Shift + D` deselects all;
+- `Ctrl + Shift + I` inverts the selection.
+- `Alt` modifies the selection to only affect the current page.
 
 Letting go of Shift applies the selection in both cases.
 

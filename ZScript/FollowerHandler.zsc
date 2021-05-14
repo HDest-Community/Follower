@@ -13,7 +13,8 @@ class FollowerHandler : EventHandler
 	enum OperationModifiers
 	{
 		OpMod_Shift = 1,
-		OpMod_Ctrl = 2
+		OpMod_Ctrl = 2,
+		OpMod_Alt = 4
 	}
 
 	// ----------------------------------------------------------
@@ -21,6 +22,7 @@ class FollowerHandler : EventHandler
 	// ----------------------------------------------------------
 
 	private transient int FollowerMenuLevel[MAXPLAYERS];
+	private transient int FollowerPage[MAXPLAYERS];
 	private transient HDMarine SelMarine[MAXPLAYERS];
 	private transient Array<FollowerBody> FollowersInInv;
 	private FollowerSelection Selection[MAXPLAYERS];
@@ -180,6 +182,11 @@ class FollowerHandler : EventHandler
 		if (CanExitNow && --WarningResetTimer <= 0)
 		{
 			CanExitNow = false;
+		}
+
+		if (FollowerPage[consoleplayer] > 0 && FollowerMenuLevel[consoleplayer] == FMenu_Closed)
+		{
+			FollowerPage[consoleplayer] = 0;
 		}
 	}
 

@@ -20,9 +20,9 @@ extend class FollowerHandler
 	}
 	
 	private transient ui HUDFont MainFont;
-	private transient ui int FollowerPage[MAXPLAYERS];
-	
 
+	const FollowersPerPage = 8;
+	
 	// [Ace] The only reason this is used is to allow dynamic menus with a variable number of options. That's literally the only reason.
 	private ui FollowerCommand CreateCommand(string evName, int arg1 = 0, int arg2 = 0, int arg3 = 0)
 	{
@@ -48,16 +48,6 @@ extend class FollowerHandler
 		}
 
 		return text;
-	}
-
-	override void UiTick()
-	{
-		Super.UiTick();
-
-		if (FollowerMenuLevel[consoleplayer] == FMenu_Closed)
-		{
-			FollowerPage[consoleplayer] = 0;
-		}
 	}
 	
 	override void RenderOverlay(RenderEvent e)
@@ -132,14 +122,14 @@ extend class FollowerHandler
 				}
 				
 				int FSize = Followers.Size();
-				int RelSize = min(8, FSize - 8 * FollowerPage[consoleplayer]);
+				int RelSize = min(FollowersPerPage, FSize - FollowersPerPage * FollowerPage[consoleplayer]);
 				if (RelSize > 4)
 				{
 					pos.y -= (RectangleHeight * 2 - 2) * 4;
 				}
 
 				int LastIndex = 0;
-				for (int i = 8 * FollowerPage[consoleplayer]; i < min(8 * (FollowerPage[consoleplayer] + 1), FSize); ++i)
+				for (int i = FollowersPerPage * FollowerPage[consoleplayer]; i < min(FollowersPerPage * (FollowerPage[consoleplayer] + 1), FSize); ++i)
 				{
 					LastIndex++;
 					bool Valid = Followers[i].CanInteractWith(false);
@@ -147,7 +137,7 @@ extend class FollowerHandler
 					DrawFollowerRectangle(sb, pos, (200, FollowerBlockSize), MainFont, LastIndex, Followers[i], Valid, flags);
 					pos.y += FollowerBlockSize + Spacing;
 				}
-				if (FSize > 8 * (FollowerPage[consoleplayer] + 1))
+				if (FSize > FollowersPerPage * (FollowerPage[consoleplayer] + 1))
 				{
 					LastIndex++;
 					DrawTextRectangle(sb, pos, (200, RectangleHeight), MainFont, LastIndex..") Next...", flags);
@@ -309,7 +299,7 @@ extend class FollowerHandler
 				}
 				static const string Orders[] = { "Follow", "Follow and ignore hostiles", "Stay and provide cover" };
 
-				DrawTextRectangle(sb, pos, (240, RectangleHeight), MainFont, "Multiple followers", flags, Font.FindFontColor('FLW_NameBlue'));
+				DrawTextRectangle(sb, pos, (240, RectangleHeight), MainFont, Selection[consoleplayer].SelFollowers.Size().." followers selected", flags, Font.FindFontColor('FLW_NameBlue'));
 				pos.y += RectangleHeight + Spacing;
 				for (int i = 0; i < Orders.Size(); ++i)
 				{
@@ -438,22 +428,26 @@ extend class FollowerHandler
 
 	override bool InputProcess(InputEvent e)
 	{
-		if (e.KeyScan == InputEvent.Key_LShift || e.KeyScan == InputEvent.Key_LCtrl)
+		bool IsShift = e.KeyScan == InputEvent.Key_LShift || e.KeyScan == InputEvent.Key_RShift;
+		bool IsCtrl = e.KeyScan == InputEvent.Key_LCtrl || e.KeyScan == InputEvent.Key_RCtrl;
+		bool IsAlt = e.KeyScan == InputEvent.Key_LAlt || e.KeyScan == InputEvent.Key_RAlt;
+		if (IsShift || IsCtrl || IsAlt)
 		{
-			bool IsShift = e.KeyScan == InputEvent.Key_LShift;
 			if (e.Type == InputEvent.Type_KeyDown)
 			{
-				SendNetworkEvent("HDF_SetModifiers", 1, IsShift ? OpMod_Shift : OpMod_Ctrl);
+				SendNetworkEvent("HDF_SetModifiers", 1, IsShift ? OpMod_Shift : (IsAlt ? OpMod_Alt : OpMod_Ctrl));
 			}
 			else if (e.Type == InputEvent.Type_KeyUp)
 			{
-				SendNetworkEvent("HDF_SetModifiers", 0, IsShift ? OpMod_Shift : OpMod_Ctrl);
-				if (IsShift && FollowerMenuLevel[consoleplayer] == FMenu_Followers)
+				SendNetworkEvent("HDF_SetModifiers", 0, IsShift ? OpMod_Shift : (IsAlt ? OpMod_Alt : OpMod_Ctrl));
+				if (FollowerMenuLevel[consoleplayer] == FMenu_Followers)
 				{
 					SendNetworkEvent("HDF_ApplySelection");
 				}
 			}
 		}
+
+		bool RetVal = false;
 
 		if (FollowerMenuLevel[consoleplayer] > FMenu_Closed && e.Type == InputEvent.Type_KeyDown)
 		{
@@ -477,29 +471,55 @@ extend class FollowerHandler
 
 				case FMenu_Followers:
 				{
-					int FSize = Followers.Size();
-					int RelSize = min(8, FSize - 8 * FollowerPage[consoleplayer]);
-					bool HasMorePages = FSize > 8 * (FollowerPage[consoleplayer] + 1);
-					int SelIndex = (NumKey + 8 * FollowerPage[consoleplayer]) - 1;
-
-					if (NumKey == RelSize + 1 && HasMorePages)
+					if (Modifiers[consoleplayer] & (OpMod_Shift | OpMod_Ctrl) == (OpMod_Shift | OpMod_Ctrl))
 					{
-						FollowerPage[consoleplayer]++;
-					}
-					else if (FollowerPage[consoleplayer] > 0 && NumKey == RelSize + (HasMorePages ? 2 : 1))
-					{
-						FollowerPage[consoleplayer]--;
-					}
-					else if (NumKey > 0 && (NumKey - 1) < RelSize)
-					{
-						if (Modifiers[consoleplayer] & OpMod_Shift)
+						int Page = Modifiers[consoleplayer] & OpMod_Alt ? FollowerPage[consoleplayer] : -1;
+						switch (e.KeyChar)
 						{
-							SendNetworkEvent("HDF_ToggleSelection", SelIndex);
+							// [Ace] A - Select (A)ll, (I)nvert, (D)eselect.
+							case 65: case 97:
+							{
+								SendNetworkEvent("HDF_ManipulateSelection", 0, Page);
+								break;
+							}
+							case 73: case 105:
+							{
+								SendNetworkEvent("HDF_ManipulateSelection", 1, Page);
+								break;
+							}
+							case 68: case 100:
+							{
+								SendNetworkEvent("HDF_ManipulateSelection", 2, Page);
+								break;
+							}
 						}
-						else
+						RetVal = true;
+					}
+					else if (!(Modifiers[consoleplayer] & OpMod_Ctrl))
+					{
+						int FSize = Followers.Size();
+						int RelSize = min(FollowersPerPage, FSize - FollowersPerPage * FollowerPage[consoleplayer]);
+						bool HasMorePages = FSize > FollowersPerPage * (FollowerPage[consoleplayer] + 1);
+						int SelIndex = (NumKey + FollowersPerPage * FollowerPage[consoleplayer]) - 1;
+						if (NumKey == RelSize + 1 && HasMorePages)
 						{
-							SendNetworkEvent("HDF_ToggleSelection", SelIndex, true);
-							SendNetworkEvent("HDF_ApplySelection");
+							SendNetworkEvent("HDF_SetFollowerPage", 1);
+						}
+						else if (FollowerPage[consoleplayer] > 0 && NumKey == RelSize + (HasMorePages ? 2 : 1))
+						{
+							SendNetworkEvent("HDF_SetFollowerPage", 0);
+						}
+						else if (NumKey > 0 && (NumKey - 1) < RelSize)
+						{
+							if (Modifiers[consoleplayer] & OpMod_Shift)
+							{
+								SendNetworkEvent("HDF_ToggleSelection", SelIndex);
+							}
+							else
+							{
+								SendNetworkEvent("HDF_ToggleSelection", SelIndex, true);
+								SendNetworkEvent("HDF_ApplySelection");
+							}
 						}
 					}
 					break;
@@ -633,7 +653,7 @@ extend class FollowerHandler
 			// [Ace] Block 0-9 keys from affecting the world.
 			if (NumKey >= 0 && NumKey <= 10)
 			{
-				return true;
+				RetVal = true;
 			}
 
 			if (!(Modifiers[consoleplayer] & OpMod_Shift))
@@ -644,15 +664,15 @@ extend class FollowerHandler
 				if (e.KeyScan == Key1 || e.KeyScan == Key2)
 				{
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
-					return true;
+					RetVal = true;
 				}
 			}
-			else
+			else if (FollowerMenuLevel[consoleplayer] == FMenu_Followers)
 			{
 				SendNetworkEvent("HDF_OpenMenu");
 			}
 		}
-		return false;
+		return RetVal;
 	}
 
 	override void NetworkProcess(ConsoleEvent e)
@@ -661,13 +681,22 @@ extend class FollowerHandler
 		{
 			InitSelection();
 		}
-		
+
 		if (e.Name ~== "HDF_SetModifiers")
 		{
 			switch (e.Args[0])
 			{
 				case 0: Modifiers[e.Player] &= ~e.Args[1]; break;
 				case 1: Modifiers[e.Player] |= e.Args[1]; break;
+			}
+		}
+
+		if (e.Name ~== "HDF_SetFollowerPage")
+		{
+			switch (e.Args[0])
+			{
+				case 0: FollowerPage[e.Player]--; break;
+				case 1: FollowerPage[e.Player]++; break;
 			}
 		}
 
@@ -724,21 +753,6 @@ extend class FollowerHandler
 
 		if (e.Name ~== "HDF_OpenMenu")
 		{
-			// [Ace] Select all.
-			int FSize = Followers.Size();
-			if (FSize > 0 && FollowerMenuLevel[e.Player] == FMenu_Closed && Modifiers[e.Player] & (OpMod_Shift | OpMod_Ctrl) == (OpMod_Shift | OpMod_Ctrl))
-			{
-				for (int i = 0; i < Followers.Size(); ++i)
-				{
-					if (Followers[i].CanInteractWith(false))
-					{
-						ToggleSelection(e.Player, Followers[i]);
-					}
-				}
-				ApplySelection(e.Player);
-				return;
-			}
-
 			let plr = HDPlayerPawn(players[e.Player].mo);
 			Actor ATarget = plr.AimTarget();
 			if (ATarget is 'HDMarine' && plr.Distance3D(ATarget) <= 42 * 2 && ATarget.Health > 0 && !IsPuppet(ATarget) && (ATarget.bFRIENDLY || ATarget.InStateSequence(ATarget.CurState, ATarget.FindState('Falldown')) && HDMarine(ATarget).Stunned > 70))
@@ -748,6 +762,7 @@ extend class FollowerHandler
 			}
 			else
 			{
+				int FSize = Followers.Size();
 				HDFollower flw = HDFollower(ATarget);
 				if (flw && flw.CanInteractWith(!(Modifiers[e.Player] & OpMod_Shift)) && e.IsManual && CVar.GetCVar('hdf_quickaccess', players[e.Player]).GetBool())
 				{
@@ -823,6 +838,17 @@ extend class FollowerHandler
 				Selection[e.Player].SelFollowers.Clear();
 			}
 			ToggleSelection(e.Player, Followers[e.Args[0]]);
+			return;
+		}
+
+		if (e.Name ~== "HDF_ManipulateSelection")
+		{
+			switch (e.Args[0])
+			{
+				case 0: SelectAll(e.Player, e.Args[1], false); break;
+				case 1: SelectAll(e.Player, e.Args[1], true); break;
+				case 2: DeselectAll(e.Player, e.Args[1]); break;
+			}
 			return;
 		}
 
@@ -937,7 +963,7 @@ extend class FollowerHandler
 	private void ApplySelection(int plrNum)
 	{
 		int Size = Selection[plrNum].SelFollowers.Size();
-		if (Size == 0)
+		if (Size == 0 || Modifiers[plrNum] != 0)
 		{
 			return;
 		}
@@ -946,6 +972,47 @@ extend class FollowerHandler
 		for (int i = 0; i < Size; ++i)
 		{
 			Selection[plrNum].SelFollowers[i].ChangeLinkedPlayer(HDPlayerPawn(players[plrNum].mo));
+		}
+	}
+
+	private void SelectAll(int plrNum, int page, bool invert)
+	{
+		Console.Printf("%i, %i", page, invert);
+		if (!invert)
+		{
+			DeselectAll(plrNum, page);
+		}
+		if (page > -1)
+		{
+			for (int i = FollowersPerPage * page; i < min(FollowersPerPage * (page + 1), Followers.Size()); ++i)
+			{
+				ToggleSelection(plrNum, Followers[i]);
+			}
+		}
+		else
+		{
+			for (int i = 0; i < Followers.Size(); ++i)
+			{
+				ToggleSelection(plrNum, Followers[i]);
+			}
+		}
+	}
+
+	private void DeselectAll(int plrNum, int page)
+	{
+		if (page > -1)
+		{
+			for (int i = FollowersPerPage * page; i < min(FollowersPerPage * (page + 1), Followers.Size()); ++i)
+			{
+				if (Selection[plrNum].SelFollowers.Find(Followers[i]) != Selection[plrNum].SelFollowers.Size())
+				{
+					ToggleSelection(plrNum, Followers[i]);
+				}
+			}
+		}
+		else
+		{
+			Selection[plrNum].SelFollowers.Clear();
 		}
 	}
 
