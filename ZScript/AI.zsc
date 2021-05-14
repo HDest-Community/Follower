@@ -15,14 +15,16 @@ extend class HDFollower
 			Console.Printf("Follower "..GetDisplayName().." has %s out.\nCurrent status is %i.\nFollower is targeting %s.\n--------------------", SelWeapon ? SelWeapon.GetName() : "no weapon", Status, CTarget ? CTarget.GetTag() : "nothing");
 		}
 
-		bool CanSeeGoal = TGoal && CheckSight(TGoal, SF_SEEPASTSHOOTABLELINES); // [Ace] This can be either the player or a specific goal actor. It's for when it doesn't matter.
+		Actor Next = GetNextInChain();
+		double DistanceToNext = Distance3D(Next);
+		bool CanSeeNext = CheckSight(Next, SF_SEEPASTSHOOTABLELINES);
+
 		PNeedsHelp = PlayerIsIncapped(); // [Ace] You're just incapped.
 		PNeedsMedic = PlayerNeedsMedic(); // [Ace] You're bleeding and incapped.
 		bool IsHelping = IsHelpingPlayer();
 		int FFCount = Handler.FollowingFollowersCount();
 		int FIndex = Handler.Followers.Find(self);
-		int FNPCount = FollowersNearPlayer(MinPlayerRangeStop + MinPlayerRangeStop * FFCount);
-		double DistMult = 1 + min(FNPCount, FIndex, FFCount - 1) / (1.6 + 0.06 * (min(8, FFCount - 1)));
+		double DistDiv = 1.0 + 0.1 * (min(20, FFCount - 1));
 
 		if (Status != FStatus_InCombat)
 		{
@@ -73,15 +75,19 @@ extend class HDFollower
 				}
 				else if (Order < FOrder_Cover)
 				{
-					if (CanSeePlayer)
+					if (CanSeeNext)
 					{
-						LastKnownPos = LinkedPlayer.Pos;
+						LastKnownPos = Next.Pos;
 					}
 
-					// [Ace] Go to player if they're too far away.
-					if (bFRIENDLY && DistanceToPlayer > MinPlayerRange * (DistMult / 2.0) && DistanceToPlayer < MaxPlayerRange)
+					// [Ace] Go to goal if they're too far away.
+					if (bFRIENDLY && DistanceToNext > MinFollowRange / DistDiv && DistanceToNext < MaxFollowRange)
 					{
-						if (CanSeePlayer)
+						if (CanSeeNext)
+						{
+							TGoal = Next;
+						}
+						else if (!CanSeeNext && CanSeePlayer)
 						{
 							TGoal = LinkedPlayer;
 						}
@@ -137,7 +143,7 @@ extend class HDFollower
 		}
 
 		// [Ace] Movement. Always travel to goals if there are any. Status between moving and idle should not be set elsewhere.
-		if (Status != FStatus_WaitingForArmor && (Status != FStatus_InCombat || Order == FOrder_GoAndCover) && TGoal && (TGoal is "PlayerPawn" && Distance2D(TGoal) > (Order == FOrder_ComeAndHelp && (PNeedsMedic || PNeedsHelp) ? MedicRange : MinPlayerRangeStop * DistMult) || TGoal is "TargetGoal" && Distance2D(TGoal) > 16) && Distance2D(TGoal) < MaxGoalRange)
+		if (Status != FStatus_WaitingForArmor && (Status != FStatus_InCombat || Order == FOrder_GoAndCover) && TGoal && (TGoal is Next.GetClass() && Distance2D(TGoal) > (Order == FOrder_ComeAndHelp && (PNeedsMedic || PNeedsHelp) ? MedicRange : MinFollowRangeStop / DistDiv) || TGoal is "TargetGoal" && Distance2D(TGoal) > 16) && Distance2D(TGoal) < MaxGoalRange)
 		{
 			if (TGoal is "PlayerPawn" && Order == FOrder_ComeAndHelp && (PNeedsMedic || PNeedsHelp))
 			{
@@ -150,7 +156,7 @@ extend class HDFollower
 			}
 			else
 			{
-				if (Distance2D(TGoal) < 48)
+				if (Distance2D(TGoal) < 48 / DistDiv)
 				{
 					MovementSpeed = default.MovementSpeed / 2;
 				}
@@ -166,9 +172,9 @@ extend class HDFollower
 			}
 
 			// [Ace] Same as the corner thing from above but does it if the follower is moving.
-			if (TGoal == LinkedPlayer)
+			if (TGoal == Next)
 			{
-				if (CanSeePlayer)
+				if (CanSeeNext)
 				{
 					LastKnownPos = TGoal.Pos;
 					A_Face(TGoal, 0, 0);
@@ -195,7 +201,7 @@ extend class HDFollower
 			bFLOORHUGGER = NearLadder;
 
 			// [Ace] Stop trying to reach goal shortly after losing LOS.
-			if (!CanSeeGoal && ++NoSightTics == 35 * 3)
+			if (!CheckSight(TGoal, SF_SEEPASTSHOOTABLELINES) && ++NoSightTics == 35 * 3)
 			{
 				NoSightTics = 0;
 				ClearGoal();
@@ -272,19 +278,6 @@ extend class HDFollower
 		TauntTimer = random(35 * 10, 35 * 30);
 	}
 
-	private int FollowersNearPlayer(double dist)
-	{
-		int Total = 0;
-		for (int i = 0; i < Handler.Followers.Size(); ++i)
-		{
-			if (Handler.Followers[i].Health > 0 && Handler.Followers[i] != self && Handler.Followers[i].DistanceToPlayer <= dist)
-			{
-				Total++;
-			}
-		}
-		return Total;
-	}
-
 	private bool IsSteppingOnSomeone()
 	{
 		if (bOnMobj)
@@ -306,9 +299,22 @@ extend class HDFollower
 		return false;
 	}
 
-	const MinPlayerRangeStop = 96; // [Ace] If following the player, stop if closer than this distance.
-	const MinPlayerRange = 128;
-	const MaxPlayerRange = 768;
+	private Actor GetNextInChain()
+	{
+		int FIndex = Handler.Followers.Find(self);
+		for (int i = FIndex - 1; i >= 0; --i)
+		{
+			if (Handler.Followers[i].Health > 0 && (Handler.Followers[i].Order == FOrder_Follow || Handler.Followers[i].Order == FOrder_FollowIgnore))
+			{
+				return Handler.Followers[i];
+			}
+		}
+		return LinkedPlayer;
+	}
+
+	const MinFollowRangeStop = 96; // [Ace] If following the player, stop if closer than this distance.
+	const MinFollowRange = 128;
+	const MaxFollowRange = 768;
 
 	HDPlayerPawn LinkedPlayer;
 	protected Actor CTarget;
@@ -326,7 +332,7 @@ extend class HDFollower
 	private int NoSightTics; // [Ace] Used with CheckSight.
 
 	private bool CanSeePlayer;
-	private double DistanceToPlayer; 
+	private double DistanceToPlayer;
 	private bool PNeedsHelp;
 	private bool PNeedsMedic;
 	private double CrouchFactor;
