@@ -657,6 +657,11 @@ extend class FollowerHandler
 
 	override void NetworkProcess(ConsoleEvent e)
 	{
+		if (e.Name ~== "HDF_InitStuff")
+		{
+			InitSelection();
+		}
+		
 		if (e.Name ~== "HDF_SetModifiers")
 		{
 			switch (e.Args[0])
@@ -904,11 +909,6 @@ extend class FollowerHandler
 				case 0: SFol.DropAllAmmo(); break;
 				case 1: SFol.DropAllSupplies(); break;
 			}
-		}
-
-		if (e.Name ~== "HDF_InitStuff")
-		{
-			InitSelection();
 		}
 	}
 
