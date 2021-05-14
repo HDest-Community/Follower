@@ -748,8 +748,8 @@ extend class FollowerHandler
 
 		if (e.Name ~== "HDF_DismissFollower" && !e.IsManual)
 		{
-			CloseFollowerMenu(e.Player);
 			Selection[e.Player].GetLast().Dismiss();
+			CloseFollowerMenu(e.Player);
 		}
 
 		if (e.Name ~== "HDF_OpenMenu")
