@@ -28,6 +28,7 @@ For the most part the mechanics are fairly simple and straightforward. Documente
 ---
 - Left Shift allows you to select multiple followers. Acts as a modifier and works either with the number keys or with Quick Access.
 - Left Control + Left Shift acts as "select all".
+
 Letting go of Shift applies the selection in both cases.
 
 ##### Revival
