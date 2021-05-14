@@ -440,10 +440,6 @@ extend class FollowerHandler
 			else if (e.Type == InputEvent.Type_KeyUp)
 			{
 				SendNetworkEvent("HDF_SetModifiers", 0, IsShift ? OpMod_Shift : (IsAlt ? OpMod_Alt : OpMod_Ctrl));
-				if (FollowerMenuLevel[consoleplayer] == FMenu_Followers)
-				{
-					SendNetworkEvent("HDF_ApplySelection");
-				}
 			}
 		}
 
@@ -471,7 +467,12 @@ extend class FollowerHandler
 
 				case FMenu_Followers:
 				{
-					if (Modifiers[consoleplayer] & (OpMod_Shift | OpMod_Ctrl) == (OpMod_Shift | OpMod_Ctrl))
+					if (e.KeyScan == InputEvent.Key_Enter)
+					{
+						SendNetworkEvent("HDF_ApplySelection");
+						RetVal = true;
+					}
+					else if (Modifiers[consoleplayer] & OpMod_Ctrl)
 					{
 						int Page = Modifiers[consoleplayer] & OpMod_Alt ? FollowerPage[consoleplayer] : -1;
 						switch (e.KeyChar)
@@ -495,7 +496,7 @@ extend class FollowerHandler
 						}
 						RetVal = true;
 					}
-					else if (!(Modifiers[consoleplayer] & OpMod_Ctrl))
+					else
 					{
 						int FSize = Followers.Size();
 						int RelSize = min(FollowersPerPage, FSize - FollowersPerPage * FollowerPage[consoleplayer]);

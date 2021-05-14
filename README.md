@@ -27,12 +27,11 @@ For the most part the mechanics are fairly simple and straightforward. Documente
 ##### Multiselecting
 ---
 - `Shift` allows you to select multiple followers. Acts as a modifier and works either with the number keys or with Quick Access;
-- `Ctrl + Shift + A` select all;
-- `Ctrl + Shift + D` deselects all;
-- `Ctrl + Shift + I` inverts the selection.
-- `Alt` modifies the selection to only affect the current page.
-
-Letting go of Shift applies the selection in both cases.
+- `Ctrl + A` select all;
+- `Ctrl + D` deselects all;
+- `Ctrl + I` inverts the selection.
+- `Ctrl + Alt` modifies the selection to only affect the current page.
+- `Enter` applies the selection.
 
 ##### Revival
 ---
