@@ -343,7 +343,7 @@ class HDFollower : HDMobMan abstract
 		+SEEINVISIBLE
 		+BOSSDEATH
 		+NOFEAR
-		+HDMOBBASE.NOBLURGAZE
+		+THRUSPECIES
 		HDMobBase.DownedFrame 16;
 		HDMobBase.MaxBloodLoss 400;
 		Species 'HDFollower';
@@ -399,7 +399,6 @@ class HDFollower : HDMobMan abstract
 				ClearWeapon();
 				scale = default.scale;
 				CrouchFactor = 0;
-				bDONTTHRUST = true;
 			}
 			#### N 4 A_StartSound(DeathSound, CHAN_VOICE);
 			#### O 4;
@@ -436,7 +435,6 @@ class HDFollower : HDMobMan abstract
 				}
 
 				MaxStepHeight = default.MaxStepHeight;
-				bDONTTHRUST = default.bDONTTHRUST;
 				Status = FStatus_None;
 			}
 			Goto Idle;
@@ -450,7 +448,6 @@ class HDFollower : HDMobMan abstract
 				Status = FStatus_InactiveOrDead;
 				scale = default.scale;
 				CrouchFactor = 0;
-				bDONTTHRUST = true;
 			}
 			#### N 6 A_StartSound(DeathSound, CHAN_VOICE);
 			#### O 5;

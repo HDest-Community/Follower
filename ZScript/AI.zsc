@@ -193,7 +193,6 @@ extend class HDFollower
 			ResetIdleTimer();
 
 			A_ChangeVelocity(MovementSpeed, 0, vel.z, CVF_RELATIVE | CVF_REPLACE);
-			A_RadiusThrust(128, int(Radius + 4), RTF_NOIMPACTDAMAGE, int(Radius + 4), 'HDFollower');
 			Moving = true;
 
 			// [Ace] Ascend/descend ladders.
