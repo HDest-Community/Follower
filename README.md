@@ -49,7 +49,9 @@ For the most part the mechanics are fairly simple and straightforward. Documente
 
 ##### Recruiting
 ---
-- You can now recruit friendly/converted marines as followers. Does not work if the marines were resurrected. If it's smoking, forget about it. Marines basically function the exact same way as regular followers, and you can command them as such. A few exceptions exist:
+- You can now recruit friendly/converted marines as followers. Does not work if the marines were resurrected. If it's smoking, forget about it. You can also recruit hostile marines if they have been incapped. For both of them you need to look at the marine (be within 2m of it) and press the follower menu key. If they're incapped, it might be a little harder due to the hitbox's size. Aim more towards your feet. Takes a bit of practice.
+
+Marines basically function the exact same way as regular followers, and you can command them as such. A few exceptions exist:
 1. They are expendable, so you won't get any notification for leaving any behind when moving between maps. You can, however, carry them between maps to create an army. Of course, at some point it is going to become hell to manage.
 2. They don't have the full arsenal the regular followers have.
 3. All marines are stored as a single inventory item in first-in-last-out order.
