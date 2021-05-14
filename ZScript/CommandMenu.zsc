@@ -977,7 +977,6 @@ extend class FollowerHandler
 
 	private void SelectAll(int plrNum, int page, bool invert)
 	{
-		Console.Printf("%i, %i", page, invert);
 		if (!invert)
 		{
 			DeselectAll(plrNum, page);
