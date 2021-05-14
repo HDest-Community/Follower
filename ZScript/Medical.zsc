@@ -139,7 +139,7 @@ extend class HDFollower
 	{
 		for (int i = 0; i < Medikits; ++i)
 		{
-			A_SpawnItemEx('PortableMedikit', random(0, 16), 0, 0, frandom(1.0, 2.0), 0, frandom(2.0, 5.0), random(0, 359), SXF_NOCHECKPOSITION);
+			A_SpawnItemEx('HDMedikitter', random(0, 16), 0, 0, frandom(1.0, 2.0), 0, frandom(2.0, 5.0), random(0, 359), SXF_NOCHECKPOSITION);
 		}
 		for (int i = 0; i < Stimpacks; ++i)
 		{
