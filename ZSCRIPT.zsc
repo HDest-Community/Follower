@@ -81,7 +81,7 @@ class HDFollower : HDMobMan abstract
 
 		if (type <= CVar.GetCVar('hdf_printlevel_chat', LinkedPlayer.player).GetInt())
 		{
-			LinkedPlayer.A_Log("\c[White]"..GetTag()..": \c[Green]"..message.."\c-");
+			LinkedPlayer.A_Log("\c[White]"..GetDisplayName()..": \c[Green]"..message.."\c-");
 			LinkedPlayer.A_StartSound("misc/chat", 20, CHANF_LOCAL);
 		}
 		if (type <= CVar.GetCVar('hdf_printlevel_voice', LinkedPlayer.player).GetInt())
