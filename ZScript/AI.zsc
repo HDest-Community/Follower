@@ -23,7 +23,7 @@ extend class HDFollower
 		bool IsHelping = IsHelpingPlayer();
 		int FFCount = Handler.FollowingFollowersCount();
 		int FIndex = Handler.Followers.Find(self);
-		double DistDiv = 1.0 + 0.1 * (min(20, FFCount - 1));
+		double DistDiv = 1.0 + 0.1 * (min(10, FFCount - 1));
 
 		if (!CanSeeNext && CanSeePlayer)
 		{

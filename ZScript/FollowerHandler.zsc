@@ -1,13 +1,30 @@
+class FollowerSelection
+{
+	transient Array<HDFollower> SelFollowers;
+	clearscope HDFollower GetLast()
+	{
+		int Size = SelFollowers.Size();
+		return Size > 0 ? SelFollowers[Size - 1] : null;
+	}
+}
+
 class FollowerHandler : EventHandler
 {
+	enum OperationModifiers
+	{
+		OpMod_Shift = 1,
+		OpMod_Ctrl = 2
+	}
+
 	// ----------------------------------------------------------
 	// CORE
 	// ----------------------------------------------------------
 
 	private transient int FollowerMenuLevel[MAXPLAYERS];
 	private transient HDMarine SelMarine[MAXPLAYERS];
-	private transient HDFollower SelFollower[MAXPLAYERS];
 	private transient Array<FollowerBody> FollowersInInv;
+	private FollowerSelection Selection[MAXPLAYERS];
+	private transient int Modifiers[MAXPLAYERS];
 
 	private transient bool CanExitNow;
 	private transient int WarningResetTimer;
@@ -29,12 +46,25 @@ class FollowerHandler : EventHandler
 		}
 	}
 
+	private void InitSelection()
+	{
+		for (int i = 0; i < MAXPLAYERS; ++i)
+		{
+			if (!Selection[i])
+			{
+				Selection[i] = new('FollowerSelection');
+			}
+		}
+	}
+
 	override void WorldLoaded(WorldEvent e)
 	{
 		if (GameState == GS_TITLELEVEL)
 		{
 			return;
 		}
+
+		InitSelection();
 
 		let Arbitrator = players[Net_Arbitrator].mo;
 		if (!Arbitrator)

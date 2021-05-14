@@ -24,6 +24,12 @@ The followers have access to the following weapons:
 ---
 For the most part the mechanics are fairly simple and straightforward. Documented here are more niche things that are not obvious at all and can only be found either by trial or error or by looking at the source code.
 
+##### Multiselecting
+---
+- Left Shift allows you to select multiple followers. Acts as a modifier and works either with the number keys or with Quick Access.
+- Left Control + Left Shift acts as "select all".
+Letting go of Shift applies the selection in both cases.
+
 ##### Revival
 ---
 - Blues: the cost starts at 2 sips and scales to a full potion depending on how damaged the follower's body is. Fire damages it badly so that's usually the only time you'll need to use a full potion.
