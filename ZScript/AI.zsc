@@ -16,7 +16,6 @@ extend class HDFollower
 		}
 
 		Actor Next = GetNextInChain();
-		double DistanceToNext = Distance3D(Next);
 		bool CanSeeNext = CheckSight(Next, SF_SEEPASTSHOOTABLELINES);
 
 		PNeedsHelp = PlayerIsIncapped(); // [Ace] You're just incapped.
@@ -25,6 +24,11 @@ extend class HDFollower
 		int FFCount = Handler.FollowingFollowersCount();
 		int FIndex = Handler.Followers.Find(self);
 		double DistDiv = 1.0 + 0.1 * (min(20, FFCount - 1));
+
+		if (!CanSeeNext && CanSeePlayer)
+		{
+			Next = LinkedPlayer;
+		}
 
 		if (Status != FStatus_InCombat)
 		{
@@ -81,15 +85,12 @@ extend class HDFollower
 					}
 
 					// [Ace] Go to goal if they're too far away.
+					double DistanceToNext = Distance3D(Next);
 					if (bFRIENDLY && DistanceToNext > MinFollowRange / DistDiv && DistanceToNext < MaxFollowRange)
 					{
 						if (CanSeeNext)
 						{
 							TGoal = Next;
-						}
-						else if (!CanSeeNext && CanSeePlayer)
-						{
-							TGoal = LinkedPlayer;
 						}
 						// [Ace] If following the player and the player is nearby but suddenly goes around a corner, try to go around the same corner.
 						else if (LastKnownPos != (0, 0, 0) && (!TGoal || TGoal && TGoal.pos != LastKnownPos))
@@ -156,7 +157,7 @@ extend class HDFollower
 			}
 			else
 			{
-				if (Distance2D(TGoal) < 48 / DistDiv)
+				if (Distance2D(TGoal) < 48)
 				{
 					MovementSpeed = default.MovementSpeed / 2;
 				}
