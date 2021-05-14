@@ -28,6 +28,7 @@ extend class HDFollower
 		if (!CanSeeNext && CanSeePlayer)
 		{
 			Next = LinkedPlayer;
+			CanSeeNext = true;
 		}
 
 		if (Status != FStatus_InCombat)
