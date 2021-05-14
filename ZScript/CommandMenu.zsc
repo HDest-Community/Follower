@@ -498,8 +498,8 @@ extend class FollowerHandler
 						}
 						else
 						{
-							SendNetworkEvent("HDF_ToggleSelection", SelIndex);
-							SendNetworkEvent("HDF_ApplySelection", SelIndex);
+							SendNetworkEvent("HDF_ToggleSelection", SelIndex, true);
+							SendNetworkEvent("HDF_ApplySelection");
 						}
 					}
 					break;
@@ -812,6 +812,11 @@ extend class FollowerHandler
 
 		if (e.Name ~== "HDF_ToggleSelection")
 		{
+			// [Ace] Select only that follower.
+			if (e.Args[1])
+			{
+				Selection[e.Player].SelFollowers.Clear();
+			}
 			ToggleSelection(e.Player, Followers[e.Args[0]]);
 			return;
 		}
