@@ -79,12 +79,12 @@ class HDFollower : HDMobMan abstract
 			return;
 		}
 
-		if (type <= hdf_printlevel_chat)
+		if (type <= CVar.GetCVar('hdf_printlevel_chat', LinkedPlayer.player).GetInt())
 		{
 			LinkedPlayer.A_Log("\c[White]"..GetTag()..": \c[Green]"..message.."\c-");
 			LinkedPlayer.A_StartSound("misc/chat", 20, CHANF_LOCAL);
 		}
-		if (type <= hdf_printlevel_voice)
+		if (type <= CVar.GetCVar('hdf_printlevel_voice', LinkedPlayer.player).GetInt())
 		{
 			if (Distance3D(LinkedPlayer) < 512)
 			{
