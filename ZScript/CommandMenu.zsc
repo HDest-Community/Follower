@@ -635,7 +635,6 @@ extend class FollowerHandler
 		if (e.Name ~== "HDF_DismissFollower" && !e.IsManual)
 		{
 			FollowerMenuLevel[e.Player] = FMenu_Closed;
-			Console.Printf("kek");
 			SelFollower[e.Player].Dismiss();
 		}
 
