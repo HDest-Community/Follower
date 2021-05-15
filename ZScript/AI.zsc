@@ -305,7 +305,7 @@ extend class HDFollower
 		int FIndex = Handler.Followers.Find(self);
 		for (int i = FIndex - 1; i >= 0; --i)
 		{
-			if (Handler.Followers[i].Health > 0 && (Handler.Followers[i].Order == FOrder_Follow || Handler.Followers[i].Order == FOrder_FollowIgnore) && Handler.Followers[i].LinkedPlayer == LinkedPlayer)
+			if (Handler.Followers[i].Health > 0 && Handler.Followers[i].Status == FStatus_None && (Handler.Followers[i].Order == FOrder_Follow || Handler.Followers[i].Order == FOrder_FollowIgnore) && Handler.Followers[i].LinkedPlayer == LinkedPlayer)
 			{
 				return Handler.Followers[i];
 			}
