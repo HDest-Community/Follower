@@ -91,9 +91,9 @@ extend class HDFollower
 						W = "FW_SMG"; UsedWeapons.Push(W);
 					}
 					W = "FW_ZM66"; UsedWeapons.Push(W);
-					W = "FW_Hunter"; UsedWeapons.Push(W);
 					if (!Shields || Shields.Amount <= 100)
 					{
+						W = "FW_Hunter"; UsedWeapons.Push(W);
 						W = "FW_SMG"; UsedWeapons.Push(W);
 					}
 					EngageTarget(UsedWeapons, MTarget);
@@ -106,7 +106,10 @@ extend class HDFollower
 					W = "FW_Boss"; UsedWeapons.Push(W);
 					W = "FW_SMG"; UsedWeapons.Push(W);
 					W = "FW_ZM66"; UsedWeapons.Push(W);
-					W = "FW_Hunter"; UsedWeapons.Push(W);
+					if (Shields.Amount <= 350)
+					{
+						W = "FW_Hunter"; UsedWeapons.Push(W);
+					}
 					EngageTarget(UsedWeapons, MTarget);
 					break;
 				}
