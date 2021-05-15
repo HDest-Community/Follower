@@ -328,7 +328,7 @@ class HDFollower : HDMobMan abstract
 		PainChance 192;
 		MaxStepHeight 80;
 		MaxDropOffHeight 128;
-		MaxTargetRange 4200;
+		MaxTargetRange 2520;
 		+ROLLCENTER
 		+ROLLSPRITE
 		+FRIENDLY
