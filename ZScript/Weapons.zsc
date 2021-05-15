@@ -20,7 +20,7 @@ extend class HDFollower
 
 	private int AdjustForDistance(double distance, double mult = 1.0) const
 	{
-		return int(clamp((distance / 64.0) * mult, 4, 70));
+		return int(clamp((distance / 42.0) * mult, 4, 60));
 	}
 
 	clearscope int GetMaxGiveAmount(FollowerWeapon wpn)
