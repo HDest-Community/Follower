@@ -74,7 +74,7 @@ extend class HDFollower
 		return true;
 	}
 
-	private void CheckRevive()
+	protected void CheckRevive()
 	{
 		string ATag = GetTag();
 		if (Blues > 0)
@@ -123,7 +123,7 @@ extend class HDFollower
 	}
 
 	// [Ace] This is technically cheating, but otherwise the follower can get absolutely assblasted and become useless.
-	private void OnRevive()
+	protected void OnRevive()
 	{
 		BodyDamage = 0;
 		Blues = 0;

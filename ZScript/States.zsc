@@ -1,0 +1,118 @@
+extend class HDFollower
+{
+	protected void CheckIncap()
+	{
+		if (Stunned > 25 && Distance3D(LinkedPlayer) < radius + MaxReviveDistance && IsFacedByPlayer() && PlayerIsCrouching())
+		{
+			Stunned -= 40;
+		}
+		A_KnockedDown();
+	}
+
+	protectd void OnFalldown()
+	{
+		MaxStepHeight = 0; // [Ace] Prevents you from sombrero-ing the follower if you stand over them while they're incapped.
+		Status = FStatus_InactiveOrDead;
+		A_SetSize(-1, deathheight);
+		A_StartSound(PainSound, CHAN_VOICE);
+		ClearWeapon();
+		scale = default.scale;
+		CrouchFactor = 0;
+	}
+
+	protected void FinishRaise()
+	{
+		ThinkerIterator it = ThinkerIterator.Create('AngelFire', STAT_DEFAULT);
+		AngelFire f;
+		while ((f = AngelFire(it.Next())))
+		{
+			if (f.master && f.master == self)
+			{
+				f.Destroy();
+				break;
+			}
+		}
+
+		MaxStepHeight = default.MaxStepHeight;
+		Status = FStatus_None;
+	}
+
+	protected void OnDeath()
+	{
+		ClearGoal();
+		ClearTarget();
+		ClearWeapon();
+		Status = FStatus_InactiveOrDead;
+		scale = default.scale;
+		CrouchFactor = 0;
+	}
+
+	States
+	{
+		Spawn:
+			#### A 1;
+			Goto Idle;
+
+		Moving:
+			#### CCCDDDEEEFFF 2;
+			Loop;
+		Idle:
+			#### A 35 TryActivateLine();
+			#### B 35;
+			Loop;
+
+		Pain:
+		Pain.Melee:
+			#### G 6
+			{
+				Status = FStatus_InactiveOrDead;
+				A_GiveInventory("HDFireDouse", 20);
+				A_StartSound(PainSound, CHAN_VOICE, CHANF_NOSTOP);
+			}
+			#### # 0
+			{
+				Status = FStatus_None;
+			}
+			Goto Idle;
+		Pain.Staples:
+			#### # 6
+			{
+				Status = FStatus_InactiveOrDead; 
+				A_StartSound(PainSound, CHAN_VOICE, CHANF_NOSTOP);
+			}
+			#### # 0
+			{
+				Status = FStatus_None;
+			}
+			Goto Idle;
+
+		Falldown:
+			#### M 4 OnFalldown();
+			#### N 4 A_StartSound(DeathSound, CHAN_VOICE);
+			#### O 4;
+			#### PQ 4;
+			#### Q 10 CheckIncap();
+			Wait;
+
+		Standup:
+			Goto Raise + 1; // [Ace] Don't reset body damage if standing up from incap.
+		Raise:
+			#### Q 0 OnRevive();
+			#### QQP 6;
+			#### O 6 A_Recoil(-0.3);
+			#### N 6;
+			#### M 6 Taunt();
+			#### A 0 FinishRaise();
+			Goto Idle;
+
+		Death:
+			#### M 9 OnDeath();
+			#### N 6 A_StartSound(DeathSound, CHAN_VOICE);
+			#### O 5;
+			#### PQR 4;
+			Goto Dead;
+		Dead:
+			#### R 1 CanRaise CheckRevive();
+			Wait;
+	}
+}
