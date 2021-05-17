@@ -779,11 +779,10 @@ extend class FollowerHandler
 						flw.ChangeLinkedPlayer(plr);
 					}
 				}
-				else if (FSize == 1 && Followers[0].CanInteractWith())
+				else if (FSize == 1)
 				{
-					ToggleSelection(e.Player, Followers[0]);
+					ToggleSelection(e.Player, Followers[0], true);
 					FollowerMenuLevel[e.Player] = FMenu_Main;
-					let lol = Selection[e.Player].GetLast();
 				}
 				else if (FSize > 0)
 				{
@@ -945,9 +944,9 @@ extend class FollowerHandler
 		FollowerMenuLevel[plrNum] = FMenu_Closed;
 	}
 
-	private void ToggleSelection(int plrNum, HDFollower flw)
+	private void ToggleSelection(int plrNum, HDFollower flw, bool force = false)
 	{
-		if (flw.CanInteractWith(false))
+		if (flw.CanInteractWith(force))
 		{
 			int FoundIndex = Selection[plrNum].SelFollowers.Find(flw);
 			if (FoundIndex == Selection[plrNum].SelFollowers.Size())

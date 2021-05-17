@@ -9,7 +9,7 @@ extend class HDFollower
 		A_KnockedDown();
 	}
 
-	protectd void OnFalldown()
+	protected void OnFalldown()
 	{
 		MaxStepHeight = 0; // [Ace] Prevents you from sombrero-ing the follower if you stand over them while they're incapped.
 		Status = FStatus_InactiveOrDead;
@@ -96,8 +96,12 @@ extend class HDFollower
 
 		Standup:
 			Goto Raise + 1; // [Ace] Don't reset body damage if standing up from incap.
+
+		// [Ace] Raise is entered if not explicitly resurrected by the player.
+		// It is important that it exists. To add custom animations for manual resurrections, use Raise.Blood and/or Raise.Blues.
+		// Note that all Raise states must call OnRevive or else your follower will crumble into dust after a few deaths from all the accumulated bodydamage.
 		Raise:
-			#### Q 0 OnRevive();
+			#### Q 7 OnRevive();
 			#### QQP 6;
 			#### O 6 A_Recoil(-0.3);
 			#### N 6;

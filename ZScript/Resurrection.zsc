@@ -17,6 +17,7 @@ extend class HDFollower
 		switch (type)
 		{
 			case 0:
+			{
 				if (!(ResurrectType & RESF_BLUES))
 				{
 					return false;
@@ -57,8 +58,10 @@ extend class HDFollower
 				}
 				Blues = RequiredSips * 12;
 				break;
+			}
 
 			case 1:
+			{
 				if (!(ResurrectType & RESF_BLOOD))
 				{
 					return false;
@@ -69,6 +72,7 @@ extend class HDFollower
 				int RequiredWounds = (RequiredBlood - CurrentWounds) * 2;
 				HDBleedingWound.Inflict(LinkedPlayer, RequiredWounds + 3, 17, false, LinkedPlayer);
 				break;
+			}
 		}
 
 		return true;
@@ -88,6 +92,10 @@ extend class HDFollower
 				}
 				else
 				{
+					if (FindState('Raise.Blues', true))
+					{
+						SetStateLabel('Raise.Blues');
+					}
 					bFRIENDLY = true;
 					PrintMessage(GetResponse("$"..ATag.."_REVIVE_BLUES_SUCCESS"), "Follower/"..ATag.."/Revive/Blues/Success", PMType_Important);
 				}
@@ -114,6 +122,10 @@ extend class HDFollower
 				}
 				else
 				{
+					if (FindState('Raise.Blood', true))
+					{
+						SetStateLabel('Raise.Blood');
+					}
 					LinkedPlayer.AggravatedDamage += RequiredBlood;
 					bFRIENDLY = true;
 					PrintMessage(GetResponse("$"..ATag.."_REVIVE_BLOOD_SUCCESS"), "Follower/"..ATag.."/Revive/Blood/Success", PMType_Important);
@@ -123,6 +135,7 @@ extend class HDFollower
 	}
 
 	// [Ace] This is technically cheating, but otherwise the follower can get absolutely assblasted and become useless.
+	// It needs to be called directly after Raise so that the correct state is entered, if one actually exists.
 	protected void OnRevive()
 	{
 		BodyDamage = 0;
@@ -157,4 +170,6 @@ extend class HDFollower
 
 	private int AbsorbedBlood;
 	int BloodReviveTicker;
+
+	private int ReviveMethod;
 }
