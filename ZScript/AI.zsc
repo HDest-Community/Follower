@@ -10,13 +10,17 @@ extend class HDFollower
 {
 	private void AiThink()
 	{
+		Actor Next = GetNextInChain();
+		// [Ace] This is always going to be true if Next != LinkedPlayer.
+		bool CanSeeNext = CheckSight(Next, SF_SEEPASTSHOOTABLELINES);
+
 		if (hdf_debug == 3)
 		{
-			Console.Printf("Follower "..GetDisplayName().." has %s out.\nCurrent status is %i.\nFollower is targeting %s.\n--------------------", SelWeapon ? SelWeapon.GetName() : "no weapon", Status, CTarget ? CTarget.GetTag() : "nothing");
+			Console.Printf("Follower "..GetDisplayName().." has %s out.\nCurrent status is %i.\nFollower is targeting %s. Follower following %s.\n--------------------",
+				SelWeapon ? SelWeapon.GetName() : "no weapon",
+				Status, CTarget ? CTarget.GetTag() : "nothing",
+				Next is 'HDFollower' ? HDFollower(Next).GetDisplayName() : (Next ? Next.GetTag() : "nothing"));
 		}
-
-		Actor Next = GetNextInChain();
-		bool CanSeeNext = CheckSight(Next, SF_SEEPASTSHOOTABLELINES);
 
 		PNeedsHelp = PlayerIsIncapped(); // [Ace] You're just incapped.
 		PNeedsMedic = PlayerNeedsMedic(); // [Ace] You're bleeding and incapped.
@@ -24,12 +28,6 @@ extend class HDFollower
 		int FFCount = Handler.FollowingFollowersCount();
 		int FIndex = Handler.Followers.Find(self);
 		double DistDiv = 1.0 + 0.1 * (min(10, FFCount - 1));
-
-		if (!CanSeeNext && CanSeePlayer)
-		{
-			Next = LinkedPlayer;
-			CanSeeNext = true;
-		}
 
 		if (Status != FStatus_InCombat)
 		{
@@ -306,7 +304,7 @@ extend class HDFollower
 		for (int i = FIndex - 1; i >= 0; --i)
 		{
 			HDFollower flw = Handler.Followers[i];
-			if (flw.Health > 0 && flw.Status == FStatus_None && (flw.Order == FOrder_Follow || flw.Order == FOrder_FollowIgnore) && flw.LinkedPlayer == LinkedPlayer && Distance3D(flw) < MaxFollowRange)
+			if (flw.Health > 0 && flw.Status == FStatus_None && (flw.Order == FOrder_Follow || flw.Order == FOrder_FollowIgnore) && flw.LinkedPlayer == LinkedPlayer && Distance3D(flw) < MaxFollowRange && CheckSight(flw, SF_SEEPASTSHOOTABLELINES))
 			{
 				return Handler.Followers[i];
 			}
