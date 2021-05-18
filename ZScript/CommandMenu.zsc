@@ -837,7 +837,7 @@ extend class FollowerHandler
 			{
 				Selection[e.Player].SelFollowers.Clear();
 			}
-			ToggleSelection(e.Player, Followers[e.Args[0]]);
+			ToggleSelection(e.Player, Followers[e.Args[0]], true);
 			return;
 		}
 
