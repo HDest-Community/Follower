@@ -253,7 +253,7 @@ extend class HDFollower
 		{
 			if (BlockDist < 42 * 3)
 			{
-				A_ChangeVelocity(0, default.MovementSpeed / 1.5, vel.z, CVF_RELATIVE | CVF_REPLACE);
+				A_ChangeVelocity(default.MovementSpeed / 2, -default.MovementSpeed / 1.5, vel.z, CVF_RELATIVE | CVF_REPLACE);
 			}
 			AimTimer = 0;
 			SetStateLabel('Aiming');
