@@ -391,8 +391,8 @@ extend class HDFollower
 				bNOPAIN = true;
 			}
 		ReloadHunterLoop:
-			#### H 35 A_StartSound("weapons/pocket", 8);
-			#### HHH 9
+			#### H 30 A_StartSound("weapons/pocket", 8);
+			#### HHH 8
 			{
 				if (SelWeapon.TryReloadMag())
 				{
