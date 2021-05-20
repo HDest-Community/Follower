@@ -38,7 +38,7 @@ extend class HDFollower
 
 				if (hdf_debug == 1)
 				{
-					Console.Printf("%s is attempting to target %s with %i bodydamage.", GetTag(), MTarget.GetClassName(), HDMon ? HDMon.BodyDamage : -1);
+					Console.Printf("%s is attempting to target %s with %i bodydamage and %i shields.", GetDisplayName(), MTarget.GetClassName(), HDMon ? HDMon.BodyDamage : -1, Shields ? Shields.Amount : 0);
 				}
 
 				if (!CanHitTarget(MTarget))
