@@ -54,83 +54,88 @@ extend class HDFollower
 				{
 					if (!AlreadyTargeted)
 					{
-						W = "FW_Bronto"; UsedWeapons.Push(W);
+						W = 'FW_Bronto'; UsedWeapons.Push(W);
 					}
-					W = "FW_RocketLauncher"; UsedWeapons.Push(W);
-					W = "FW_Liberator"; UsedWeapons.Push(W);
-					W = "FW_Boss"; UsedWeapons.Push(W);
-					W = "FW_SMG"; UsedWeapons.Push(W);
-					W = "FW_ZM66"; UsedWeapons.Push(W);
+					W = 'FW_RocketLauncher'; UsedWeapons.Push(W);
+					W = 'FW_Liberator'; UsedWeapons.Push(W);
+					W = 'FW_Boss'; UsedWeapons.Push(W);
+					W = 'FW_SMG'; UsedWeapons.Push(W);
+					W = 'FW_ZM66'; UsedWeapons.Push(W);
 					EngageTarget(UsedWeapons, MTarget);
 					break;
 				}
-				else if (MTarget is "Necromancer" && !AlreadyTargeted)
+				else if (MTarget is 'Necromancer' && !AlreadyTargeted)
 				{
-					W = "FW_ZM66"; UsedWeapons.Push(W);
-					W = "FW_Hunter"; UsedWeapons.Push(W);
-					W = "FW_SMG"; UsedWeapons.Push(W);
-					W = "FW_Boss"; UsedWeapons.Push(W);
-					W = "FW_Liberator"; UsedWeapons.Push(W);
+					W = 'FW_ZM66'; UsedWeapons.Push(W);
+					W = 'FW_Hunter'; UsedWeapons.Push(W);
+					W = 'FW_SMG'; UsedWeapons.Push(W);
+					W = 'FW_Boss'; UsedWeapons.Push(W);
+					W = 'FW_Liberator'; UsedWeapons.Push(W);
 					EngageTarget(UsedWeapons, MTarget);
 					break;
 				}
-				else if (MTarget is "PainLord" || MTarget is "PainBringer")
+				else if (MTarget is 'PainLord' || MTarget is 'PainBringer')
 				{
 					if (!AlreadyTargeted)
 					{
-						if (MTarget is "PainLord")
+						if (MTarget is 'PainLord')
 						{
-							W = "FW_Bronto"; UsedWeapons.Push(W);
+							W = 'FW_Bronto'; UsedWeapons.Push(W);
 						}
-						W = "FW_RocketLauncher"; UsedWeapons.Push(W);
+						W = 'FW_RocketLauncher'; UsedWeapons.Push(W);
 					}
-					W = "FW_Liberator"; UsedWeapons.Push(W);
-					W = "FW_Boss"; UsedWeapons.Push(W);
-					if (Shields && Shields.Amount > 100)
+					W = 'FW_Liberator'; UsedWeapons.Push(W);
+					W = 'FW_Boss'; UsedWeapons.Push(W);
+					if (Shields && Shields.Amount > 200)
 					{
-						W = "FW_SMG"; UsedWeapons.Push(W);
+						W = 'FW_SMG'; UsedWeapons.Push(W);
+						if (Shields.Amount <= 500)
+						{
+							W = 'FW_ZM66'; UsedWeapons.Push(W);
+							W = 'FW_Hunter'; UsedWeapons.Push(W);
+						}
 					}
-					W = "FW_ZM66"; UsedWeapons.Push(W);
-					if (!Shields || Shields.Amount <= 100)
+					else
 					{
-						W = "FW_Hunter"; UsedWeapons.Push(W);
-						W = "FW_SMG"; UsedWeapons.Push(W);
+						W = 'FW_ZM66'; UsedWeapons.Push(W);
+						W = 'FW_SMG'; UsedWeapons.Push(W);
+						W = 'FW_Hunter'; UsedWeapons.Push(W);
 					}
 					EngageTarget(UsedWeapons, MTarget);
 					break;
 				}
-				else if (MTarget is "HDMobBase" && Shields && Shields.Amount > 150)
+				else if (MTarget is 'HDMobBase' && Shields && Shields.Amount > 150)
 				{
-					W = "FW_RocketLauncher"; UsedWeapons.Push(W);
-					W = "FW_Liberator"; UsedWeapons.Push(W);
-					W = "FW_Boss"; UsedWeapons.Push(W);
-					W = "FW_SMG"; UsedWeapons.Push(W);
-					W = "FW_ZM66"; UsedWeapons.Push(W);
+					W = 'FW_RocketLauncher'; UsedWeapons.Push(W);
+					W = 'FW_Liberator'; UsedWeapons.Push(W);
+					W = 'FW_Boss'; UsedWeapons.Push(W);
+					W = 'FW_SMG'; UsedWeapons.Push(W);
+					W = 'FW_ZM66'; UsedWeapons.Push(W);
 					if (Shields.Amount <= 350)
 					{
-						W = "FW_Hunter"; UsedWeapons.Push(W);
+						W = 'FW_Hunter'; UsedWeapons.Push(W);
 					}
 					EngageTarget(UsedWeapons, MTarget);
 					break;
 				}
 
 				// [Ace] Intentionally don't break the loop in case one of the next monsters is a high priority one.
-				else if (MTarget.FindInventory("HDArmourWorn") && !AlreadyTargeted) // [Ace] Don't focus fire on trash.
+				else if (MTarget.FindInventory('HDArmourWorn') && !AlreadyTargeted) // [Ace] Don't focus fire on trash.
 				{
-					W = "FW_Liberator"; UsedWeapons.Push(W);
-					W = "FW_Boss"; UsedWeapons.Push(W);		
-					W = "FW_ZM66"; UsedWeapons.Push(W);
-					W = "FW_SMG"; UsedWeapons.Push(W);
-					W = "FW_Hunter"; UsedWeapons.Push(W);
+					W = 'FW_Liberator'; UsedWeapons.Push(W);
+					W = 'FW_Boss'; UsedWeapons.Push(W);		
+					W = 'FW_ZM66'; UsedWeapons.Push(W);
+					W = 'FW_SMG'; UsedWeapons.Push(W);
+					W = 'FW_Hunter'; UsedWeapons.Push(W);
 					EngageTarget(UsedWeapons, MTarget);
 				}
 				else if ((!CheckTarget() || !SelWeapon) && !AlreadyTargeted)
 				{
-					W = "FW_Hunter"; UsedWeapons.Push(W);
-					W = "FW_ZM66"; UsedWeapons.Push(W);
-					W = "FW_Liberator"; UsedWeapons.Push(W);
-					W = "FW_Boss"; UsedWeapons.Push(W);
-					W = "FW_SMG"; UsedWeapons.Push(W);
+					W = 'FW_Hunter'; UsedWeapons.Push(W);
+					W = 'FW_ZM66'; UsedWeapons.Push(W);
+					W = 'FW_Liberator'; UsedWeapons.Push(W);
+					W = 'FW_Boss'; UsedWeapons.Push(W);
+					W = 'FW_SMG'; UsedWeapons.Push(W);
 					EngageTarget(UsedWeapons, MTarget);
 				}
 				else if (SelWeapon) // [Ace] In case follower gets interrupted, re-engage old target.
@@ -141,8 +146,8 @@ extend class HDFollower
 			}
 			else if (!bFRIENDLY && PTarget && PTarget.Health > 0 && CheckSight(PTarget, SF_SEEPASTSHOOTABLELINES))
 			{
-				W = "FW_ZM66"; UsedWeapons.Push(W);
-				W = "FW_SMG"; UsedWeapons.Push(W);
+				W = 'FW_ZM66'; UsedWeapons.Push(W);
+				W = 'FW_SMG'; UsedWeapons.Push(W);
 				EngageTarget(UsedWeapons, PTarget);
 			}
 		}
