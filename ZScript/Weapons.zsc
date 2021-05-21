@@ -20,7 +20,7 @@ extend class HDFollower
 
 	private int AdjustForDistance(double distance, double mult = 1.0) const
 	{
-		return int(clamp((distance / 42.0) * mult, 4, 60));
+		return int(clamp((distance / 42.0) * mult, 8, MaxTargetRange / 42.0));
 	}
 
 	clearscope int GetMaxGiveAmount(FollowerWeapon wpn)
@@ -251,7 +251,7 @@ extend class HDFollower
 		Actor BlockActor = AimBlocked();
 		if (BlockActor)
 		{
-			if (Distance3D(BlockActor) < 42 * 3)
+			if (Distance3D(BlockActor) < 42 * 5)
 			{
 				double dangle = DeltaAngle(angle, AngleTo(BlockActor));
 				int dir = dangle > 0 ? -1 : 1;
@@ -266,13 +266,14 @@ extend class HDFollower
 	{
 		FLineTraceData TraceData;
 		LineTrace(angle, MaxTargetRange, pitch, TRF_NOSKY, Height - HDCONST_CROWNTOSHOULDER, data: TraceData);
-		if (TraceData.HitActor && bFRIENDLY && (TraceData.HitActor is "PlayerPawn" || TraceData.HitActor is 'HDFollower' && TraceData.HitActor.bFRIENDLY))
+		Actor a = TraceData.HitActor;
+		if (a && bFRIENDLY && (a is "PlayerPawn" || a is 'HDFollower' && a.bFRIENDLY || !a.bISMONSTER && a.bSOLID))
 		{
 			if (hdf_debug == 2)
 			{
-				Console.Printf("Aim is being blocked by %s.", TraceData.HitActor.GetClassName());
+				Console.Printf("Aim is being blocked by %s.", a.GetClassName());
 			}
-			return TraceData.HitActor;
+			return a;
 		}
 		return null;
 	}
@@ -292,7 +293,7 @@ extend class HDFollower
 			}
 		Aiming:
 			#### H 1; // [Ace] Otherwise it's gonna cause an infinite loop.
-			#### H 1 Aim(); // [Ace] This is on this line and not inside the anonymous function because of SetStateLabel.
+			#### H 0 Aim(); // [Ace] This is on this line and not inside the anonymous function because of SetStateLabel.
 			#### H 0
 			{
 				if (AimTimer++ > AdjustForDistance(Distance3D(CTarget), SelWeapon.GetAdjustmentMult()))
