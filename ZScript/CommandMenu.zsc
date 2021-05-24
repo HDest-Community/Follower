@@ -92,7 +92,7 @@ extend class FollowerHandler
 		{
 			case FMenu_Recruitment:
 			{
-				if (!SelMarine[consoleplayer])
+				if (!SelMarine[consoleplayer] || SelMarine[consoleplayer].Health <= 0)
 				{
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
 					return;
