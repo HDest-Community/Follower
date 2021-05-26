@@ -252,7 +252,7 @@ extend class FollowerHandler
 						RectangleWidth += 40;
 					}
 
-					DrawTextRectangle(sb, pos, (RectangleWidth, RectangleHeight), MainFont, GetTruncatedText(SFol.GetDisplayName(), 17), flags, Font.FindFontColor('FLW_NameBlue'));
+					DrawTextRectangle(sb, pos, (RectangleWidth, RectangleHeight), MainFont, GetTruncatedText(SFol.GetDisplayName(), RectangleWidth > 150 ? 20 : 16), flags, Font.FindFontColor('FLW_NameBlue'));
 					pos.y += RectangleHeight + Spacing;
 					
 					if (Followers.Size() == 1 && SFol.CanInteractWith(false))
