@@ -9,20 +9,19 @@ extend class HDFollower
 			return;
 		}
 		
-		string ATag = GetTag();
 		let WornArmor = FindInventory("HDArmourWorn");
 		if (Status == FStatus_WaitingForArmor)
 		{
 			if (WornArmor)
 			{
 				A_DropInventory(WornArmor.GetClass());
-				PrintMessage(GetResponse("$"..ATag.."_ARMORGIVE_STRIP"), "Follower/"..ATag.."/ArmorGive/Strip", PMType_General);
+				PrintMessage(GetResponse("ARMORGIVE_STRIP"), "ArmorGive/Strip", PMType_General);
 				Status = FStatus_None;
 				return;
 			}
 			else
 			{
-				PrintMessage(GetResponse("$"..ATag.."_ARMORGIVE_CANCEL"), "Follower/"..ATag.."/ArmorGive/Cancel", PMType_Important);
+				PrintMessage(GetResponse("ARMORGIVE_CANCEL"), "ArmorGive/Cancel", PMType_Important);
 				Status = FStatus_None;
 				return;
 			}
@@ -30,8 +29,8 @@ extend class HDFollower
 
 		Status = FStatus_WaitingForArmor;
 		
-		string Message = GetResponse("$"..ATag.."_ARMORGIVE_INIT")..(FindInventory("HDArmourWorn") ? " "..GetResponse("$"..ATag.."_ARMORGIVE_MAYBEDROP") : "");
-		string VoiceLine = FindInventory("HDArmourWorn") ? "Follower/"..ATag.."/ArmorGive/Init2" : "Follower/"..ATag.."/ArmorGive/Init1";
+		string Message = GetResponse("ARMORGIVE_INIT")..(FindInventory("HDArmourWorn") ? " "..GetResponse("ARMORGIVE_MAYBEDROP") : "");
+		string VoiceLine = FindInventory("HDArmourWorn") ? "ArmorGive/Init2" : "ArmorGive/Init1";
 		PrintMessage(Message, VoiceLine, PMType_Important);
 	}
 
@@ -43,25 +42,24 @@ extend class HDFollower
 
 		if (FoundArmor)
 		{
-			string ATag = GetTag();
 			if (!WornArmor)
 			{
-				PrintMessage(GetResponse("$"..ATag.."_ARMORGIVE_NONE"), "Follower/"..ATag.."/ArmorGive/None", PMType_General);
+				PrintMessage(GetResponse("ARMORGIVE_NONE"), "ArmorGive/None", PMType_General);
 			}
 			else if (WornArmor)
 			{
 				// [Ace] 1030 because mega armor's durability is calculated as 1000 + actual durability. Only while on the ground, though.
 				if (!WornArmor.Mega && FoundArmor.Mega && FoundArmor.Mags[0] >= 1030 || WornArmor.Mega && WornArmor.Durability < 20 && !FoundArmor.Mega && FoundArmor.Mags[0] > 60)
 				{
-					PrintMessage(GetResponse("$"..ATag.."_ARMORGIVE_UPGRADE"), "Follower/"..ATag.."/ArmorGive/Upgrade", PMType_General);
+					PrintMessage(GetResponse("ARMORGIVE_UPGRADE"), "ArmorGive/Upgrade", PMType_General);
 				}
 				else if (FoundArmor.Mega == WornArmor.Mega && WornArmor.Durability < FoundArmor.Mags[0] % 1000)
 				{
-					PrintMessage(GetResponse("$"..ATag.."_ARMORGIVE_BETTERDURABILITY"), "Follower/"..ATag.."/ArmorGive/BetterDurability", PMType_General);
+					PrintMessage(GetResponse("ARMORGIVE_BETTERDURABILITY"), "ArmorGive/BetterDurability", PMType_General);
 				}
 				else
 				{
-					PrintMessage(GetResponse("$"..ATag.."_ARMORGIVE_NOTHANKS"), "Follower/"..ATag.."/ArmorGive/NoThanks", PMType_Important);
+					PrintMessage(GetResponse("ARMORGIVE_NOTHANKS"), "ArmorGive/NoThanks", PMType_Important);
 					Status = FStatus_None;
 					tracer = null;
 					return;

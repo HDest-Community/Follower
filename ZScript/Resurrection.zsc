@@ -80,7 +80,6 @@ extend class HDFollower
 
 	protected void CheckRevive()
 	{
-		string ATag = GetTag();
 		if (Blues > 0)
 		{
 			SpawnReviveParticles("2222FF");
@@ -97,7 +96,7 @@ extend class HDFollower
 						SetStateLabel('Raise.Blues');
 					}
 					bFRIENDLY = true;
-					PrintMessage(GetResponse("$"..ATag.."_REVIVE_BLUES_SUCCESS"), "Follower/"..ATag.."/Revive/Blues/Success", PMType_Important);
+					PrintMessage(GetResponse("REVIVE_BLUES_SUCCESS"), "Revive/Blues/Success", PMType_Important);
 				}
 			}
 		}
@@ -128,7 +127,7 @@ extend class HDFollower
 					}
 					LinkedPlayer.AggravatedDamage += RequiredBlood;
 					bFRIENDLY = true;
-					PrintMessage(GetResponse("$"..ATag.."_REVIVE_BLOOD_SUCCESS"), "Follower/"..ATag.."/Revive/Blood/Success", PMType_Important);
+					PrintMessage(GetResponse("REVIVE_BLOOD_SUCCESS"), "Revive/Blood/Success", PMType_Important);
 				}
 			}
 		}

@@ -63,8 +63,7 @@ extend class HDFollower
 				return false;
 			}
 
-			string ATag = GetTag();
-			PrintMessage(GetResponse("$"..ATag.."_CARRY_SUCCESS"), "Follower/"..ATag.."/Carry/Success", PMType_General);
+			PrintMessage(GetResponse("CARRY_SUCCESS"), "Carry/Success", PMType_General);
 		}
 
 		let Handler = FollowerHandler(EventHandler.Find("FollowerHandler"));

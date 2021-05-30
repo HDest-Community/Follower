@@ -1,0 +1,85 @@
+extend class HDFollower
+{
+	static void ThinkMessage(Actor other, string message)
+	{
+		other.A_Print(StringTable.Localize(message));
+	}
+
+	static void ChatMessage(HDFollower flw, Actor other, string message)
+	{
+		other.A_Log("\c[White]"..flw.GetDisplayName()..": \c[Green]"..message.."\c-");
+		other.A_StartSound("misc/chat", 20, CHANF_LOCAL);
+	}
+
+	protected void PrintMessage(string message, string voiceLine, PrintMessageType type)
+	{
+		if (Health <= 0 || bSILENT)
+		{
+			return;
+		}
+
+		if (message != "" && type <= CVar.GetCVar('hdf_printlevel_chat', LinkedPlayer.player).GetInt())
+		{
+			ChatMessage(self, LinkedPlayer, message);
+		}
+
+		if (type <= CVar.GetCVar('hdf_printlevel_voice', LinkedPlayer.player).GetInt())
+		{
+			voiceLine = "Follower/"..GetTag().."/"..voiceLine;
+			if (Distance3D(LinkedPlayer) < 512)
+			{
+				A_StartSound(voiceLine, 21);
+			}
+			else
+			{
+				LinkedPlayer.A_StartSound(voiceLine, 21, CHANF_LOCAL);
+			}
+		}
+	}
+
+	protected void PlayIdleComment()
+	{
+		bool Enabled = CVar.GetCVar('hdf_enablecomments', LinkedPlayer.player).GetBool();
+		if (!Enabled)
+		{
+			return;
+		}
+
+		if (SeeSound != "")
+		{
+			A_StartSound(SeeSound, CHAN_VOICE, CHANF_OVERLAP);
+		}
+		else
+		{
+			// [Ace] This is called "see" to be consistent with SeeSound. It's for the idle comments and not the actual "see" sound.
+			string Response = GetResponse("SEE");
+			if (Response != "")
+			{
+				ChatMessage(self, LinkedPlayer, Response);
+			}
+		}
+		ResetCommentTimer();
+	}
+
+	// [Ace] Looks up the response in LANGUAGE and picks a random one out of the existing, unless none exist, in which case it'll return the raw string or an empty one.
+	protected string GetResponse(string raw)
+	{
+		raw = ("$"..GetTag().."_"..raw).MakeUpper();
+		int MaxIndex = 0;
+		for (int i = 1; i <= 20; ++i) // [Ace] 20 should be enough.
+		{
+			if ("$"..StringTable.Localize(raw.."_"..i) != raw.."_"..i)
+			{
+				MaxIndex++;
+			}
+		}
+
+		string Localized = StringTable.Localize(raw.."_"..random[responserand](1, MaxIndex));
+		return MaxIndex > 0 ? Localized : "";
+	}
+
+	private void ResetCommentTimer()
+	{
+		CommentTimer = random(35 * 10, 35 * 30);
+	}
+}

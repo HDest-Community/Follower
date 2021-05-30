@@ -206,10 +206,10 @@ extend class HDFollower
 				ClearGoal();
 			}
 
-			// [Ace] Only play the sound if moving.
-			if (TauntTimer <= 0)
+			// [Ace] Only play idle comments if moving.
+			if (CommentTimer <= 0)
 			{
-				Taunt();
+				PlayIdleComment();
 			}
 		}
 		else // [Ace] Deceleration.
@@ -258,23 +258,9 @@ extend class HDFollower
 		return InStateSequence(CurState, FindState('Moving'));
 	}
 
-	private void Taunt()
-	{
-		if (CVar.GetCVar('hdf_enablecomments', LinkedPlayer.player).GetBool())
-		{
-			ResetTauntTimer();
-			A_StartSound(SeeSound, CHAN_VOICE, CHANF_OVERLAP);
-		}
-	}
-
 	private void ResetIdleTimer()
 	{
 		IdleTimer = random(35 * 3, 35 * 6) * (Order == FOrder_Cover ? 3 : 1);
-	}
-
-	private void ResetTauntTimer()
-	{
-		TauntTimer = random(35 * 10, 35 * 30);
 	}
 
 	private bool IsSteppingOnSomeone()
@@ -326,8 +312,8 @@ extend class HDFollower
 
 	private vector3 LastKnownPos;
 
-	private int TauntTimer;
 	private int IdleTimer;
+	private int CommentTimer;
 	private bool ActivateAsPlayer;
 	private int NoSightTics; // [Ace] Used with CheckSight.
 

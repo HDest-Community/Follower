@@ -34,11 +34,9 @@ extend class HDFollower
 			return false;
 		}
 
-		string ATag = GetTag();
-
 		if (GetTotalBrass() == 0)
 		{
-			PrintMessage(GetResponse("$"..ATag.."_BRASS_NONE"), "Follower/"..ATag.."/Brass/None", PMType_Important);
+			PrintMessage(GetResponse("BRASS_NONE"), "Brass/None", PMType_Important);
 			return true;
 		}
 
@@ -66,7 +64,7 @@ extend class HDFollower
 			}
 
 			LinkedPlayer.A_GiveInventory("SevenMilBrass", TotalGiveAmount);
-			PrintMessage(GetResponse("$"..ATag.."_BRASS_SUCCESS"), "Follower/"..ATag.."/Brass/Success", PMType_General);
+			PrintMessage(GetResponse("BRASS_SUCCESS"), "Brass/Success", PMType_General);
 		}
 		else
 		{

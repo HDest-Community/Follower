@@ -16,6 +16,7 @@ version "4.5"
 #include "ZScript/Targeting.zsc"
 #include "ZScript/Brass.zsc"
 #include "ZScript/Loadout.zsc"
+#include "ZScript/Messages.zsc"
 
 #include "ZScript/Followers/Freylis.zsc"
 #include "ZScript/Followers/Balthazar.zsc"
@@ -71,41 +72,6 @@ class HDFollower : HDMobMan abstract
 	void WarpToPlayer()
 	{
 		Warp(LinkedPlayer, 16, flags: WARPF_NOCHECKPOSITION);
-	}
-
-	private void PrintMessage(string message, string voiceLine, PrintMessageType type)
-	{
-		if (Health <= 0 || bSILENT)
-		{
-			return;
-		}
-
-		if (type <= CVar.GetCVar('hdf_printlevel_chat', LinkedPlayer.player).GetInt())
-		{
-			LinkedPlayer.A_Log("\c[White]"..GetDisplayName()..": \c[Green]"..message.."\c-");
-			LinkedPlayer.A_StartSound("misc/chat", 20, CHANF_LOCAL);
-		}
-		if (type <= CVar.GetCVar('hdf_printlevel_voice', LinkedPlayer.player).GetInt())
-		{
-			if (Distance3D(LinkedPlayer) < 512)
-			{
-				A_StartSound(voiceLine, 21);
-			}
-			else
-			{
-				LinkedPlayer.A_StartSound(voiceLine, 21, CHANF_LOCAL);
-			}
-		}
-	}
-
-	private string GetResponse(string raw, int maxIndex = 3)
-	{
-		return StringTable.Localize(raw.."_"..random(1, max(1, maxIndex)));
-	}
-
-	static void ThinkMessage(Actor other, string message)
-	{
-		other.A_Print(StringTable.Localize(message));
 	}
 
 	private clearscope bool PlayerIsCrouching()
@@ -219,7 +185,7 @@ class HDFollower : HDMobMan abstract
 		if (!Moving)
 		{
 			IdleTimer--;
-			TauntTimer--;
+			CommentTimer--;
 		}
 
 		if (Health > 0)
@@ -228,7 +194,7 @@ class HDFollower : HDMobMan abstract
 			{
 				if (Distance3D(LinkedPlayer) > 512)
 				{
-					PrintMessage(GetResponse("$"..GetTag().MakeUpper().."_ARMORGIVE_RANAWAY"), "Follower/"..GetTag().."/ArmorGive/RanAway", PMType_Critical);
+					PrintMessage(GetResponse("ARMORGIVE_RANAWAY"), "ArmorGive/RanAway", PMType_Critical);
 					Status = FStatus_None;
 				}
 				else if (level.time % 35 == 0)
@@ -272,7 +238,7 @@ class HDFollower : HDMobMan abstract
 	override void PostBeginPlay()
 	{
 		ResetIdleTimer();
-		ResetTauntTimer();
+		ResetCommentTimer();
 
 		Super.PostBeginPlay();
 

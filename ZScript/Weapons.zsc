@@ -86,8 +86,6 @@ extend class HDFollower
 			return;
 		}
 
-		string ATag = GetTag();
-
 		class<Inventory> AmmoType = wpn.GetAmmoType();
 		int MaxGive = GetMaxGiveAmount(wpn);
 
@@ -103,7 +101,7 @@ extend class HDFollower
 		{
 			if (!TryReloadWeapon(wpn, wpn.GetMaxMag(), RLF_MANUAL))
 			{
-				PrintMessage(GetResponse("$"..ATag.."_AMMOGIVE_"..wpn.GetLocalizationTag().."_TOOMANY"), "Follower/"..ATag.."/AmmoGive/"..wpn.GetLocalizationTag().."/TooMany", PMType_Important);
+				PrintMessage(GetResponse("AMMOGIVE_"..wpn.GetLocalizationTag().."_TOOMANY"), "AmmoGive/"..wpn.GetLocalizationTag().."/TooMany", PMType_Important);
 			}
 			return;
 		}
@@ -121,7 +119,7 @@ extend class HDFollower
 		wpn.HasWarnedLowAmmo = false;
 		TryReloadWeapon(wpn, wpn.GetMaxMag(), RLF_MANUAL);
 
-		PrintMessage(GetResponse("$"..ATag.."_AMMOGIVE_"..wpn.GetLocalizationTag().."_SUCCESS"), "Follower/"..ATag.."/AmmoGive/"..wpn.GetLocalizationTag().."/Success", PMType_General);
+		PrintMessage(GetResponse("AMMOGIVE_"..wpn.GetLocalizationTag().."_SUCCESS"), "AmmoGive/"..wpn.GetLocalizationTag().."/Success", PMType_General);
 	}
 
 	// [Ace] If weapon is out of ammo, reload.
@@ -131,8 +129,6 @@ extend class HDFollower
 		{
 			return false;
 		}
-
-		string ATag = GetTag();
 
 		int MaxMag = wpn.GetMaxMag();
 		if (MaxMag > 0 && (wpn.Mag <= 0 || wpn.Mag < min) || MaxMag == 0 && wpn.ChamberedRound != FollowerWeapon.CRType_Chambered)
@@ -154,7 +150,7 @@ extend class HDFollower
 				if (!(flags & RLF_SILENT) && (!wpn.HasWarnedLowAmmo || (flags & RLF_MANUAL)))
 				{
 					wpn.HasWarnedLowAmmo = true;
-					PrintMessage(GetResponse("$"..ATag.."_NOAMMO_"..wpn.GetLocalizationTag()), "Follower/"..ATag.."/NoAmmo/"..wpn.GetLocalizationTag(), PMType_Critical);
+					PrintMessage(GetResponse("NOAMMO_"..wpn.GetLocalizationTag()), "NoAmmo/"..wpn.GetLocalizationTag(), PMType_Critical);
 				}
 
 				if (!(flags & RLF_NOJUMP))

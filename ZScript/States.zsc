@@ -105,7 +105,7 @@ extend class HDFollower
 			#### QQP 6;
 			#### O 6 A_Recoil(-0.3);
 			#### N 6;
-			#### M 6 Taunt();
+			#### M 6 PlayIdleComment();
 			#### A 0 FinishRaise();
 			Goto Idle;
 

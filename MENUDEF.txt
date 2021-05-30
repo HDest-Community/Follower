@@ -43,7 +43,8 @@ OptionMenu "HDFollowerMenu"
 	Option "Voice Responses", "hdf_printlevel_voice", "PrintLevel"
 	StaticText ""
 	Option "Enable Idle Comments", "hdf_enablecomments", "YesNo"
-	StaticText "Voice lines the followers will sometimes say when they move.", "White"
+	StaticText "Voice/text lines the followers will sometimes say when they move.", "White"
+	StaticText "Voice lines are prioritized over text lines if they exist.", "White"
 	StaticText ""
 }
 
