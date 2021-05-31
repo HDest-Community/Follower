@@ -27,7 +27,7 @@ extend class HDFollower
 		bool IsHelping = IsHelpingPlayer();
 		int FFCount = Handler.FollowingFollowersCount();
 		int FIndex = Handler.Followers.Find(self);
-		double DistDiv = 1.0 + 0.1 * (min(10, FFCount - 1));
+		double DistDiv = Next != LinkedPlayer ? 1.0 + 0.1 * (min(10, FFCount - 1)) : 1.0;
 
 		if (Status != FStatus_InCombat)
 		{
@@ -143,7 +143,7 @@ extend class HDFollower
 		}
 
 		// [Ace] Movement. Always travel to goals if there are any. Status between moving and idle should not be set elsewhere.
-		if (Status != FStatus_WaitingForArmor && (Status != FStatus_InCombat || Order == FOrder_GoAndCover) && TGoal && (TGoal is Next.GetClass() && Distance2D(TGoal) > (Order == FOrder_ComeAndHelp && (PNeedsMedic || PNeedsHelp) ? MedicRange : MinFollowRangeStop / DistDiv) || TGoal is "TargetGoal" && Distance2D(TGoal) > 16) && Distance2D(TGoal) < MaxGoalRange)
+		if (Status != FStatus_WaitingForArmor && (Status != FStatus_InCombat || Order == FOrder_GoAndCover) && TGoal && (TGoal is Next.GetClass() && Distance2D(TGoal) > (Order == FOrder_ComeAndHelp && (PNeedsMedic || PNeedsHelp) ? MedicRange : (MinFollowRangeStop / DistDiv)) || TGoal is "TargetGoal" && Distance2D(TGoal) > 16) && Distance2D(TGoal) < MaxGoalRange)
 		{
 			// [Ace] Don't slow down if player is bleeding out their ass or needs help getting up.
 			if (TGoal is "PlayerPawn" && Order == FOrder_ComeAndHelp && (PNeedsMedic || PNeedsHelp))
@@ -156,7 +156,7 @@ extend class HDFollower
 			}
 			else
 			{
-				if (Distance2D(TGoal) < 48)
+				if (Distance2D(TGoal) < 42)
 				{
 					MovementSpeed = default.MovementSpeed / 2;
 				}
@@ -167,7 +167,7 @@ extend class HDFollower
 					{
 						tics = 1;
 					}
-					MovementSpeed = min(default.MovementSpeed + Distance2D(TGoal) / 80.0, MaxMovementSpeed);
+					MovementSpeed = min(default.MovementSpeed + Distance2D(TGoal) / (84 - 7 * min(FFCount - 1, 6)), MaxMovementSpeed);
 				}
 			}
 

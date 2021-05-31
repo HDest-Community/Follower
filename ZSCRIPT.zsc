@@ -291,7 +291,7 @@ class HDFollower : HDMobMan abstract
 		Health 200;
 		Radius 12;
 		Height 52;
-		HDFollower.MovementSpeed 4, 8;
+		HDFollower.MovementSpeed 3, 8;
 		PainChance 192;
 		MaxStepHeight 80;
 		MaxDropOffHeight 128;
