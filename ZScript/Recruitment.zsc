@@ -148,18 +148,19 @@ extend class FollowerHandler
 		HDFollower Recruit = CreateFollower('RecruitedMarine', owningPlayer, m.pos);
 
 		int Gender = 0;
-		string snd = m.PainSound;
-		if (snd.IndexOf("marinef") > -1)
+		string snd = m.SeeSound;
+		if (snd.IndexOf("marinef") != -1)
 		{
 			Gender = 1;
 		}
-		else if (snd.IndexOf("marineb") > -1)
+		else if (snd.IndexOf("marinen") != -1 || snd.IndexOf("marineb") != -1)
 		{
 			Gender = 2;
 		}
 		Recruit.angle = m.angle;
 		Recruit.Health = m.Health;
 		Recruit.Gender = Gender;
+		Recruit.SeeSound = m.SeeSound;
 		Recruit.PainSound = m.PainSound;
 		Recruit.DeathSound = m.DeathSound;
 		Recruit.DisplayName = GetUniqueMarineName(Gender);

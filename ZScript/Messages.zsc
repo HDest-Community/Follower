@@ -80,6 +80,6 @@ extend class HDFollower
 
 	private void ResetCommentTimer()
 	{
-		CommentTimer = random(35 * 10, 35 * 30);
+		CommentTimer = random(35 * 15, 35 * 50);
 	}
 }
