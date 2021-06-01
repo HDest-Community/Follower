@@ -28,7 +28,7 @@ extend class HDFollower
 		int FFCount = Handler.FollowingFollowersCount();
 		int FIndex = Handler.Followers.Find(self);
 		double DistDiv = Next != LinkedPlayer ? 1.0 + 0.1 * (min(8, FFCount - 1)) : 1.0;
-
+		
 		if (Status != FStatus_InCombat)
 		{
 			if (SelWeapon)
@@ -52,7 +52,20 @@ extend class HDFollower
 				}
 			}
 
-			if (Status == FStatus_None)
+			if (Status == FStatus_WaitingForArmor)
+			{
+				if (Distance3D(LinkedPlayer) > 42 * 12)
+				{
+					PrintMessage(GetResponse("ARMORGIVE_RANAWAY"), "ArmorGive/RanAway", PMType_Critical);
+					Status = FStatus_None;
+				}
+				else
+				{
+					A_Face(LinkedPlayer, 45);
+					LookForArmor();
+				}
+			}
+			else if (Status == FStatus_None)
 			{
 				if (Order == FOrder_ComeAndHelp && bFRIENDLY && DistanceToPlayer < 512 && CanSeePlayer)
 				{

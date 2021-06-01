@@ -9,7 +9,7 @@ OptionMenu "HDFollowerMenu"
 	Option "Ohana Mode", "hdf_ohana", "OnOff"
 	StaticText "It's a dangerous world. A good team always sticks together.", "White"
 	StaticText "Followers die if left alone for longer than 5 minutes.", "White"
-	StaticText "After 15 minutes, they disappear forever.", "White"
+	StaticText "After 15 more minutes, they disappear forever.", "White"
 	StaticText ""
 	Option "Collect Brass", "hdf_collectbrass", "YesNo"
 	Slider "Extra Brass Storage", "hdf_extrabrass", 0, 4000, 250, 0

@@ -1,0 +1,32 @@
+extend class HDFollower
+{
+	protected void CheckOhana()
+	{
+		if (!OhanaMode) { OhanaMode = CVar.GetCVar('hdf_ohana'); }
+		if (OhanaMode.GetBool() && (CanSeePlayer && DistanceToPlayer > 840 || !CanSeePlayer && DistanceToPlayer > 210))
+		{
+			OhanaTicker++;
+			if (OhanaTicker >= OhanaDeathTime && Health > 0)
+			{
+				A_Die();
+				BodyDamage = 10000;
+				BloodReviveTicker = 10000;
+				OhanaTicker = 0;
+			}
+			else if (OhanaTicker >= OhanaDisappearTime)
+			{
+				Handler.RemoveFollower(self, true);
+				return;
+			}
+		}
+		else
+		{
+			OhanaTicker = 0;
+		}
+	}
+
+	private transient CVar OhanaMode;
+	private int OhanaTicker;
+	const OhanaDeathTime = 35 * 60 * 5;
+	const OhanaDisappearTime = 35 * 60 * 15;
+}
