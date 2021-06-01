@@ -720,7 +720,7 @@ extend class FollowerHandler
 			int FollowerIndex = e.Args[0];
 
 			// [Ace; 23.03.2021]
-			// The problem with FollowerIndex, in hindsight, is that if two followers shame the same index, only the first one would get deleted.
+			// The problem with FollowerIndex, in hindsight, is that if two followers share the same index, only the first one would get deleted.
 			// I should have used class name for filtering. Unfortunately, it's too late. Not without breaking all of the existing follower sub-addons. Ah well.
 
 			// [Ace] Destroy the class that is being reset, if applicable, then recreate it.
