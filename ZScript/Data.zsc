@@ -144,6 +144,7 @@ extend class HDFollower
 		return true;
 	}
 
+	// [Ace] These are still here because they don't get restored immediately.
 	int NewBloodloss;
 	int NewStunned;
 	int NewBodyDamage;

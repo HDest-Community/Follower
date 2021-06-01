@@ -24,29 +24,11 @@ class FollowerHandler : EventHandler
 	private transient int FollowerMenuLevel[MAXPLAYERS];
 	private transient int FollowerPage[MAXPLAYERS];
 	private transient HDMarine SelMarine[MAXPLAYERS];
-	private transient Array<FollowerBody> FollowersInInv;
 	private FollowerSelection Selection[MAXPLAYERS];
 	private transient int Modifiers[MAXPLAYERS];
 
 	private transient bool CanExitNow;
 	private transient int WarningResetTimer;
-
-	override void PlayerEntered(PlayerEvent e)
-	{
-		let plr = players[e.PlayerNumber].mo;
-		if (plr)
-		{
-			Inventory Next = plr.Inv;
-			while (Next)
-			{
-				if (Next is 'FollowerBody')
-				{
-					FollowersInInv.Push(FollowerBody(Next));
-				}
-				Next = Next.Inv;
-			}
-		}
-	}
 
 	private void InitSelection()
 	{
@@ -84,15 +66,17 @@ class FollowerHandler : EventHandler
 		}
 
 		int FollowerSpawns = hdf_followers;
+		Array<FollowerBody> InvFollowers;
+		FetchFollowersInInventory(InvFollowers);
 		for (int i = 0; i < FollowerClasses.Size(); ++i)
 		{
 			// [Ace] FollowerSpawns only affects built-in followers.
 			if (FollowerSpawns & (1 << i) || i > InternalFollowers - 1)
 			{
 				int Index = -1;
-				for (int j = 0; j < FollowersInInv.Size(); ++j)
+				for (int j = 0; j < InvFollowers.Size(); ++j)
 				{
-					if (FollowersInInv[j].Data[FollowersInInv[j].Data.Size() - 1].FollowerClass == FollowerClasses[i])
+					if (InvFollowers[j].Data[InvFollowers[j].Data.Size() - 1].FollowerClass == FollowerClasses[i])
 					{
 						Index = j;
 						break;
@@ -107,14 +91,37 @@ class FollowerHandler : EventHandler
 						CreateFollower(FollowerClasses[i], Net_Arbitrator);
 					}
 				}
-				else if (CVar.GetCVar('hdf_droponstart', FollowersInInv[Index].owner.player).GetBool())
+				else if (CVar.GetCVar('hdf_droponstart', InvFollowers[Index].owner.player).GetBool())
 				{
-					for (int j = 0; j < 50 && FollowersInInv[Index]; ++j)
+					for (int j = 0; j < 50 && InvFollowers[Index]; ++j)
 					{
-						FollowersInInv[Index].owner.UseInventory(FollowersInInv[Index]);
+						InvFollowers[Index].owner.UseInventory(InvFollowers[Index]);
 					}
-					FollowersInInv.Delete(Index);
+					InvFollowers.Delete(Index);
 				}
+			}
+		}
+	}
+
+	private void FetchFollowersInInventory(out Array<FollowerBody> arr)
+	{
+		arr.Clear();
+		for (int i = 0; i < MAXPLAYERS; ++i)
+		{
+			let plr = players[i].mo;
+			if (!plr)
+			{
+				continue;
+			}
+
+			Inventory Next = plr.Inv;
+			while (Next)
+			{
+				if (Next is 'FollowerBody')
+				{
+					arr.Push(FollowerBody(Next));
+				}
+				Next = Next.Inv;
 			}
 		}
 	}

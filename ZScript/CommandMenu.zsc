@@ -102,12 +102,13 @@ extend class FollowerHandler
 				Commands.Push("Recruit?");
 				Commands.Push("Cancel");
 
-				DrawTextRectangle(sb, pos, (150, RectangleHeight), MainFont, GetTruncatedText(SelMarine[consoleplayer].nickname, 16), flags, Font.FindFontColor('FLW_NameBlue'));
+				string n = (SelMarine[consoleplayer].bFRIENDLY ? "Friendly " : "Hostile ")..SelMarine[consoleplayer].GetTag();
+				DrawTextRectangle(sb, pos, (140, RectangleHeight), MainFont, GetTruncatedText(n, 16), flags, Font.FindFontColor('FLW_NameBlue'));
 				pos.y += RectangleHeight + Spacing;
 
 				for (int i = 0; i < Commands.Size(); ++i)
 				{
-					DrawTextRectangle(sb, pos, (150, RectangleHeight), MainFont, (i + 1)..") "..Commands[i], flags);
+					DrawTextRectangle(sb, pos, (140, RectangleHeight), MainFont, (i + 1)..") "..Commands[i], flags);
 					pos.y += RectangleHeight + Spacing;
 				}
 				break;
@@ -134,13 +135,13 @@ extend class FollowerHandler
 					LastIndex++;
 					bool Valid = Followers[i].CanInteractWith(false);
 					int FollowerBlockSize = Valid ? RectangleHeight * 2 - 2 : RectangleHeight;
-					DrawFollowerRectangle(sb, pos, (200, FollowerBlockSize), MainFont, LastIndex, Followers[i], Valid, flags);
+					DrawFollowerRectangle(sb, pos, (150, FollowerBlockSize), MainFont, LastIndex, Followers[i], Valid, flags);
 					pos.y += FollowerBlockSize + Spacing;
 				}
 				if (FSize > FollowersPerPage * (FollowerPage[consoleplayer] + 1))
 				{
 					LastIndex++;
-					DrawTextRectangle(sb, pos, (200, RectangleHeight), MainFont, LastIndex..") Next...", flags);
+					DrawTextRectangle(sb, pos, (150, RectangleHeight), MainFont, LastIndex..") Next...", flags);
 					pos.y += RectangleHeight + Spacing;
 				}
 				if (FollowerPage[consoleplayer] > 0)
@@ -150,7 +151,7 @@ extend class FollowerHandler
 					{
 						LastIndex = 0;
 					}
-					DrawTextRectangle(sb, pos, (200, RectangleHeight), MainFont, LastIndex..") Back...", flags);
+					DrawTextRectangle(sb, pos, (150, RectangleHeight), MainFont, LastIndex..") Back...", flags);
 					pos.y += RectangleHeight + Spacing;
 				}
 				break;
@@ -389,7 +390,7 @@ extend class FollowerHandler
 
 		pos += (2, 2);
 		int FontHeight = fnt.mFont.GetHeight();
-		sb.DrawString(fnt, index..") "..GetTruncatedText(flw.GetDisplayName(), 20), pos, flags, Font.FindFontColor('FLW_NameBlue')); pos.y += FontHeight + 1;
+		sb.DrawString(fnt, index..") "..GetTruncatedText(flw.GetDisplayName(), 16), pos, flags, Font.FindFontColor('FLW_NameBlue')); pos.y += FontHeight + 1;
 
 		if (valid)
 		{
@@ -755,8 +756,12 @@ extend class FollowerHandler
 		if (e.Name ~== "HDF_OpenMenu")
 		{
 			let plr = HDPlayerPawn(players[e.Player].mo);
-			Actor ATarget = plr.AimTarget();
-			if (ATarget is 'HDMarine' && plr.Distance3D(ATarget) <= 42 * 2 && ATarget.Health > 0 && !IsPuppet(ATarget) && (ATarget.bFRIENDLY || ATarget.InStateSequence(ATarget.CurState, ATarget.FindState('Falldown')) && HDMarine(ATarget).Stunned > 70))
+
+			FLineTraceData TraceData;
+			plr.LineTrace(plr.angle, 42 * 2, plr.pitch, TRF_NOSKY, plr.Height - HDCONST_CROWNTOSHOULDER, data: TraceData);
+			Actor ATarget = TraceData.HitActor;
+
+			if (ATarget is 'HDMarine' && ATarget.Health > 0 && !IsPuppet(ATarget) && (ATarget.bFRIENDLY || ATarget.InStateSequence(ATarget.CurState, ATarget.FindState('Falldown')) && HDMarine(ATarget).Stunned > 70))
 			{
 				FollowerMenuLevel[e.Player] = FMenu_Recruitment;
 				SelMarine[e.Player] = HDMarine(ATarget);
