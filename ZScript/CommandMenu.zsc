@@ -40,6 +40,8 @@ extend class FollowerHandler
 		{
 			string TruncatedName = text.Mid(0, length);
 			TruncatedName.DeleteLastCharacter();
+			TruncatedName.DeleteLastCharacter();
+			TruncatedName.DeleteLastCharacter();
 			if (TruncatedName.ByteAt(TruncatedName.Length() - 1) == 32)
 			{
 				TruncatedName.DeleteLastCharacter();
@@ -126,7 +128,7 @@ extend class FollowerHandler
 				int RelSize = min(FollowersPerPage, FSize - FollowersPerPage * FollowerPage[consoleplayer]);
 				if (RelSize > 4)
 				{
-					pos.y -= (RectangleHeight * 2 - 2) * 4;
+					pos.y -= (RectangleHeight * 2 - 4) * 4;
 				}
 
 				int LastIndex = 0;
@@ -214,12 +216,12 @@ extend class FollowerHandler
 						Commands.Push("Back...");
 					}
 
-					DrawTextRectangle(sb, pos, (250, RectangleHeight), MainFont, GetTruncatedText(SFol.GetDisplayName(), 16), flags, Font.FindFontColor('FLW_NameBlue'));
+					DrawTextRectangle(sb, pos, (240, RectangleHeight), MainFont, GetTruncatedText(SFol.GetDisplayName(), 25), flags, Font.FindFontColor('FLW_NameBlue'));
 					pos.y += RectangleHeight + Spacing;
 
 					for (int i = 0; i < Commands.Size(); ++i)
 					{
-						DrawTextRectangle(sb, pos, (250, RectangleHeight), MainFont, (i + 1)..") "..Commands[i], flags);
+						DrawTextRectangle(sb, pos, (240, RectangleHeight), MainFont, (i + 1)..") "..Commands[i], flags);
 						pos.y += RectangleHeight + Spacing;
 					}
 				}
@@ -253,7 +255,7 @@ extend class FollowerHandler
 						RectangleWidth += 40;
 					}
 
-					DrawTextRectangle(sb, pos, (RectangleWidth, RectangleHeight), MainFont, GetTruncatedText(SFol.GetDisplayName(), RectangleWidth > 150 ? 20 : 16), flags, Font.FindFontColor('FLW_NameBlue'));
+					DrawTextRectangle(sb, pos, (RectangleWidth, RectangleHeight), MainFont, GetTruncatedText(SFol.GetDisplayName(), RectangleWidth > 150 ? 23 : 19), flags, Font.FindFontColor('FLW_NameBlue'));
 					pos.y += RectangleHeight + Spacing;
 					
 					if (Followers.Size() == 1 && SFol.CanInteractWith(false))
@@ -390,7 +392,7 @@ extend class FollowerHandler
 
 		pos += (2, 2);
 		int FontHeight = fnt.mFont.GetHeight();
-		sb.DrawString(fnt, index..") "..GetTruncatedText(flw.GetDisplayName(), 16), pos, flags, Font.FindFontColor('FLW_NameBlue')); pos.y += FontHeight + 1;
+		sb.DrawString(fnt, index..") "..GetTruncatedText(flw.GetDisplayName(), 15), pos, flags, Font.FindFontColor('FLW_NameBlue')); pos.y += FontHeight + 1;
 
 		if (valid)
 		{
@@ -770,7 +772,7 @@ extend class FollowerHandler
 			{
 				int FSize = Followers.Size();
 				HDFollower flw = HDFollower(ATarget);
-				if (flw && flw.CanInteractWith(!(Modifiers[e.Player] & OpMod_Shift)) && e.IsManual && CVar.GetCVar('hdf_quickaccess', players[e.Player]).GetBool())
+				if (flw && flw.CanInteractWith() && e.IsManual && CVar.GetCVar('hdf_quickaccess', players[e.Player]).GetBool())
 				{
 					if (FSize > 1 && Modifiers[e.Player] & OpMod_Shift)
 					{
@@ -779,7 +781,7 @@ extend class FollowerHandler
 					}
 					else if (!(Modifiers[e.Player] & OpMod_Shift))
 					{
-						ToggleSelection(e.Player, flw);
+						ToggleSelection(e.Player, flw, true);
 						FollowerMenuLevel[e.Player] = FMenu_Main;
 						flw.ChangeLinkedPlayer(plr);
 					}
@@ -949,9 +951,9 @@ extend class FollowerHandler
 		FollowerMenuLevel[plrNum] = FMenu_Closed;
 	}
 
-	private void ToggleSelection(int plrNum, HDFollower flw, bool force = false)
+	private void ToggleSelection(int plrNum, HDFollower flw, bool allowDead = false)
 	{
-		if (flw.CanInteractWith(force))
+		if (flw.CanInteractWith(allowDead))
 		{
 			int FoundIndex = Selection[plrNum].SelFollowers.Find(flw);
 			if (FoundIndex == Selection[plrNum].SelFollowers.Size())
