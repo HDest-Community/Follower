@@ -27,7 +27,7 @@ extend class HDFollower
 		bool IsHelping = IsHelpingPlayer();
 		int FFCount = Handler.FollowingFollowersCount();
 		int FIndex = Handler.Followers.Find(self);
-		double DistDiv = Next != LinkedPlayer ? 1.0 + 0.1 * (min(10, FFCount - 1)) : 1.0;
+		double DistDiv = Next != LinkedPlayer ? 1.0 + 0.1 * (min(8, FFCount - 1)) : 1.0;
 
 		if (Status != FStatus_InCombat)
 		{
