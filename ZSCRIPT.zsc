@@ -223,7 +223,8 @@ class HDFollower : HDMobMan abstract
 		ResetIdleTimer();
 		ResetCommentTimer();
 
-		Super.PostBeginPlay();
+		// [Ace] Skip HDMobMan's PostBeginPlay because the Resize call in it has A_SetHealth which fucks shit up.
+		HDMobBase.PostBeginPlay();
 
 		// [Ace] I gotta defer setting these until after Super.PostBeginPlay() is called or else picking up the incapped follower and placing them again heals them partially.
 		Bloodloss = NewBloodloss;
