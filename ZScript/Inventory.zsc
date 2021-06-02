@@ -170,10 +170,10 @@ extend class HDFollower
 		}
 
 		int Iteration = 1;
-		while (item.Amount > 0)
+		while (amt > 0 && item.Amount > 0)
 		{
 			int index = slot == -1 || Iteration > 1 ? GetPartialItemIndex(item.GetClass(), maxAmt: maxAmt) : slot;
-			if (index == -1 || Slots[index] && (Slots[index].ItemClass != item.GetClass() || Slots[index].Amount == item.MaxAmount))
+			if (index == -1 || Slots[index] && (Slots[index].ItemClass != item.GetClass() || Slots[index].Amount == maxAmt))
 			{
 				index = GetFirstEmptySlotIndex();
 			}
@@ -189,13 +189,15 @@ extend class HDFollower
 			Slots[index].ItemClass = item.GetClass();
 			Slots[index].Icon = TexMan.GetName(item.Icon);
 			Slots[index].Multipickup = item.bMULTIPICKUP;
-			int Difference = abs(maxAmt - Slots[index].Amount);
-			int MaxAdd = min(Difference, amt, item.Amount);
-			item.Amount -= MaxAdd;
-			Slots[index].Amount += MaxAdd;
+			int LeftInSlot = maxAmt - Slots[index].Amount;
+			int ToAdd = min(LeftInSlot, amt, item.Amount);
+			item.Amount -= ToAdd;
+			Slots[index].Amount += ToAdd;
+			amt -= ToAdd;
 			if (item.Amount == 0)
 			{
 				item.Destroy();
+				break;
 			}
 			Iteration++;
 		}

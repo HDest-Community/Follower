@@ -822,19 +822,22 @@ extend class FollowerHandler
 								if (size > 0 && PSlotIndex[consoleplayer] < size)
 								{
 									HDPickup item = ValidItems[consoleplayer].Items[PSlotIndex[consoleplayer]];
-									if (item.bMULTIPICKUP)
+									if (IsValidIndex(item, PSlotSubIndex[consoleplayer]))
 									{
-										SlotFocused[consoleplayer]++;
-									}
-									else if (IsValidIndex(item, PSlotSubIndex[consoleplayer]))
-									{
-										TransferSingularItem();
-										if (SFol.CanReach(HDFollower.MaxInventoryDistance) == 0)
+										if (item.bMULTIPICKUP)
 										{
-											int nextFree = SFol.GetFirstEmptySlotIndex(FSlotIndex[consoleplayer] + 1);
-											if (nextFree != -1)
+											SlotFocused[consoleplayer]++;
+										}
+										else
+										{
+											TransferSingularItem();
+											if (SFol.CanReach(HDFollower.MaxInventoryDistance) == 0)
 											{
-												FSlotIndex[consoleplayer] = nextFree;
+												int nextFree = SFol.GetFirstEmptySlotIndex(FSlotIndex[consoleplayer] + 1);
+												if (nextFree != -1)
+												{
+													FSlotIndex[consoleplayer] = nextFree;
+												}
 											}
 										}
 									}
