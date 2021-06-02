@@ -1128,6 +1128,7 @@ extend class FollowerHandler
 				{
 					ToggleSelection(e.Player, Followers[0], true);
 					FollowerMenuLevel[e.Player] = FMenu_Main;
+					Followers[0].ChangeLinkedPlayer(plr);
 				}
 				else if (FSize > 0)
 				{
