@@ -37,6 +37,7 @@ For the most part the mechanics are fairly simple and straightforward. Documente
 ##### Inventory management
 ---
 - Use the arrow keys to navigate. Enter selects. When selecting amount for transfer, Shift + Left/Right arrow keys increases the amount by 10 instead of 2.
+- Select weapons using the 1-9 number keys.
 
 ##### Revival
 ---
