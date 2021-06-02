@@ -3,7 +3,7 @@ extend class HDFollower
 	private bool PlayerNeedsMedic()
 	{
 		let plr = HDPlayerPawn(LinkedPlayer);
-		return plr && plr.Health > 2 && PlayerIsIncapped() && (HasWounds() && (Medikits > 0 || SuturesLeft > 0) || CanApplyStim());
+		return plr && plr.Health > 2 && PlayerIsIncapped() && (HasWounds() && (GetAmount('PortableMedikit') > 0 || SuturesLeft > 0) || CanApplyStim());
 	}
 
 	private bool PlayerIsIncapped()
@@ -21,7 +21,7 @@ extend class HDFollower
 	private bool CanApplyStim()
 	{
 		let plr = HDPlayerPawn(LinkedPlayer);
-		return plr.stimcount < 4 && Stimpacks > 0 && plr.regenblues <= 2 && plr.Health < 30; // [Ace] Don't stim player unless it's necessary.
+		return plr.stimcount < 4 && GetAmount('PortableStimpack') > 0 && plr.regenblues <= 2 && plr.Health < 30; // [Ace] Don't stim player unless it's necessary.
 	}
 
 	private void PatchWound(int amt, actor targ)
@@ -47,65 +47,21 @@ extend class HDFollower
 		}
 	}
 
-	void TryGiveMedikit()
+	private bool TryUnwrapMedikit()
 	{
-		if (Status == FStatus_InactiveOrDead)
+		if (GetAmount('PortableMedikit') > 0)
 		{
-			return;
+			let Stim = HDPickup(GiveInventoryType('PortableStimpack'));
+			if (!AddSingularItem(Stim, true))
+			{
+				A_DropInventory('PortableStimpack');
+			}
+			A_DropItem('SecondBlood');
+			Find('PortableMedikit').Destroy();
+			SuturesLeft = MaxSutures;
+			return true;
 		}
-
-		if (DistanceToPlayer > radius + MaxInventoryDistance)
-		{
-			ThinkMessage(LinkedPlayer, "$MEDGIVE_FAR_PLR");
-			return;
-		}
-		else if (Medikits >= MaxMedikits)
-		{
-			PrintMessage(GetResponse("MEDGIVE_TOOMANY"), "MedGive/TooMany", PMType_Important);
-			return;
-		}
-		else if (!LinkedPlayer.CheckInventory("PortableMedikit", 1))
-		{
-			ThinkMessage(LinkedPlayer, "$MEDGIVE_NOTENOUGH_PLR");
-			return;
-		}
-
-		LinkedPlayer.A_TakeInventory("PortableMedikit", 1);
-		LinkedPlayer.A_GiveInventory("SecondBlood", 1);
-		PrintMessage(GetResponse("MEDGIVE_SUCCESS"), "MedGive/Success", PMType_General);
-
-		Medikits++;
-		Stimpacks++;
-	}
-
-	void TryGiveStimpack()
-	{
-		if (Status == FStatus_InactiveOrDead)
-		{
-			return;
-		}
-
-		let PlayerStimpack = PortableStimpack(LinkedPlayer.FindInventory("PortableStimpack"));
-		if (DistanceToPlayer > radius + MaxInventoryDistance)
-		{
-			ThinkMessage(LinkedPlayer, "$STIMGIVE_FAR_PLR");
-			return;
-		}
-		else if (Stimpacks >= MaxStimpacks)
-		{
-			PrintMessage(GetResponse("STIMGIVE_TOOMANY"), "StimGive/TooMany", PMType_Important);
-			return;
-		}
-		else if (!PlayerStimpack)
-		{
-			ThinkMessage(LinkedPlayer, "$STIMGIVE_NOTENOUGH_PLR");
-			return;
-		}
-
-		PlayerStimpack.TakeMag(false);
-		PrintMessage(GetResponse("STIMGIVE_SUCCESS"), "StimGive/Success", PMType_General);
-
-		Stimpacks++;
+		return false;
 	}
 
 	private bool IsHelpingPlayer()
@@ -131,30 +87,10 @@ extend class HDFollower
 		return false;
 	}
 
-	void DropAllSupplies()
-	{
-		for (int i = 0; i < Medikits; ++i)
-		{
-			A_SpawnItemEx('HDMedikitter', random(0, 16), 0, 0, frandom(1.0, 2.0), 0, frandom(2.0, 5.0), random(0, 359), SXF_NOCHECKPOSITION);
-		}
-		for (int i = 0; i < Stimpacks; ++i)
-		{
-			A_SpawnItemEx('PortableStimpack', random(0, 16), 0, 0, frandom(1.0, 2.0), 0, frandom(2.0, 5.0), random(0, 359), SXF_NOCHECKPOSITION);
-		}
-		Medikits = 0;
-		Stimpacks = 0;
-	}
-
 	const MinIncap = 40;
 
 	int SuturesLeft;
 	const MaxSutures = 42;
-	
-	int Medikits;
-	const MaxMedikits = 2;
-
-	int Stimpacks;
-	const MaxStimpacks = 4;
 
 	const MedicRange = 40;
 
@@ -188,7 +124,7 @@ extend class HDFollower
 			{
 				if (CanApplyStim())
 				{
-					Stimpacks--;
+					Find('PortableStimpack').Destroy();
 					SetStateLabel('ApplyStim');
 					return;
 				}
@@ -201,8 +137,7 @@ extend class HDFollower
 
 				if (SuturesLeft == 0)
 				{
-					Medikits--;
-					SuturesLeft = MaxSutures;
+					TryUnwrapMedikit();
 				}
 
 				A_Face(LinkedPlayer);

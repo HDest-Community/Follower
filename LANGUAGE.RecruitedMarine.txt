@@ -48,38 +48,6 @@ MARINE_CARRY_SUCCESS_1 = "I don't know about this, sir.";
 MARINE_CARRY_SUCCESS_2 = "Are you sure about this, commander?";
 MARINE_CARRY_SUCCESS_3 = "S-sir?";
 
-MARINE_AMMOGIVE_SMG_TOOMANY_1 = "I have more than enough, commander.";
-MARINE_AMMOGIVE_SMG_TOOMANY_2 = "I think that's enough, sir.";
-MARINE_AMMOGIVE_SMG_TOOMANY_3 = "There's no more room for that, commander.";
-
-MARINE_AMMOGIVE_SMG_SUCCESS_1 = "I appreciate it, commander.";
-MARINE_AMMOGIVE_SMG_SUCCESS_2 = "This ammo goes fast.";
-MARINE_AMMOGIVE_SMG_SUCCESS_3 = "Thank you, sir.";
-
-MARINE_AMMOGIVE_HUNTER_TOOMANY_1 = "No more room for that, sir.";
-MARINE_AMMOGIVE_HUNTER_TOOMANY_2 = "I can't take any more, commander.";
-MARINE_AMMOGIVE_HUNTER_TOOMANY_3 = "All maxed out, sir.";
-
-MARINE_AMMOGIVE_HUNTER_SUCCESS_1 = "Ah, my favourite. Thank you, sir.";
-MARINE_AMMOGIVE_HUNTER_SUCCESS_2 = "Good stuff, commander.";
-MARINE_AMMOGIVE_HUNTER_SUCCESS_3 = "I'll put these to good use, sir.";
-
-MARINE_AMMOGIVE_ZM66_TOOMANY_1 = "No more space, sir.";
-MARINE_AMMOGIVE_ZM66_TOOMANY_2 = "Out of space, sir.";
-MARINE_AMMOGIVE_ZM66_TOOMANY_3 = "Sorry, can't do, sir.";
-
-MARINE_AMMOGIVE_ZM66_SUCCESS_1 = "Thank you, commander.";
-MARINE_AMMOGIVE_ZM66_SUCCESS_2 = "These will be useful.";
-MARINE_AMMOGIVE_ZM66_SUCCESS_3 = "I could use some of that, sir.";
-
-MARINE_AMMOGIVE_RL_TOOMANY_1 = "Thanks, but I'll pass, sir.";
-MARINE_AMMOGIVE_RL_TOOMANY_2 = "My pockets are full, commander.";
-MARINE_AMMOGIVE_RL_TOOMANY_3 = "Negative, sir.";
-
-MARINE_AMMOGIVE_RL_SUCCESS_1 = "Please stay out of the blast radius, sir.";
-MARINE_AMMOGIVE_RL_SUCCESS_2 = "Greatly appreciated, commander.";
-MARINE_AMMOGIVE_RL_SUCCESS_3 = "Ah, commander, you shouldn't have.";
-
 MARINE_NOAMMO_SMG_1 = "SMG is out.";
 MARINE_NOAMMO_SMG_2 = "No more SMG ammo, sir.";
 MARINE_NOAMMO_SMG_3 = "I need more nine mil, commander.";
@@ -96,25 +64,9 @@ MARINE_NOAMMO_RL_1 = "Rocket launcher is out.";
 MARINE_NOAMMO_RL_2 = "No more rocket grenades, sir.";
 MARINE_NOAMMO_RL_3 = "I need more rocket grenades, commander.";
 
-MARINE_MEDGIVE_TOOMANY_1 = "My supply storage is full, sir.";
-MARINE_MEDGIVE_TOOMANY_2 = "That would be impossible, commander.";
-MARINE_MEDGIVE_TOOMANY_3 = "Sorry, sir, I can't carry any more.";
-
-MARINE_MEDGIVE_SUCCESS_1 = "You can count on me, sir.";
-MARINE_MEDGIVE_SUCCESS_2 = "I don't have professional training, commander, but I'll do my best.";
-MARINE_MEDGIVE_SUCCESS_3 = "I'll take care of those wounds, commander.";
-
 MARINE_MEDIC_STIMMED_1 = "The fight isn't over yet, commander.";
 MARINE_MEDIC_STIMMED_2 = "This will help you, sir.";
 MARINE_MEDIC_STIMMED_3 = "Let's get you back into the fight, sir.";
-
-MARINE_STIMGIVE_TOOMANY_1 = "Sorry, sir, I can't carry any more.";
-MARINE_STIMGIVE_TOOMANY_2 = "I'm out of room for stims, commander.";
-MARINE_STIMGIVE_TOOMANY_3 = "You keep it, sir.";
-
-MARINE_STIMGIVE_SUCCESS_1 = "Will use if necessary, sir.";
-MARINE_STIMGIVE_SUCCESS_2 = "I'll be sure to use this when appropriate.";
-MARINE_STIMGIVE_SUCCESS_3 = "This will help if you get downed, commander.";
 
 MARINE_REVIVE_BLUES_SUCCESS_1 = "Apologies for dying, sir. Won't happen again!";
 MARINE_REVIVE_BLUES_SUCCESS_2 = "I can't believe I got killed in action.";
@@ -155,11 +107,3 @@ MARINE_ARMORGIVE_NOTHANKS_3 = "Mine is better, commander.";
 MARINE_ARMORGIVE_RANAWAY_1 = "Good one, sir.";
 MARINE_ARMORGIVE_RANAWAY_2 = "You got me, sir.";
 MARINE_ARMORGIVE_RANAWAY_3 = "Let me know if you change your mind, commander.";
-
-MARINE_BRASS_NONE_1 = "I'm afraid I don't have any on me, sir.";
-MARINE_BRASS_NONE_2 = "I'm all of brass, commander";
-MARINE_BRASS_NONE_3 = "That is impossible, sir.";
-
-MARINE_BRASS_SUCCESS_1 = "Go ahead, commander.";
-MARINE_BRASS_SUCCESS_2 = "Here you go, sir.";
-MARINE_BRASS_SUCCESS_3 = "Happy to give you what I've collected.";

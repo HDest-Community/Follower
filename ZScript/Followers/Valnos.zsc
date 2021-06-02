@@ -2,9 +2,6 @@ class FollowerValnos : HDFollower
 {
 	override void GiveStartingItems()
 	{
-		Medikits = hdf_loadout_valnos_medikits;
-		Stimpacks = hdf_loadout_valnos_stimpacks + Medikits;
-
 		int ArmorType = hdf_loadout_valnos_armortype;
 		if (ArmorType > 0)
 		{
@@ -15,7 +12,6 @@ class FollowerValnos : HDFollower
 	override void InitWeapons()
 	{
 		int WeaponFlags = hdf_loadout_valnos_weapons;
-		int StartingAmmoFlags = hdf_loadout_valnos_startingammo;
 
 		static const Name AllWeapons[] = { 'FW_SMG', 'FW_Hunter', 'FW_ZM66', 'FW_RocketLauncher', 'FW_Liberator', 'FW_Boss', 'FW_Bronto' };
 		for (int i = 0; i < AllWeapons.Size(); ++i)
@@ -23,12 +19,7 @@ class FollowerValnos : HDFollower
 			class<FollowerWeapon> fw = AllWeapons[i];
 			if (fw && WeaponFlags & (1 << i))
 			{
-				FollowerWeapon wpn = FollowerWeapon(new(fw));
-				if (StartingAmmoFlags & (1 << i))
-				{
-					wpn.Init();
-				}
-				Weapons.Push(wpn);
+				FollowerWeapon.CreateAndAdd(fw, self);
 			}
 		}
 	}

@@ -48,62 +48,6 @@ SEWIE_CARRY_SUCCESS_1 = "Be gentle, okay?";
 SEWIE_CARRY_SUCCESS_2 = "Wheeeee!";
 SEWIE_CARRY_SUCCESS_3 = "This is fun!";
 
-SEWIE_AMMOGIVE_SMG_TOOMANY_1 = "Please stop, I can't carry anymore.";
-SEWIE_AMMOGIVE_SMG_TOOMANY_2 = "Oh no, I am full on nine mil.";
-SEWIE_AMMOGIVE_SMG_TOOMANY_3 = "Too many!";
-
-SEWIE_AMMOGIVE_SMG_SUCCESS_1 = "Yes! Candy!";
-SEWIE_AMMOGIVE_SMG_SUCCESS_2 = "Oh my, that's a lot of ammo.";
-SEWIE_AMMOGIVE_SMG_SUCCESS_3 = "I feel like asking for more";
-
-SEWIE_AMMOGIVE_HUNTER_TOOMANY_1 = "I have enough shells.";
-SEWIE_AMMOGIVE_HUNTER_TOOMANY_2 = "I'm good on those for now.";
-SEWIE_AMMOGIVE_HUNTER_TOOMANY_3 = "No, thanks.";
-
-SEWIE_AMMOGIVE_HUNTER_SUCCESS_1 = "Mmm, shells.";
-SEWIE_AMMOGIVE_HUNTER_SUCCESS_2 = "Thank you.";
-SEWIE_AMMOGIVE_HUNTER_SUCCESS_3 = "My Hunter appreciates it.";
-
-SEWIE_AMMOGIVE_ZM66_TOOMANY_1 = "I can't carry more of this.";
-SEWIE_AMMOGIVE_ZM66_TOOMANY_2 = "I already have enough of that.";
-SEWIE_AMMOGIVE_ZM66_TOOMANY_3 = "Sorry, inventory is full.";
-
-SEWIE_AMMOGIVE_ZM66_SUCCESS_1 = "Terrible penetration, but it's better than nothing.";
-SEWIE_AMMOGIVE_ZM66_SUCCESS_2 = "Let's hope we don't run into any shielded enemies.";
-SEWIE_AMMOGIVE_ZM66_SUCCESS_3 = "At least there's plenty of those.";
-
-SEWIE_AMMOGIVE_RL_TOOMANY_1 = "They're too heavy to carry more.";
-SEWIE_AMMOGIVE_RL_TOOMANY_2 = "Nah, you can keep the rest.";
-SEWIE_AMMOGIVE_RL_TOOMANY_3 = "Sorry, not interested right now.";
-
-SEWIE_AMMOGIVE_RL_SUCCESS_1 = "Perfect.";
-SEWIE_AMMOGIVE_RL_SUCCESS_2 = "Could do with some more explosions.";
-SEWIE_AMMOGIVE_RL_SUCCESS_3 = "Heh, they remind me of something.";
-
-SEWIE_AMMOGIVE_LIBERATOR_TOOMANY_1 = "I'd love to carry more of those, but I can't.";
-SEWIE_AMMOGIVE_LIBERATOR_TOOMANY_2 = "Thanks, but nah.";
-SEWIE_AMMOGIVE_LIBERATOR_TOOMANY_3 = "I'll do with what I have.";
-
-SEWIE_AMMOGIVE_LIBERATOR_SUCCESS_1 = "I love it.";
-SEWIE_AMMOGIVE_LIBERATOR_SUCCESS_2 = "Highly appreciated.";
-SEWIE_AMMOGIVE_LIBERATOR_SUCCESS_3 = "Aw yeah!";
-
-SEWIE_AMMOGIVE_BOSS_TOOMANY_1 = "I can't carry more of this.";
-SEWIE_AMMOGIVE_BOSS_TOOMANY_2 = "I already have enough of that.";
-SEWIE_AMMOGIVE_BOSS_TOOMANY_3 = "Sorry, inventory is full.";
-
-SEWIE_AMMOGIVE_BOSS_SUCCESS_1 = "This will be very useful for shielded enemies.";
-SEWIE_AMMOGIVE_BOSS_SUCCESS_2 = "They won't know what hit them.";
-SEWIE_AMMOGIVE_BOSS_SUCCESS_3 = "Powerful.";
-
-SEWIE_AMMOGIVE_BRONTO_TOOMANY_1 = "I can't carry more of this.";
-SEWIE_AMMOGIVE_BRONTO_TOOMANY_2 = "I already have enough of that.";
-SEWIE_AMMOGIVE_BRONTO_TOOMANY_3 = "Sorry, inventory is full.";
-
-SEWIE_AMMOGIVE_BRONTO_SUCCESS_1 = "I'll be sure to put this to good use.";
-SEWIE_AMMOGIVE_BRONTO_SUCCESS_2 = "These kick like a bitch, but delete big baddies.";
-SEWIE_AMMOGIVE_BRONTO_SUCCESS_3 = "Small, but effective.";
-
 SEWIE_NOAMMO_SMG_1 = "My SMG is complaining.";
 SEWIE_NOAMMO_SMG_2 = "My SMG demands more candy.";
 SEWIE_NOAMMO_SMG_3 = "Got more nine mil?";
@@ -132,25 +76,9 @@ SEWIE_NOAMMO_BRONTO_1 = "That was the last bolt. Got any on you?";
 SEWIE_NOAMMO_BRONTO_2 = "I'm out of bronto bolts.";
 SEWIE_NOAMMO_BRONTO_3 = "I don't have anything to take care of big baddies anymore.";
 
-SEWIE_MEDGIVE_TOOMANY_1 = "Sorry, I'm already carrying too many medikits.";
-SEWIE_MEDGIVE_TOOMANY_2 = "That's enough medikits.";
-SEWIE_MEDGIVE_TOOMANY_3 = "I can't carry anymore.";
-
-SEWIE_MEDGIVE_SUCCESS_1 = "Thanks, now I can patch you up if needed. Oh, and you can keep the blood bag.";
-SEWIE_MEDGIVE_SUCCESS_2 = "Oh nice, a medikit. Here, take this. I don't need the blood.";
-SEWIE_MEDGIVE_SUCCESS_3 = "Let's hope we won't need this.";
-
 SEWIE_MEDIC_STIMMED_1 = "Here, this will make the pain more bearable.";
 SEWIE_MEDIC_STIMMED_2 = "This should ease your suffering.";
 SEWIE_MEDIC_STIMMED_3 = "Hold still while I stim you.";
-
-SEWIE_STIMGIVE_TOOMANY_1 = "Sorry, I'm already carrying too many stimpacks.";
-SEWIE_STIMGIVE_TOOMANY_2 = "That's enough stimpacks.";
-SEWIE_STIMGIVE_TOOMANY_3 = "I can't carry anymore.";
-
-SEWIE_STIMGIVE_SUCCESS_1 = "Thanks, this will get you back up in no time.";
-SEWIE_STIMGIVE_SUCCESS_2 = "These should speed up your recovery.";
-SEWIE_STIMGIVE_SUCCESS_3 = "Thanks, this will get you back up in no time.";
 
 SEWIE_REVIVE_BLUES_SUCCESS_1 = "Huh? What happened? How long have I been gone for?";
 SEWIE_REVIVE_BLUES_SUCCESS_2 = "I don't recall anything. Did I pass out?";
@@ -195,11 +123,3 @@ SEWIE_ARMORGIVE_NOTHANKS_3 = "I like my armor.";
 SEWIE_ARMORGIVE_RANAWAY_1 = "Doesn't look like you're planning to give me anything.";
 SEWIE_ARMORGIVE_RANAWAY_2 = "Hey, where are you going!?";
 SEWIE_ARMORGIVE_RANAWAY_3 = "Wait up!";
-
-SEWIE_BRASS_NONE_1 = "I don't have any left.";
-SEWIE_BRASS_NONE_2 = "Sorry, got nothing.";
-SEWIE_BRASS_NONE_3 = "Nope. Nothing.";
-
-SEWIE_BRASS_SUCCESS_1 = "Here, I've been holding onto these for you.";
-SEWIE_BRASS_SUCCESS_2 = "Use them wisely, okay?";
-SEWIE_BRASS_SUCCESS_3 = "Are you going to buy me flowers with those?";

@@ -10,7 +10,7 @@ extend class HDFollower
 	{
 		if (DistanceToPlayer > radius + MaxReviveDistance)
 		{
-			ThinkMessage(LinkedPlayer, "$REVIVE_FAR_PLR");
+			ThinkMessage(LinkedPlayer, "$TOOFAR_PLR");
 			return false;
 		}
 
@@ -103,7 +103,7 @@ extend class HDFollower
 		else // [Ace] Always check if player is bleeding if not currently healed by blues.
 		{
 			int RequiredBlood = GetRequiredBlood();
-			if (DistanceToPlayer < radius + MaxReviveDistance && LinkedPlayer.woundcount > min(RequiredBlood, 40) && IsFacedByPlayer() && PlayerIsCrouching())
+			if (CanReach(MaxReviveDistance) == 0 && LinkedPlayer.woundcount > min(RequiredBlood, 40) && PlayerIsCrouching())
 			{
 				AbsorbedBlood++;
 				SpawnReviveParticles("FF1111");

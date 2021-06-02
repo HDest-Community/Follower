@@ -21,12 +21,6 @@ class FollowerHandler : EventHandler
 	// CORE
 	// ----------------------------------------------------------
 
-	private transient int FollowerMenuLevel[MAXPLAYERS];
-	private transient int FollowerPage[MAXPLAYERS];
-	private transient HDMarine SelMarine[MAXPLAYERS];
-	private FollowerSelection Selection[MAXPLAYERS];
-	private transient int Modifiers[MAXPLAYERS];
-
 	private transient bool CanExitNow;
 	private transient int WarningResetTimer;
 

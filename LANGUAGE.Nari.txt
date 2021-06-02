@@ -48,62 +48,6 @@ NARI_CARRY_SUCCESS_1 = "Be gentle, okay?";
 NARI_CARRY_SUCCESS_2 = "Wheeeee!";
 NARI_CARRY_SUCCESS_3 = "This is fun!";
 
-NARI_AMMOGIVE_SMG_TOOMANY_1 = "Please stop, I can't carry anymore.";
-NARI_AMMOGIVE_SMG_TOOMANY_2 = "Oh no, I am full on nine mil.";
-NARI_AMMOGIVE_SMG_TOOMANY_3 = "Too many!";
-
-NARI_AMMOGIVE_SMG_SUCCESS_1 = "Yes! Candy!";
-NARI_AMMOGIVE_SMG_SUCCESS_2 = "Oh my, that's a lot of ammo.";
-NARI_AMMOGIVE_SMG_SUCCESS_3 = "I feel like asking for more";
-
-NARI_AMMOGIVE_HUNTER_TOOMANY_1 = "I have enough shells.";
-NARI_AMMOGIVE_HUNTER_TOOMANY_2 = "I'm good on those for now.";
-NARI_AMMOGIVE_HUNTER_TOOMANY_3 = "No, thanks.";
-
-NARI_AMMOGIVE_HUNTER_SUCCESS_1 = "Mmm, shells.";
-NARI_AMMOGIVE_HUNTER_SUCCESS_2 = "Thank you.";
-NARI_AMMOGIVE_HUNTER_SUCCESS_3 = "My Hunter appreciates it.";
-
-NARI_AMMOGIVE_ZM66_TOOMANY_1 = "I can't carry more of this.";
-NARI_AMMOGIVE_ZM66_TOOMANY_2 = "I already have enough of that.";
-NARI_AMMOGIVE_ZM66_TOOMANY_3 = "Sorry, inventory is full.";
-
-NARI_AMMOGIVE_ZM66_SUCCESS_1 = "Terrible penetration, but it's better than nothing.";
-NARI_AMMOGIVE_ZM66_SUCCESS_2 = "Let's hope we don't run into any shielded enemies.";
-NARI_AMMOGIVE_ZM66_SUCCESS_3 = "At least there's plenty of those.";
-
-NARI_AMMOGIVE_RL_TOOMANY_1 = "They're too heavy to carry more.";
-NARI_AMMOGIVE_RL_TOOMANY_2 = "Nah, you can keep the rest.";
-NARI_AMMOGIVE_RL_TOOMANY_3 = "Sorry, not interested right now.";
-
-NARI_AMMOGIVE_RL_SUCCESS_1 = "Perfect.";
-NARI_AMMOGIVE_RL_SUCCESS_2 = "Could do with some more explosions.";
-NARI_AMMOGIVE_RL_SUCCESS_3 = "Heh, they remind me of something.";
-
-NARI_AMMOGIVE_LIBERATOR_TOOMANY_1 = "I'd love to carry more of those, but I can't.";
-NARI_AMMOGIVE_LIBERATOR_TOOMANY_2 = "Thanks, but nah.";
-NARI_AMMOGIVE_LIBERATOR_TOOMANY_3 = "I'll do with what I have.";
-
-NARI_AMMOGIVE_LIBERATOR_SUCCESS_1 = "I love it.";
-NARI_AMMOGIVE_LIBERATOR_SUCCESS_2 = "Highly appreciated.";
-NARI_AMMOGIVE_LIBERATOR_SUCCESS_3 = "Aw yeah!";
-
-NARI_AMMOGIVE_BOSS_TOOMANY_1 = "I can't carry more of this.";
-NARI_AMMOGIVE_BOSS_TOOMANY_2 = "I already have enough of that.";
-NARI_AMMOGIVE_BOSS_TOOMANY_3 = "Sorry, inventory is full.";
-
-NARI_AMMOGIVE_BOSS_SUCCESS_1 = "This will be very useful for shielded enemies.";
-NARI_AMMOGIVE_BOSS_SUCCESS_2 = "They won't know what hit them.";
-NARI_AMMOGIVE_BOSS_SUCCESS_3 = "Powerful.";
-
-NARI_AMMOGIVE_BRONTO_TOOMANY_1 = "I can't carry more of this.";
-NARI_AMMOGIVE_BRONTO_TOOMANY_2 = "I already have enough of that.";
-NARI_AMMOGIVE_BRONTO_TOOMANY_3 = "Sorry, inventory is full.";
-
-NARI_AMMOGIVE_BRONTO_SUCCESS_1 = "I'll be sure to put this to good use.";
-NARI_AMMOGIVE_BRONTO_SUCCESS_2 = "These kick like a bitch, but delete big baddies.";
-NARI_AMMOGIVE_BRONTO_SUCCESS_3 = "Small, but effective.";
-
 NARI_NOAMMO_SMG_1 = "My SMG is complaining.";
 NARI_NOAMMO_SMG_2 = "My SMG demands more candy.";
 NARI_NOAMMO_SMG_3 = "Got more nine mil?";
@@ -132,25 +76,9 @@ NARI_NOAMMO_BRONTO_1 = "That was the last bolt. Got any on you?";
 NARI_NOAMMO_BRONTO_2 = "I'm out of bronto bolts.";
 NARI_NOAMMO_BRONTO_3 = "I don't have anything to take care of big baddies anymore.";
 
-NARI_MEDGIVE_TOOMANY_1 = "Sorry, I'm already carrying too many medikits.";
-NARI_MEDGIVE_TOOMANY_2 = "That's enough medikits.";
-NARI_MEDGIVE_TOOMANY_3 = "I can't carry anymore.";
-
-NARI_MEDGIVE_SUCCESS_1 = "Thanks, now I can patch you up if needed. Oh, and you can keep the blood bag.";
-NARI_MEDGIVE_SUCCESS_2 = "Oh nice, a medikit. Here, take this. I don't need the blood.";
-NARI_MEDGIVE_SUCCESS_3 = "Let's hope we won't need this.";
-
 NARI_MEDIC_STIMMED_1 = "Here, this will make the pain more bearable.";
 NARI_MEDIC_STIMMED_2 = "This should ease your suffering.";
 NARI_MEDIC_STIMMED_3 = "Hold still while I stim you.";
-
-NARI_STIMGIVE_TOOMANY_1 = "Sorry, I'm already carrying too many stimpacks.";
-NARI_STIMGIVE_TOOMANY_2 = "That's enough stimpacks.";
-NARI_STIMGIVE_TOOMANY_3 = "I can't carry anymore.";
-
-NARI_STIMGIVE_SUCCESS_1 = "Thanks, this will get you back up in no time.";
-NARI_STIMGIVE_SUCCESS_2 = "These should speed up your recovery.";
-NARI_STIMGIVE_SUCCESS_3 = "Thanks, this will get you back up in no time.";
 
 NARI_REVIVE_BLUES_SUCCESS_1 = "Huh? What happened? How long have I been gone for?";
 NARI_REVIVE_BLUES_SUCCESS_2 = "I don't recall anything. Did I pass out?";
@@ -195,11 +123,3 @@ NARI_ARMORGIVE_NOTHANKS_3 = "I like my armor.";
 NARI_ARMORGIVE_RANAWAY_1 = "Doesn't look like you're planning to give me anything.";
 NARI_ARMORGIVE_RANAWAY_2 = "Hey, where are you going!?";
 NARI_ARMORGIVE_RANAWAY_3 = "Wait up!";
-
-NARI_BRASS_NONE_1 = "I don't have any left.";
-NARI_BRASS_NONE_2 = "Sorry, got nothing.";
-NARI_BRASS_NONE_3 = "Nope. Nothing.";
-
-NARI_BRASS_SUCCESS_1 = "Here, I've been holding onto these for you.";
-NARI_BRASS_SUCCESS_2 = "Use them wisely, okay?";
-NARI_BRASS_SUCCESS_3 = "Are you going to buy me flowers with those?";

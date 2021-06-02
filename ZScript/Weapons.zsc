@@ -13,7 +13,7 @@ extend class HDFollower
 		SelWeapon = null;
 	}
 
-	private double GetShotHeight()
+	double GetShotHeight()
 	{
 		return height - HDCONST_CROWNTOSHOULDER;
 	}
@@ -21,12 +21,6 @@ extend class HDFollower
 	private int AdjustForDistance(double distance, double mult = 1.0) const
 	{
 		return int(clamp((distance / 42.0) * mult, 8, MaxTargetRange / 42.0));
-	}
-
-	clearscope int GetMaxGiveAmount(FollowerWeapon wpn)
-	{
-		int MaxMag = wpn.GetMaxMag();
-		return min(LinkedPlayer.CountInv(wpn.GetAmmoType()), (MaxMag > 0 ? MaxMag : 1), wpn.GetMaxSpare() - wpn.SpareAmmo);
 	}
 
 	clearscope FollowerWeapon FindWeapon(class<FollowerWeapon> wpn)
@@ -42,123 +36,54 @@ extend class HDFollower
 		return null;
 	}
 
-	clearscope FollowerWeapon GetWeaponByIndex(int index)
-	{
-		int Size = Weapons.Size();
-		if (index > -1 && Size > 0 && index < Size)
-		{
-			return Weapons[index];
-		}
-
-		return null;
-	}
-
-	void DropAllAmmo()
+	clearscope bool AmmoIsUsed(class<HDAmmo> cls)
 	{
 		for (int i = 0; i < Weapons.Size(); ++i)
 		{
-			FollowerWeapon fw = Weapons[i];
-			class<HDAmmo> AType = fw.GetAmmoType();
-			if (!AType)
+			class<HDAmmo> AType, MType;
+			[AType, MType] = Weapons[i].GetAmmoType();
+			if (!MType && AType == cls || MType == cls)
 			{
-				continue;
+				return true;
 			}
-
-			Actor a; bool success;
-			int TotalAmmo = fw.GetLoadedRounds() + fw.SpareAmmo;
-			if (TotalAmmo > 0)
-			{
-				[success, a] = A_SpawnItemEx(AType, random(0, 16), 0, 0, frandom(1.0, 2.0), 0, frandom(2.0, 5.0), random(0, 359), SXF_NOCHECKPOSITION);
-				Inventory(a).Amount = TotalAmmo;
-			}
-			fw.ChamberedRound = FollowerWeapon.CRType_Empty;
-			fw.Mag = 0;
-			fw.SpareAmmo = 0;
-		}
-	}
-
-	// [Ace] It's an int because it's used in NetworkProcess.
-	void TryGiveAmmo(int wpnIndex)
-	{
-		FollowerWeapon wpn = GetWeaponByIndex(wpnIndex);
-		if (Status == FStatus_InactiveOrDead || !wpn)
-		{
-			return;
 		}
 
-		class<Inventory> AmmoType = wpn.GetAmmoType();
-		int MaxGive = GetMaxGiveAmount(wpn);
-
-		if (DistanceToPlayer > radius + MaxInventoryDistance)
-		{
-			if (!TryReloadWeapon(wpn, wpn.GetMaxMag(), RLF_MANUAL))
-			{
-				ThinkMessage(LinkedPlayer, "$AMMOGIVE_FAR_PLR");
-			}
-			return;
-		}
-		else if (wpn.SpareAmmo >= wpn.GetMaxSpare())
-		{
-			if (!TryReloadWeapon(wpn, wpn.GetMaxMag(), RLF_MANUAL))
-			{
-				PrintMessage(GetResponse("AMMOGIVE_"..wpn.GetLocalizationTag().."_TOOMANY"), "AmmoGive/"..wpn.GetLocalizationTag().."/TooMany", PMType_Important);
-			}
-			return;
-		}
-		else if (LinkedPlayer.CountInv(AmmoType) == 0)
-		{
-			if (!TryReloadWeapon(wpn, wpn.GetMaxMag(), RLF_MANUAL))
-			{
-				ThinkMessage(LinkedPlayer, "$AMMOGIVE_NOTENOUGH_PLR");
-			}
-			return;
-		}
-
-		LinkedPlayer.A_TakeInventory(AmmoType, MaxGive);
-		wpn.SpareAmmo += MaxGive;
-		wpn.HasWarnedLowAmmo = false;
-		TryReloadWeapon(wpn, wpn.GetMaxMag(), RLF_MANUAL);
-
-		PrintMessage(GetResponse("AMMOGIVE_"..wpn.GetLocalizationTag().."_SUCCESS"), "AmmoGive/"..wpn.GetLocalizationTag().."/Success", PMType_General);
+		return false;
 	}
 
 	// [Ace] If weapon is out of ammo, reload.
-	protected bool TryReloadWeapon(FollowerWeapon wpn, int min = 0, RLFlags flags = 0)
+	bool TryReloadWeapon(FollowerWeapon wpn, int flags = 0)
 	{
-		if (SelWeapon && !(flags & RLF_FORCE))
+		if (Status == FStatus_InactiveOrDead || SelWeapon && !(flags & RLF_FORCE))
 		{
 			return false;
 		}
 
-		int MaxMag = wpn.GetMaxMag();
-		if (MaxMag > 0 && (wpn.Mag <= 0 || wpn.Mag < min) || MaxMag == 0 && wpn.ChamberedRound != FollowerWeapon.CRType_Chambered)
+		int ReloadResult = wpn.TryReload(true);
+		if (ReloadResult == FollowerWeapon.RResult_CanReload)
 		{
-			if (wpn.SpareAmmo > 0)
+			if (hdf_debug == 1)
 			{
-				if (hdf_debug == 1)
-				{
-					Console.Printf("Trying to reload "..wpn.GetName()..".");
-				}
-				SelWeapon = wpn;
-				Status = FStatus_InCombat;
-				SetStateLabel(wpn.GetReloadState());
-				return true;
+				Console.Printf("Trying to reload "..wpn.GetName()..".");
 			}
-			else
+			SelWeapon = wpn;
+			Status = FStatus_InCombat;
+			SetStateLabel(wpn.GetReloadState());
+			return true;
+		}
+		else if (ReloadResult == FollowerWeapon.RResult_NoAmmo)
+		{
+			// [Ace] Keep complaining if manual.
+			if (!(flags & RLF_SILENT) && (!wpn.HasWarnedLowAmmo || (flags & RLF_MANUAL)))
 			{
-				// [Ace] Keep complaining if manual.
-				if (!(flags & RLF_SILENT) && (!wpn.HasWarnedLowAmmo || (flags & RLF_MANUAL)))
-				{
-					wpn.HasWarnedLowAmmo = true;
-					PrintMessage(GetResponse("NOAMMO_"..wpn.GetLocalizationTag()), "NoAmmo/"..wpn.GetLocalizationTag(), PMType_Critical);
-				}
+				wpn.HasWarnedLowAmmo = true;
+				PrintMessage(GetResponse("NOAMMO_"..wpn.GetLocalizationTag()), "NoAmmo/"..wpn.GetLocalizationTag(), PMType_Critical);
+			}
 
-				if (!(flags & RLF_NOJUMP))
-				{
-					ClearWeapon();
-					SetStateLabel('Idle');
-				}
-				return false;
+			if (!(flags & RLF_NOJUMP))
+			{
+				ClearWeapon();
+				SetStateLabel('Idle');
 			}
 		}
 
@@ -191,8 +116,9 @@ extend class HDFollower
 				continue;
 			}
 
-			int MaxMag = ActualWeapons[i].GetMaxMag();
-			if (ActualWeapons[i].SpareAmmo > 0)
+			class<HDAmmo> AType, MType;
+			[AType, MType] = ActualWeapons[i].GetAmmoType();
+			if (MType && GetAmount(MType) > 0 || !MType && GetAmount(AType) > 0)
 			{
 				HighestWithSpare = ActualWeapons[i];
 			}
@@ -215,7 +141,7 @@ extend class HDFollower
 		else if (HighestWithSpare)
 		{
 			SelWeapon = HighestWithSpare;
-			TryReloadWeapon(SelWeapon, 0, RLF_FORCE | RLF_SILENT | RLF_NOJUMP);
+			TryReloadWeapon(SelWeapon, RLF_FORCE | RLF_SILENT | RLF_NOJUMP);
 			return;
 		}
 		
@@ -278,6 +204,7 @@ extend class HDFollower
 	Array<FollowerWeapon> Weapons;
 
 	private int AimTimer;
+	private bool ContinueReloading;
 	
 	States
 	{
@@ -312,13 +239,7 @@ extend class HDFollower
 			#### H 1 Aim();
 			#### I 1
 			{
- 				if (SelWeapon.TryFireRound(true))
- 				{
- 					A_StartSound("weapons/smg", CHAN_WEAPON);
-					HDBulletActor.FireBullet(self, "HDB_9", GetShotHeight(), speedfactor: 1.1);
-					A_SpawnItemEx("HDSpent9mm", cos(pitch) * 10, 0, height - 8 - sin(pitch) * 10, vel.x, vel.y, vel.z, 0, SXF_ABSOLUTEMOMENTUM | SXF_NOCHECKPOSITION | SXF_TRANSFERPITCH);
- 				}
-
+ 				SelWeapon.FireWeapon();
 				if (!SelWeapon.TryChamberRound())
 				{
 					ClearWeapon();
@@ -339,12 +260,12 @@ extend class HDFollower
 			{
 				A_StartSound("weapons/pocket", 8);
 				A_StartSound("weapons/rifleload");
-				SelWeapon.TryEjectMag(self);
+				SelWeapon.EjectMag();
 			}
 			#### H 10
 			{
+				SelWeapon.TryReload();
 				A_StartSound("weapons/rifleload", 9);
-				SelWeapon.TryReloadMag();
 			}
 			#### H 0 A_JumpIf(!SelWeapon.TryChamberRound(), 2);
 			#### H 2 A_StartSound("weapons/rifleclick2", 8);
@@ -362,21 +283,7 @@ extend class HDFollower
 			#### H 1 Aim();
 			#### I 1
 			{
- 				if (SelWeapon.TryFireRound(true))
- 				{
-					double ShotPower = HDShotgun.GetShotPower();
-					double Spread = 6 * ShotPower;
-					double SpeedFactor = 1.02857 * ShotPower;
-					double ShotHeight = GetShotHeight();
-
-					HDBulletActor.FireBullet(self, "HDB_wad", ShotHeight);
-					let p = HDBulletActor.FireBullet(self,"HDB_00", ShotHeight, spread: Spread, speedfactor: SpeedFactor, amount: 10);
-					DistantNoise.Make(p, "world/shotgunfar");
-					A_StartSound("weapons/hunter", CHAN_WEAPON);
-
-					A_SpawnItemEx("HDSpentShell", cos(pitch) * 8, 0, height - 7 - sin(pitch) * 8, vel.x + cos(pitch) * cos(angle - random(86, 90)) * 5, vel.y + cos(pitch) * sin(angle - random(86, 90)) * 5, vel.z + sin(pitch) * random(4, 6), 0, SXF_ABSOLUTEMOMENTUM | SXF_NOCHECKPOSITION | SXF_TRANSFERPITCH);
- 				}
-
+ 				SelWeapon.FireWeapon();
  				if (!SelWeapon.TryChamberRound())
 				{
 					ClearWeapon();
@@ -393,9 +300,14 @@ extend class HDFollower
 			#### H 30 A_StartSound("weapons/pocket", 8);
 			#### HHH 8
 			{
-				if (SelWeapon.TryReloadMag())
+				if (SelWeapon.TryReload() == FollowerWeapon.RResult_CanReload)
 				{
 					A_StartSound("weapons/huntreload", 8);
+					if (SelWeapon.ChamberedRound < FollowerWeapon.CRType_Chambered)
+					{
+						ContinueReloading = true;
+						SetStateLabel('ChamberRoundHunter');
+					}
 				}
 				else
 				{
@@ -424,6 +336,12 @@ extend class HDFollower
 			}
 			#### H 0
 			{
+				if (ContinueReloading)
+				{
+					ContinueReloading = false;
+					SetStateLabel('ReloadHunterLoop');
+					return;
+				}
 				bNOPAIN = false;
 			}
 			Goto See;
@@ -435,14 +353,7 @@ extend class HDFollower
 		ShootZM66:
 			#### III 1
 			{
-				// [Ace] Technically it's caseless so it doesn't eject anything but for the sake of code let's assume it does.
-				if (SelWeapon.TryFireRound(true))
-				{
-					A_StartSound("weapons/rifle", CHAN_WEAPON);
-					HDBulletActor.FireBullet(self, "HDB_426", GetShotHeight());
-					A_AlertMonsters(flags: AMF_TARGETEMITTER);
-				}
-
+				SelWeapon.FireWeapon();
 				if (!SelWeapon.TryChamberRound())
 				{
 					ClearWeapon();
@@ -460,13 +371,13 @@ extend class HDFollower
 			#### H 3
 			{
 				A_StartSound("weapons/rifleload");
-				SelWeapon.TryEjectMag(self);
+				SelWeapon.EjectMag();
 			}
 			#### H 35 A_StartSound("weapons/pocket", 8);
 			#### H 10
 			{
 				A_StartSound("weapons/rifleload", 9);
-				SelWeapon.TryReloadMag();
+				SelWeapon.TryReload();
 			}
 			#### H 0 A_JumpIf(!SelWeapon.TryChamberRound(), 2);
 			#### H 2 A_StartSound("weapons/rifleclick", 8);
@@ -484,22 +395,7 @@ extend class HDFollower
 			#### H 2 Aim();
 			#### I 1
 			{
-				if (SelWeapon.TryFireRound(true))
-				{
-					GyroGrenade Proj;
-					Proj = GyroGrenade(Spawn("GyroGrenade", pos + (0, 0, GetShotHeight()), ALLOW_REPLACE));
-					Proj.angle = angle;
-					Proj.target = self;
-					Proj.master = self;
-					Proj.pitch = pitch;
-					Proj.Primed = false;
-					Proj.IsRocket = true;
-
-					A_StartSound("weapons/rockignite", CHAN_AUTO);
-					A_StartSound("weapons/rockboom", CHAN_AUTO);
-					A_AlertMonsters(flags: AMF_TARGETEMITTER);
-				}
-
+				SelWeapon.FireWeapon();
 				if (!SelWeapon.TryChamberRound())
 				{
 					ClearWeapon();
@@ -521,7 +417,7 @@ extend class HDFollower
 			#### H 8 A_StartSound("weapons/pocket", 8);
 			#### H 12
 			{
-				if (SelWeapon.TryReloadMag())
+				if (SelWeapon.TryReload() == FollowerWeapon.RResult_CanReload)
 				{
 					A_StartSound("weapons/rockreload", 8);
 					SelWeapon.TryChamberRound();
@@ -542,13 +438,7 @@ extend class HDFollower
 			#### H 2 Aim();
 			#### I 1
 			{
-				if (SelWeapon.TryFireRound(true))
-				{
-					A_StartSound("weapons/bigrifle", CHAN_WEAPON);
-					HDBulletActor.FireBullet(self, "HDB_776", GetShotHeight());
-					A_AlertMonsters(flags: AMF_TARGETEMITTER);
-					A_SpawnItemEx("HDSpent7mm", cos(pitch) * 12, 0, height - 8 - sin(pitch) * 12, cos(pitch) * 3, 0.2 * randompick(-1, 1), -sin(pitch) * 3, 0, SXF_NOCHECKPOSITION | SXF_TRANSFERPITCH);
-				}
+				SelWeapon.FireWeapon();
 
 				if (!SelWeapon.TryChamberRound())
 				{
@@ -566,13 +456,13 @@ extend class HDFollower
 			#### H 8
 			{
 				A_StartSound ("weapons/rifleload", 8, CHANF_OVERLAP);
-				SelWeapon.TryEjectMag(self);
+				SelWeapon.EjectMag();
 			}
 			#### H 35 A_StartSound("weapons/pocket", 8);
 			#### H 10
 			{
 				A_StartSound("weapons/rifleload", 9);
-				SelWeapon.TryReloadMag();
+				SelWeapon.TryReload();
 			}
 			#### H 0 A_JumpIf(!SelWeapon.TryChamberRound(), 2);
 			#### H 2 A_StartSound("weapons/libchamber", 8);
@@ -587,15 +477,11 @@ extend class HDFollower
 		// ----------------------------------------
 
 		ShootBoss:
+			#### H 0 A_JumpIf(SelWeapon.ChamberedRound < FollowerWeapon.CRType_Chambered, 'ChamberRoundBoss');
 			#### H 4 Aim();
 			#### I 1
 			{
-				if (SelWeapon.TryFireRound(false))
-				{
-					A_StartSound("weapons/bigrifle2", CHAN_WEAPON);
-					HDBulletActor.FireBullet(self, "HDB_776", GetShotHeight(), speedfactor: 0.99);
-					A_AlertMonsters(flags: AMF_TARGETEMITTER);
-				}
+				SelWeapon.FireWeapon();
 			}
 			#### H 5;
 		ChamberRoundBoss:
@@ -629,28 +515,23 @@ extend class HDFollower
 			}
 			#### H 2 A_StartSound("weapons/rifleclick2", 8, CHANF_OVERLAP, 0.9, pitch: 0.95);
 			#### H 4 A_StartSound("weapons/rifleload", 8, CHANF_OVERLAP);
-			#### H 20 A_StartSound("weapons/pocket", 8);
-		ReloadBossLoop:
-			#### H 12
+			#### H 15 A_StartSound("weapons/pocket", 8);
+			#### H 4 A_StartSound("weapons/rifleclick2", 8);
+			#### HHH 3 A_StartSound("weapons/rifleclick2", 8, pitch: 1.01);
+			#### HHH 2 A_StartSound("weapons/rifleclick2", 8, CHANF_OVERLAP, pitch: 1.02);
+			#### HHH 1 A_StartSound("weapons/rifleclick2", 8, CHANF_OVERLAP, pitch: 1.02);
+			#### H 8
 			{
-				if (SelWeapon.TryReloadMag())
+				A_StartSound("weapons/rifleclick");
+				SelWeapon.TryReload();
+
+				if (SelWeapon.ChamberedRound < FollowerWeapon.CRType_Chambered)
 				{
-					A_StartSound("weapons/rifleclick2", 8);
+					SetStateLabel('ChamberRoundBoss');
 				}
-				else
-				{
-					if (SelWeapon.ChamberedRound == FollowerWeapon.CRType_Chambered)
-					{
-						SetStateLabel('See');
-					}
-					else
-					{
-						SetStateLabel('ChamberRoundBoss');
-					}
-					bNOPAIN = false;
-				}
+				bNOPAIN = false;
 			}
-			Loop;
+			Goto See;
 
 		// ----------------------------------------
 		// BRONTORNIS
@@ -659,15 +540,7 @@ extend class HDFollower
 		ShootBronto:
 			#### I 1
 			{
-				if (SelWeapon.TryFireRound(false))
-				{
-					A_StartSound("weapons/bronto",CHAN_WEAPON);
-					A_StartSound("weapons/bronto",CHAN_WEAPON, CHANF_OVERLAP);
-					A_StartSound("weapons/bronto2",CHAN_WEAPON, CHANF_OVERLAP);
-					HDBulletActor.FireBullet(self, "HDB_Bronto", GetShotHeight());
-					A_AlertMonsters(flags: AMF_TARGETEMITTER);
-					A_Recoil(6);
-				}
+				SelWeapon.FireWeapon();
 				ClearWeapon();
 			}
 			#### H 10;
@@ -691,6 +564,7 @@ extend class HDFollower
 			#### H 10
 			{
 				A_StartSound("weapons/brontoload", 10);
+				SelWeapon.TryReload();
 				SelWeapon.TryChamberRound();
 			}
 			#### H 10 A_StartSound("weapons/brontunload", 11);
@@ -705,70 +579,94 @@ extend class HDFollower
 
 class FollowerWeapon abstract
 {
-	// [Ace; 28.04.2021]
-	// This should have been Empty -> Spent -> Chambered, but changing it now will break followers
-	// and would require recreating them. Ah well.
+	static play void CreateAndAdd(class<FollowerWeapon> wpn, HDFollower flw)
+	{
+		FollowerWeapon fw = FollowerWeapon(new(wpn));
+		fw.Owner = flw;
+		flw.Weapons.Push(fw);
+	}
+
 	enum CRType
 	{
 		CRType_Empty,
-		CRType_Chambered,
-		CRType_Spent
+		CRType_Spent,
+		CRType_Chambered
+	}
+
+	enum RResult
+	{
+		RResult_CanReload,
+		RResult_MagFull,
+		RResult_NoAmmo,
+		RResult_Invalid
 	}
 
 	CRType ChamberedRound;
 	int Mag;
-	int SpareAmmo;
 	bool HasWarnedLowAmmo;
+	HDFollower Owner;
 
-	virtual void Init()
-	{
-		ChamberedRound = CRType_Chambered;
-		Mag = GetMaxMag();
-	}
 	abstract string GetName();
-	abstract class<HDAmmo> GetAmmoType();
-	abstract string GetAmmoName();
+	abstract string GetIcon();
+	abstract class<HDAmmo>, class<HDMagAmmo>, int GetAmmoType();
 	abstract StateLabel GetFireState();
 	abstract StateLabel GetReloadState();
-	abstract int GetMaxMag(); // [Ace] Max mag being 0 means that spare ammo is treated as mag.
-	abstract int GetMaxSpare();
+	abstract play void FireWeapon();
+
 	virtual string GetLocalizationTag() { return GetName(); }
-	virtual class<HDMagAmmo> GetMagType() { return null; }
 	virtual double GetAdjustmentMult() { return 1.0; }
 	virtual play bool CheckWeaponCondition(HDFollower caller, Actor trgt) { return true; }
 
-	virtual play void TryEjectMag(HDFollower dropper)
+	play void EjectMag()
 	{
-		class<HDMagAmmo> MagType = GetMagType();
-		if (MagType && Mag <= 0)
+		class<HDAmmo> AType, MType; int MaxMag;
+		[AType, MType, MaxMag] = GetAmmoType();
+		if (MType && Mag > -1)
 		{
-			HDMagAmmo.SpawnMag(dropper, MagType, 0);
+			HDMagAmmo.SpawnMag(Owner, MType, Mag);
+			Mag = -1;
 		}
 	}
 
-	clearscope int GetLoadedRounds()
+	virtual play RResult TryReload(bool justCheck = false)
 	{
-		return Mag + (ChamberedRound == CRType_Chambered);
-	}
+		class<HDAmmo> AType, MType; int MaxMag;
+		[AType, MType, MaxMag] = GetAmmoType();
 
-	// [Ace] Chamber + mag.
-	clearscope bool IsFullyLoaded()
-	{
-		return ChamberedRound == CRType_Chambered && Mag == GetMaxMag();
-	}
-
-	bool TryFireRound(bool eject)
-	{
-		if (ChamberedRound == CRType_Chambered)
+		if (Mag == MaxMag)
 		{
-			ChamberedRound = eject ? CRType_Empty : CRType_Spent;
-			return true;
+			return RResult_MagFull;
+		}
+		if (!MType && Owner.GetAmount(AType) == 0 || MType && Owner.GetAmount(MType) == 0)
+		{
+			return RResult_NoAmmo;
+		}
+		if (justCheck)
+		{
+			return RResult_CanReload;
 		}
 
-		return false;
+		if (MType)
+		{
+			InventorySlot wpnAmmo = Owner.FindHighestAmount(MType);
+			Mag = wpnAmmo.Amount;
+			wpnAmmo.Destroy();
+		}
+		else if (AType)
+		{
+			InventorySlot wpnAmmo = Owner.FindLowestAmount(AType);
+			Mag++;
+			wpnAmmo.Amount--;
+			if (wpnAmmo.Amount == 0)
+			{
+				wpnAmmo.Destroy();
+			}
+		}
+
+		return RResult_CanReload;
 	}
 
-	virtual bool TryChamberRound()
+	play bool TryChamberRound()
 	{
 		if (ChamberedRound == CRType_Empty && Mag > 0)
 		{
@@ -779,111 +677,138 @@ class FollowerWeapon abstract
 
 		return false;
 	}
-	
-	virtual bool TryReloadMag()
+
+	virtual play void EmptyWeapon()
 	{
-		if (SpareAmmo <= 0)
+		class<HDAmmo> AType; class<HDMagAmmo> MType;
+		[AType, MType] = GetAmmoType();
+
+		if (ChamberedRound == CRType_Chambered)
 		{
-			return false;
+			ChamberedRound = FollowerWeapon.CRType_Empty;
+			Owner.A_SpawnItemEx(AType, random(0, 16), 0, 0, frandom(1.0, 2.0), 0, frandom(2.0, 5.0), 0, SXF_NOCHECKPOSITION);
 		}
 
-		int AmmoMissing = GetMaxMag() - Mag;
-		int AmmoToLoad = min(AmmoMissing, SpareAmmo);
-		SpareAmmo -= AmmoToLoad;
-		Mag += AmmoToLoad;
-
-		return true;
+		if (Mag > 0)
+		{
+			if (MType)
+			{
+				HDMagAmmo.SpawnMag(Owner, MType, Mag);
+			}
+			else
+			{
+				Actor a; bool success;
+				[success, a] = Owner.A_SpawnItemEx(AType, random(0, 16), 0, 0, frandom(1.0, 2.0), 0, frandom(2.0, 5.0), 0, SXF_NOCHECKPOSITION);
+				Inventory(a).Amount = Mag;
+			}
+			Mag = 0;
+		}
 	}
 }
 
 class FW_SMG : FollowerWeapon
 {
-	override void Init()
-	{
-		Super.Init();
-		SpareAmmo = GetMaxMag() * 2;
-	}
 	override string GetName() { return "SMG"; }
-	override class<HDAmmo> GetAmmoType() { return "HDPistolAmmo"; }
-	override class<HDMagAmmo> GetMagType() { return "HD9mMag30"; }
-	override string GetAmmoName() { return "9mm Rounds"; }
-	override int GetMaxMag() { return 30; }
-	override int GetMaxSpare() { return 300; }
-	override StateLabel GetFireState() { return "ShootSMG"; }
-	override StateLabel GetReloadState() { return "ReloadSMG"; }
+	override string GetIcon() { return "SMGNA0"; }
+	override class<HDAmmo>, class<HDMagAmmo>, int GetAmmoType() { return 'HDPistolAmmo', 'HD9mMag30', 30; }
+	override StateLabel GetFireState() { return 'ShootSMG'; }
+	override StateLabel GetReloadState() { return 'ReloadSMG'; }
+
+	override void FireWeapon()
+	{
+		if (ChamberedRound != CRType_Chambered)
+		{
+			return;
+		}
+		Owner.A_StartSound("weapons/smg", CHAN_WEAPON);
+		HDBulletActor.FireBullet(Owner, "HDB_9", Owner.GetShotHeight(), speedfactor: 1.1);
+		Owner.A_SpawnItemEx("HDSpent9mm", cos(Owner.pitch) * 10, 0, Owner.height - 8 - sin(Owner.pitch) * 10, Owner.vel.x, Owner.vel.y, Owner.vel.z, 0, SXF_ABSOLUTEMOMENTUM | SXF_NOCHECKPOSITION | SXF_TRANSFERPITCH);
+		ChamberedRound = CRType_Empty;
+	}
 }
 
 class FW_Hunter : FollowerWeapon
 {
-	override void Init()
-	{
-		Super.Init();
-		SpareAmmo = GetMaxMag();
-	}
 	override string GetName() { return "Hunter"; }
-	override class<HDAmmo> GetAmmoType() { return "HDShellAmmo"; }
-	override string GetAmmoName() { return "12 ga. Shells"; }
-	override int GetMaxMag() { return 7; }
-	override int GetMaxSpare() { return 60; }
-	override StateLabel GetFireState() { return "ShootHunter"; }
-	override StateLabel GetReloadState() { return "ReloadHunter"; }
+	override string GetIcon() { return "HUNTA0"; }
+	override class<HDAmmo>, class<HDMagAmmo>, int GetAmmoType() { return 'HDShellAmmo', null, 7; }
+	override StateLabel GetFireState() { return 'ShootHunter'; }
+	override StateLabel GetReloadState() { return 'ReloadHunter'; }
 	override double GetAdjustmentMult() { return 0.85; }
 
-	override bool TryReloadMag()
+	override void FireWeapon()
 	{
-		if (SpareAmmo <= 0 || Mag == GetMaxMag())
+		if (ChamberedRound != CRType_Chambered)
 		{
-			return false;
+			return;
 		}
 
-		SpareAmmo -= 1;
-		Mag += 1;
-		
-		return true;
+		double ShotPower = HDShotgun.GetShotPower();
+		double Spread = 6 * ShotPower;
+		double SpeedFactor = 1.02857 * ShotPower;
+		double ShotHeight = Owner.GetShotHeight();
+
+		HDBulletActor.FireBullet(Owner, "HDB_wad", ShotHeight);
+		let p = HDBulletActor.FireBullet(Owner, "HDB_00", ShotHeight, spread: Spread, speedfactor: SpeedFactor, amount: 10);
+		DistantNoise.Make(p, "world/shotgunfar");
+		Owner.A_StartSound("weapons/hunter", CHAN_WEAPON);
+		Owner.A_SpawnItemEx("HDSpentShell", cos(Owner.pitch) * 8, 0, Owner.height - 7 - sin(Owner.pitch) * 8, Owner.vel.x + cos(Owner.pitch) * cos(Owner.angle - random(86, 90)) * 5, Owner.vel.y + cos(Owner.pitch) * sin(Owner.angle - random(86, 90)) * 5, Owner.vel.z + sin(Owner.pitch) * random(4, 6), 0, SXF_ABSOLUTEMOMENTUM | SXF_NOCHECKPOSITION | SXF_TRANSFERPITCH);
+		ChamberedRound = CRType_Empty;
 	}
 }
 
 class FW_ZM66 : FollowerWeapon
 {
-	override void Init()
-	{
-		Super.Init();
-		SpareAmmo = GetMaxMag();
-	}
 	override string GetName() { return "ZM66"; }
-	override class<HDAmmo> GetAmmoType() { return "FourMilAmmo"; }
-	override class<HDMagAmmo> GetMagType() { return "HD4mMag"; }
-	override string GetAmmoName() { return "4mm Rounds"; }
-	override int GetMaxMag() { return 50; }
-	override int GetMaxSpare() { return 250; }
-	override StateLabel GetFireState() { return "ShootZM66"; }
-	override StateLabel GetReloadState() { return "ReloadZM66"; }
+	override string GetIcon() { return "RIFLA0"; }
+	override class<HDAmmo>, class<HDMagAmmo>, int GetAmmoType() { return 'FourMilAmmo', 'HD4mMag', 50; }
+	override StateLabel GetFireState() { return 'ShootZM66'; }
+	override StateLabel GetReloadState() { return 'ReloadZM66'; }
 	override double GetAdjustmentMult() { return 0.75; }
+
+	override void FireWeapon()
+	{
+		if (ChamberedRound != CRType_Chambered)
+		{
+			return;
+		}
+
+		Owner.A_StartSound("weapons/rifle", CHAN_WEAPON);
+		HDBulletActor.FireBullet(Owner, "HDB_426", Owner.GetShotHeight());
+		Owner.A_AlertMonsters(flags: AMF_TARGETEMITTER);
+		ChamberedRound = CRType_Empty;
+	}
 }
 
 class FW_RocketLauncher : FollowerWeapon
 {
 	override string GetName() { return "Rocket Launcher"; }
+	override string GetIcon() { return "LAUNA0"; }
 	override string GetLocalizationTag() { return "RL"; }
-	override class<HDAmmo> GetAmmoType() { return "HDRocketAmmo"; }
-	override string GetAmmoName() { return "Rocket Grenades"; }
-	override int GetMaxMag() { return 5; }
-	override int GetMaxSpare() { return 15; }
-	override StateLabel GetFireState() { return "ShootRL"; }
-	override StateLabel GetReloadState() { return "ReloadRL"; }
+	override class<HDAmmo>, class<HDMagAmmo>, int GetAmmoType() { return 'HDRocketAmmo', null, 6; }
+	override StateLabel GetFireState() { return 'ShootRL'; }
+	override StateLabel GetReloadState() { return 'ReloadRL'; }
 	override double GetAdjustmentMult() { return 0.85; }
 
-	override bool TryReloadMag()
+	override void FireWeapon()
 	{
-		if (SpareAmmo <= 0 || Mag == GetMaxMag())
+		if (ChamberedRound != CRType_Chambered)
 		{
-			return false;
+			return;
 		}
+		GyroGrenade Proj;
+		Proj = GyroGrenade(Owner.Spawn("GyroGrenade", Owner.pos + (0, 0, Owner.GetShotHeight()), ALLOW_REPLACE));
+		Proj.angle = Owner.angle;
+		Proj.target = Owner;
+		Proj.master = Owner;
+		Proj.pitch = Owner.pitch;
+		Proj.Primed = false;
+		Proj.IsRocket = true;
 
-		SpareAmmo -= 1;
-		Mag += 1;
-		
-		return true;
+		Owner.A_StartSound("weapons/rockignite", CHAN_AUTO);
+		Owner.A_StartSound("weapons/rockboom", CHAN_AUTO);
+		Owner.A_AlertMonsters(flags: AMF_TARGETEMITTER);
+		ChamberedRound = CRType_Empty;
 	}
 
 	override bool CheckWeaponCondition(HDFollower caller, Actor trgt)
@@ -928,62 +853,111 @@ class FW_RocketLauncher : FollowerWeapon
 class FW_Liberator : FollowerWeapon
 {
 	override string GetName() { return "Liberator"; }
-	override class<HDAmmo> GetAmmoType() { return "SevenMilAmmo"; }
-	override class<HDMagAmmo> GetMagType() { return "HD7mMag"; }
-	override string GetAmmoName() { return "7mm Rounds"; }
-	override int GetMaxMag() { return 30; }
-	override int GetMaxSpare() { return 150; }
-	override StateLabel GetFireState() { return "ShootLiberator"; }
-	override StateLabel GetReloadState() { return "ReloadLiberator"; }
+	override string GetIcon() { return "BRLLA0"; }
+	override class<HDAmmo>, class<HDMagAmmo>, int GetAmmoType() { return 'SevenMilAmmo', 'HD7mMag', 30; }
+	override StateLabel GetFireState() { return 'ShootLiberator'; }
+	override StateLabel GetReloadState() { return 'ReloadLiberator'; }
 	override double GetAdjustmentMult() { return 0.70; }
+
+	override void FireWeapon()
+	{
+		if (ChamberedRound != CRType_Chambered)
+		{
+			return;
+		}
+
+		Owner.A_StartSound("weapons/bigrifle", CHAN_WEAPON);
+		HDBulletActor.FireBullet(Owner, "HDB_776", Owner.GetShotHeight());
+		Owner.A_AlertMonsters(flags: AMF_TARGETEMITTER);
+		Owner.A_SpawnItemEx("HDSpent7mm", cos(Owner.pitch) * 12, 0, Owner.height - 8 - sin(Owner.pitch) * 12, cos(Owner.pitch) * 3, 0.2 * randompick(-1, 1), -sin(Owner.pitch) * 3, 0, SXF_NOCHECKPOSITION | SXF_TRANSFERPITCH);
+		ChamberedRound = CRType_Empty;
+	}
 }
 
 class FW_Boss : FollowerWeapon
 {
 	override string GetName() { return "Boss Rifle"; }
+	override string GetIcon() { return "BORFA0"; }
 	override string GetLocalizationTag() { return "Boss"; }
-	override class<HDAmmo> GetAmmoType() { return "SevenMilAmmo"; }
-	override string GetAmmoName() { return "7mm Rounds"; }
-	override int GetMaxMag() { return 10; }
-	override int GetMaxSpare() { return 50; }
-	override StateLabel GetFireState() { return "ShootBoss"; }
-	override StateLabel GetReloadState() { return "ReloadBoss"; }
+	override class<HDAmmo>, class<HDMagAmmo>, int GetAmmoType() { return 'SevenMilAmmo', 'HD7mClip', 10; }
+	override StateLabel GetFireState() { return 'ShootBoss'; }
+	override StateLabel GetReloadState() { return 'ReloadBoss'; }
 	override double GetAdjustmentMult() { return 0.40; }
 
-	override bool TryReloadMag()
+	override void FireWeapon()
 	{
-		if (SpareAmmo <= 0 || Mag == GetMaxMag())
+		if (ChamberedRound != CRType_Chambered)
 		{
-			return false;
+			return;
 		}
 
-		SpareAmmo -= 1;
-		Mag += 1;
-		
-		return true;
+		Owner.A_StartSound("weapons/bigrifle2", CHAN_WEAPON);
+		HDBulletActor.FireBullet(Owner, "HDB_776", Owner.GetShotHeight(), speedfactor: 0.99);
+		Owner.A_AlertMonsters(flags: AMF_TARGETEMITTER);
+		ChamberedRound = CRType_Spent;
+	}
+
+	override RResult TryReload()
+	{
+		if (Mag > 0)
+		{
+			return RResult_MagFull;
+		}
+
+		EjectMag();
+		return Super.TryReload();
+	}
+
+	override void EmptyWeapon()
+	{
+		class<HDAmmo> AType = GetAmmoType();
+
+		if (ChamberedRound == CRType_Chambered)
+		{
+			ChamberedRound = FollowerWeapon.CRType_Empty;
+			Owner.A_SpawnItemEx(AType, random(0, 16), 0, 0, frandom(1.0, 2.0), 0, frandom(2.0, 5.0), 0, SXF_NOCHECKPOSITION);
+		}
+
+		for (int i = 0; i < Mag; ++i)
+		{
+			Owner.A_SpawnItemEx(AType, random(0, 16), 0, 0, frandom(1.0, 2.0), 0, frandom(2.0, 5.0), 0, SXF_NOCHECKPOSITION);
+		}
+		Mag = 0;
 	}
 }
 
 class FW_Bronto : FollowerWeapon
 {
 	override string GetName() { return "Brontornis"; }
+	override string GetIcon() { return "BLSTA0"; }
 	override string GetLocalizationTag() { return "Bronto"; }
-	override class<HDAmmo> GetAmmoType() { return "BrontornisRound"; }
-	override string GetAmmoName() { return "Brontornis Bolt"; }
-	override int GetMaxMag() { return 0; }
-	override int GetMaxSpare() { return 5; }
+	override class<HDAmmo>, class<HDMagAmmo>, int GetAmmoType() { return 'BrontornisRound', null, 1; }
 	override StateLabel GetFireState() { return "ShootBronto"; }
 	override StateLabel GetReloadState() { return "ReloadBronto"; }
 
-	override bool TryChamberRound()
+	override void FireWeapon()
 	{
-		if (ChamberedRound == CRType_Empty && SpareAmmo > 0)
+		if (ChamberedRound != CRType_Chambered)
 		{
-			SpareAmmo--;
-			ChamberedRound = CRType_Chambered;
-			return true;
+			return;
 		}
 
-		return false;
+		Owner.A_StartSound("weapons/bronto", CHAN_WEAPON);
+		Owner.A_StartSound("weapons/bronto", CHAN_WEAPON, CHANF_OVERLAP);
+		Owner.A_StartSound("weapons/bronto2", CHAN_WEAPON, CHANF_OVERLAP);
+		HDBulletActor.FireBullet(Owner, "HDB_Bronto", Owner.GetShotHeight());
+		Owner.A_AlertMonsters(flags: AMF_TARGETEMITTER);
+		Owner.A_Recoil(6);
+		ChamberedRound = CRType_Spent;
+	}
+
+	override RResult TryReload(bool justCheck)
+	{
+		if (ChamberedRound == CRType_Chambered)
+		{
+			return RResult_MagFull;
+		}
+
+		return Super.TryReload(justCheck);
 	}
 }

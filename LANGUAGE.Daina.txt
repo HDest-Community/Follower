@@ -195,11 +195,3 @@ DAINA_ARMORGIVE_NOTHANKS_3 = "I like my armor.";
 DAINA_ARMORGIVE_RANAWAY_1 = "Doesn't look like you're planning to give me anything.";
 DAINA_ARMORGIVE_RANAWAY_2 = "Hey, where are you going!?";
 DAINA_ARMORGIVE_RANAWAY_3 = "Wait up!";
-
-DAINA_BRASS_NONE_1 = "I don't have any left.";
-DAINA_BRASS_NONE_2 = "Sorry, got nothing.";
-DAINA_BRASS_NONE_3 = "Nope. Nothing.";
-
-DAINA_BRASS_SUCCESS_1 = "Here, I've been holding onto these for you.";
-DAINA_BRASS_SUCCESS_2 = "Use them wisely, okay?";
-DAINA_BRASS_SUCCESS_3 = "Are you going to buy me flowers with those?";

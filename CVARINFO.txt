@@ -17,43 +17,25 @@ user bool hdf_quickaccess = true;
 server int hdf_followers = 7;
 
 server int hdf_loadout_freylis_weapons = 100;
-server int hdf_loadout_freylis_startingammo = 4;
-server int hdf_loadout_freylis_medikits = 0;
-server int hdf_loadout_freylis_stimpacks = 0;
 server int hdf_loadout_freylis_armortype = 0;
 server float hdf_loadout_freylis_armorcondition = 1.0;
 
 server int hdf_loadout_balthazar_weapons = 100;
-server int hdf_loadout_balthazar_startingammo = 4;
-server int hdf_loadout_balthazar_medikits = 0;
-server int hdf_loadout_balthazar_stimpacks = 0;
 server int hdf_loadout_balthazar_armortype = 0;
 server float hdf_loadout_balthazar_armorcondition = 1.0;
 
 server int hdf_loadout_valnos_weapons = 100;
-server int hdf_loadout_valnos_startingammo = 4;
-server int hdf_loadout_valnos_medikits = 0;
-server int hdf_loadout_valnos_stimpacks = 0;
 server int hdf_loadout_valnos_armortype = 0;
 server float hdf_loadout_valnos_armorcondition = 1.0;
 
 server int hdf_loadout_daina_weapons = 100;
-server int hdf_loadout_daina_startingammo = 4;
-server int hdf_loadout_daina_medikits = 0;
-server int hdf_loadout_daina_stimpacks = 0;
 server int hdf_loadout_daina_armortype = 0;
 server float hdf_loadout_daina_armorcondition = 1.0;
 
 server int hdf_loadout_sewie_weapons = 100;
-server int hdf_loadout_sewie_startingammo = 4;
-server int hdf_loadout_sewie_medikits = 0;
-server int hdf_loadout_sewie_stimpacks = 0;
 server int hdf_loadout_sewie_armortype = 0;
 server float hdf_loadout_sewie_armorcondition = 1.0;
 
 server int hdf_loadout_nari_weapons = 100;
-server int hdf_loadout_nari_startingammo = 4;
-server int hdf_loadout_nari_medikits = 0;
-server int hdf_loadout_nari_stimpacks = 0;
 server int hdf_loadout_nari_armortype = 0;
 server float hdf_loadout_nari_armorcondition = 1.0;

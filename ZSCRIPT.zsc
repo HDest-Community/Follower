@@ -2,6 +2,7 @@ version "4.5"
 
 #include "ZScript/FollowerHandler.zsc"
 #include "ZScript/CommandMenu.zsc"
+#include "ZScript/Inventory.zsc"
 #include "ZScript/Management.zsc"
 #include "ZScript/Ohana.zsc"
 #include "ZScript/Recruitment.zsc"
@@ -65,14 +66,27 @@ class HDFollower : HDMobMan abstract
 		return TooFar || FollowerDead;
 	}
 
+	void WarpToPlayer()
+	{
+		Warp(LinkedPlayer, 16, flags: WARPF_NOCHECKPOSITION);
+	}
+
 	clearscope bool CanInteractWith(bool validIfDead = true)
 	{
 		return Health > 0 && bFRIENDLY || Health <= 0 && validIfDead;
 	}
 
-	void WarpToPlayer()
+	clearscope int CanReach(double dist, bool ignoreAngle = false)
 	{
-		Warp(LinkedPlayer, 16, flags: WARPF_NOCHECKPOSITION);
+		if (DistanceToPlayer > radius + dist)
+		{
+			return 1;
+		}
+		if (!IsFacedByPlayer() && !ignoreAngle)
+		{
+			return 2;
+		}
+		return 0;
 	}
 
 	private clearscope bool PlayerIsCrouching()
@@ -80,7 +94,7 @@ class HDFollower : HDMobMan abstract
 		return LinkedPlayer.player.crouchfactor < 1.0;
 	}
 
-	private bool IsFacedByPlayer()
+	private clearscope bool IsFacedByPlayer()
 	{
 		double PAngle = LinkedPlayer.angle;
 		double PAngleTo = self.AngleTo(LinkedPlayer) + 180; // [Ace] Add 180 to invert direction, otherwise you need to face away from the follower.
@@ -118,8 +132,10 @@ class HDFollower : HDMobMan abstract
 
 	virtual void Dismiss()
 	{
-		DropAllAmmo();
-		DropAllSupplies();
+		for (int i = 0; i < Weapons.Size(); ++i)
+		{
+			Weapons[i].EmptyWeapon();
+		}
 		let WornArmor = FindInventory("HDArmourWorn");
 		if (WornArmor)
 		{
@@ -224,10 +240,7 @@ class HDFollower : HDMobMan abstract
 			ShieldInv.bSTANDSTILL = RegenerateShields;
 		}
 	}
-
-	const MaxInventoryDistance = 48;
-	const MaxFaceAngle = 20;
-
+	
 	FollowerHandler Handler;
 
 	protected double MovementSpeed, MaxMovementSpeed;

@@ -1,20 +1,11 @@
 [enu default]
 
-CARRY_FAR_PLR = "I'll have to get closer for that.";
-CARRY_NOTFACING_PLR = "I need to be facing my buddy to do that.";
+TOOFAR_PLR = "I'll have to get closer for that.";
+NOTFACING_PLR = "I need to be facing my buddy to do that.";
 CARRY_CANTDROP_PLR = "I can't place my buddy here.";
 CARRY_TOOMANY_PLR = "I can't carry any more.";
-AMMOGIVE_FAR_PLR = "I'll need to get closer to do that.";
-AMMOGIVE_NOTENOUGH_PLR = "I don't have enough ammo for that.";
-MEDGIVE_FAR_PLR = "I'm too far away to do that.";
-MEDGIVE_NOTENOUGH_PLR = "I don't have any medikits.";
-STIMGIVE_FAR_PLR = "I'm too far away to do that.";
-STIMGIVE_NOTENOUGH_PLR = "I don't have any stimpacks.";
 REVIVE_NOROOM_PLR = "I don't think there's enough room for that.";
-REVIVE_FAR_PLR = "I'll need to get closer to do that.";
 REVIVE_BLUES_ALREADYWORKING_PLR = "The potion seems to already be hard at work.";
-BRASS_FAR_PLR = "I'm too far away to do that.";
-BRASS_FULL_PLR = "I can't carry any more.";
 REVIVE_BLUES_NONE_PLR = "I don't have any potions on me.";
 REVIVE_BLUES_NOTENOUGH_PLR1 = "Looks I'll need at least";
 REVIVE_BLUES_NOTENOUGH_PLR2 = "of a potion to make this work.\nBetter sort my potions before doing that.";

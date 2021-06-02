@@ -1,0 +1,235 @@
+class InventorySlot
+{
+	class<HDPickup> ItemClass;
+	string Icon;
+	int Amount;
+	bool Multipickup;
+}
+
+extend class HDFollower
+{
+	clearscope int GetAmount(class<HDPickup> cls)
+	{
+		int Total = 0;
+		for (int i = 0; i < SlotCount; ++i)
+		{
+			if (Slots[i] && Slots[i].ItemClass == cls)
+			{
+				Total += Slots[i].Amount;
+			}
+		}
+		return Total;
+	}
+
+	clearscope InventorySlot FindHighestAmount(class<HDPickup> cls)
+	{
+		int maxFound = 0;
+		InventorySlot slot = null;
+		for (int i = 0; i < SlotCount; ++i)
+		{
+			if (!Slots[i])
+			{
+				continue;
+			}
+
+			// [Ace] HMMMMMM THIS CODE LOOKS FAMILIAR.
+			if (Slots[i].ItemClass == cls)
+			{
+				if (Slots[i].Amount >= maxFound)
+				{
+					maxFound = Slots[i].Amount;
+					slot = Slots[i];
+				}
+			}
+		}
+		return slot;
+	}
+
+	clearscope InventorySlot FindLowestAmount(class<HDPickup> cls)
+	{
+		int minFound = int.MAX;
+		InventorySlot slot = null;
+		for (int i = 0; i < SlotCount; ++i)
+		{
+			if (!Slots[i])
+			{
+				continue;
+			}
+
+			if (Slots[i].ItemClass == cls)
+			{
+				if (Slots[i].Amount < minFound)
+				{
+					minFound = Slots[i].Amount;
+					slot = Slots[i];
+				}
+			}
+		}
+		return slot;
+	}
+
+	clearscope InventorySlot Find(class<HDPickup> cls)
+	{
+		InventorySlot slot = null;
+		for (int i = 0; i < SlotCount; ++i)
+		{
+			if (!Slots[i])
+			{
+				continue;
+			}
+
+			if (Slots[i].ItemClass == cls)
+			{
+				slot = Slots[i];
+			}
+		}
+		return slot;
+	}
+
+	void DropInvItem(InventorySlot slot)
+	{
+		if (!CanInteractWith())
+		{
+			return;
+		}
+
+		if (Health <= 0)
+		{
+			switch (CanReach(MaxInventoryDistance))
+			{
+				case 1: ThinkMessage(LinkedPlayer, "$TOOFAR_PLR"); return;
+				case 2: ThinkMessage(LinkedPlayer, "$NOTFACING_PLR"); return;
+			}
+		}
+
+		// [Ace] HMMMMMM THIS CODE LOOKS FAMILIAR.
+		Inventory Spawned = Inventory(Actor.Spawn(slot.ItemClass, pos));
+		HDPickup newitem = HDPickup(Spawned);
+		if (slot.ItemClass is 'HDMagAmmo')
+		{
+			HDMagAmmo(newitem).Mags.Push(slot.Amount);
+		}
+		else
+		{
+			newitem.Amount = slot.Amount;
+		}
+		newitem.angle = angle;
+		newitem.A_ChangeVelocity(1.5, 0, 1, CVF_RELATIVE);
+		newitem.vel += vel;
+		slot.Destroy();
+	}
+
+	bool AddSingularItem(HDPickup item, int magIndex = -1, int slot = -1, bool force = false)
+	{
+		if (!force)
+		{
+			switch (CanReach(MaxInventoryDistance))
+			{
+				case 1: ThinkMessage(LinkedPlayer, "$TOOFAR_PLR"); return false;
+				case 2: ThinkMessage(LinkedPlayer, "$NOTFACING_PLR"); return false;
+			}
+		}
+
+		int index = slot == -1 ? GetFirstEmptySlotIndex() : slot;
+		if (index == -1 || Slots[index])
+		{
+			return false;
+		}
+
+		Slots[index] = new('InventorySlot');
+		Slots[index].ItemClass = item.GetClass();
+		Slots[index].Icon = AceCore.GetIcon(item);
+		Slots[index].Multipickup = item.bMULTIPICKUP;
+		if (item is 'HDMagAmmo')
+		{
+			let mag = HDMagAmmo(item);
+			int magAmt = mag.Mags[magIndex];
+			Slots[index].Icon = AceCore.GetIcon(item, magAmt);
+			Slots[index].Amount = mag.GetMagHudCount(magAmt); // [Ace] This is probably a bad idea.
+			mag.Mags.Delete(magIndex);
+			mag.Amount--;
+		}
+		else
+		{
+			item.Amount--;
+			Slots[index].Amount = 1;
+		}
+
+		return true;
+	}
+
+	bool AddStackableItem(HDPickup item, int amt = 1, int maxAmt = MaxLooseAmmoAmount, int slot = -1, bool force = false)
+	{
+		if (!force)
+		{
+			switch (CanReach(MaxInventoryDistance))
+			{
+				case 1: ThinkMessage(LinkedPlayer, "$TOOFAR_PLR"); return false;
+				case 2: ThinkMessage(LinkedPlayer, "$NOTFACING_PLR"); return false;
+			}
+		}
+
+		int Iteration = 1;
+		while (item.Amount > 0)
+		{
+			int index = slot == -1 || Iteration > 1 ? GetPartialItemIndex(item.GetClass(), maxAmt: maxAmt) : slot;
+			if (index == -1 || Slots[index] && (Slots[index].ItemClass != item.GetClass() || Slots[index].Amount == item.MaxAmount))
+			{
+				index = GetFirstEmptySlotIndex();
+			}
+			if (index == -1)
+			{
+				return false;
+			}
+
+			if (!Slots[index])
+			{
+				Slots[index] = new('InventorySlot');
+			}
+			Slots[index].ItemClass = item.GetClass();
+			Slots[index].Icon = TexMan.GetName(item.Icon);
+			Slots[index].Multipickup = item.bMULTIPICKUP;
+			int Difference = abs(maxAmt - Slots[index].Amount);
+			int MaxAdd = min(Difference, amt, item.Amount);
+			item.Amount -= MaxAdd;
+			Slots[index].Amount += MaxAdd;
+			if (item.Amount == 0)
+			{
+				item.Destroy();
+			}
+			Iteration++;
+		}
+
+		return true;
+	}
+
+	clearscope int GetFirstEmptySlotIndex(int startIndex = 0)
+	{
+		for (int i = startIndex; i < SlotCount; ++i)
+		{
+			if (!Slots[i])
+			{
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	clearscope int GetPartialItemIndex(class<HDPickup> cls, int startIndex = 0, int maxAmt = MaxLooseAmmoAmount)
+	{
+		for (int i = startIndex; i < SlotCount; ++i)
+		{
+			if (Slots[i] && Slots[i].ItemClass == cls && Slots[i].Amount < maxAmt)
+			{
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	const SlotCount = 30;
+	const MaxInventoryDistance = 48;
+	const MaxFaceAngle = 20;
+	const MaxLooseAmmoAmount = 50;
+	InventorySlot Slots[SlotCount];
+}

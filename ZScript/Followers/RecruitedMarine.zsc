@@ -8,8 +8,7 @@ class RecruitedMarine : HDFollower
 			class<FollowerWeapon> fw = AllWeapons[i];
 			if (fw)
 			{
-				FollowerWeapon wpn = FollowerWeapon(new(fw));
-				Weapons.Push(wpn);
+				FollowerWeapon.CreateAndAdd(fw, self);
 			}
 		}
 	}

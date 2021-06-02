@@ -23,10 +23,9 @@ class FollowerData play
 	int BloodReviveTicker;
 
 	Array<FollowerWeapon> Weapons;
+	InventorySlot Slots[HDFollower.SlotCount];
 
-	int Medikits;
 	int SuturesLeft;
-	int Stimpacks;
 	FOrder Order;
 
 	int ArmorDurability;
@@ -36,8 +35,6 @@ class FollowerData play
 	int MaxShields;
 	bool RegenerateShields;
 	bool NoShieldsDegeneration;
-
-	int CollectedBrass;
 }
 
 extend class HDFollower
@@ -52,15 +49,10 @@ extend class HDFollower
 
 		if (!force)
 		{
-			if (DistanceToPlayer > radius + 40)
+			switch (CanReach(40))
 			{
-				ThinkMessage(LinkedPlayer, "$CARRY_FAR_PLR");
-				return false;
-			}
-			else if (!IsFacedByPlayer())
-			{
-				ThinkMessage(LinkedPlayer, "$CARRY_NOTFACING_PLR");
-				return false;
+				case 1: ThinkMessage(LinkedPlayer, "$TOOFAR_PLR"); return false;
+				case 2: ThinkMessage(LinkedPlayer, "$NOTFACING_PLR"); return false;
 			}
 
 			PrintMessage(GetResponse("CARRY_SUCCESS"), "Carry/Success", PMType_General);
@@ -85,6 +77,11 @@ extend class HDFollower
 		for (int i = 0; i < Weapons.Size(); ++i)
 		{
 			FData.Weapons.Push(Weapons[i]);
+		}
+
+		for (int i = 0; i < SlotCount; ++i)
+		{
+			FData.Slots[i] = Slots[i];
 		}
 
 		if (!force)
@@ -116,9 +113,7 @@ extend class HDFollower
 			FData.Incapped = false;
 		}
 
-		FData.Medikits = Medikits;
 		FData.SuturesLeft = SuturesLeft;
-		FData.Stimpacks = Stimpacks;
 		FData.Order = Order;
 
 		let Armor = HDArmourWorn(FindInventory("HDArmourWorn"));
@@ -136,8 +131,6 @@ extend class HDFollower
 			FData.RegenerateShields = Shields.bQUICKTORETALIATE;
 			FData.NoShieldsDegeneration = Shields.bSTANDSTILL;
 		}
-
-		FData.CollectedBrass = GetTotalBrass();
 
 		FBody.Data.Push(FData);
 		Destroy();
@@ -198,7 +191,7 @@ class FollowerBody : HDPickup abstract
 		Use:
 			TNT1 A 0
 			{
-				FollowerData LData = invoker.Data[invoker.Data.Size() - 1];
+				FollowerData FData = invoker.Data[invoker.Data.Size() - 1];
 
 				bool ReturnValue = false;
 				for (int i = 0; i < 100; ++i)
@@ -209,7 +202,7 @@ class FollowerBody : HDPickup abstract
 					int RandAngle = invoker.FromIncap || level.time < 2 ? random(0, 359) : 0;
 					vector3 DropDest = Vec3Angle(Distance, angle + RandAngle);
 					Sector DropSec = level.PointInSector(DropDest.xy);
-					if (DropSec && pos.z - DropSec.floorplane.ZAtPoint(DropSec.centerspot) > GetDefaultByType(LData.FollowerClass).MaxStepHeight || !level.IsPointInLevel(DropDest))
+					if (DropSec && pos.z - DropSec.floorplane.ZAtPoint(DropSec.centerspot) > GetDefaultByType(FData.FollowerClass).MaxStepHeight || !level.IsPointInLevel(DropDest))
 					{
 						if (invoker.FromIncap || level.time < 2)
 						{
@@ -221,7 +214,7 @@ class FollowerBody : HDPickup abstract
 						}
 					}
 
-					[success, a] = A_SpawnItemEx(LData.FollowerClass, Distance, 0, random(8, 16), angle: RandAngle);
+					[success, a] = A_SpawnItemEx(FData.FollowerClass, Distance, 0, random(8, 16), angle: RandAngle);
 
 					if (success)
 					{
@@ -231,54 +224,56 @@ class FollowerBody : HDPickup abstract
 
 						Follower.ChangeLinkedPlayer(HDPlayerPawn(self));
 
-						Follower.DisplayName = LData.DisplayName;
-						Follower.Gender = LData.Gender;
-						Follower.SeeSound = LData.Sounds[0];
-						Follower.PainSound = LData.Sounds[1];
-						Follower.DeathSound = LData.Sounds[2];
-						Follower.Translation = LData.SpriteTranslation;
+						Follower.DisplayName = FData.DisplayName;
+						Follower.Gender = FData.Gender;
+						Follower.SeeSound = FData.Sounds[0];
+						Follower.PainSound = FData.Sounds[1];
+						Follower.DeathSound = FData.Sounds[2];
+						Follower.Translation = FData.SpriteTranslation;
 
-						Follower.Health = LData.Health;
-						Follower.Order = LData.Order;
+						Follower.Health = FData.Health;
+						Follower.Order = FData.Order;
 
 						// [Ace] These aren't even transferred properly because the monsters' PostBeginPlay() calls ResetDamageCounters().
 						// This is needed so that they are.
-						Follower.NewBloodloss = LData.Bloodloss;
-						Follower.NewStunned = LData.Stunned;
-						Follower.NewBodyDamage = LData.BodyDamage;
+						Follower.NewBloodloss = FData.Bloodloss;
+						Follower.NewStunned = FData.Stunned;
+						Follower.NewBodyDamage = FData.BodyDamage;
 
-						Follower.Shields = LData.Shields;
-						Follower.MaxShields = LData.MaxShields;
-						Follower.RegenerateShields = LData.RegenerateShields;
-						Follower.NoShieldsDegeneration = LData.NoShieldsDegeneration;
+						Follower.Shields = FData.Shields;
+						Follower.MaxShields = FData.MaxShields;
+						Follower.RegenerateShields = FData.RegenerateShields;
+						Follower.NoShieldsDegeneration = FData.NoShieldsDegeneration;
 
-						for (int i = 0; i < LData.Weapons.Size(); ++i)
+						for (int i = 0; i < FData.Weapons.Size(); ++i)
 						{
-							Follower.Weapons.Push(LData.Weapons[i]);
+							Follower.Weapons.Push(FData.Weapons[i]);
+						}
+						for (int i = 0; i < HDFollower.SlotCount; ++i)
+						{
+							Follower.Slots[i] = FData.Slots[i];
 						}
 						
-						Follower.Medikits = LData.Medikits;
-						Follower.SuturesLeft = LData.SuturesLeft;
-						Follower.Stimpacks = LData.Stimpacks;
+						Follower.SuturesLeft = FData.SuturesLeft;
 
-						if (LData.ArmorDurability > 0)
+						if (FData.ArmorDurability > 0)
 						{
 							let Armor = HDArmourWorn(Follower.GiveInventoryType('HDArmourWorn'));
-							Armor.Durability = LData.ArmorDurability;
-							Armor.Mega = LData.ArmorMega;
+							Armor.Durability = FData.ArmorDurability;
+							Armor.Mega = FData.ArmorMega;
 						}
 
-						if (LData.IsBleeding)
+						if (FData.IsBleeding)
 						{
-							HDBleedingWound.Inflict(Follower, LData.BleedPoints, LData.BleedRate, LData.HitVital, LData.Source);
+							HDBleedingWound.Inflict(Follower, FData.BleedPoints, FData.BleedRate, FData.HitVital, FData.Source);
 						}
 
-						if (LData.Incapped)
+						if (FData.Incapped)
 						{
 							Follower.SetStateLabel('Falldown');
 						}
 
-						if (LData.Health <= 0)
+						if (FData.Health <= 0)
 						{
 							Follower.bPUSHABLE = false;
 							Follower.DeathSound = "";
@@ -287,12 +282,7 @@ class FollowerBody : HDPickup abstract
 							Follower.Status = FStatus_InactiveOrDead;
 						}
 
-						if (LData.CollectedBrass > 0)
-						{
-							Follower.StoredBrass = LData.CollectedBrass;
-						}
-
-						Follower.BloodReviveTicker = LData.BloodReviveTicker;
+						Follower.BloodReviveTicker = FData.BloodReviveTicker;
 
 						invoker.Data.Pop();
 						ReturnValue = true;

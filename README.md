@@ -1,6 +1,7 @@
 ### Important
 ---
-The mod needs at least GZDoom 4.5.0 (or a dev build) to run. LZDoom does not currently have a compiled version that supports it. However, the mod will work with the next stable version of LZDoom. It will also work if you compile LZDoom yourself.
+- This mod requires [AceCoreLib](https://gitlab.com/accensi/hd-addons/acecorelib).
+- The mod needs at least GZDoom 4.5.0 (or a dev build) to run. LZDoom does not currently have a compiled version that supports it. However, the mod will work with the next stable version of LZDoom. It will also work if you compile LZDoom yourself.
 
 **NOTE: *Freylis' sprites are not for public use. Please do not use them anywhere. Thank you.***
 
@@ -33,6 +34,10 @@ For the most part the mechanics are fairly simple and straightforward. Documente
 - `Ctrl + Alt` modifies the selection to only affect the current page.
 - `Enter` applies the selection.
 
+##### Inventory management
+---
+- Use the arrow keys to navigate. Enter selects. When selecting amount for transfer, Shift + Left/Right arrow keys increases the amount by 10 instead of 2.
+
 ##### Revival
 ---
 - Blues: the cost starts at 2 sips and scales to a full potion depending on how damaged the follower's body is. Fire damages it badly so that's usually the only time you'll need to use a full potion.
@@ -49,7 +54,7 @@ For the most part the mechanics are fairly simple and straightforward. Documente
 
 ##### Recruiting
 ---
-- You can now recruit friendly/converted marines as followers. Does not work if the marines were resurrected. If it's smoking, forget about it. You can also recruit hostile marines if they have been incapped. For both of them you need to look at the marine (be within 2m of it) and press the follower menu key. If they're incapped, it might be a little harder due to the hitbox's size. Aim more towards your feet. Takes a bit of practice.
+- You can now recruit friendly/converted marines as followers. Does not work if the marines were resurrected. If it's smoking, forget about it. You can also recruit hostile marines if they have been incapped. For both of them you need to look at the marine (be within 2m of it) and press the follower menu key.
 
 Marines basically function the exact same way as regular followers, and you can command them as such. A few exceptions exist:
 1. They are expendable, so you won't get any notification for leaving any behind when moving between maps. You can, however, carry them between maps to create an army. Of course, at some point it is going to become hell to manage.
