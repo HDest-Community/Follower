@@ -100,9 +100,9 @@ extend class FollowerHandler
 	{
 		Super.UiTick();
 
-		if (AmountDirection[consoleplayer] != 0)
+		if (level.time % 2 == 0 && AmountDirection[consoleplayer] != 0)
 		{
-			int amt = Modifiers[consoleplayer] & OpMod_Shift ? 10 : 2;
+			int amt = Modifiers[consoleplayer] & OpMod_Shift ? 20 : 2;
 			TransferAmount[consoleplayer] = clamp(TransferAmount[consoleplayer] + amt * AmountDirection[consoleplayer], 0, 1000);
 		}
 
