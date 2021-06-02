@@ -376,7 +376,7 @@ extend class FollowerHandler
 
 				int RectangleWidth = InvColumns * SlotSize + (InvColumns - 1) + 2;
 
-				pos.y -= 100;
+				pos.y -= 120;
 				DrawRectangle(sb, pos, (RectangleWidth, RectangleHeight), MainFont, GetTruncatedText(SFol.GetDisplayName(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
 				pos.y += RectangleHeight + Spacing;
 
@@ -392,14 +392,22 @@ extend class FollowerHandler
 					DrawPlayerInventory(sb, pos + (RectangleWidth + 1, 0), (RectangleWidth, InvRectangleHeight), MainFont, flags);
 				}
 
-				DrawRectangle(sb, pos + (0, InvRectangleHeight + 1), (RectangleWidth, RectangleHeight), MainFont, "0) Back...", flags);
+				DrawRectangle(sb, pos + (0, InvRectangleHeight + 1), (RectangleWidth, RectangleHeight), MainFont, "0) Cancel/Back", flags);
 				pos.y += RectangleHeight + Spacing;
+
+				DrawRectangle(sb, pos + (0, InvRectangleHeight + 1), (RectangleWidth, RectangleHeight), MainFont, "1-9) Weapon 1-9", flags);
+				pos.y += RectangleHeight + Spacing;
+
 				if (SFol.CanInteractWith(false))
 				{
 					DrawRectangle(sb, pos + (0, InvRectangleHeight + 1), (RectangleWidth, RectangleHeight), MainFont, "Spc) Reload", flags);
 					pos.y += RectangleHeight + Spacing;
 				}
+
 				DrawRectangle(sb, pos + (0, InvRectangleHeight + 1), (RectangleWidth, RectangleHeight), MainFont, "Bsp) Drop", flags);
+				pos.y += RectangleHeight + Spacing;
+
+				DrawRectangle(sb, pos + (0, InvRectangleHeight + 1), (RectangleWidth, RectangleHeight), MainFont, "Ent) Select/Give", flags);
 				break;
 			}
 
