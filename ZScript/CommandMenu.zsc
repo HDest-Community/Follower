@@ -388,8 +388,11 @@ extend class FollowerHandler
 				DrawRectangle(sb, pos, (RectangleWidth, RectangleHeight), MainFont, GetTruncatedText(SFol.GetDisplayName(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
 				pos.y += RectangleHeight + Spacing;
 
-				DrawWeaponRectangle(sb, pos, (RectangleWidth, RectangleHeight * 3), MainFont, flags, SFol, SFol.Weapons[SelWeaponIndex[consoleplayer]]);
-				pos.y += RectangleHeight * 3 + Spacing;
+				if (SFol.Weapons.Size() > 0)
+				{
+					DrawWeaponRectangle(sb, pos, (RectangleWidth, RectangleHeight * 3), MainFont, flags, SFol, SFol.Weapons[SelWeaponIndex[consoleplayer]]);
+					pos.y += RectangleHeight * 3 + Spacing;
+				}
 
 				int Rows = ceil(HDFollower.SlotCount / double(InvColumns));
 				int InvRectangleHeight = Rows * SlotSize + (Rows - 1) + 2;
