@@ -86,14 +86,14 @@ extend class HDFollower
 		return slot;
 	}
 
-	void DropInvItem(InventorySlot slot)
+	void DropInvItem(InventorySlot slot, bool force = false)
 	{
-		if (!CanInteractWith())
+		if (!slot || !CanInteractWith())
 		{
 			return;
 		}
 
-		if (Health <= 0)
+		if (!force && Health <= 0)
 		{
 			switch (CanReach(MaxInventoryDistance))
 			{

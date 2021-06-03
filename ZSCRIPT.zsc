@@ -128,35 +128,6 @@ class HDFollower : HDMobMan abstract
 	}
 
 	// --------------------------------------------------
-	// OTHER STUFF
-	// --------------------------------------------------
-
-	virtual void Dismiss()
-	{
-		for (int i = 0; i < Weapons.Size(); ++i)
-		{
-			Weapons[i].EmptyWeapon();
-		}
-		let WornArmor = FindInventory("HDArmourWorn");
-		if (WornArmor)
-		{
-			A_DropInventory(WornArmor.GetClass());
-		}
-		for (int i = 0; i < 64; ++i)
-		{
-			vector3 POff = ((random() - 128) * Radius / 128, (random() - 128) * Radius / 128, random() * Height / 256);
-			vector3 PVel = ((1.0 / 4096) * (random() - 128), (1.0 / 4096) * (random() - 128), (1.0 / 4096) * (random() - 128));
-			vector3 PAcc = ((1.0 / 16384) * (random() - 128), (1.0 / 16384) * (random() - 128), (1.0 / 16384) * (random() - 128));
-			A_SpawnParticle(random(0, 1) ? Color(154, 49, 49) : Color(125, 24, 24), 0, TICRATE * 2, 4, 0, POff.x, POff.y, POff.z, PVel.x, PVel.y, PVel.z, PAcc.x, PAcc.y, PAcc.z);
-		}
-		if (!random[dismissrand](0, 10))
-		{
-			Console.Printf("%s disconnected.", DisplayName);
-		}
-		Handler.RemoveFollower(self, true);
-	}
-
-	// --------------------------------------------------
 	// TICKER
 	// --------------------------------------------------
 
