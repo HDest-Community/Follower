@@ -76,6 +76,7 @@ class HDFollower : HDMobMan abstract
 		return Health > 0 && bFRIENDLY || Health <= 0 && validIfDead;
 	}
 
+	// [Ace] Probably a bit counter-intuitive to return 0 for success.
 	clearscope int CanReach(double dist, bool ignoreAngle = false)
 	{
 		if (DistanceToPlayer > radius + dist)

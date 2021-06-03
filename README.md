@@ -63,6 +63,10 @@ Marines basically function the exact same way as regular followers, and you can 
 3. All marines are stored as a single inventory item in first-in-last-out order.
 4. Their index in the follower list is also not static. Marines are sorted in the order they were recruited/placed.
 
+##### Miscellaneous
+---
+- Followers can boost you up. Command them to stay, then look at them and hold jump. May not be successful if you are too encumbered. Might not work on the first try either.
+
 ### Modding
 ---
 - New followers can be added by inheriting from HDFollower and overriding the provided virtuals (if desired). Their arsenal can be changed too if you like.

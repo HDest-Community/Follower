@@ -128,6 +128,12 @@ extend class HDFollower
 				else if (Order == FOrder_Cover && DistanceToPlayer < 42 * 5)
 				{
 					A_Face(LinkedPlayer, 45);
+
+					// [Ace] Boost me up, Scotty.
+					if (CanReach(LinkedPlayer.radius + 2) == 0 && LinkedPlayer.player.cmd.buttons & BT_JUMP)
+					{
+						LinkedPlayer.A_ChangeVelocity(0.5, 0, 6, CVF_RELATIVE);
+					}
 				}
 
 				if (hdf_collectbrass)
