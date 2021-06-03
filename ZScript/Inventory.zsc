@@ -130,8 +130,8 @@ extend class HDFollower
 			}
 		}
 
-		int index = slot == -1 ? GetFirstEmptySlotIndex() : slot;
-		if (index == -1 || Slots[index])
+		int index = GetFirstEmptySlotIndex(slot == -1 ? 0 : slot);
+		if (index == -1)
 		{
 			return false;
 		}
@@ -169,17 +169,17 @@ extend class HDFollower
 			}
 		}
 
-		int Iteration = 1;
 		while (amt > 0 && item.Amount > 0)
 		{
-			int index = slot == -1 || Iteration > 1 ? GetPartialItemIndex(item.GetClass(), maxAmt: maxAmt) : slot;
-			if (index == -1 || Slots[index] && (Slots[index].ItemClass != item.GetClass() || Slots[index].Amount == maxAmt))
-			{
-				index = GetFirstEmptySlotIndex();
-			}
+			// [Ace] Always fill partials first.
+			int index = GetPartialItemIndex(item.GetClass(), maxAmt: maxAmt);
 			if (index == -1)
 			{
-				return false;
+				index = GetFirstEmptySlotIndex(slot == -1 ? 0 : slot);
+				if (index == -1)
+				{
+					return false;
+				}
 			}
 
 			if (!Slots[index])
@@ -199,7 +199,6 @@ extend class HDFollower
 				item.Destroy();
 				break;
 			}
-			Iteration++;
 		}
 
 		return true;
