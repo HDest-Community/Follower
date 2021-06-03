@@ -145,7 +145,7 @@ extend class HDFollower
 			let mag = HDMagAmmo(item);
 			int magAmt = mag.Mags[magIndex];
 			Slots[index].Icon = AceCore.GetIcon(item, magAmt);
-			Slots[index].Amount = mag.GetMagHudCount(magAmt); // [Ace] This is probably a bad idea.
+			Slots[index].Amount = magAmt; // [Ace] This is probably a bad idea.
 			mag.Mags.Delete(magIndex);
 			mag.Amount--;
 		}
