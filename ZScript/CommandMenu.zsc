@@ -1098,10 +1098,10 @@ extend class FollowerHandler
 			let plr = HDPlayerPawn(players[e.Player].mo);
 
 			FLineTraceData TraceData;
-			plr.LineTrace(plr.angle, 42 * 2, plr.pitch, TRF_NOSKY, plr.Height - HDCONST_CROWNTOSHOULDER, data: TraceData);
+			plr.LineTrace(plr.angle, 42 * 20, plr.pitch, TRF_NOSKY, plr.Height - HDCONST_CROWNTOSHOULDER, data: TraceData);
 			Actor ATarget = TraceData.HitActor;
 
-			if (ATarget is 'HDMarine' && ATarget.Health > 0 && !IsPuppet(ATarget) && (ATarget.bFRIENDLY || ATarget.InStateSequence(ATarget.CurState, ATarget.FindState('Falldown')) && HDMarine(ATarget).Stunned > 70))
+			if (ATarget is 'HDMarine' && ATarget.Health > 0 && TraceData.Distance < 42 * 2 && !IsPuppet(ATarget) && (ATarget.bFRIENDLY || ATarget.InStateSequence(ATarget.CurState, ATarget.FindState('Falldown')) && HDMarine(ATarget).Stunned > 70))
 			{
 				FollowerMenuLevel[e.Player] = FMenu_Recruitment;
 				SelMarine[e.Player] = HDMarine(ATarget);
