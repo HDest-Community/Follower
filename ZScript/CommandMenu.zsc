@@ -388,8 +388,10 @@ extend class FollowerHandler
 				DrawRectangle(sb, pos, (RectangleWidth, RectangleHeight), MainFont, GetTruncatedText(SFol.GetDisplayName(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
 				pos.y += RectangleHeight + Spacing;
 
-				if (SFol.Weapons.Size() > 0)
+				int wSize = SFol.Weapons.Size();
+				if (wSize > 0)
 				{
+					SelWeaponIndex[consoleplayer] = min(SelWeaponIndex[consoleplayer], wSize - 1);
 					DrawWeaponRectangle(sb, pos, (RectangleWidth, RectangleHeight * 3), MainFont, flags, SFol, SFol.Weapons[SelWeaponIndex[consoleplayer]]);
 					pos.y += RectangleHeight * 3 + Spacing;
 				}
