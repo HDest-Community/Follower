@@ -477,8 +477,8 @@ extend class HDFollower
 		// ----------------------------------------
 
 		ShootBoss:
-			#### H 0 A_JumpIf(SelWeapon.ChamberedRound < FollowerWeapon.CRType_Chambered, 'ChamberRoundBoss');
 			#### H 4 Aim();
+			#### H 0 A_JumpIf(SelWeapon.ChamberedRound < FollowerWeapon.CRType_Chambered, 'ChamberRoundBoss');
 			#### I 1
 			{
 				SelWeapon.FireWeapon();
