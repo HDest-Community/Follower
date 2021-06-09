@@ -102,10 +102,12 @@ extend class HDFollower
 		if (slot.ItemClass is 'HDMagAmmo')
 		{
 			HDMagAmmo.GiveMag(LinkedPlayer, slot.ItemClass, slot.Amount);
+			slot.Destroy();
 		}
 		else
 		{
-			int maxAdd = GetDefaultByType(slot.ItemClass).MaxAmount - min(LinkedPlayer.CountInv(slot.ItemClass), slot.Amount);
+			int diff = GetDefaultByType(slot.ItemClass).MaxAmount - LinkedPlayer.CountInv(slot.ItemClass);
+			int maxAdd = min(diff, slot.Amount);
 			if (maxAdd == 0)
 			{
 				ThinkMessage(LinkedPlayer, "$NOSPACE_PLR");
