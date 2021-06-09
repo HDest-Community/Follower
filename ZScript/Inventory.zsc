@@ -86,6 +86,40 @@ extend class HDFollower
 		return slot;
 	}
 
+	void TakeInvItem(InventorySlot slot)
+	{
+		if (!slot || !CanInteractWith())
+		{
+			return;
+		}
+
+		switch (CanReach(MaxInventoryDistance))
+		{
+			case 1: ThinkMessage(LinkedPlayer, "$TOOFAR_PLR"); return;
+			case 2: ThinkMessage(LinkedPlayer, "$NOTFACING_PLR"); return;
+		}
+
+		if (slot.ItemClass is 'HDMagAmmo')
+		{
+			HDMagAmmo.GiveMag(LinkedPlayer, slot.ItemClass, slot.Amount);
+		}
+		else
+		{
+			int maxAdd = GetDefaultByType(slot.ItemClass).MaxAmount - min(LinkedPlayer.CountInv(item.ItemClass), item.Amount);
+			if (maxAdd == 0)
+			{
+				ThinkMessage(LinkedPlayer, "$NOSPACE_PLR");
+				return;
+			}
+			HDF.Give(LinkedPlayer, slot.ItemClass, maxAdd);
+			slot.Amount -= maxAdd;
+			if (slot.Amount == 0)
+			{
+				slot.Destroy();
+			}
+		}
+	}
+
 	void DropInvItem(InventorySlot slot, bool force = false)
 	{
 		if (!slot || !CanInteractWith())

@@ -417,7 +417,7 @@ extend class FollowerHandler
 					pos.y += RectangleHeight + Spacing;
 				}
 
-				DrawRectangle(sb, pos + (0, InvRectangleHeight + 1), (RectangleWidth, RectangleHeight), MainFont, "Bsp) Drop", flags);
+				DrawRectangle(sb, pos + (0, InvRectangleHeight + 1), (RectangleWidth, RectangleHeight), MainFont, "Bsp) Take", flags);
 				pos.y += RectangleHeight + Spacing;
 
 				DrawRectangle(sb, pos + (0, InvRectangleHeight + 1), (RectangleWidth, RectangleHeight), MainFont, "Ent) Select/Give", flags);
@@ -890,7 +890,7 @@ extend class FollowerHandler
 						{
 							if (SFol.Slots[FSlotIndex[consoleplayer]] && SlotFocused[consoleplayer] < 2)
 							{
-								SendNetworkEvent("HDF_DropInvItem", FSlotIndex[consoleplayer]);
+								SendNetworkEvent("HDF_TakeInvItem", FSlotIndex[consoleplayer]);
 								RetVal = true;
 							}
 							break;
@@ -1296,9 +1296,9 @@ extend class FollowerHandler
 			return;
 		}
 
-		if (e.Name ~== "HDF_DropInvItem")
+		if (e.Name ~== "HDF_TakeInvItem")
 		{
-			SFol.DropInvItem(SFol.Slots[e.Args[0]]);
+			SFol.TakeInvItem(SFol.Slots[e.Args[0]]);
 			return;
 		}
 	}
