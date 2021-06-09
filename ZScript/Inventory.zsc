@@ -105,7 +105,7 @@ extend class HDFollower
 		}
 		else
 		{
-			int maxAdd = GetDefaultByType(slot.ItemClass).MaxAmount - min(LinkedPlayer.CountInv(item.ItemClass), item.Amount);
+			int maxAdd = GetDefaultByType(slot.ItemClass).MaxAmount - min(LinkedPlayer.CountInv(slot.ItemClass), slot.Amount);
 			if (maxAdd == 0)
 			{
 				ThinkMessage(LinkedPlayer, "$NOSPACE_PLR");
