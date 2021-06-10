@@ -1,0 +1,372 @@
+extend class HDFollower
+{
+	States
+	{
+		See:
+			#### HH 2
+			{
+				Status = FStatus_InCombat;
+				AimTimer = 0;
+			}
+		Aiming:
+			#### H 1; // [Ace] Otherwise it's gonna cause an infinite loop.
+			#### H 0 Aim(); // [Ace] This is on this line and not inside the anonymous function because of SetStateLabel.
+			#### H 0
+			{
+				if (AimTimer++ > AdjustForDistance(Distance3D(CTarget), SelWeapon.GetAdjustmentMult()))
+				{
+					if (hdf_debug == 1)
+					{
+						Console.Printf("Trying to fire "..SelWeapon.GetName().." at "..CTarget.GetTag()..".");
+					}
+					AimTimer = 0;
+					SetStateLabel(SelWeapon.GetFireState());
+				}
+			}
+			Loop;
+
+		// ----------------------------------------
+		// SMG
+		// ----------------------------------------
+
+		ShootSMG:
+			#### H 1 Aim();
+			#### I 1
+			{
+ 				SelWeapon.FireWeapon();
+				if (!SelWeapon.TryChamberRound())
+				{
+					ClearWeapon();
+				}
+			}
+			#### H 1;
+			Goto ShootSMG;
+		ReloadSMG:
+			#### H 3
+			{
+				bNOPAIN = true;
+			}
+			#### H 4
+			{
+				A_StartSound("weapons/rifleclick2");
+			}
+			#### H 25
+			{
+				A_StartSound("weapons/pocket", 8);
+				A_StartSound("weapons/rifleload");
+				SelWeapon.EjectMag();
+			}
+			#### H 10
+			{
+				SelWeapon.TryReload();
+				A_StartSound("weapons/rifleload", 9);
+			}
+			#### H 0 A_JumpIf(!SelWeapon.TryChamberRound(), 2);
+			#### H 2 A_StartSound("weapons/rifleclick2", 8);
+			#### H 0
+			{
+				bNOPAIN = false;
+			}
+			Goto See;
+
+		// ----------------------------------------
+		// Hunter
+		// ----------------------------------------
+
+		ShootHunter:
+			#### H 1 Aim();
+			#### I 1
+			{
+ 				SelWeapon.FireWeapon();
+ 				if (!SelWeapon.TryChamberRound())
+				{
+					ClearWeapon();
+				}
+			}
+			#### H 1;
+			Goto See;
+		ReloadHunter:
+			#### H 8
+			{
+				bNOPAIN = true;
+			}
+		ReloadHunterLoop:
+			#### H 30 A_StartSound("weapons/pocket", 8);
+			#### HHH 8
+			{
+				if (SelWeapon.TryReload() == FollowerWeapon.RResult_CanReload)
+				{
+					A_StartSound("weapons/huntreload", 8);
+					if (SelWeapon.ChamberedRound < FollowerWeapon.CRType_Chambered)
+					{
+						ContinueReloading = true;
+						SetStateLabel('ChamberRoundHunter');
+					}
+				}
+				else
+				{
+					if (SelWeapon.ChamberedRound == FollowerWeapon.CRType_Chambered)
+					{
+						SetStateLabel('See');
+					}
+					else
+					{
+						SetStateLabel('ChamberRoundHunter');
+					}
+					bNOPAIN = false;
+				}
+			}
+			Loop;
+		ChamberRoundHunter:
+			#### H 5
+			{
+				bNOPAIN = true;
+			}
+			#### H 6 A_StartSound("weapons/huntrackdown", 8);
+			#### H 10
+			{
+				SelWeapon.TryChamberRound();
+				A_StartSound("weapons/huntrackup", 8);
+			}
+			#### H 0
+			{
+				if (ContinueReloading)
+				{
+					ContinueReloading = false;
+					SetStateLabel('ReloadHunterLoop');
+					return;
+				}
+				bNOPAIN = false;
+			}
+			Goto See;
+
+		// ----------------------------------------
+		// ZM66
+		// ----------------------------------------
+
+		ShootZM66:
+			#### III 1
+			{
+				SelWeapon.FireWeapon();
+				if (!SelWeapon.TryChamberRound())
+				{
+					ClearWeapon();
+					SetStateLabel('See');
+				}
+			}
+			#### H 5;
+			Goto See;
+		ReloadZM66:
+			#### H 8
+			{
+				bNOPAIN = true;
+			}
+			#### H 6 A_StartSound("weapons/rifleclick2");
+			#### H 3
+			{
+				A_StartSound("weapons/rifleload");
+				SelWeapon.EjectMag();
+			}
+			#### H 35 A_StartSound("weapons/pocket", 8);
+			#### H 10
+			{
+				A_StartSound("weapons/rifleload", 9);
+				SelWeapon.TryReload();
+			}
+			#### H 0 A_JumpIf(!SelWeapon.TryChamberRound(), 2);
+			#### H 2 A_StartSound("weapons/rifleclick", 8);
+			#### H 0
+			{
+				bNOPAIN = false;
+			}
+			Goto See;
+
+		// ----------------------------------------
+		// ROCKET LAUNCHER
+		// ----------------------------------------
+
+		ShootRL:
+			#### H 2 Aim();
+			#### I 1
+			{
+				SelWeapon.FireWeapon();
+				if (!SelWeapon.TryChamberRound())
+				{
+					ClearWeapon();
+				}
+			}
+			#### H 20;
+			Goto See;
+		ReloadRL:
+			#### H 8
+			{
+				bNOPAIN = true;
+			}
+			#### H 5 A_StartSound("weapons/rockopen", 8);
+			#### H 12
+			{
+				A_StartSound("weapons/rockopen2", 8, CHANF_OVERLAP);
+			}
+		ReloadRLLoop:
+			#### H 8 A_StartSound("weapons/pocket", 8);
+			#### H 12
+			{
+				if (SelWeapon.TryReload() == FollowerWeapon.RResult_CanReload)
+				{
+					A_StartSound("weapons/rockreload", 8);
+					SelWeapon.TryChamberRound();
+				}
+				else
+				{
+					SetStateLabel('See');
+					bNOPAIN = false;
+				}
+			}
+			Loop;
+
+		// ----------------------------------------
+		// LIBERATOR
+		// ----------------------------------------
+
+		ShootLiberator:
+			#### H 2 Aim();
+			#### I 1
+			{
+				SelWeapon.FireWeapon();
+
+				if (!SelWeapon.TryChamberRound())
+				{
+					ClearWeapon();
+				}
+			}
+			#### H 3;
+			Goto ShootLiberator;
+		ReloadLiberator:
+			#### H 10
+			{
+				bNOPAIN = true;
+			}
+			#### H 15 A_StartSound("weapons/rifleclick2");
+			#### H 8
+			{
+				A_StartSound ("weapons/rifleload", 8, CHANF_OVERLAP);
+				SelWeapon.EjectMag();
+			}
+			#### H 35 A_StartSound("weapons/pocket", 8);
+			#### H 10
+			{
+				A_StartSound("weapons/rifleload", 9);
+				SelWeapon.TryReload();
+			}
+			#### H 0 A_JumpIf(!SelWeapon.TryChamberRound(), 2);
+			#### H 2 A_StartSound("weapons/libchamber", 8);
+			#### H 0
+			{
+				bNOPAIN = false;
+			}
+			Goto See;
+
+		// ----------------------------------------
+		// BOSS RIFLE
+		// ----------------------------------------
+
+		ShootBoss:
+			#### H 4 Aim();
+			#### H 0 A_JumpIf(SelWeapon.ChamberedRound < FollowerWeapon.CRType_Chambered, 'ChamberRoundBoss');
+			#### I 1
+			{
+				SelWeapon.FireWeapon();
+			}
+			#### H 5;
+		ChamberRoundBoss:
+			#### H 0
+			{
+				bNOPAIN = true;
+			}
+			#### H 5 A_StartSound("weapons/boltback", 8);
+			#### H 7
+			{
+				if (SelWeapon.ChamberedRound == FollowerWeapon.CRType_Spent)
+				{
+					A_SpawnItemEx("HDSpent7mm", cos(pitch) * 8, 1, height - 7 - sin(pitch) * 8, cos(pitch) * cos(angle - 80) * 6 + vel.x, cos(pitch) * sin(angle - 80) * 6 + vel.y, -sin(pitch) * 6+ vel.z, 0, SXF_ABSOLUTEMOMENTUM | SXF_NOCHECKPOSITION | SXF_TRANSFERPITCH);
+					SelWeapon.ChamberedRound = FollowerWeapon.CRType_Empty;
+				}
+				A_StartSound("weapons/boltfwd", 8);
+				if (!SelWeapon.TryChamberRound())
+				{
+					ClearWeapon();
+				}
+			}
+			#### H 0
+			{
+				bNOPAIN = false;
+			}
+			Goto ShootBoss;
+		ReloadBoss:
+			#### H 8
+			{
+				bNOPAIN = true;
+			}
+			#### H 2 A_StartSound("weapons/rifleclick2", 8, CHANF_OVERLAP, 0.9, pitch: 0.95);
+			#### H 4 A_StartSound("weapons/rifleload", 8, CHANF_OVERLAP);
+			#### H 15 A_StartSound("weapons/pocket", 8);
+			#### H 4 A_StartSound("weapons/rifleclick2", 8);
+			#### HHH 3 A_StartSound("weapons/rifleclick2", 8, pitch: 1.01);
+			#### HHH 2 A_StartSound("weapons/rifleclick2", 8, CHANF_OVERLAP, pitch: 1.02);
+			#### HHH 1 A_StartSound("weapons/rifleclick2", 8, CHANF_OVERLAP, pitch: 1.02);
+			#### H 8
+			{
+				A_StartSound("weapons/rifleclick");
+				SelWeapon.TryReload();
+
+				if (SelWeapon.ChamberedRound < FollowerWeapon.CRType_Chambered)
+				{
+					SetStateLabel('ChamberRoundBoss');
+				}
+				bNOPAIN = false;
+			}
+			Goto See;
+
+		// ----------------------------------------
+		// BRONTORNIS
+		// ----------------------------------------
+
+		ShootBronto:
+			#### I 1
+			{
+				SelWeapon.FireWeapon();
+				ClearWeapon();
+			}
+			#### H 10;
+			Goto See;
+		ReloadBronto:
+			#### H 8
+			{
+				bNOPAIN = true;
+			}
+			#### H 5
+			{
+				A_StartSound("weapons/brontunload", 8);
+				if (SelWeapon.ChamberedRound == FollowerWeapon.CRType_Spent)
+				{
+					A_SpawnItemEx("TerrorCasing", cos(pitch) * 4, 0, height - 10 - sin(pitch) * 4, vel.x, vel.y, vel.z - frandom(-1, 1), frandom(-1, 1), SXF_ABSOLUTEMOMENTUM | SXF_NOCHECKPOSITION | SXF_TRANSFERPITCH | SXF_TRANSFERTRANSLATION);
+					SelWeapon.ChamberedRound = FollowerWeapon.CRType_Empty;
+				}
+			}
+			#### H 12 A_StartSound("weapons/brontoload", 9);
+			#### H 12 A_StartSound("weapons/pocket", 10);
+			#### H 10
+			{
+				A_StartSound("weapons/brontoload", 10);
+				SelWeapon.TryReload();
+				SelWeapon.TryChamberRound();
+			}
+			#### H 10 A_StartSound("weapons/brontunload", 11);
+			#### H 5 A_StartSound("weapons/brontoclose", 8);
+			#### H 0
+			{
+				bNOPAIN = false;
+			}
+			Goto See;
+	}
+}

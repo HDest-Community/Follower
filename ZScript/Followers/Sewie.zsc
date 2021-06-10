@@ -1,27 +1,8 @@
 class FollowerSewie : HDFollower
 {
-	override void GiveStartingItems()
+	override void GiveStartingItems(string input)
 	{
-		int ArmorType = hdf_loadout_sewie_armortype;
-		if (ArmorType > 0)
-		{
-			GiveArmour(1.0, ArmorType >= 2 ? 1.0 : 0.0, hdf_loadout_sewie_armorcondition);
-		}
-	}
-
-	override void InitWeapons()
-	{
-		int WeaponFlags = hdf_loadout_sewie_weapons;
-
-		static const Name AllWeapons[] = { 'FW_SMG', 'FW_Hunter', 'FW_ZM66', 'FW_RocketLauncher', 'FW_Liberator', 'FW_Boss', 'FW_Bronto' };
-		for (int i = 0; i < AllWeapons.Size(); ++i)
-		{
-			class<FollowerWeapon> fw = AllWeapons[i];
-			if (fw && WeaponFlags & (1 << i))
-			{
-				FollowerWeapon.CreateAndAdd(fw, self);
-			}
-		}
+		Super.GiveStartingItems(hdf_loadout_sewie);
 	}
 
 	Default

@@ -38,6 +38,11 @@ For the most part the mechanics are fairly simple and straightforward. Documente
 ---
 Most of the navigation is on-screen, but there are a few things that aren't obvious due to lack of space to put said info.
 - When selecting amount for transfer, Shift + Left/Right arrow keys increases the amount by 20 instead of 2.
+- You can give followers weapons through the inventory management menu. This will enable them to use the weapons, assuming it's a valid weapon to begin with. Keep in mind that the weapons given to them will not be exactly the same as the ones they'll actually use. That is, giving your followers a factory chamber boss will automatically turn it into a custom chamber. This will not change. Too much trouble to account for all of the variations. You also can't take back weapons. Once you give them, they're gone forever.
+
+##### Loadouts
+---
+The follower options now support a string input like with the player loadouts, although it's recommended to edit those through the console because menu input is janky. The standard loadout codes apply. Only valid items can be given. If your follower doesn't have any weapons that utilize a battery, nothing will happen and no battery will be given to them. Numbers can be used. For armor, you can use a floating point value, e.g `0.5`. Items are comma-separated, just like player loadouts. Example of a valid loadout code: `smg, 930 5, stm 3, awg 0.5`
 
 ##### Revival
 ---
@@ -55,13 +60,12 @@ Most of the navigation is on-screen, but there are a few things that aren't obvi
 
 ##### Recruiting
 ---
-- You can now recruit friendly/converted marines as followers. Does not work if the marines were resurrected. If it's smoking, forget about it. You can also recruit hostile marines if they have been incapped. For both of them you need to look at the marine (be within 2m of it) and press the follower menu key.
+You can now recruit friendly/converted marines as followers. Does not work if the marines were resurrected. If it's smoking, forget about it. You can also recruit hostile marines if they have been incapped. For both of them you need to look at the marine (be within 2m of it) and press the follower menu key.
 
 Marines basically function the exact same way as regular followers, and you can command them as such. A few exceptions exist:
 1. They are expendable, so you won't get any notification for leaving any behind when moving between maps. You can, however, carry them between maps to create an army. Of course, at some point it is going to become hell to manage.
-2. They don't have the full arsenal the regular followers have.
-3. All marines are stored as a single inventory item in first-in-last-out order.
-4. Their index in the follower list is also not static. Marines are sorted in the order they were recruited/placed.
+2. All marines are stored as a single inventory item in first-in-last-out order.
+3. Their index in the follower list is also not static. Marines are sorted in the order they were recruited/placed.
 
 ##### Miscellaneous
 ---
@@ -69,6 +73,6 @@ Marines basically function the exact same way as regular followers, and you can 
 
 ### Modding
 ---
-- New followers can be added by inheriting from HDFollower and overriding the provided virtuals (if desired). Their arsenal can be changed too if you like.
+- New followers can be added by inheriting from HDFollower and overriding the provided virtuals (if desired).
 - When making new followers, use a higher index. Internally, the three followers use indices 1-6. The index in KEYCONF and HDFollower.FollowerInfo needs to be the same number in both places. This index controls which follower gets manipulated by the reset/warp commands and where they get put in the list. To prevent conflicts, it is recommended to use numbers between 100 and 100 000 000 (excl.) to avoid conflicts with the base mod.
 - Do **NOT** add an `hdf_followers` option. This is an internal CVar and its only purpose is to allow players to control the built-in followers. If you don't want an addon follower to show up, don't load the addon.

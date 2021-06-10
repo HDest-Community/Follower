@@ -123,3 +123,23 @@ SEWIE_ARMORGIVE_NOTHANKS_3 = "I like my armor.";
 SEWIE_ARMORGIVE_RANAWAY_1 = "Doesn't look like you're planning to give me anything.";
 SEWIE_ARMORGIVE_RANAWAY_2 = "Hey, where are you going!?";
 SEWIE_ARMORGIVE_RANAWAY_3 = "Wait up!";
+
+SEWIE_WEAPONGIVE_INIT_1 = "Oh? A gun? For me? How nice of you.";
+SEWIE_WEAPONGIVE_INIT_2 = "Oh goody!";
+SEWIE_WEAPONGIVE_INIT_3 = "Mmmmm.";
+
+SEWIE_WEAPONGIVE_CANCEL_1 = "Aw. Okay then.";
+SEWIE_WEAPONGIVE_CANCEL_2 = "I'm sad, but it'll pass.";
+SEWIE_WEAPONGIVE_CANCEL_3 = "Alrighty then.";
+
+SEWIE_WEAPONGIVE_NONE_1 = "Oh, wow! Thank you!";
+SEWIE_WEAPONGIVE_NONE_2 = "I love it!";
+SEWIE_WEAPONGIVE_NONE_3 = "It's so shiny!";
+
+SEWIE_WEAPONGIVE_NOTHANKS_1 = "Thanks, I'll pass.";
+SEWIE_WEAPONGIVE_NOTHANKS_2 = "Unfortunately, I cannot use this.";
+SEWIE_WEAPONGIVE_NOTHANKS_3 = "Sorry, I'm unable to use this.";
+
+SEWIE_WEAPONGIVE_RANAWAY_1 = "Hey, come back!";
+SEWIE_WEAPONGIVE_RANAWAY_2 = "Why do you do this to me?";
+SEWIE_WEAPONGIVE_RANAWAY_3 = "Aw.";

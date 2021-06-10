@@ -123,3 +123,23 @@ FREYLIS_ARMORGIVE_NOTHANKS_3 = "Something tells me what I have now is much bette
 FREYLIS_ARMORGIVE_RANAWAY_1 = "Are you seriously going to leave me hanging?";
 FREYLIS_ARMORGIVE_RANAWAY_2 = "I don't appreciate being lied to.";
 FREYLIS_ARMORGIVE_RANAWAY_3 = "Damn you! Get back here!";
+
+FREYLIS_WEAPONGIVE_INIT_1 = "Finally, about time you gave me something to shoot with.";
+FREYLIS_WEAPONGIVE_INIT_2 = "Just drop it over here.";
+FREYLIS_WEAPONGIVE_INIT_3 = "Would really be appreciated.";
+
+FREYLIS_WEAPONGIVE_CANCEL_1 = "Cool, but let me know when you actually want to give me something.";
+FREYLIS_WEAPONGIVE_CANCEL_2 = "Ha-ha, very funny.";
+FREYLIS_WEAPONGIVE_CANCEL_3 = "No, really, give me that so I can shoot you with it.";
+
+FREYLIS_WEAPONGIVE_NONE_1 = "I like it. Thanks.";
+FREYLIS_WEAPONGIVE_NONE_2 = "I still wish for a fully semi-automatic bolt-action rifle.";
+FREYLIS_WEAPONGIVE_NONE_3 = "Much appreciated.";
+
+FREYLIS_WEAPONGIVE_NOTHANKS_1 = "That's of no use to me.";
+FREYLIS_WEAPONGIVE_NOTHANKS_2 = "I don't need that.";
+FREYLIS_WEAPONGIVE_NOTHANKS_3 = "Nope.";
+
+FREYLIS_WEAPONGIVE_RANAWAY_1 = "Are you seriously going to leave me hanging?";
+FREYLIS_WEAPONGIVE_RANAWAY_2 = "I don't appreciate being lied to.";
+FREYLIS_WEAPONGIVE_RANAWAY_3 = "Damn you! Get back here!";

@@ -23,7 +23,7 @@ extend class FollowerHandler
 		{
 			"Tempest", "Cinder", "Vexx", "Drace", "Klyn", "Vayne", "Vail", "Brick", "Zero", "Blade", "Apocalypse", "Thunder", "Void", "Kanzaxe", "Hatchet", "Blink", "Whiskey", "Splinter",
 			"Light", "Reaper", "Jet", "Wraith", "Quill", "Discount", "Death", "Nil", "Umbra", "Scar", "Curse", "Banshee", "Arrow", "Dash", "Niven", "Phantom", "Barricade", "Enigma",
-			"Matrix", "Entropy", "Raven", "Nomad", "Prophet", "Jester", "Psycho", "Blitz", "Scorpion", "Fury", "Arclite", "Redeemer", "Bishop", "War", "Wrath", "Pestilence"
+			"Matrix", "Entropy", "Raven", "Nomad", "Prophet", "Jester", "Psycho", "Blitz", "Scorpion", "Fury", "Arclite", "Redeemer", "Bishop", "War", "Wrath", "Pestilence", "Inferno"
 		};
 
 		string PickedName = "";
@@ -165,6 +165,14 @@ extend class FollowerHandler
 		Recruit.DeathSound = m.DeathSound;
 		Recruit.DisplayName = GetUniqueMarineName(Gender);
 		Recruit.Translation = m.Translation;
+
+		switch (m.wep)
+		{
+			case HDMarine.HDMW_SMG: Recruit.FindWeapon('FW_SMG').Enabled = true; break;
+			case HDMarine.HDMW_HUNTER: Recruit.FindWeapon('FW_Hunter').Enabled = true; break;
+			case HDMarine.HDMW_ZM66: Recruit.FindWeapon('FW_ZM66').Enabled = true; break;
+			case HDMarine.HDMW_ROCKET: Recruit.FindWeapon('FW_RocketLauncher').Enabled = true; break;
+		}
 
 		let Armor = HDArmourWorn(m.FindInventory('HDArmourWorn'));
 		if (Armor)

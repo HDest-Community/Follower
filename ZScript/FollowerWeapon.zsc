@@ -1,0 +1,147 @@
+class FollowerWeapon abstract
+{
+	static play void CreateAndAdd(class<FollowerWeapon> wpn, HDFollower flw, bool enabled = false)
+	{
+		FollowerWeapon fw = FollowerWeapon(new(wpn));
+		fw.Owner = flw;
+		fw.Enabled = enabled;
+		
+		string reqStr = fw.GetRequiredWeapon();
+		if (reqStr == "")
+		{
+			fw.Enabled = true;
+		}
+		else
+		{
+			// [Ace] Don't add weapons from mods if the mods themselves aren't loaded.
+			class<HDWeapon> rw = reqStr;
+			if (!rw)
+			{
+				return;
+			}
+		}
+
+		flw.Weapons.Push(fw);
+	}
+
+	enum CRType
+	{
+		CRType_Empty,
+		CRType_Spent,
+		CRType_Chambered
+	}
+
+	enum RResult
+	{
+		RResult_CanReload,
+		RResult_MagFull,
+		RResult_NoAmmo,
+		RResult_Invalid
+	}
+
+	CRType ChamberedRound;
+	int Mag;
+	bool HasWarnedLowAmmo;
+	HDFollower Owner;
+	bool Enabled;
+
+	abstract string GetName();
+	abstract string GetIcon();
+	abstract class<HDAmmo>, class<HDMagAmmo>, int GetAmmoType();
+	abstract Name GetRequiredWeapon(); // [Ace] Empty string means the weapon will be available from the get go.
+	abstract StateLabel GetFireState();
+	abstract StateLabel GetReloadState();
+	abstract play void FireWeapon();
+
+	virtual string GetLocalizationTag() { return GetName(); }
+	virtual double GetAdjustmentMult() { return 1.0; }
+	virtual play bool CheckWeaponCondition(HDFollower caller, Actor trgt) { return true; }
+
+	play void EjectMag()
+	{
+		class<HDAmmo> AType, MType; int MaxMag;
+		[AType, MType, MaxMag] = GetAmmoType();
+		if (MType && Mag > -1)
+		{
+			HDMagAmmo.SpawnMag(Owner, MType, Mag);
+			Mag = -1;
+		}
+	}
+
+	virtual play RResult TryReload(bool justCheck = false)
+	{
+		class<HDAmmo> AType, MType; int MaxMag;
+		[AType, MType, MaxMag] = GetAmmoType();
+
+		if (Mag == MaxMag)
+		{
+			return RResult_MagFull;
+		}
+		if (!MType && Owner.GetAmount(AType) == 0 || MType && Owner.GetAmount(MType) == 0)
+		{
+			return RResult_NoAmmo;
+		}
+		if (justCheck)
+		{
+			return RResult_CanReload;
+		}
+
+		if (MType)
+		{
+			InventorySlot wpnAmmo = Owner.FindHighestAmount(MType);
+			Mag = wpnAmmo.Amount;
+			wpnAmmo.Destroy();
+		}
+		else if (AType)
+		{
+			InventorySlot wpnAmmo = Owner.FindLowestAmount(AType);
+			Mag++;
+			wpnAmmo.Amount--;
+			if (wpnAmmo.Amount == 0)
+			{
+				wpnAmmo.Destroy();
+			}
+		}
+
+		return RResult_CanReload;
+	}
+
+	play bool TryChamberRound()
+	{
+		if (ChamberedRound == CRType_Empty && Mag > 0)
+		{
+			Mag--;
+			ChamberedRound = CRType_Chambered;
+			return true;
+		}
+
+		return false;
+	}
+
+	virtual play void EmptyWeapon()
+	{
+		class<HDAmmo> AType; class<HDMagAmmo> MType;
+		[AType, MType] = GetAmmoType();
+
+		if (ChamberedRound == CRType_Chambered)
+		{
+			ChamberedRound = FollowerWeapon.CRType_Empty;
+			Owner.A_SpawnItemEx(AType, random(0, 16), 0, 0, frandom(1.0, 2.0), 0, frandom(2.0, 5.0), 0, SXF_NOCHECKPOSITION);
+		}
+
+		if (Mag > 0)
+		{
+			if (MType)
+			{
+				HDMagAmmo.SpawnMag(Owner, MType, Mag);
+			}
+			else
+			{
+				Actor a; bool success;
+				[success, a] = Owner.A_SpawnItemEx(AType, random(0, 16), 0, 0, frandom(1.0, 2.0), 0, frandom(2.0, 5.0), 0, SXF_NOCHECKPOSITION);
+				Inventory(a).Amount = Mag;
+			}
+			Mag = 0;
+		}
+	}
+}

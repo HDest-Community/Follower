@@ -1,18 +1,5 @@
 class RecruitedMarine : HDFollower
 {
-	override void InitWeapons()
-	{
-		static const Name AllWeapons[] = { 'FW_SMG', 'FW_Hunter', 'FW_ZM66', 'FW_RocketLauncher' };
-		for (int i = 0; i < AllWeapons.Size(); ++i)
-		{
-			class<FollowerWeapon> fw = AllWeapons[i];
-			if (fw)
-			{
-				FollowerWeapon.CreateAndAdd(fw, self);
-			}
-		}
-	}
-
 	Default
 	{
 		Tag "Marine";

@@ -209,5 +209,67 @@ extend class HDFollower
 		return TraceData.HitActor == a;
 	}
 
+	protected void EngageTarget(Array<class<FollowerWeapon> > wpns, Actor other)
+	{
+		// [Ace] This is used so that FindWeapon() isn't copy-pasted numerous times in the targeting code.
+		Array<FollowerWeapon> ActualWeapons;
+		for (int i = 0; i < wpns.Size(); ++i)
+		{
+			FollowerWeapon w = FindWeapon(wpns[i]);
+			if (w)
+			{
+				ActualWeapons.Push(w);
+			}
+		}
+
+		FollowerWeapon HighestWithSpare = null;
+		FollowerWeapon HighestWithAmmo = null;
+		SelWeapon = null;
+
+		// [Ace] Find a weapon that has ammo in it. Start from the end and work backwards.
+		for (int i = ActualWeapons.Size() - 1; i >= 0; --i)
+		{
+			// [Ace] Ignore weapons that don't fulfill the required condition. When it comes to, say, a rocket launcher, this is the check that makes sure you don't get blasted to bits by accident.
+			if (!ActualWeapons[i].CheckWeaponCondition(self, other))
+			{
+				continue;
+			}
+
+			class<HDAmmo> AType, MType;
+			[AType, MType] = ActualWeapons[i].GetAmmoType();
+			if (MType && GetAmount(MType) > 0 || !MType && GetAmount(AType) > 0)
+			{
+				HighestWithSpare = ActualWeapons[i];
+			}
+			if (ActualWeapons[i].Mag > 0 || ActualWeapons[i].ChamberedRound == FollowerWeapon.CRType_Chambered)
+			{
+				HighestWithAmmo = ActualWeapons[i];
+			}
+		}
+
+		if (hdf_debug == 1)
+		{
+			Console.Printf("Highest with spare is "..(HighestWithSpare ? HighestWithSpare.GetName() : "nothing")..".");
+			Console.Printf("Highest with ammo is "..(HighestWithAmmo ? HighestWithAmmo.GetName() : "nothing")..".");
+		}
+
+		if (HighestWithAmmo)
+		{
+			SelWeapon = HighestWithAmmo;
+		}
+		else if (HighestWithSpare)
+		{
+			SelWeapon = HighestWithSpare;
+			TryReloadWeapon(SelWeapon, RLF_FORCE | RLF_SILENT | RLF_NOJUMP);
+			return;
+		}
+		
+		if (other && SelWeapon)
+		{
+			CTarget = other;
+			SetStateLabel('See');
+		}
+	}
+
 	protected transient CVar TargetUncountable;
 }

@@ -107,3 +107,23 @@ MARINE_ARMORGIVE_NOTHANKS_3 = "Mine is better, commander.";
 MARINE_ARMORGIVE_RANAWAY_1 = "Good one, sir.";
 MARINE_ARMORGIVE_RANAWAY_2 = "You got me, sir.";
 MARINE_ARMORGIVE_RANAWAY_3 = "Let me know if you change your mind, commander.";
+
+MARINE_WEAPONGIVE_INIT_1 = "New equipment, sir?";
+MARINE_WEAPONGIVE_INIT_2 = "Looks like it's time to rock!";
+MARINE_WEAPONGIVE_INIT_3 = "Hoorah, commander!";
+
+MARINE_WEAPONGIVE_CANCEL_1 = "Roger that, sir. No hard feelings/";
+MARINE_WEAPONGIVE_CANCEL_2 = "Understood.";
+MARINE_WEAPONGIVE_CANCEL_3 = "Alright, commander.";
+
+MARINE_WEAPONGIVE_NONE_1 = "Oh, hell yes!";
+MARINE_WEAPONGIVE_NONE_2 = "Now we're talking.";
+MARINE_WEAPONGIVE_NONE_3 = "Based.";
+
+MARINE_WEAPONGIVE_NOTHANKS_1 = "I'm unable to use this, sir.";
+MARINE_WEAPONGIVE_NOTHANKS_2 = "I'll have to pass on that, commander. Sorry.";
+MARINE_WEAPONGIVE_NOTHANKS_3 = "You can keep that one, sir.";
+
+MARINE_WEAPONGIVE_RANAWAY_1 = "Good one, sir.";
+MARINE_WEAPONGIVE_RANAWAY_2 = "You got me, sir.";
+MARINE_WEAPONGIVE_RANAWAY_3 = "Let me know if you change your mind, commander.";

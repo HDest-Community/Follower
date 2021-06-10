@@ -178,6 +178,10 @@ extend class FollowerHandler
 				break;
 			}
 
+			// --------------------------------------------------------------------------------
+			//
+			// --------------------------------------------------------------------------------
+
 			case FMenu_Followers:
 			{
 				if (Followers.Size() == 0)
@@ -220,6 +224,10 @@ extend class FollowerHandler
 				}
 				break;
 			}
+
+			// --------------------------------------------------------------------------------
+			//
+			// --------------------------------------------------------------------------------
 
 			case FMenu_Main:
 			{
@@ -304,7 +312,10 @@ extend class FollowerHandler
 					Commands.Push("Carry follower");
 					Commands.Push("Manage inventory");
 					Commands.Push((Waiting ? "Confirm/Cancel?" : "Use/drop armor"..(Durability > 0 ? (Mega ? "\c[Blue]" : "\c[DarkGreen]").." ("..Durability..")": "")).."\c-");
-					Commands.Push("Misc commands");
+					if (SFol.bCANDISMISS)
+					{
+						Commands.Push("Misc commands");
+					}
 					if (Followers.Size() > 1)
 					{
 						Commands.Push("Back...");
@@ -334,6 +345,10 @@ extend class FollowerHandler
 				}
 				break;
 			}
+
+			// --------------------------------------------------------------------------------
+			//
+			// --------------------------------------------------------------------------------
 
 			case FMenu_Orders:
 			{
@@ -374,6 +389,10 @@ extend class FollowerHandler
 				break;
 			}
 
+			// --------------------------------------------------------------------------------
+			//
+			// --------------------------------------------------------------------------------
+
 			case FMenu_Inventory:
 			{
 				if (!SFol)
@@ -408,21 +427,35 @@ extend class FollowerHandler
 				DrawRectangle(sb, pos + (0, InvRectangleHeight + 1), (RectangleWidth, RectangleHeight), MainFont, "0) Cancel/Back", flags);
 				pos.y += RectangleHeight + Spacing;
 
-				DrawRectangle(sb, pos + (0, InvRectangleHeight + 1), (RectangleWidth, RectangleHeight), MainFont, "1-9) Weapon 1-9", flags);
-				pos.y += RectangleHeight + Spacing;
-
-				if (SFol.CanInteractWith(false))
+				if (wSize > 0)
 				{
-					DrawRectangle(sb, pos + (0, InvRectangleHeight + 1), (RectangleWidth, RectangleHeight), MainFont, "Spc) Reload", flags);
-					pos.y += RectangleHeight + Spacing;
+					if (wSize > 1)
+					{
+						DrawRectangle(sb, pos + (0, InvRectangleHeight + 1), (RectangleWidth, RectangleHeight), MainFont, String.Format("1-%i) Weapon 1-%i", wSize, wSize), flags);
+						pos.y += RectangleHeight + Spacing;
+					}
+
+					if (SFol.CanInteractWith(false))
+					{
+						DrawRectangle(sb, pos + (0, InvRectangleHeight + 1), (RectangleWidth, RectangleHeight), MainFont, "Spc) Reload", flags);
+						pos.y += RectangleHeight + Spacing;
+					}
 				}
 
-				DrawRectangle(sb, pos + (0, InvRectangleHeight + 1), (RectangleWidth, RectangleHeight), MainFont, "Bsp) Take", flags);
-				pos.y += RectangleHeight + Spacing;
+				DrawRectangle(sb, pos + (0, InvRectangleHeight + 1), (RectangleWidth, RectangleHeight), MainFont, "Bsp) Take", flags); pos.y += RectangleHeight + Spacing;
+				DrawRectangle(sb, pos + (0, InvRectangleHeight + 1), (RectangleWidth, RectangleHeight), MainFont, "Ent) Select/Give", flags); pos.y += RectangleHeight + Spacing;
 
-				DrawRectangle(sb, pos + (0, InvRectangleHeight + 1), (RectangleWidth, RectangleHeight), MainFont, "Ent) Select/Give", flags);
+				if (wSize > 0)
+				{
+					bool Waiting = SFol.Status == FStatus_WaitingForWeapon;
+					DrawRectangle(sb, pos + (0, InvRectangleHeight + 1), (RectangleWidth, RectangleHeight), MainFont, "P) "..(Waiting ? "Confirm/Cancel?" : "Pickup weapon"), flags); pos.y += RectangleHeight + Spacing;
+				}
 				break;
 			}
+
+			// --------------------------------------------------------------------------------
+			//
+			// --------------------------------------------------------------------------------
 
 			case FMenu_Miscellaneous:
 			{
@@ -433,18 +466,15 @@ extend class FollowerHandler
 				}
 
 				Array<string> Commands;
-				if (SFol.bCANDISMISS)
-				{
-					Commands.Push("\c[FLW_BloodRed]Dismiss\c-");
-				}
+				Commands.Push("\c[FLW_BloodRed]Dismiss\c-");
 				Commands.Push("Back...");
 
-				DrawRectangle(sb, pos, (235, RectangleHeight), MainFont, GetTruncatedText(SFol.GetDisplayName(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
+				DrawRectangle(sb, pos, (160, RectangleHeight), MainFont, GetTruncatedText(SFol.GetDisplayName(), 20), flags, Font.FindFontColor('FLW_NameBlue'));
 				pos.y += RectangleHeight + Spacing;
 
 				for (int i = 0; i < Commands.Size(); ++i)
 				{
-					DrawRectangle(sb, pos, (235, RectangleHeight), MainFont, (i + 1)..") "..Commands[i], flags);
+					DrawRectangle(sb, pos, (160, RectangleHeight), MainFont, (i + 1)..") "..Commands[i], flags);
 					pos.y += RectangleHeight + Spacing;
 				}
 				break;
@@ -478,7 +508,8 @@ extend class FollowerHandler
 
 	private ui void DrawWeaponRectangle(HDStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, int flags, HDFollower flw, FollowerWeapon wpn)
 	{
-		sb.Fill(Color(64, 128, 192, 255), pos.x, pos.y, size.x, size.y, flags);
+		Color col = wpn.Enabled ? Color(64, 128, 192, 255) : Color(128, 192, 64, 64);
+		sb.Fill(col, pos.x, pos.y, size.x, size.y, flags);
 		sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 
 		sb.DrawString(fnt, wpn.GetName(), pos + (2, 2), flags, Font.FindFontColor('FLW_WeaponBlue'));
@@ -500,10 +531,10 @@ extend class FollowerHandler
 		sb.DrawString(fnt, ChamberString..sb.FormatNumber(flw.GetAmount(MType ? MType : AType), 1, 4), pos + (size.x - 4, size.y - 15), flags | sb.DI_TEXT_ALIGN_RIGHT, Font.CR_WHITE);
 
 		// [Ace] Magazine bar.
-		sb.Fill(Color(64, 128, 192, 255), pos.x + 1, pos.y + (size.y - 5), size.x - 2, 4, flags);
-		sb.Fill(Color(128, 0, 0, 0), pos.x + 2, pos.y + (size.y - 4), size.x - 4, 2, flags);
+		sb.Fill(col, pos.x + 1, pos.y + (size.y - 4), size.x - 2, 1, flags);
+		sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + (size.y - 3), size.x - 2, 2, flags);
 		double AmPercent = clamp(wpn.Mag / double(MaxMag), 0, 1.0);
-		sb.Fill(GetPercentColor(AmPercent), pos.x + 2, pos.y + (size.y - 4), (size.x - 4) * AmPercent, 2, flags);
+		sb.Fill(GetPercentColor(AmPercent), pos.x + 1, pos.y + (size.y - 3), (size.x - 2) * AmPercent, 2, flags);
 	}
 
 	private ui void DrawFollowerInventory(HDStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, int flags, HDFollower flw)
@@ -617,7 +648,8 @@ extend class FollowerHandler
 
 	override bool InputProcess(InputEvent e)
 	{
-		bool RetVal = false;
+		// [Ace] This exists so that your input isn't arbitrarily intercepted when it shouldn't be. Returning directly won't fly.
+		bool ret = false;
 
 		bool IsShift = e.KeyScan == InputEvent.Key_LShift || e.KeyScan == InputEvent.Key_RShift;
 		bool IsCtrl = e.KeyScan == InputEvent.Key_LCtrl || e.KeyScan == InputEvent.Key_RCtrl;
@@ -671,12 +703,16 @@ extend class FollowerHandler
 					break;
 				}
 
+				// --------------------------------------------------------------------------------
+				//
+				// --------------------------------------------------------------------------------
+
 				case FMenu_Followers:
 				{
 					if (e.KeyScan == InputEvent.Key_Enter)
 					{
 						SendNetworkEvent("HDF_ApplySelection");
-						RetVal = true;
+						ret = true;
 					}
 					else if (Modifiers[consoleplayer] & OpMod_Ctrl)
 					{
@@ -700,7 +736,7 @@ extend class FollowerHandler
 								break;
 							}
 						}
-						RetVal = true;
+						ret = true;
 					}
 					else
 					{
@@ -731,6 +767,10 @@ extend class FollowerHandler
 					}
 					break;
 				}
+
+				// --------------------------------------------------------------------------------
+				//
+				// --------------------------------------------------------------------------------
 
 				case FMenu_Main:
 				{
@@ -770,7 +810,10 @@ extend class FollowerHandler
 						Commands.Push(CreateCommand("HDF_CarryFollower"));
 						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Inventory));
 						Commands.Push(CreateCommand("HDF_TryArmor"));
-						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Miscellaneous));
+						if (SFol.bCANDISMISS)
+						{
+							Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Miscellaneous));
+						}
 						if (Followers.Size() > 1)
 						{
 							Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Followers));
@@ -784,6 +827,10 @@ extend class FollowerHandler
 					}
 					break;
 				}
+
+				// --------------------------------------------------------------------------------
+				//
+				// --------------------------------------------------------------------------------
 					
 				case FMenu_Orders:
 				{
@@ -799,6 +846,10 @@ extend class FollowerHandler
 					break;
 				}
 
+				// --------------------------------------------------------------------------------
+				//
+				// --------------------------------------------------------------------------------
+
 				case FMenu_OrdersMulti:
 				{
 					switch (NumKey)
@@ -811,12 +862,17 @@ extend class FollowerHandler
 					break;
 				}
 
+				// --------------------------------------------------------------------------------
+				//
+				// --------------------------------------------------------------------------------
+
 				case FMenu_Inventory:
 				{
 					HDFollower SFol = Selection[consoleplayer].GetLast();
 					if (NumKey > 0 && NumKey < 10)
 					{
 						SelWeaponIndex[consoleplayer] = min(NumKey - 1, SFol.Weapons.Size() - 1);
+						ret = true;
 					}
 
 					// [Ace] Navigation.
@@ -826,7 +882,7 @@ extend class FollowerHandler
 						case InputEvent.Key_Space:
 						{
 							SendNetworkEvent("HDF_TryReloadWeapon", SelWeaponIndex[consoleplayer]);
-							RetVal = true;
+							ret = true;
 							break;
 						}
 						case InputEvent.Key_Enter:
@@ -882,8 +938,7 @@ extend class FollowerHandler
 									SlotFocused[consoleplayer] = 0;
 								}
 							}
-
-							RetVal = true;
+							ret = true;
 							break;
 						}
 						case InputEvent.Key_Backspace:
@@ -891,7 +946,7 @@ extend class FollowerHandler
 							if (SFol.Slots[FSlotIndex[consoleplayer]] && SlotFocused[consoleplayer] < 2)
 							{
 								SendNetworkEvent("HDF_TakeInvItem", FSlotIndex[consoleplayer]);
-								RetVal = true;
+								ret = true;
 							}
 							break;
 						}
@@ -911,7 +966,7 @@ extend class FollowerHandler
 									PSlotSubIndex[consoleplayer] = maxSIndex;
 								}
 							}
-							RetVal = true;
+							ret = true;
 							break;
 						}
 						case InputEvent.Key_RightArrow:
@@ -927,7 +982,7 @@ extend class FollowerHandler
 									PSlotSubIndex[consoleplayer] = 0;
 								}
 							}
-							RetVal = true;
+							ret = true;
 							break;
 						}
 						case InputEvent.Key_UpArrow:
@@ -947,7 +1002,7 @@ extend class FollowerHandler
 									PSlotIndex[consoleplayer] = ValidItems[consoleplayer].Items.Size() - 1;
 								}
 							}
-							RetVal = true;
+							ret = true;
 							break;
 						}
 						case InputEvent.Key_DownArrow:
@@ -967,9 +1022,15 @@ extend class FollowerHandler
 									PSlotIndex[consoleplayer] = 0;
 								}
 							}
-							RetVal = true;
+							ret = true;
 							break;
 						}
+					}
+
+					if (e.KeyChar == 80 || e.KeyChar == 112)
+					{
+						SendNetworkEvent("HDF_TryWeapon");
+						ret = true;
 					}
 
 					if (NumKey == 10)
@@ -982,23 +1043,27 @@ extend class FollowerHandler
 						{
 							SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Main);
 						}
+						ret = true;
 					}
 					break;
 				}
 
+				// --------------------------------------------------------------------------------
+				//
+				// --------------------------------------------------------------------------------
+
 				case FMenu_Miscellaneous:
 				{
 					Array<FollowerCommand> Commands;
-					if (Selection[consoleplayer].GetLast().bCANDISMISS)
-					{
-						Commands.Push(CreateCommand("HDF_DismissFollower"));
-					}
+
+					Commands.Push(CreateCommand("HDF_DismissFollower"));
 					Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Main));
 					
 					if (NumKey > 0 && NumKey - 1 < Commands.Size())
 					{
 						FollowerCommand cmd = Commands[NumKey - 1];
 						SendNetworkEvent(cmd.EventName, cmd.Args[0], cmd.Args[1], cmd.Args[2]);
+						ret = true;
 					}
 					break;
 				}
@@ -1007,7 +1072,7 @@ extend class FollowerHandler
 			// [Ace] Block 0-9 keys from affecting the world.
 			if (NumKey >= 0 && NumKey <= 10)
 			{
-				RetVal = true;
+				ret = true;
 			}
 
 			if (!(Modifiers[consoleplayer] & OpMod_Shift))
@@ -1018,15 +1083,15 @@ extend class FollowerHandler
 				if (e.KeyScan == Key1 || e.KeyScan == Key2)
 				{
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
-					RetVal = true;
+					ret = true;
 				}
 			}
-			else if (FollowerMenuLevel[consoleplayer] == FMenu_Followers)
+			else if (FollowerMenuLevel[consoleplayer] == FMenu_Followers) // [Ace] Used only with the 0-9 keys.
 			{
 				SendNetworkEvent("HDF_OpenMenu");
 			}
 		}
-		return RetVal;
+		return ret;
 	}
 
 	// ----------------------------------------------------------------------
@@ -1243,9 +1308,15 @@ extend class FollowerHandler
 		if (e.Name ~== "HDF_TryArmor")
 		{
 			SFol.TryUseArmor();
-			CloseFollowerMenu(e.Player);
 			return;
 		}
+
+		if (e.Name ~== "HDF_TryWeapon")
+		{
+			SFol.TryUseWeapon();
+			return;
+		}
+
 		if (e.Name ~== "HDF_ChangeOrders")
 		{
 			if (SFol.ChangeOrders(e.Args[0]))
@@ -1265,7 +1336,7 @@ extend class FollowerHandler
 			return;
 		}
 
-		if (e.Name ~== "HDF_TryReloadWeapon" && SFol.CanInteractWith(false))
+		if (e.Name ~== "HDF_TryReloadWeapon" && SFol.CanInteractWith(false) && SFol.Weapons.Size() > 0)
 		{
 			FollowerWeapon wpn = SFol.Weapons[e.Args[0]];
 			SFol.TryReloadWeapon(wpn, HDFollower.RLF_MANUAL);
@@ -1345,9 +1416,10 @@ extend class FollowerHandler
 		Actor plr = players[consoleplayer].mo;
 		for (Inventory Next = plr.Inv; Next; Next = Next.Inv)
 		{
-			if (Next is 'HDAmmo' && flw.AmmoIsUsed(HDAmmo(Next).GetClass()) || Next is 'PortableMedikit' || Next is 'PortableStimpack')
+			HDPickup item = HDPickup(Next);
+			if (item && flw.IsValidItem(item.GetClass()))
 			{
-				ValidItems[consoleplayer].Items.Push(HDPickup(Next));
+				ValidItems[consoleplayer].Items.Push(item);
 			}
 		}
 	}

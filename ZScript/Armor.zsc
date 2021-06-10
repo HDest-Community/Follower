@@ -9,12 +9,12 @@ extend class HDFollower
 			return;
 		}
 		
-		let WornArmor = FindInventory("HDArmourWorn");
+		let wornArmor = FindInventory("HDArmourWorn");
 		if (Status == FStatus_WaitingForArmor)
 		{
-			if (WornArmor)
+			if (wornArmor)
 			{
-				A_DropInventory(WornArmor.GetClass());
+				A_DropInventory(wornArmor.GetClass());
 				PrintMessage(GetResponse("ARMORGIVE_STRIP"), "ArmorGive/Strip", PMType_General);
 				Status = FStatus_None;
 				return;
@@ -36,24 +36,24 @@ extend class HDFollower
 
 	private void LookForArmor()
 	{
-		CheckProximity("HDArmour", radius + 24, 1, CPXF_CLOSEST | CPXF_SETTRACER);
-		let FoundArmor = HDArmour(tracer);
-		let WornArmor = HDArmourWorn(FindInventory("HDArmourWorn"));
+		CheckProximity("HDArmour", radius + MaxSearchRange, 1, CPXF_CLOSEST | CPXF_SETTRACER);
+		let foundArmor = HDArmour(tracer);
+		let wornArmor = HDArmourWorn(FindInventory("HDArmourWorn"));
 
-		if (FoundArmor)
+		if (foundArmor)
 		{
-			if (!WornArmor)
+			if (!wornArmor)
 			{
 				PrintMessage(GetResponse("ARMORGIVE_NONE"), "ArmorGive/None", PMType_General);
 			}
-			else if (WornArmor)
+			else if (wornArmor)
 			{
 				// [Ace] 1030 because mega armor's durability is calculated as 1000 + actual durability. Only while on the ground, though.
-				if (!WornArmor.Mega && FoundArmor.Mega && FoundArmor.Mags[0] >= 1030 || WornArmor.Mega && WornArmor.Durability < 20 && !FoundArmor.Mega && FoundArmor.Mags[0] > 60)
+				if (!wornArmor.Mega && foundArmor.Mega && foundArmor.Mags[0] >= 1030 || wornArmor.Mega && wornArmor.Durability < 20 && !foundArmor.Mega && foundArmor.Mags[0] > 60)
 				{
 					PrintMessage(GetResponse("ARMORGIVE_UPGRADE"), "ArmorGive/Upgrade", PMType_General);
 				}
-				else if (FoundArmor.Mega == WornArmor.Mega && WornArmor.Durability < FoundArmor.Mags[0] % 1000)
+				else if (foundArmor.Mega == wornArmor.Mega && wornArmor.Durability < foundArmor.Mags[0] % 1000)
 				{
 					PrintMessage(GetResponse("ARMORGIVE_BETTERDURABILITY"), "ArmorGive/BetterDurability", PMType_General);
 				}
@@ -65,10 +65,10 @@ extend class HDFollower
 					return;
 				}
 
-				A_DropInventory(WornArmor.GetClass());
+				A_DropInventory(wornArmor.GetClass());
 			}
 
-			FoundArmor.ActualPickup(self);
+			foundArmor.ActualPickup(self);
 			UseInventory(FindInventory("HDArmour"));
 			Status = FStatus_None;
 		}

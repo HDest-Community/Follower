@@ -195,3 +195,23 @@ DAINA_ARMORGIVE_NOTHANKS_3 = "I like my armor.";
 DAINA_ARMORGIVE_RANAWAY_1 = "Doesn't look like you're planning to give me anything.";
 DAINA_ARMORGIVE_RANAWAY_2 = "Hey, where are you going!?";
 DAINA_ARMORGIVE_RANAWAY_3 = "Wait up!";
+
+DAINA_WEAPONGIVE_INIT_1 = "Oh? A gun? For me? How nice of you.";
+DAINA_WEAPONGIVE_INIT_2 = "Oh goody!";
+DAINA_WEAPONGIVE_INIT_3 = "Mmmmm.";
+
+DAINA_WEAPONGIVE_CANCEL_1 = "Aw. Okay then.";
+DAINA_WEAPONGIVE_CANCEL_2 = "I'm sad, but it'll pass.";
+DAINA_WEAPONGIVE_CANCEL_3 = "Alrighty then.";
+
+DAINA_WEAPONGIVE_NONE_1 = "Oh, wow! Thank you!";
+DAINA_WEAPONGIVE_NONE_2 = "I love it!";
+DAINA_WEAPONGIVE_NONE_3 = "It's so shiny!";
+
+DAINA_WEAPONGIVE_NOTHANKS_1 = "Thanks, I'll pass.";
+DAINA_WEAPONGIVE_NOTHANKS_2 = "Unfortunately, I cannot use this.";
+DAINA_WEAPONGIVE_NOTHANKS_3 = "Sorry, I'm unable to use this.";
+
+DAINA_WEAPONGIVE_RANAWAY_1 = "Hey, come back!";
+DAINA_WEAPONGIVE_RANAWAY_2 = "Why do you do this to me?";
+DAINA_WEAPONGIVE_RANAWAY_3 = "Aw.";

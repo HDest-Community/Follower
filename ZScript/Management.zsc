@@ -70,8 +70,8 @@ extend class FollowerHandler
 					Follower.ChangeLinkedPlayer(HDPlayerPawn(plr));
 
 					// [Ace] These are here so that they are only called once when the follower is created.
-					Follower.GiveStartingItems();
 					Follower.InitWeapons();
+					Follower.GiveStartingItems();
 					return Follower;
 				}
 			}

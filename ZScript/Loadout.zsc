@@ -1,5 +1,68 @@
 extend class HDFollower
 {
-	virtual void GiveStartingItems() { }
-	abstract void InitWeapons();
+	virtual void GiveStartingItems(string input = "")
+	{
+		input = input.MakeLower();
+		input.Replace(" ", "");
+
+		Array<string> lines;
+		input.Split(lines, ",");
+
+		for (int i = 0; i < lines.Size(); ++i)
+		{
+			double amt = lines[i].Mid(3).ToDouble();
+			string ref = lines[i].Left(3);
+
+			class<Inventory> cls = HDBackpack.FindByRefId(ref);
+			if (!cls)
+			{
+				continue;
+			}
+
+			if (cls is 'BattleArmour' || cls is 'BattleArmourWorn' || cls is 'GarrisonArmour' || cls is 'GarrisonArmourWorn')
+			{
+				bool mega = cls is 'BattleArmour' || cls is 'BattleArmourWorn';
+				GiveArmour(1.0, mega ? 1.0 : 0, amt);
+				continue;
+			}
+
+			if (cls is 'HDWeapon')
+			{
+				FollowerWeapon wpn = FindWeaponByRequirement((class<HDWeapon>)(cls));
+				if (wpn)
+				{
+					wpn.Enabled = true;
+					continue;
+				}
+			}
+
+			class<HDPickup> pkp = (class<HDPickup>)(cls);
+			if (IsValidItem(pkp, true))
+			{
+				if (pkp is 'HDMagAmmo')
+				{
+					for (int j = 0; j < int(amt); ++j)
+					{
+						HDMagAmmo spawned = HDMagAmmo(Spawn(pkp, pos));
+						spawned.SyncAmount();
+						if (!AddSingularItem(spawned, force: true))
+						{
+							spawned.Destroy();
+							return;
+						}
+					}
+				}
+				else
+				{
+					HDPickup spawned = HDPickup(Spawn(pkp, pos));
+					spawned.Amount = int(amt);
+					if (!AddStackableItem(spawned, int(amt), force: true))
+					{
+						spawned.Destroy();
+						break;
+					}
+				}
+			}
+		}
+	}
 }

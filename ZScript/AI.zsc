@@ -3,6 +3,7 @@ enum FStatus
 	FStatus_None,
 	FStatus_InCombat,
 	FStatus_WaitingForArmor,
+	FStatus_WaitingForWeapon,
 	FStatus_InactiveOrDead
 }
 
@@ -52,17 +53,25 @@ extend class HDFollower
 				}
 			}
 
-			if (Status == FStatus_WaitingForArmor)
+			if (Status >= FStatus_WaitingForArmor && Status <= FStatus_WaitingForWeapon)
 			{
-				if (Distance3D(LinkedPlayer) > 42 * 12)
+				if (Distance3D(LinkedPlayer) > MaxWaitRange)
 				{
-					PrintMessage(GetResponse("ARMORGIVE_RANAWAY"), "ArmorGive/RanAway", PMType_Critical);
+					switch (Status)
+					{
+						case FStatus_WaitingForArmor: PrintMessage(GetResponse("ARMORGIVE_RANAWAY"), "ArmorGive/RanAway", PMType_Critical); break;
+						case FStatus_WaitingForWeapon: PrintMessage(GetResponse("WEAPONGIVE_RANAWAY"), "WeaponGive/RanAway", PMType_Critical); break;
+					}
 					Status = FStatus_None;
 				}
 				else
 				{
+					switch (Status)
+					{
+						case FStatus_WaitingForArmor: LookForArmor(); break;
+						case FStatus_WaitingForWeapon: LookForWeapon(); break;
+					}
 					A_Face(LinkedPlayer, 45);
-					LookForArmor();
 				}
 			}
 			else if (Status == FStatus_None)
@@ -162,7 +171,7 @@ extend class HDFollower
 		}
 
 		// [Ace] Movement. Always travel to goals if there are any. Status between moving and idle should not be set elsewhere.
-		if (Status != FStatus_WaitingForArmor && (Status != FStatus_InCombat || Order == FOrder_GoAndCover) && TGoal && (TGoal is Next.GetClass() && Distance2D(TGoal) > (Order == FOrder_ComeAndHelp && (PNeedsMedic || PNeedsHelp) ? MedicRange : (MinFollowRangeStop / DistDiv)) || TGoal is "TargetGoal" && Distance2D(TGoal) > 16) && Distance2D(TGoal) < MaxGoalRange)
+		if (Status == FStatus_None && TGoal && (TGoal is Next.GetClass() && Distance2D(TGoal) > (Order == FOrder_ComeAndHelp && (PNeedsMedic || PNeedsHelp) ? MedicRange : (MinFollowRangeStop / DistDiv)) || TGoal is "TargetGoal" && Distance2D(TGoal) > 16) && Distance2D(TGoal) < MaxGoalRange)
 		{
 			// [Ace] Don't slow down if player is bleeding out their ass or needs help getting up.
 			if (TGoal is "PlayerPawn" && Order == FOrder_ComeAndHelp && (PNeedsMedic || PNeedsHelp))
@@ -317,9 +326,11 @@ extend class HDFollower
 		return LinkedPlayer;
 	}
 
-	const MinFollowRangeStop = 96; // [Ace] If following the player, stop if closer than this distance.
-	const MinFollowRange = 128;
-	const MaxFollowRange = 768;
+	const MinFollowRangeStop = 42 * 2.3; // [Ace] If following the player, stop if closer than this distance.
+	const MinFollowRange = 42 * 3;
+	const MaxFollowRange = 42 * 20;
+	const MaxWaitRange = 42 * 12;
+	const MaxSearchRange = 24; // [Ace] This is for the LookFor* stuff.
 
 	HDPlayerPawn LinkedPlayer;
 	protected Actor CTarget;

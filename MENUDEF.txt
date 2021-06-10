@@ -22,8 +22,7 @@ OptionMenu "HDFollowerMenu"
 	StaticText "and are placed on the next one, given enough space. This disables that.", "White"
 	StaticText ""
 	Option "Quick Access", "hdf_quickaccess", "OnOff"
-	StaticText "Looking at a follower opens their menu.", "White"
-	StaticText "There is a range limit of about 2048 map units.", "White"
+	StaticText "Looking at a follower opens their menu. Effective range is 20m.", "White"
 	StaticText ""
 
 	StaticText "----- Followers -----", "Teal"
@@ -56,18 +55,7 @@ OptionMenu "HDFollowerMenuFreylis"
 	SafeCommand "Teleport To Player", "HDF_WarpFreylisToPlayer"
 	SafeCommand "Create/Recreate Follower", "HDF_ResetFreylis"
 	StaticText ""
-	StaticText "----- Loadout (Weapons) -----", "Teal"
-	FlagOption "SMG", "hdf_loadout_freylis_weapons", "YesNo", 0
-	FlagOption "Hunter", "hdf_loadout_freylis_weapons", "YesNo", 1
-	FlagOption "ZM66", "hdf_loadout_freylis_weapons", "YesNo", 2
-	FlagOption "Rocket Launcher", "hdf_loadout_freylis_weapons", "YesNo", 3
-	FlagOption "Liberator", "hdf_loadout_freylis_weapons", "YesNo", 4
-	FlagOption "Boss", "hdf_loadout_freylis_weapons", "YesNo", 5
-	FlagOption "Bronto", "hdf_loadout_freylis_weapons", "YesNo", 6
-	StaticText ""
-	StaticText "----- Loadout (Items) -----", "Teal"
-	Option "Armor", "hdf_loadout_freylis_armortype", "ArmorType"
-	Slider "Condition", "hdf_loadout_freylis_armorcondition", 0.01, 1.0, 0.01, 2
+	TextField "Loadout:", "hdf_loadout_freylis"
 }
 
 OptionMenu "HDFollowerMenuBalthazar"
@@ -79,18 +67,7 @@ OptionMenu "HDFollowerMenuBalthazar"
 	SafeCommand "Teleport To Player", "HDF_WarpBalthazarToPlayer"
 	SafeCommand "Create/Recreate Follower", "HDF_ResetBalthazar"
 	StaticText ""
-	StaticText "----- Loadout (Weapons) -----", "Teal"
-	FlagOption "SMG", "hdf_loadout_balthazar_weapons", "YesNo", 0
-	FlagOption "Hunter", "hdf_loadout_balthazar_weapons", "YesNo", 1
-	FlagOption "ZM66", "hdf_loadout_balthazar_weapons", "YesNo", 2
-	FlagOption "Rocket Launcher", "hdf_loadout_balthazar_weapons", "YesNo", 3
-	FlagOption "Liberator", "hdf_loadout_balthazar_weapons", "YesNo", 4
-	FlagOption "Boss", "hdf_loadout_balthazar_weapons", "YesNo", 5
-	FlagOption "Bronto", "hdf_loadout_balthazar_weapons", "YesNo", 6
-	StaticText ""
-	StaticText "----- Loadout (Items) -----", "Teal"
-	Option "Armor", "hdf_loadout_balthazar_armortype", "ArmorType"
-	Slider "Condition", "hdf_loadout_balthazar_armorcondition", 0.01, 1.0, 0.01, 2
+	TextField "Loadout:", "hdf_loadout_balthazar"
 }
 
 OptionMenu "HDFollowerMenuValnos"
@@ -102,18 +79,7 @@ OptionMenu "HDFollowerMenuValnos"
 	SafeCommand "Teleport To Player", "HDF_WarpValnosToPlayer"
 	SafeCommand "Create/Recreate Follower", "HDF_ResetValnos"
 	StaticText ""
-	StaticText "----- Loadout (Weapons) -----", "Teal"
-	FlagOption "SMG", "hdf_loadout_valnos_weapons", "YesNo", 0
-	FlagOption "Hunter", "hdf_loadout_valnos_weapons", "YesNo", 1
-	FlagOption "ZM66", "hdf_loadout_valnos_weapons", "YesNo", 2
-	FlagOption "Rocket Launcher", "hdf_loadout_valnos_weapons", "YesNo", 3
-	FlagOption "Liberator", "hdf_loadout_valnos_weapons", "YesNo", 4
-	FlagOption "Boss", "hdf_loadout_valnos_weapons", "YesNo", 5
-	FlagOption "Bronto", "hdf_loadout_valnos_weapons", "YesNo", 6
-	StaticText ""
-	StaticText "----- Loadout (Items) -----", "Teal"
-	Option "Armor", "hdf_loadout_valnos_armortype", "ArmorType"
-	Slider "Condition", "hdf_loadout_valnos_armorcondition", 0.01, 1.0, 0.01, 2
+	TextField "Loadout:", "hdf_loadout_valnos"
 }
 
 OptionMenu "HDFollowerMenuDaina"
@@ -125,18 +91,7 @@ OptionMenu "HDFollowerMenuDaina"
 	SafeCommand "Teleport To Player", "HDF_WarpDainaToPlayer"
 	SafeCommand "Create/Recreate Follower", "HDF_ResetDaina"
 	StaticText ""
-	StaticText "----- Loadout (Weapons) -----", "Teal"
-	FlagOption "SMG", "hdf_loadout_daina_weapons", "YesNo", 0
-	FlagOption "Hunter", "hdf_loadout_daina_weapons", "YesNo", 1
-	FlagOption "ZM66", "hdf_loadout_daina_weapons", "YesNo", 2
-	FlagOption "Rocket Launcher", "hdf_loadout_daina_weapons", "YesNo", 3
-	FlagOption "Liberator", "hdf_loadout_daina_weapons", "YesNo", 4
-	FlagOption "Boss", "hdf_loadout_daina_weapons", "YesNo", 5
-	FlagOption "Bronto", "hdf_loadout_daina_weapons", "YesNo", 6
-	StaticText ""
-	StaticText "----- Loadout (Items) -----", "Teal"
-	Option "Armor", "hdf_loadout_daina_armortype", "ArmorType"
-	Slider "Condition", "hdf_loadout_daina_armorcondition", 0.01, 1.0, 0.01, 2
+	TextField "Loadout:", "hdf_loadout_daina"
 }
 
 OptionMenu "HDFollowerMenuSewie"
@@ -148,18 +103,7 @@ OptionMenu "HDFollowerMenuSewie"
 	SafeCommand "Teleport To Player", "HDF_WarpSewieToPlayer"
 	SafeCommand "Create/Recreate Follower", "HDF_ResetSewie"
 	StaticText ""
-	StaticText "----- Loadout (Weapons) -----", "Teal"
-	FlagOption "SMG", "hdf_loadout_sewie_weapons", "YesNo", 0
-	FlagOption "Hunter", "hdf_loadout_sewie_weapons", "YesNo", 1
-	FlagOption "ZM66", "hdf_loadout_sewie_weapons", "YesNo", 2
-	FlagOption "Rocket Launcher", "hdf_loadout_sewie_weapons", "YesNo", 3
-	FlagOption "Liberator", "hdf_loadout_sewie_weapons", "YesNo", 4
-	FlagOption "Boss", "hdf_loadout_sewie_weapons", "YesNo", 5
-	FlagOption "Bronto", "hdf_loadout_sewie_weapons", "YesNo", 6
-	StaticText ""
-	StaticText "----- Loadout (Items) -----", "Teal"
-	Option "Armor", "hdf_loadout_sewie_armortype", "ArmorType"
-	Slider "Condition", "hdf_loadout_sewie_armorcondition", 0.01, 1.0, 0.01, 2
+	TextField "Loadout:", "hdf_loadout_sewie"
 }
 
 OptionMenu "HDFollowerMenuNari"
@@ -171,18 +115,7 @@ OptionMenu "HDFollowerMenuNari"
 	SafeCommand "Teleport To Player", "HDF_WarpNariToPlayer"
 	SafeCommand "Create/Recreate Follower", "HDF_ResetNari"
 	StaticText ""
-	StaticText "----- Loadout (Weapons) -----", "Teal"
-	FlagOption "SMG", "hdf_loadout_nari_weapons", "YesNo", 0
-	FlagOption "Hunter", "hdf_loadout_nari_weapons", "YesNo", 1
-	FlagOption "ZM66", "hdf_loadout_nari_weapons", "YesNo", 2
-	FlagOption "Rocket Launcher", "hdf_loadout_nari_weapons", "YesNo", 3
-	FlagOption "Liberator", "hdf_loadout_nari_weapons", "YesNo", 4
-	FlagOption "Boss", "hdf_loadout_nari_weapons", "YesNo", 5
-	FlagOption "Bronto", "hdf_loadout_nari_weapons", "YesNo", 6
-	StaticText ""
-	StaticText "----- Loadout (Items) -----", "Teal"
-	Option "Armor", "hdf_loadout_nari_armortype", "ArmorType"
-	Slider "Condition", "hdf_loadout_nari_armorcondition", 0.01, 1.0, 0.01, 2
+	TextField "Loadout:", "hdf_loadout_nari"
 }
 
 OptionMenu "HDFollowerMenuCustom"
@@ -205,11 +138,4 @@ OptionValue "PrintLevel"
 	1, "Critical only"
 	2, "Important only"
 	3, "All"
-}
-
-OptionValue "ArmorType"
-{
-	0, "None"
-	1, "Garrison Armor"
-	2, "Battle Armor"
 }

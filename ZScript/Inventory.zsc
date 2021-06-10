@@ -179,16 +179,25 @@ extend class HDFollower
 		if (item is 'HDMagAmmo')
 		{
 			let mag = HDMagAmmo(item);
+			if (magIndex == -1)
+			{
+				magIndex = mag.Mags.Size() - 1;
+			}
 			int magAmt = mag.Mags[magIndex];
 			Slots[index].Icon = AceCore.GetIcon(item, magAmt);
 			Slots[index].Amount = magAmt; // [Ace] This is probably a bad idea.
 			mag.Mags.Delete(magIndex);
-			mag.Amount--;
+			item.Amount--;
 		}
 		else
 		{
 			item.Amount--;
 			Slots[index].Amount = 1;
+		}
+
+		if (item.Amount == 0)
+		{
+			item.Destroy();
 		}
 
 		return true;
@@ -262,6 +271,11 @@ extend class HDFollower
 			}
 		}
 		return -1;
+	}
+
+	virtual clearscope bool IsValidItem(class<HDPickup> cls, bool ignoreWeaponValidity = false)
+	{
+		return cls && ((cls is 'HDAmmo' && AmmoIsUsed((class<HDAmmo>)(cls)) || ignoreWeaponValidity) || cls == 'PortableMedikit' || cls == 'PortableStimpack');
 	}
 
 	const SlotCount = 30;
