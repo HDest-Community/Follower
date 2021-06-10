@@ -559,7 +559,7 @@ extend class FollowerHandler
 		}
 
 		int vSize = ValidItems[consoleplayer].Items.Size();
-		HDPickup item = VSize > 0 && PSlotIndex[consoleplayer] < VSize ? ValidItems[consoleplayer].Items[PSlotIndex[consoleplayer]] : null;
+		HDPickup item = vSize > 0 && PSlotIndex[consoleplayer] < vSize ? ValidItems[consoleplayer].Items[PSlotIndex[consoleplayer]] : null;
 		if (!item)
 		{
 			return;
@@ -941,11 +941,11 @@ extend class FollowerHandler
 							}
 							else if (SlotFocused[consoleplayer] == 1)
 							{
+								UpdateValidItems(SFol);
 								if (--PSlotIndex[consoleplayer] < 0)
 								{
 									PSlotIndex[consoleplayer] = ValidItems[consoleplayer].Items.Size() - 1;
 								}
-								UpdateValidItems(SFol);
 							}
 							RetVal = true;
 							break;
@@ -961,11 +961,11 @@ extend class FollowerHandler
 							}
 							else if (SlotFocused[consoleplayer] == 1)
 							{
+								UpdateValidItems(SFol);
 								if (++PSlotIndex[consoleplayer] == ValidItems[consoleplayer].Items.Size())
 								{
 									PSlotIndex[consoleplayer] = 0;
 								}
-								UpdateValidItems(SFol);
 							}
 							RetVal = true;
 							break;
