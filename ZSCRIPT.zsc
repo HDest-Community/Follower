@@ -209,6 +209,7 @@ class HDFollower : HDMobMan abstract
 			let ShieldInv = GiveInventoryType('HDMagicShield');
 			ShieldInv.Amount = Shields;
 			ShieldInv.MaxAmount = MaxShields;
+			ShieldInv.Stamina = ShieldStrength;
 			ShieldInv.bQUICKTORETALIATE = NoShieldsDegeneration;
 			ShieldInv.bSTANDSTILL = RegenerateShields;
 		}
