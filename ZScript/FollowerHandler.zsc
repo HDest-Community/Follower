@@ -1,13 +1,3 @@
-class FollowerSelection
-{
-	transient Array<HDFollower> SelFollowers;
-	clearscope HDFollower GetLast()
-	{
-		int Size = SelFollowers.Size();
-		return Size > 0 ? SelFollowers[Size - 1] : null;
-	}
-}
-
 class FollowerHandler : EventHandler
 {
 	enum OperationModifiers
@@ -24,25 +14,12 @@ class FollowerHandler : EventHandler
 	private transient bool CanExitNow;
 	private transient int WarningResetTimer;
 
-	private void InitSelection()
-	{
-		for (int i = 0; i < MAXPLAYERS; ++i)
-		{
-			if (!Selection[i])
-			{
-				Selection[i] = new('FollowerSelection');
-			}
-		}
-	}
-
 	override void WorldLoaded(WorldEvent e)
 	{
 		if (GameState == GS_TITLELEVEL)
 		{
 			return;
 		}
-
-		InitSelection();
 
 		let Arbitrator = players[Net_Arbitrator].mo;
 		if (!Arbitrator)

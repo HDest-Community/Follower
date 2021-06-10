@@ -5,7 +5,7 @@ extend class FollowerHandler
 		string UniqueName = "Anonymous";
 		static const string MaleNames[] =
 		{
-			"Arcturus", "Proteus", "Orion", "Deimos", "Kawaimomona", "Kaihalulu", "Kalani", "Akamu", "Amari", "Sanjuro", "Tezuka", "Hoshino", "Ota", "Soma", "Kashiwa", "Gota", "Nakada",
+			"Arcturus", "Proteus", "Orion", "Deimos", "Kawaimomona", "Kaihalulu", "Kalani", "Akamu", "Amari", "Sanjuro", "Tezuka", "Hoshino", "Ota", "Soma", "Kashiwa", "Nakada",
 			"Haddi", "Gunnar", "Isekai", "Mikkel", "Adel", "Jónar", "Kasper", "Steinn", "Gustav", "Leonhard", "Leon", "Loki", "Vilbert", "Almar", "Stadius", "Mikail", "Koen", "Gino",
 			"Marc", "Fabio", "Andrea", "Bernard", "Aleksy", "Roch", "Bartosz", "Maciej", "Marek", "Stryker", "Arkadiusz", "Adoranz", "Tristan", "Isaiah", "Mebunai", "Eleazar", "Ishbaal",
 			"Ahiam", "Hiddai", "Elhanan", "Abiezer", "Ithai", "Eliam", "Uriah", "Fane", "Reks", "Zayne", "Salvador", "Zeus", "Axton", "Zane", "Blake", "Raynor", "Jim", "Thomas", "Ronald",

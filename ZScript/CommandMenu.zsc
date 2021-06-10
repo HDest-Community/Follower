@@ -4,6 +4,16 @@ class FollowerCommand ui
 	int Args[3];
 }
 
+struct FollowerSelection
+{
+	Array<HDFollower> SelFollowers;
+	clearscope HDFollower GetLast() const // [Ace] This const is gonna bite me in the ass. Mark my words.
+	{
+		int Size = SelFollowers.Size();
+		return Size > 0 ? SelFollowers[Size - 1] : null;
+	}
+}
+
 struct ValidItemsHolder
 {
 	Array<HDPickup> Items;
@@ -28,7 +38,7 @@ extend class FollowerHandler
 	private transient int FollowerMenuLevel[MAXPLAYERS];
 	private transient int FollowerPage[MAXPLAYERS];
 	private transient HDMarine SelMarine[MAXPLAYERS];
-	private FollowerSelection Selection[MAXPLAYERS];
+	private transient FollowerSelection Selection[MAXPLAYERS];
 	private transient int Modifiers[MAXPLAYERS];
 
 	private transient ui int SlotFocused[MAXPLAYERS];
