@@ -140,11 +140,13 @@ extend class HDFollower
 	}
 
 	// [Ace] These are still here because they don't get restored immediately.
+	// Restoration happens in HDFollower::PostBeginPlay();
 	int NewBloodloss;
 	int NewStunned;
 	int NewBodyDamage;
 
 	int Shields;
+	int ShieldStrength;
 	bool RegenerateShields;
 	bool NoShieldsDegeneration;
 }
