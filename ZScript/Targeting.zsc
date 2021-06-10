@@ -216,7 +216,7 @@ extend class HDFollower
 		for (int i = 0; i < wpns.Size(); ++i)
 		{
 			FollowerWeapon w = FindWeapon(wpns[i]);
-			if (w)
+			if (w && w.Enabled)
 			{
 				ActualWeapons.Push(w);
 			}
