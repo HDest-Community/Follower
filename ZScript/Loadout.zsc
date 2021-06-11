@@ -49,7 +49,7 @@ extend class HDFollower
 					{
 						HDMagAmmo spawned = HDMagAmmo(Spawn(pkp, pos));
 						spawned.SyncAmount();
-						if (!AddSingularItem(spawned, force: true))
+						if (!AddMag(spawned, force: true))
 						{
 							spawned.Destroy();
 							return;
@@ -60,7 +60,7 @@ extend class HDFollower
 				{
 					HDPickup spawned = HDPickup(Spawn(pkp, pos));
 					spawned.Amount = int(amt);
-					if (!AddStackableItem(spawned, int(amt), force: true))
+					if (!AddItem(spawned, int(amt), spawned.bMULTIPICKUP ? MaxLooseAmmoAmount : 1, force: true))
 					{
 						spawned.Destroy();
 						break;

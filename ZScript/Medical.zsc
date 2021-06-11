@@ -53,7 +53,7 @@ extend class HDFollower
 		{
 			let Stim = HDMagAmmo(GiveInventoryType('PortableStimpack'));
 			Stim.SyncAmount();
-			if (!AddSingularItem(Stim, true))
+			if (!AddMag(Stim, true))
 			{
 				A_DropInventory('PortableStimpack');
 			}

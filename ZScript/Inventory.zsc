@@ -155,7 +155,8 @@ extend class HDFollower
 		slot.Destroy();
 	}
 
-	bool AddSingularItem(HDPickup item, int magIndex = -1, int slot = -1, bool force = false)
+	// [Ace] Used for mags.
+	bool AddMag(HDMagAmmo mag, int magIndex = -1, int slot = -1, bool force = false)
 	{
 		if (!force)
 		{
@@ -173,37 +174,28 @@ extend class HDFollower
 		}
 
 		Slots[index] = new('InventorySlot');
-		Slots[index].ItemClass = item.GetClass();
-		Slots[index].Icon = AceCore.GetIcon(item);
-		Slots[index].Multipickup = item.bMULTIPICKUP;
-		if (item is 'HDMagAmmo')
+		Slots[index].ItemClass = mag.GetClass();
+		Slots[index].Icon = AceCore.GetIcon(mag);
+		Slots[index].Multipickup = false;
+		if (magIndex == -1)
 		{
-			let mag = HDMagAmmo(item);
-			if (magIndex == -1)
-			{
-				magIndex = mag.Mags.Size() - 1;
-			}
-			int magAmt = mag.Mags[magIndex];
-			Slots[index].Icon = AceCore.GetIcon(item, magAmt);
-			Slots[index].Amount = magAmt; // [Ace] This is probably a bad idea.
-			mag.Mags.Delete(magIndex);
-			item.Amount--;
+			magIndex = mag.Mags.Size() - 1;
 		}
-		else
+		int magAmt = mag.Mags[magIndex];
+		Slots[index].Icon = AceCore.GetIcon(mag, magAmt);
+		Slots[index].Amount = magAmt; // [Ace] This is probably a bad idea.
+		mag.Mags.Delete(magIndex);
+		mag.Amount--;
+		if (mag.Amount == 0)
 		{
-			item.Amount--;
-			Slots[index].Amount = 1;
-		}
-
-		if (item.Amount == 0)
-		{
-			item.Destroy();
+			mag.Destroy();
 		}
 
 		return true;
 	}
 
-	bool AddStackableItem(HDPickup item, int amt = 1, int maxAmt = MaxLooseAmmoAmount, int slot = -1, bool force = false)
+	// [Ace] Anything that's not a mag. Including loose ammo.
+	bool AddItem(HDPickup item, int amt = 1, int maxAmt = MaxLooseAmmoAmount, int slot = -1, bool force = false)
 	{
 		if (!force)
 		{

@@ -570,7 +570,7 @@ extend class FollowerHandler
 			if (item)
 			{
 				sb.DrawImage(item.Icon, pos + (1, 1) + (SlotSize, SlotSize) / 2 + realPos, flags | sb.DI_ITEM_CENTER, 1.0, (SlotSize, SlotSize) - (6, 6), (3.0, 3.0));
-				if (item.ItemClass is 'HDMagAmmo' && !(item.ItemClass is 'HDInjectorMaker') || item.Multipickup && item.Amount > 0)
+				if (item.Amount > int(!item.Multipickup))
 				{
 					sb.DrawString(sb.mAmountFont, sb.FormatNumber(item.Amount, 1, 4), pos + (3, SlotSize - 8) + realPos, flags, Font.CR_GOLD);
 				}
@@ -908,23 +908,22 @@ extend class FollowerHandler
 								if (size > 0 && PSlotIndex[consoleplayer] < size)
 								{
 									HDPickup item = ValidItems[consoleplayer].Items[PSlotIndex[consoleplayer]];
-									if (IsValidIndex(item, PSlotSubIndex[consoleplayer]))
+									if (IsValidIndex(item, PSlotSubIndex[consoleplayer]) && SFol.CanReach(HDFollower.MaxInventoryDistance) == 0)
 									{
-										if (item.bMULTIPICKUP)
+										if (item is 'HDMagAmmo' || !item.bMULTIPICKUP)
 										{
-											SlotFocused[consoleplayer]++;
+											if (item is 'HDMagAmmo')
+											{
+												SendNetworkEvent('hdf_transfermag:'..item.GetClassName(), PSlotSubIndex[consoleplayer], FSlotIndex[consoleplayer]);
+											}
+											else
+											{
+												SendNetworkEvent('hdf_transferitem:'..item.GetClassName(), 1, FSlotIndex[consoleplayer]);
+											}
 										}
 										else
 										{
-											TransferSingularItem();
-											if (SFol.CanReach(HDFollower.MaxInventoryDistance) == 0)
-											{
-												int nextFree = SFol.GetFirstEmptySlotIndex(FSlotIndex[consoleplayer] + 1);
-												if (nextFree != -1)
-												{
-													FSlotIndex[consoleplayer] = nextFree;
-												}
-											}
+											SlotFocused[consoleplayer]++;
 										}
 									}
 									UpdateValidItems(SFol);
@@ -940,7 +939,9 @@ extend class FollowerHandler
 								if (size > 0 && PSlotIndex[consoleplayer] < size)
 								{
 									SlotFocused[consoleplayer]--;
-									TransferStackableItem();
+									HDPickup item = ValidItems[consoleplayer].Items[PSlotIndex[consoleplayer]];
+									Console.Printf("kek");
+									SendNetworkEvent('hdf_transferitem:'..item.GetClassName(), TransferAmount[consoleplayer], FSlotIndex[consoleplayer]);
 									UpdateValidItems(SFol);
 								}
 								else
@@ -1353,26 +1354,26 @@ extend class FollowerHandler
 			return;
 		}
 
-		if (e.Name.MakeLower().IndexOf("hdf_transfersingularitem") != -1)
+		if (e.Name.MakeLower().IndexOf("hdf_transfermag") != -1)
 		{
 			Array<string> split;
 			e.Name.Split(split, ":");
-			HDPickup item = HDPickup(players[e.Player].mo.FindInventory(split[1]));
+			HDMagAmmo item = HDMagAmmo(players[e.Player].mo.FindInventory(split[1]));
 			if (item)
 			{
-				SFol.AddSingularItem(item, e.Args[0], e.Args[1]);
+				SFol.AddMag(item, e.Args[0], e.Args[1]);
 			}
 			return;
 		}
 
-		if (e.Name.MakeLower().IndexOf("hdf_transferstackableitem") != -1)
+		if (e.Name.MakeLower().IndexOf("hdf_transferitem") != -1)
 		{
 			Array<string> split;
 			e.Name.Split(split, ":");
 			HDPickup item = HDPickup(players[e.Player].mo.FindInventory(split[1]));
 			if (item)
 			{
-				SFol.AddStackableItem(item, e.Args[0], slot: e.Args[1]);
+				SFol.AddItem(item, e.Args[0], slot: e.Args[1]);
 			}
 			return;
 		}
@@ -1406,18 +1407,6 @@ extend class FollowerHandler
 		{
 			return pkp.Amount > 0 && index < pkp.Amount;
 		}
-	}
-
-	private ui void TransferSingularItem()
-	{
-		class<HDPickup> item = ValidItems[consoleplayer].Items[PSlotIndex[consoleplayer]].GetClass();
-		SendNetworkEvent('hdf_transfersingularitem:'..item.GetClassName(), item is 'HDMagAmmo' ? PSlotSubIndex[consoleplayer] : -1, FSlotIndex[consoleplayer]);
-	}
-
-	private ui void TransferStackableItem()
-	{
-		class<HDPickup> item = ValidItems[consoleplayer].Items[PSlotIndex[consoleplayer]].GetClass();
-		SendNetworkEvent('hdf_transferstackableitem:'..item.GetClassName(), TransferAmount[consoleplayer], FSlotIndex[consoleplayer]);
 	}
 
 	private ui void UpdateValidItems(HDFollower flw)

@@ -9,7 +9,7 @@ extend class HDFollower
 				return;
 			}
 			
-			AddStackableItem(HDPickup(tracer), 1, 250, force: true);
+			AddItem(HDPickup(tracer), 1, 250, force: true);
 		}
 	}
 }
