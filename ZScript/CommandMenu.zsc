@@ -908,7 +908,7 @@ extend class FollowerHandler
 								if (size > 0 && PSlotIndex[consoleplayer] < size)
 								{
 									HDPickup item = ValidItems[consoleplayer].Items[PSlotIndex[consoleplayer]];
-									if (IsValidIndex(item, PSlotSubIndex[consoleplayer]) && SFol.CanReach(HDFollower.MaxInventoryDistance) == 0)
+									if (IsValidIndex(item, PSlotSubIndex[consoleplayer]))
 									{
 										if (item is 'HDMagAmmo' || !item.bMULTIPICKUP)
 										{
