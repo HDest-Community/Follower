@@ -23,9 +23,9 @@ extend class HDFollower
 				continue;
 			}
 
-			if (cls is 'BattleArmour' || cls is 'BattleArmourWorn' || cls is 'GarrisonArmour' || cls is 'GarrisonArmourWorn')
+			if (cls is 'BattleArmour' || cls is 'BattleArmourWorn')
 			{
-				bool mega = cls is 'BattleArmour' || cls is 'BattleArmourWorn';
+				bool mega = cls == 'BattleArmour' || cls == 'BattleArmourWorn';
 				GiveArmour(1.0, mega ? 1.0 : 0, amt);
 				continue;
 			}
