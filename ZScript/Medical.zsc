@@ -52,6 +52,7 @@ extend class HDFollower
 		if (GetAmount('PortableMedikit') > 0)
 		{
 			let Stim = HDPickup(GiveInventoryType('PortableStimpack'));
+			Stim.SyncAmount();
 			if (!AddSingularItem(Stim, true))
 			{
 				A_DropInventory('PortableStimpack');
