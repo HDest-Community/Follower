@@ -11,6 +11,10 @@ extend class HDFollower
 		for (int i = 0; i < lines.Size(); ++i)
 		{
 			double amt = lines[i].Mid(3).ToDouble();
+			if (amt == 0)
+			{
+				amt = 1;
+			}
 			string ref = lines[i].Left(3);
 
 			class<Inventory> cls = HDBackpack.FindByRefId(ref);
