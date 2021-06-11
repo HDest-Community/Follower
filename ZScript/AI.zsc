@@ -12,8 +12,11 @@ extend class HDFollower
 	private void AiThink()
 	{
 		Actor Next = GetNextInChain();
-		// [Ace] This is always going to be true if Next != LinkedPlayer.
 		bool CanSeeNext = CheckSight(Next, SF_SEEPASTSHOOTABLELINES);
+		if (!CanSeeNext && !TGoal && CanSeePlayer)
+		{
+			Next = LinkedPlayer;
+		}
 
 		if (hdf_debug == 3)
 		{
@@ -318,7 +321,7 @@ extend class HDFollower
 		for (int i = FIndex - 1; i >= 0; --i)
 		{
 			HDFollower flw = Handler.Followers[i];
-			if (flw.Status != FStatus_InactiveOrDead && flw.bFRIENDLY && (flw.Order == FOrder_Follow || flw.Order == FOrder_FollowIgnore) && flw.LinkedPlayer == LinkedPlayer && Distance3D(flw) < MaxFollowRange && CheckSight(flw, SF_SEEPASTSHOOTABLELINES))
+			if (flw.Status != FStatus_InactiveOrDead && flw.bFRIENDLY && (flw.Order == FOrder_Follow || flw.Order == FOrder_FollowIgnore) && flw.LinkedPlayer == LinkedPlayer && Distance3D(flw) < MaxFollowRange)
 			{
 				return Handler.Followers[i];
 			}
