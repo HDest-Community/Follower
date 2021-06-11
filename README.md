@@ -1,7 +1,7 @@
 ### Important
 ---
 - This mod requires [AceCoreLib](https://gitlab.com/accensi/hd-addons/acecorelib).
-- The mod needs at least GZDoom 4.5.0 (or a dev build) to run. LZDoom does not currently have a compiled version that supports it. However, the mod will work with the next stable version of LZDoom. It will also work if you compile LZDoom yourself.
+- The mod needs at least GZDoom 4.6.0 to run. LZDoom does not currently have a compiled version that supports it. However, the mod will work with the next stable version of LZDoom. It will also work if you compile LZDoom yourself.
 
 **NOTE: *Freylis' sprites are not for public use. Please do not use them anywhere. Thank you.***
 
