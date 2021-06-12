@@ -86,14 +86,11 @@ extend class HDFollower
 					}
 					W = 'FW_Liberator'; UsedWeapons.Push(W);
 					W = 'FW_Boss'; UsedWeapons.Push(W);
-					if (Shields && Shields.Amount > 200)
+					if (Shields && Shields.Amount > 300)
 					{
 						W = 'FW_SMG'; UsedWeapons.Push(W);
-						if (Shields.Amount <= 500)
-						{
-							W = 'FW_ZM66'; UsedWeapons.Push(W);
-							W = 'FW_Hunter'; UsedWeapons.Push(W);
-						}
+						W = 'FW_ZM66'; UsedWeapons.Push(W);
+						W = 'FW_Hunter'; UsedWeapons.Push(W);
 					}
 					else
 					{
