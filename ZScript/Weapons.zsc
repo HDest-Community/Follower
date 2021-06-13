@@ -205,6 +205,7 @@ extend class HDFollower
 			}
 
 			wep.Enabled = true;
+			wep.OnTransfer(foundWeapon);
 			foundWeapon.Destroy();
 			A_StartSound("misc/w_pkup", 5);
 			Status = FStatus_None;
@@ -239,6 +240,12 @@ class FW_SMG : FollowerWeapon
 		Owner.A_SpawnItemEx("HDSpent9mm", cos(Owner.pitch) * 10, 0, Owner.height - 8 - sin(Owner.pitch) * 10, Owner.vel.x, Owner.vel.y, Owner.vel.z, 0, SXF_ABSOLUTEMOMENTUM | SXF_NOCHECKPOSITION | SXF_TRANSFERPITCH);
 		ChamberedRound = CRType_Empty;
 	}
+
+	override void OnTransfer(HDWeapon wpn)
+	{
+		Mag = wpn.WeaponStatus[SMGS_MAG];
+		ChamberedRound = wpn.WeaponStatus[SMGS_CHAMBER];
+	}
 }
 
 class FW_Hunter : FollowerWeapon
@@ -270,6 +277,12 @@ class FW_Hunter : FollowerWeapon
 		Owner.A_SpawnItemEx("HDSpentShell", cos(Owner.pitch) * 8, 0, Owner.height - 7 - sin(Owner.pitch) * 8, Owner.vel.x + cos(Owner.pitch) * cos(Owner.angle - random(86, 90)) * 5, Owner.vel.y + cos(Owner.pitch) * sin(Owner.angle - random(86, 90)) * 5, Owner.vel.z + sin(Owner.pitch) * random(4, 6), 0, SXF_ABSOLUTEMOMENTUM | SXF_NOCHECKPOSITION | SXF_TRANSFERPITCH);
 		ChamberedRound = CRType_Empty;
 	}
+
+	override void OnTransfer(HDWeapon wpn)
+	{
+		Mag = wpn.WeaponStatus[HUNTS_TUBE];
+		ChamberedRound = wpn.WeaponStatus[HUNTS_CHAMBER];
+	}
 }
 
 class FW_ZM66 : FollowerWeapon
@@ -294,13 +307,19 @@ class FW_ZM66 : FollowerWeapon
 		Owner.A_AlertMonsters(flags: AMF_TARGETEMITTER);
 		ChamberedRound = CRType_Empty;
 	}
+
+	override void OnTransfer(HDWeapon wpn)
+	{
+		Mag = wpn.WeaponStatus[ZM66S_MAG];
+		ChamberedRound = wpn.WeaponStatus[ZM66S_FLAGS] & ZM66F_CHAMBER ? 2 : 0;
+	}
 }
 
 class FW_RocketLauncher : FollowerWeapon
 {
 	override string GetName() { return "Rocket Launcher"; }
 	override string GetIcon() { return "LAUNA0"; }
-	override class<HDAmmo>, class<HDMagAmmo>, int GetAmmoType() { return 'HDRocketAmmo', null, 6; }
+	override class<HDAmmo>, class<HDMagAmmo>, int GetAmmoType() { return 'HDRocketAmmo', null, 5; }
 	override Name GetRequiredWeapon() { return 'HDRL'; }
 	override StateLabel GetFireState() { return 'ShootRL'; }
 	override StateLabel GetReloadState() { return 'ReloadRL'; }
@@ -365,6 +384,13 @@ class FW_RocketLauncher : FollowerWeapon
 		
 		return OtherFollowersSafe && OtherPlayersSafe;
 	}
+
+	override void OnTransfer(HDWeapon wpn)
+	{
+		Console.Printf("%i, %i", wpn.WeaponStatus[RLS_MAG], wpn.WeaponStatus[RLS_CHAMBER]);
+		Mag = wpn.WeaponStatus[RLS_MAG];
+		ChamberedRound = wpn.WeaponStatus[RLS_CHAMBER] > 0 ? 2 : 0;
+	}
 }
 
 class FW_Liberator : FollowerWeapon
@@ -389,6 +415,12 @@ class FW_Liberator : FollowerWeapon
 		Owner.A_AlertMonsters(flags: AMF_TARGETEMITTER);
 		Owner.A_SpawnItemEx("HDSpent7mm", cos(Owner.pitch) * 12, 0, Owner.height - 8 - sin(Owner.pitch) * 12, cos(Owner.pitch) * 3, 0.2 * randompick(-1, 1), -sin(Owner.pitch) * 3, 0, SXF_NOCHECKPOSITION | SXF_TRANSFERPITCH);
 		ChamberedRound = CRType_Empty;
+	}
+
+	override void OnTransfer(HDWeapon wpn)
+	{
+		Mag = wpn.WeaponStatus[LIBS_MAG];
+		ChamberedRound = wpn.WeaponStatus[LIBS_CHAMBER];
 	}
 }
 
@@ -443,6 +475,12 @@ class FW_Boss : FollowerWeapon
 		}
 		Mag = 0;
 	}
+
+	override void OnTransfer(HDWeapon wpn)
+	{
+		Mag = wpn.WeaponStatus[BOSSS_MAG];
+		ChamberedRound = wpn.WeaponStatus[BOSSS_CHAMBER];
+	}
 }
 
 class FW_Bronto : FollowerWeapon
@@ -479,5 +517,10 @@ class FW_Bronto : FollowerWeapon
 		}
 
 		return Super.TryReload(justCheck);
+	}
+
+	override void OnTransfer(HDWeapon wpn)
+	{
+		ChamberedRound = wpn.WeaponStatus[BRONS_CHAMBER];
 	}
 }

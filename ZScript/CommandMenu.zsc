@@ -1372,7 +1372,7 @@ extend class FollowerHandler
 			HDPickup item = HDPickup(players[e.Player].mo.FindInventory(split[1]));
 			if (item)
 			{
-				SFol.AddItem(item, e.Args[0], slot: e.Args[1]);
+				SFol.AddItem(item, e.Args[0], item.bMULTIPICKUP ? HDFollower.MaxLooseAmmoAmount : 1, e.Args[1]);
 			}
 			return;
 		}

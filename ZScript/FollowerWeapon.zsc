@@ -52,6 +52,7 @@ class FollowerWeapon abstract
 	abstract StateLabel GetFireState();
 	abstract StateLabel GetReloadState();
 	abstract play void FireWeapon();
+	abstract void OnTransfer(HDWeapon wpn);
 
 	virtual string GetLocalizationTag() { return GetName(); }
 	virtual double GetAdjustmentMult() { return 1.0; }
