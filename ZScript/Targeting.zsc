@@ -1,5 +1,10 @@
 extend class HDFollower
 {
+	enum EngageTargetFlags
+	{
+		ETF_NOSWITCH = 1 // [Ace] Don't switch to backup weapons. Instead, reload the top priority weapon, if available.
+	}
+
 	protected virtual void LookForEnemies()
 	{
 		if (!TargetUncountable)
@@ -124,7 +129,7 @@ extend class HDFollower
 					W = 'FW_ZM66'; UsedWeapons.Push(W);
 					W = 'FW_SMG'; UsedWeapons.Push(W);
 					W = 'FW_Hunter'; UsedWeapons.Push(W);
-					EngageTarget(UsedWeapons, MTarget);
+					EngageTarget(UsedWeapons, MTarget, ETF_NOSWITCH);
 				}
 				else if ((!CheckTarget() || !SelWeapon) && !AlreadyTargeted)
 				{
@@ -133,19 +138,19 @@ extend class HDFollower
 					W = 'FW_Liberator'; UsedWeapons.Push(W);
 					W = 'FW_Boss'; UsedWeapons.Push(W);
 					W = 'FW_SMG'; UsedWeapons.Push(W);
-					EngageTarget(UsedWeapons, MTarget);
+					EngageTarget(UsedWeapons, MTarget, ETF_NOSWITCH);
 				}
 				else if (SelWeapon) // [Ace] In case follower gets interrupted, re-engage old target.
 				{
 					UsedWeapons.Push(SelWeapon.GetClass());
-					EngageTarget(UsedWeapons, CTarget);
+					EngageTarget(UsedWeapons, CTarget, ETF_NOSWITCH);
 				}
 			}
 			else if (!bFRIENDLY && PTarget && PTarget.Health > 0 && CheckSight(PTarget, SF_SEEPASTSHOOTABLELINES))
 			{
 				W = 'FW_ZM66'; UsedWeapons.Push(W);
 				W = 'FW_SMG'; UsedWeapons.Push(W);
-				EngageTarget(UsedWeapons, PTarget);
+				EngageTarget(UsedWeapons, PTarget, ETF_NOSWITCH);
 			}
 		}
 	}
@@ -206,7 +211,7 @@ extend class HDFollower
 		return TraceData.HitActor == a;
 	}
 
-	protected void EngageTarget(Array<class<FollowerWeapon> > wpns, Actor other)
+	protected void EngageTarget(Array<class<FollowerWeapon> > wpns, Actor other, int flags = 0)
 	{
 		// [Ace] This is used so that FindWeapon() isn't copy-pasted numerous times in the targeting code.
 		Array<FollowerWeapon> ActualWeapons;
@@ -250,7 +255,7 @@ extend class HDFollower
 			Console.Printf("Highest with ammo is "..(HighestWithAmmo ? HighestWithAmmo.GetName() : "nothing")..".");
 		}
 
-		if (HighestWithAmmo)
+		if (HighestWithAmmo && !(flags & ETF_NOSWITCH))
 		{
 			SelWeapon = HighestWithAmmo;
 		}
