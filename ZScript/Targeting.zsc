@@ -113,7 +113,7 @@ extend class HDFollower
 					W = 'FW_Boss'; UsedWeapons.Push(W);
 					W = 'FW_SMG'; UsedWeapons.Push(W);
 					W = 'FW_ZM66'; UsedWeapons.Push(W);
-					if (Shields.Amount <= 350)
+					if (Shields.Amount <= 300)
 					{
 						W = 'FW_Hunter'; UsedWeapons.Push(W);
 					}
@@ -224,8 +224,8 @@ extend class HDFollower
 			}
 		}
 
-		FollowerWeapon HighestWithSpare = null;
-		FollowerWeapon HighestWithAmmo = null;
+		FollowerWeapon highestAmmo = null;
+		FollowerWeapon highestSpare = null;
 		SelWeapon = null;
 
 		// [Ace] Find a weapon that has ammo in it. Start from the end and work backwards.
@@ -239,29 +239,38 @@ extend class HDFollower
 
 			class<HDAmmo> AType, MType;
 			[AType, MType] = ActualWeapons[i].GetAmmoType();
-			if (MType && GetAmount(MType) > 0 || !MType && GetAmount(AType) > 0)
-			{
-				HighestWithSpare = ActualWeapons[i];
-			}
 			if (ActualWeapons[i].Mag > 0 || ActualWeapons[i].ChamberedRound == FollowerWeapon.CRType_Chambered)
 			{
-				HighestWithAmmo = ActualWeapons[i];
+				highestAmmo = ActualWeapons[i];
+			}
+			if (MType && GetAmount(MType) > 0 || !MType && GetAmount(AType) > 0)
+			{
+				highestSpare = ActualWeapons[i];
 			}
 		}
 
 		if (hdf_debug == 1)
 		{
-			Console.Printf("Highest with spare is "..(HighestWithSpare ? HighestWithSpare.GetName() : "nothing")..".");
-			Console.Printf("Highest with ammo is "..(HighestWithAmmo ? HighestWithAmmo.GetName() : "nothing")..".");
+			Console.Printf("ETF_NOSWITCH is %s.", flags & ETF_NOSWITCH ? "enabled" : "disabled");
+			Console.Printf("Highest with spare is "..(highestSpare ? highestSpare.GetName() : "nothing")..".");
+			Console.Printf("Highest with ammo is "..(highestAmmo ? highestAmmo.GetName() : "nothing")..".");
 		}
 
-		if (HighestWithAmmo && !(flags & ETF_NOSWITCH))
+		// [Ace] If ETF_NOSWITCH, reload the highest weapon instead of swapping with another weapon that has ammo.
+		if ((flags & ETF_NOSWITCH) && highestSpare && highestAmmo != highestSpare)
 		{
-			SelWeapon = HighestWithAmmo;
+			SelWeapon = highestSpare;
+			TryReloadWeapon(SelWeapon, RLF_FORCE | RLF_SILENT | RLF_NOJUMP);
+			return;
 		}
-		else if (HighestWithSpare)
+
+		if (highestAmmo)
 		{
-			SelWeapon = HighestWithSpare;
+			SelWeapon = highestAmmo;
+		}
+		else if (highestSpare)
+		{
+			SelWeapon = highestSpare;
 			TryReloadWeapon(SelWeapon, RLF_FORCE | RLF_SILENT | RLF_NOJUMP);
 			return;
 		}
