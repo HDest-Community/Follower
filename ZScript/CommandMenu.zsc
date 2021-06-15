@@ -901,6 +901,17 @@ extend class FollowerHandler
 							{
 								UpdateValidItems(SFol);
 								SlotFocused[consoleplayer]++;
+								if (SFol.Slots[FSlotIndex[consoleplayer]])
+								{
+									for (int i = 0; i < ValidItems[consoleplayer].Items.Size(); ++i)
+									{
+										if (ValidItems[consoleplayer].Items[i].GetClass() == SFol.Slots[FSlotIndex[consoleplayer]].ItemClass)
+										{
+											PSlotIndex[consoleplayer] = i;
+											break;
+										}
+									}
+								}
 							}
 							else if (SlotFocused[consoleplayer] == 1)
 							{
