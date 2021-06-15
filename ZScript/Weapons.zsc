@@ -387,7 +387,6 @@ class FW_RocketLauncher : FollowerWeapon
 
 	override void OnTransfer(HDWeapon wpn)
 	{
-		Console.Printf("%i, %i", wpn.WeaponStatus[RLS_MAG], wpn.WeaponStatus[RLS_CHAMBER]);
 		Mag = wpn.WeaponStatus[RLS_MAG];
 		ChamberedRound = wpn.WeaponStatus[RLS_CHAMBER] > 0 ? 2 : 0;
 	}
@@ -450,13 +449,7 @@ class FW_Boss : FollowerWeapon
 
 	override RResult TryReload()
 	{
-		if (Mag > 0)
-		{
-			return RResult_MagFull;
-		}
-
-		EjectMag();
-		return Super.TryReload();
+		return Mag > 0 ? RResult_MagFull : Super.TryReload();
 	}
 
 	override void EmptyWeapon()
@@ -511,12 +504,7 @@ class FW_Bronto : FollowerWeapon
 
 	override RResult TryReload(bool justCheck)
 	{
-		if (ChamberedRound == CRType_Chambered)
-		{
-			return RResult_MagFull;
-		}
-
-		return Super.TryReload(justCheck);
+		return ChamberedRound == CRType_Chambered ? RResult_MagFull : Super.TryReload(justCheck);
 	}
 
 	override void OnTransfer(HDWeapon wpn)

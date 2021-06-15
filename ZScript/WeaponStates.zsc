@@ -165,7 +165,7 @@ extend class HDFollower
 			#### H 3
 			{
 				A_StartSound("weapons/rifleload");
-				SelWeapon.EjectMag();
+				SelWeapon.EjectMag(false);
 			}
 			#### H 35 A_StartSound("weapons/pocket", 8);
 			#### H 10
@@ -317,7 +317,10 @@ extend class HDFollower
 			#### H 8
 			{
 				A_StartSound("weapons/rifleclick");
-				SelWeapon.TryReload();
+				if(SelWeapon.TryReload() == FollowerWeapon.RResult_CanReload)
+				{
+					SelWeapon.EjectMag();
+				}
 
 				if (SelWeapon.ChamberedRound < FollowerWeapon.CRType_Chambered)
 				{

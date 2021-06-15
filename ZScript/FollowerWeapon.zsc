@@ -58,13 +58,17 @@ class FollowerWeapon abstract
 	virtual double GetAdjustmentMult() { return 1.0; }
 	virtual play bool CheckWeaponCondition(HDFollower caller, Actor trgt) { return true; }
 
-	play void EjectMag()
+	play void EjectMag(bool keep = true)
 	{
 		class<HDAmmo> AType, MType; int MaxMag;
 		[AType, MType, MaxMag] = GetAmmoType();
 		if (MType && Mag > -1)
 		{
-			HDMagAmmo.SpawnMag(Owner, MType, Mag);
+			HDMagAmmo m = HDMagAmmo(HDMagAmmo.SpawnMag(Owner, MType, Mag));
+			if (keep)
+			{
+				Owner.AddMag(m, flags: HDFollower.FIF_FORCE);
+			}
 			Mag = -1;
 		}
 	}

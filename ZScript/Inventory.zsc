@@ -8,6 +8,11 @@ class InventorySlot
 
 extend class HDFollower
 {
+	enum FollowerInventoryFlags
+	{
+		FIF_FORCE = 1
+	}
+
 	clearscope int GetAmount(class<HDPickup> cls)
 	{
 		int Total = 0;
@@ -156,9 +161,9 @@ extend class HDFollower
 	}
 
 	// [Ace] Used for mags.
-	bool AddMag(HDMagAmmo mag, int magIndex = -1, int slot = -1, bool force = false)
+	bool AddMag(HDMagAmmo mag, int magIndex = -1, int slot = -1, int flags = 0)
 	{
-		if (!force)
+		if (!(flags & FIF_FORCE))
 		{
 			switch (CanReach(MaxInventoryDistance))
 			{
@@ -195,9 +200,9 @@ extend class HDFollower
 	}
 
 	// [Ace] Anything that's not a mag. Including loose ammo.
-	bool AddItem(HDPickup item, int amt = 1, int maxAmt = MaxLooseAmmoAmount, int slot = -1, bool force = false)
+	bool AddItem(HDPickup item, int amt = 1, int maxAmt = MaxLooseAmmoAmount, int slot = -1, int flags = 0)
 	{
-		if (!force)
+		if (!(flags & FIF_FORCE))
 		{
 			switch (CanReach(MaxInventoryDistance))
 			{
