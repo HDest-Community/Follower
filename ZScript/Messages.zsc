@@ -19,6 +19,11 @@ extend class HDFollower
 	// ACTIONS
 	// --------------------------------------------------
 
+	private void ResetCommentTimer()
+	{
+		CommentTimer = random(35 * 15, 35 * 50);
+	}
+
 	protected void PlayIdleComment()
 	{
 		bool Enabled = CVar.GetCVar('hdf_enablecomments', LinkedPlayer.player).GetBool();
@@ -40,7 +45,7 @@ extend class HDFollower
 				ChatMessage(self, LinkedPlayer, Response);
 			}
 		}
-		CommentTimer = random(35 * 15, 35 * 50);
+		ResetCommentTimer();
 	}
 
 	protected void PrintMessage(string message, string voiceLine, PrintMessageType type)
