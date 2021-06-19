@@ -49,41 +49,11 @@ extend class FollowerHandler
 	private transient ui int AmountDirection[MAXPLAYERS];
 	private transient ui int SelWeaponIndex[MAXPLAYERS];
 	private transient ui int FSlotIndex[MAXPLAYERS];
-	
 
 	const FollowersPerPage = 8;
 	const InvColumns = 6;
 	const SlotSize = 24;
 	const Spacing = 1;
-	
-	// [Ace] The only reason this is used is to allow dynamic menus with a variable number of options. That's literally the only reason.
-	private ui FollowerCommand CreateCommand(string evName, int arg1 = 0, int arg2 = 0, int arg3 = 0)
-	{
-		let Command = new('FollowerCommand');
-		Command.EventName = evName;
-		Command.Args[0] = arg1;
-		Command.Args[1] = arg2;
-		Command.Args[2] = arg3;
-		return Command;
-	}
-
-	private ui string GetTruncatedText(string text, int length)
-	{
-		if (text.Length() > length)
-		{
-			string TruncatedName = text.Mid(0, length);
-			TruncatedName.DeleteLastCharacter();
-			TruncatedName.DeleteLastCharacter();
-			TruncatedName.DeleteLastCharacter();
-			if (TruncatedName.ByteAt(TruncatedName.Length() - 1) == 32)
-			{
-				TruncatedName.DeleteLastCharacter();
-			}
-			text = TruncatedName.."...";
-		}
-
-		return text;
-	}
 	
 	override void RenderOverlay(RenderEvent e)
 	{
@@ -1402,6 +1372,69 @@ extend class FollowerHandler
 	//
 	// ----------------------------------------------------------------------
 
+	// [Ace] The only reason this is used is to allow dynamic menus with a variable number of options. That's literally the only reason.
+	private ui FollowerCommand CreateCommand(string evName, int arg1 = 0, int arg2 = 0, int arg3 = 0)
+	{
+		let Command = new('FollowerCommand');
+		Command.EventName = evName;
+		Command.Args[0] = arg1;
+		Command.Args[1] = arg2;
+		Command.Args[2] = arg3;
+		return Command;
+	}
+
+	private ui void UpdateValidItems(HDFollower flw)
+	{
+		ValidItems[consoleplayer].Items.Clear();
+		Actor plr = players[consoleplayer].mo;
+		for (Inventory Next = plr.Inv; Next; Next = Next.Inv)
+		{
+			HDPickup item = HDPickup(Next);
+			if (item && flw.IsValidItem(item.GetClass()))
+			{
+				ValidItems[consoleplayer].Items.Push(item);
+			}
+		}
+	}
+
+	private ui Color GetPercentColor(double percent)
+	{
+		if (percent >= 0.75)
+		{
+			return Color(128, 0, 255, 0);
+		}	
+		else if (percent >= 0.50)
+		{
+			return Color(128, 255, 255, 0);
+		}
+		else if (percent >= 0.25)
+		{
+			return Color(128, 255, 128, 0);
+		}
+		else
+		{
+			return Color(128, 255, 0, 0);
+		}
+	}
+
+	private ui string GetTruncatedText(string text, int length)
+	{
+		if (text.Length() > length)
+		{
+			string TruncatedName = text.Mid(0, length);
+			TruncatedName.DeleteLastCharacter();
+			TruncatedName.DeleteLastCharacter();
+			TruncatedName.DeleteLastCharacter();
+			if (TruncatedName.ByteAt(TruncatedName.Length() - 1) == 32)
+			{
+				TruncatedName.DeleteLastCharacter();
+			}
+			text = TruncatedName.."...";
+		}
+
+		return text;
+	}
+
 	private ui bool IsValidIndex(HDPickup pkp, int index)
 	{
 		let mag = HDMagAmmo(pkp);
@@ -1420,40 +1453,10 @@ extend class FollowerHandler
 		}
 	}
 
-	private ui void UpdateValidItems(HDFollower flw)
-	{
-		ValidItems[consoleplayer].Items.Clear();
-		Actor plr = players[consoleplayer].mo;
-		for (Inventory Next = plr.Inv; Next; Next = Next.Inv)
-		{
-			HDPickup item = HDPickup(Next);
-			if (item && flw.IsValidItem(item.GetClass()))
-			{
-				ValidItems[consoleplayer].Items.Push(item);
-			}
-		}
-	}
-
 	private void CloseFollowerMenu(int plrNum)
 	{
 		Selection[plrNum].SelFollowers.Clear();
 		FollowerMenuLevel[plrNum] = FMenu_Closed;
-	}
-
-	private void ToggleSelection(int plrNum, HDFollower flw, bool allowDead = false)
-	{
-		if (flw.CanInteractWith(allowDead))
-		{
-			int FoundIndex = Selection[plrNum].SelFollowers.Find(flw);
-			if (FoundIndex == Selection[plrNum].SelFollowers.Size())
-			{
-				Selection[plrNum].SelFollowers.Push(flw);
-			}
-			else
-			{
-				Selection[plrNum].SelFollowers.Delete(FoundIndex);
-			}
-		}
 	}
 
 	private void ApplySelection(int plrNum)
@@ -1468,6 +1471,24 @@ extend class FollowerHandler
 		for (int i = 0; i < Size; ++i)
 		{
 			Selection[plrNum].SelFollowers[i].ChangeLinkedPlayer(HDPlayerPawn(players[plrNum].mo));
+		}
+	}
+
+	private void DeselectAll(int plrNum, int page)
+	{
+		if (page > -1)
+		{
+			for (int i = FollowersPerPage * page; i < min(FollowersPerPage * (page + 1), Followers.Size()); ++i)
+			{
+				if (Selection[plrNum].SelFollowers.Find(Followers[i]) != Selection[plrNum].SelFollowers.Size())
+				{
+					ToggleSelection(plrNum, Followers[i]);
+				}
+			}
+		}
+		else
+		{
+			Selection[plrNum].SelFollowers.Clear();
 		}
 	}
 
@@ -1493,41 +1514,19 @@ extend class FollowerHandler
 		}
 	}
 
-	private void DeselectAll(int plrNum, int page)
+	private void ToggleSelection(int plrNum, HDFollower flw, bool allowDead = false)
 	{
-		if (page > -1)
+		if (flw.CanInteractWith(allowDead))
 		{
-			for (int i = FollowersPerPage * page; i < min(FollowersPerPage * (page + 1), Followers.Size()); ++i)
+			int FoundIndex = Selection[plrNum].SelFollowers.Find(flw);
+			if (FoundIndex == Selection[plrNum].SelFollowers.Size())
 			{
-				if (Selection[plrNum].SelFollowers.Find(Followers[i]) != Selection[plrNum].SelFollowers.Size())
-				{
-					ToggleSelection(plrNum, Followers[i]);
-				}
+				Selection[plrNum].SelFollowers.Push(flw);
 			}
-		}
-		else
-		{
-			Selection[plrNum].SelFollowers.Clear();
-		}
-	}
-
-	private Color GetPercentColor(double percent) const
-	{
-		if (percent >= 0.75)
-		{
-			return Color(128, 0, 255, 0);
-		}	
-		else if (percent >= 0.50)
-		{
-			return Color(128, 255, 255, 0);
-		}
-		else if (percent >= 0.25)
-		{
-			return Color(128, 255, 128, 0);
-		}
-		else
-		{
-			return Color(128, 255, 0, 0);
+			else
+			{
+				Selection[plrNum].SelFollowers.Delete(FoundIndex);
+			}
 		}
 	}
 }

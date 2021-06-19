@@ -8,6 +8,10 @@ extend class HDFollower
 		RLF_NOJUMP	= 1 << 3
 	}
 
+	// --------------------------------------------------
+	// VIRTUALS
+	// --------------------------------------------------
+
 	virtual void InitWeapons()
 	{
 		Array<class<FollowerWeapon> > AllWeapons;
@@ -21,100 +25,43 @@ extend class HDFollower
 		}
 	}
 
+	// --------------------------------------------------
+	// ACTIONS
+	// --------------------------------------------------
+
 	private void ClearWeapon()
 	{
 		SelWeapon = null;
 	}
 
-	double GetShotHeight()
+	private void LookForWeapon()
 	{
-		return height - HDCONST_CROWNTOSHOULDER;
-	}
+		CheckProximity("HDWeapon", radius + MaxSearchRange, 1, CPXF_CLOSEST | CPXF_SETTRACER | CPXF_ANCESTOR);
+		HDWeapon foundWeapon = HDWeapon(tracer);
 
-	private int AdjustForDistance(double distance, double mult = 1.0) const
-	{
-		return int(clamp((distance / 42.0) * mult, 8, MaxTargetRange / 42.0));
-	}
-
-	clearscope FollowerWeapon FindWeapon(class<FollowerWeapon> wpn)
-	{
-		for (int i = 0; i < Weapons.Size(); ++i)
+		if (foundWeapon)
 		{
-			if (Weapons[i].GetClass() == wpn)
+			FollowerWeapon wep = FindWeaponByRequirement(foundWeapon.GetClass());
+			if (!wep || wep.Enabled)
 			{
-				return Weapons[i];
-			}
-		}
-		return null;
-	}
-
-	clearscope FollowerWeapon FindWeaponByRequirement(class<HDWeapon> req)
-	{
-		for (int i = 0; i < Weapons.Size(); ++i)
-		{
-			if (Weapons[i].GetRequiredWeapon() == req)
-			{
-				return Weapons[i];
-			}
-		}
-		return null;
-	}
-
-	clearscope bool AmmoIsUsed(class<HDAmmo> cls)
-	{
-		for (int i = 0; i < Weapons.Size(); ++i)
-		{
-			if (!Weapons[i].Enabled)
-			{
-				continue;
-			}
-			
-			class<HDAmmo> AType, MType;
-			[AType, MType] = Weapons[i].GetAmmoType();
-			if (!MType && AType == cls || MType == cls)
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-
-	// [Ace] If weapon is out of ammo, reload.
-	bool TryReloadWeapon(FollowerWeapon wpn, int flags = 0)
-	{
-		if (Status == FStatus_InactiveOrDead || !wpn.Enabled || SelWeapon && !(flags & RLF_FORCE))
-		{
-			return false;
-		}
-
-		int ReloadResult = wpn.TryReload(true);
-		if (ReloadResult == FollowerWeapon.RResult_CanReload)
-		{
-			if (hdf_debug == 1)
-			{
-				Console.Printf("Trying to reload "..wpn.GetName()..".");
-			}
-			SelWeapon = wpn;
-			Status = FStatus_InCombat;
-			SetStateLabel(wpn.GetReloadState());
-			return true;
-		}
-		else if (ReloadResult == FollowerWeapon.RResult_NoAmmo)
-		{
-			// [Ace] Keep complaining if manual.
-			if (!(flags & RLF_SILENT) && (!wpn.HasWarnedLowAmmo || (flags & RLF_MANUAL)))
-			{
-				wpn.HasWarnedLowAmmo = true;
-				PrintMessage(GetResponse("NOAMMO_"..wpn.GetLocalizationTag()), "NoAmmo/"..wpn.GetLocalizationTag(), PMType_Critical);
+				PrintMessage(GetResponse("WEAPONGIVE_NOTHANKS"), "WeaponGive/NoThanks", PMType_Important);
+				Status = FStatus_None;
+				tracer = null;
+				return;
 			}
 
-			if (!(flags & RLF_NOJUMP))
+			if (!wep.Enabled)
 			{
-				ClearWeapon();
-				SetStateLabel('Idle');
+				PrintMessage(GetResponse("WEAPONGIVE_NONE"), "WeaponGive/None", PMType_Important);
 			}
+
+			wep.Enabled = true;
+			wep.OnTransfer(foundWeapon);
+			foundWeapon.Destroy();
+			A_StartSound("misc/w_pkup", 5);
+			Status = FStatus_None;
 		}
-		return false;
+		tracer = null;
 	}
 
 	protected void Aim()
@@ -165,6 +112,44 @@ extend class HDFollower
 		return null;
 	}
 
+	// [Ace] If weapon is out of ammo, reload.
+	bool TryReloadWeapon(FollowerWeapon wpn, int flags = 0)
+	{
+		if (Status == FStatus_InactiveOrDead || !wpn.Enabled || SelWeapon && !(flags & RLF_FORCE))
+		{
+			return false;
+		}
+
+		int ReloadResult = wpn.TryReload(true);
+		if (ReloadResult == FollowerWeapon.RResult_CanReload)
+		{
+			if (hdf_debug == 1)
+			{
+				Console.Printf("Trying to reload "..wpn.GetName()..".");
+			}
+			SelWeapon = wpn;
+			Status = FStatus_InCombat;
+			SetStateLabel(wpn.GetReloadState());
+			return true;
+		}
+		else if (ReloadResult == FollowerWeapon.RResult_NoAmmo)
+		{
+			// [Ace] Keep complaining if manual.
+			if (!(flags & RLF_SILENT) && (!wpn.HasWarnedLowAmmo || (flags & RLF_MANUAL)))
+			{
+				wpn.HasWarnedLowAmmo = true;
+				PrintMessage(GetResponse("NOAMMO_"..wpn.GetLocalizationTag()), "NoAmmo/"..wpn.GetLocalizationTag(), PMType_Critical);
+			}
+
+			if (!(flags & RLF_NOJUMP))
+			{
+				ClearWeapon();
+				SetStateLabel('Idle');
+			}
+		}
+		return false;
+	}
+
 	void TryUseWeapon()
 	{
 		if (Status == FStatus_InactiveOrDead || Weapons.Size() == 0)
@@ -183,34 +168,74 @@ extend class HDFollower
 		PrintMessage(GetResponse("WEAPONGIVE_INIT"), "WeaponGive/Init", PMType_Important);
 	}
 
-	private void LookForWeapon()
+	
+	// --------------------------------------------------
+	// INFORMATION
+	// --------------------------------------------------
+
+	clearscope double GetShotHeight()
 	{
-		CheckProximity("HDWeapon", radius + MaxSearchRange, 1, CPXF_CLOSEST | CPXF_SETTRACER | CPXF_ANCESTOR);
-		HDWeapon foundWeapon = HDWeapon(tracer);
+		return height - HDCONST_CROWNTOSHOULDER;
+	}
 
-		if (foundWeapon)
+	clearscope int AdjustForDistance(double distance, double mult = 1.0)
+	{
+		return int(clamp((distance / 42.0) * mult, 8, MaxTargetRange / 42.0));
+	}
+
+	clearscope FollowerWeapon FindWeapon(class<FollowerWeapon> wpn)
+	{
+		for (int i = 0; i < Weapons.Size(); ++i)
 		{
-			FollowerWeapon wep = FindWeaponByRequirement(foundWeapon.GetClass());
-			if (!wep || wep.Enabled)
+			if (Weapons[i].GetClass() == wpn)
 			{
-				PrintMessage(GetResponse("WEAPONGIVE_NOTHANKS"), "WeaponGive/NoThanks", PMType_Important);
-				Status = FStatus_None;
-				tracer = null;
-				return;
+				return Weapons[i];
 			}
-
-			if (!wep.Enabled)
-			{
-				PrintMessage(GetResponse("WEAPONGIVE_NONE"), "WeaponGive/None", PMType_Important);
-			}
-
-			wep.Enabled = true;
-			wep.OnTransfer(foundWeapon);
-			foundWeapon.Destroy();
-			A_StartSound("misc/w_pkup", 5);
-			Status = FStatus_None;
 		}
-		tracer = null;
+		return null;
+	}
+
+	clearscope FollowerWeapon FindWeaponByRequirement(class<HDWeapon> req)
+	{
+		for (int i = 0; i < Weapons.Size(); ++i)
+		{
+			if (Weapons[i].GetRequiredWeapon() == req)
+			{
+				return Weapons[i];
+			}
+		}
+		return null;
+	}
+
+	clearscope bool AmmoIsUsed(class<HDAmmo> cls)
+	{
+		for (int i = 0; i < Weapons.Size(); ++i)
+		{
+			if (!Weapons[i].Enabled)
+			{
+				continue;
+			}
+			
+			class<HDAmmo> AType, MType;
+			[AType, MType] = Weapons[i].GetAmmoType();
+			if (!MType && AType == cls || MType == cls)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	clearscope bool HasUsableWeapons()
+	{
+		for (int i = 0; i < Weapons.Size(); ++i)
+		{
+			if (Weapons[i].HasAmmo() || Weapons[i].HasSpare())
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	protected FollowerWeapon SelWeapon;

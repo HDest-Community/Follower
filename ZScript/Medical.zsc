@@ -1,30 +1,10 @@
 extend class HDFollower
 {
-	private bool PlayerNeedsMedic()
-	{
-		let plr = HDPlayerPawn(LinkedPlayer);
-		return plr && plr.Health > 2 && PlayerIsIncapped() && (HasWounds() && (GetAmount('PortableMedikit') > 0 || SuturesLeft > 0) || CanApplyStim());
-	}
+	// --------------------------------------------------
+	// ACTIONS
+	// --------------------------------------------------
 
-	private bool PlayerIsIncapped()
-	{
-		let plr = HDPlayerPawn(LinkedPlayer);
-		return plr && plr.incapacitated >= 20 && (plr.incaptimer > MinIncap || plr.Health < 15); // [Ace] Player can't get up if lying on the floor at < 15 health, even if timer is 0.
-	}
-
-	private bool HasWounds()
-	{
-		let plr = HDPlayerPawn(LinkedPlayer);
-		return plr && (plr.woundcount > 0 || plr.unstablewoundcount > 0);
-	}
-
-	private bool CanApplyStim()
-	{
-		let plr = HDPlayerPawn(LinkedPlayer);
-		return plr.stimcount < 4 && GetAmount('PortableStimpack') > 0 && plr.regenblues <= 2 && plr.Health < 30; // [Ace] Don't stim player unless it's necessary.
-	}
-
-	private void PatchWound(int amt, actor targ)
+	protected void PatchWound(int amt, actor targ)
 	{
 		let plr = HDPlayerPawn(targ);
 		if(plr)
@@ -47,7 +27,7 @@ extend class HDFollower
 		}
 	}
 
-	private bool TryUnwrapMedikit()
+	protected bool TryUnwrapMedikit()
 	{
 		if (GetAmount('PortableMedikit') > 0)
 		{
@@ -65,7 +45,35 @@ extend class HDFollower
 		return false;
 	}
 
-	private bool IsHelpingPlayer()
+	// --------------------------------------------------
+	// INFORMATION
+	// --------------------------------------------------
+
+	clearscope bool CanApplyStim()
+	{
+		let plr = HDPlayerPawn(LinkedPlayer);
+		return plr.stimcount < 4 && GetAmount('PortableStimpack') > 0 && plr.regenblues <= 2 && plr.Health < 30; // [Ace] Don't stim player unless it's necessary.
+	}
+
+	clearscope bool PlayerHasWounds()
+	{
+		let plr = HDPlayerPawn(LinkedPlayer);
+		return plr && (plr.woundcount > 0 || plr.unstablewoundcount > 0);
+	}
+
+	clearscope bool PlayerIsIncapped()
+	{
+		let plr = HDPlayerPawn(LinkedPlayer);
+		return plr && plr.incapacitated >= 20 && (plr.incaptimer > MinIncap || plr.Health < 15); // [Ace] Player can't get up if lying on the floor at < 15 health, even if timer is 0.
+	}
+
+	clearscope bool PlayerNeedsMedic()
+	{
+		let plr = HDPlayerPawn(LinkedPlayer);
+		return plr && plr.Health > 2 && PlayerIsIncapped() && (PlayerHasWounds() && (GetAmount('PortableMedikit') > 0 || SuturesLeft > 0) || CanApplyStim());
+	}
+	
+	clearscope bool IsHelpingPlayer()
 	{
 		if (Order != FOrder_ComeAndHelp)
 		{
@@ -87,6 +95,10 @@ extend class HDFollower
 
 		return false;
 	}
+
+	// --------------------------------------------------
+	// CONSTANTS/VARIABLES
+	// --------------------------------------------------
 
 	const MinIncap = 40;
 

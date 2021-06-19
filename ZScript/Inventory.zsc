@@ -13,17 +13,194 @@ extend class HDFollower
 		FIF_FORCE = 1
 	}
 
-	clearscope int GetAmount(class<HDPickup> cls)
+	// --------------------------------------------------
+	// VIRTUALS
+	// --------------------------------------------------
+
+	virtual clearscope bool IsValidItem(class<HDPickup> cls, bool ignoreWeaponValidity = false)
 	{
-		int Total = 0;
-		for (int i = 0; i < SlotCount; ++i)
+		return cls && ((cls is 'HDAmmo' && AmmoIsUsed((class<HDAmmo>)(cls)) || ignoreWeaponValidity) || cls == 'PortableMedikit' || cls == 'PortableStimpack');
+	}
+
+	// --------------------------------------------------
+	// ACTIONS
+	// --------------------------------------------------
+
+	// [Ace] Anything that's not a mag. Including loose ammo.
+	bool AddItem(HDPickup item, int amt = 1, int maxAmt = MaxLooseAmmoAmount, int slot = -1, int flags = 0)
+	{
+		if (!(flags & FIF_FORCE))
 		{
-			if (Slots[i] && Slots[i].ItemClass == cls)
+			switch (CanReach(MaxInventoryDistance))
 			{
-				Total += Slots[i].Amount;
+				case 1: ThinkMessage(LinkedPlayer, "$TOOFAR_PLR"); return false;
+				case 2: ThinkMessage(LinkedPlayer, "$NOTFACING_PLR"); return false;
 			}
 		}
-		return Total;
+
+		while (amt > 0 && item.Amount > 0)
+		{
+			// [Ace] Always fill partials first.
+			int index = GetPartialItemIndex(item.GetClass(), maxAmt: maxAmt);
+			if (index == -1)
+			{
+				index = GetFirstEmptySlotIndex(slot == -1 ? 0 : slot);
+				if (index == -1)
+				{
+					return false;
+				}
+			}
+
+			if (!Slots[index])
+			{
+				Slots[index] = new('InventorySlot');
+			}
+			Slots[index].ItemClass = item.GetClass();
+			Slots[index].Icon = TexMan.GetName(item.Icon);
+			Slots[index].Multipickup = item.bMULTIPICKUP;
+			int LeftInSlot = maxAmt - Slots[index].Amount;
+			int ToAdd = min(LeftInSlot, amt, item.Amount);
+			item.Amount -= ToAdd;
+			Slots[index].Amount += ToAdd;
+			amt -= ToAdd;
+			if (item.Amount == 0)
+			{
+				item.Destroy();
+				break;
+			}
+		}
+
+		return true;
+	}
+
+	// [Ace] Used for mags.
+	bool AddMag(HDMagAmmo mag, int magIndex = -1, int slot = -1, int flags = 0)
+	{
+		if (!(flags & FIF_FORCE))
+		{
+			switch (CanReach(MaxInventoryDistance))
+			{
+				case 1: ThinkMessage(LinkedPlayer, "$TOOFAR_PLR"); return false;
+				case 2: ThinkMessage(LinkedPlayer, "$NOTFACING_PLR"); return false;
+			}
+		}
+
+		int index = GetFirstEmptySlotIndex(slot == -1 ? 0 : slot);
+		if (index == -1)
+		{
+			return false;
+		}
+
+		Slots[index] = new('InventorySlot');
+		Slots[index].ItemClass = mag.GetClass();
+		Slots[index].Icon = AceCore.GetIcon(mag);
+		Slots[index].Multipickup = false;
+		if (magIndex == -1)
+		{
+			magIndex = mag.Mags.Size() - 1;
+		}
+		int magAmt = mag.Mags[magIndex];
+		Slots[index].Icon = AceCore.GetIcon(mag, magAmt);
+		Slots[index].Amount = magAmt; // [Ace] This is probably a bad idea.
+		mag.Mags.Delete(magIndex);
+		mag.Amount--;
+		if (mag.Amount == 0)
+		{
+			mag.Destroy();
+		}
+
+		return true;
+	}
+
+	void DropInvItem(InventorySlot slot, bool force = false)
+	{
+		if (!slot || !CanInteractWith())
+		{
+			return;
+		}
+
+		if (!force && Health <= 0)
+		{
+			switch (CanReach(MaxInventoryDistance))
+			{
+				case 1: ThinkMessage(LinkedPlayer, "$TOOFAR_PLR"); return;
+				case 2: ThinkMessage(LinkedPlayer, "$NOTFACING_PLR"); return;
+			}
+		}
+
+		// [Ace] HMMMMMM THIS CODE LOOKS FAMILIAR.
+		Inventory Spawned = Inventory(Actor.Spawn(slot.ItemClass, pos));
+		HDPickup newitem = HDPickup(Spawned);
+		if (slot.ItemClass is 'HDMagAmmo')
+		{
+			HDMagAmmo(newitem).Mags.Push(slot.Amount);
+		}
+		else
+		{
+			newitem.Amount = slot.Amount;
+		}
+		newitem.angle = angle;
+		newitem.A_ChangeVelocity(1.5, 0, 1, CVF_RELATIVE);
+		newitem.vel += vel;
+		slot.Destroy();
+	}
+
+	void TakeInvItem(InventorySlot slot)
+	{
+		if (!slot || !CanInteractWith())
+		{
+			return;
+		}
+
+		switch (CanReach(MaxInventoryDistance))
+		{
+			case 1: ThinkMessage(LinkedPlayer, "$TOOFAR_PLR"); return;
+			case 2: ThinkMessage(LinkedPlayer, "$NOTFACING_PLR"); return;
+		}
+
+		if (slot.ItemClass is 'HDMagAmmo')
+		{
+			HDMagAmmo.GiveMag(LinkedPlayer, slot.ItemClass, slot.Amount);
+			slot.Destroy();
+		}
+		else
+		{
+			int diff = GetDefaultByType(slot.ItemClass).MaxAmount - LinkedPlayer.CountInv(slot.ItemClass);
+			int maxAdd = min(diff, slot.Amount);
+			if (maxAdd == 0)
+			{
+				ThinkMessage(LinkedPlayer, "$NOSPACE_PLR");
+				return;
+			}
+			HDF.Give(LinkedPlayer, slot.ItemClass, maxAdd);
+			slot.Amount -= maxAdd;
+			if (slot.Amount == 0)
+			{
+				slot.Destroy();
+			}
+		}
+	}
+
+	// --------------------------------------------------
+	// INFORMATION
+	// --------------------------------------------------
+
+	clearscope InventorySlot Find(class<HDPickup> cls)
+	{
+		InventorySlot slot = null;
+		for (int i = 0; i < SlotCount; ++i)
+		{
+			if (!Slots[i])
+			{
+				continue;
+			}
+
+			if (Slots[i].ItemClass == cls)
+			{
+				slot = Slots[i];
+			}
+		}
+		return slot;
 	}
 
 	clearscope InventorySlot FindHighestAmount(class<HDPickup> cls)
@@ -73,177 +250,17 @@ extend class HDFollower
 		return slot;
 	}
 
-	clearscope InventorySlot Find(class<HDPickup> cls)
+	clearscope int GetAmount(class<HDPickup> cls)
 	{
-		InventorySlot slot = null;
+		int Total = 0;
 		for (int i = 0; i < SlotCount; ++i)
 		{
-			if (!Slots[i])
+			if (Slots[i] && Slots[i].ItemClass == cls)
 			{
-				continue;
-			}
-
-			if (Slots[i].ItemClass == cls)
-			{
-				slot = Slots[i];
+				Total += Slots[i].Amount;
 			}
 		}
-		return slot;
-	}
-
-	void TakeInvItem(InventorySlot slot)
-	{
-		if (!slot || !CanInteractWith())
-		{
-			return;
-		}
-
-		switch (CanReach(MaxInventoryDistance))
-		{
-			case 1: ThinkMessage(LinkedPlayer, "$TOOFAR_PLR"); return;
-			case 2: ThinkMessage(LinkedPlayer, "$NOTFACING_PLR"); return;
-		}
-
-		if (slot.ItemClass is 'HDMagAmmo')
-		{
-			HDMagAmmo.GiveMag(LinkedPlayer, slot.ItemClass, slot.Amount);
-			slot.Destroy();
-		}
-		else
-		{
-			int diff = GetDefaultByType(slot.ItemClass).MaxAmount - LinkedPlayer.CountInv(slot.ItemClass);
-			int maxAdd = min(diff, slot.Amount);
-			if (maxAdd == 0)
-			{
-				ThinkMessage(LinkedPlayer, "$NOSPACE_PLR");
-				return;
-			}
-			HDF.Give(LinkedPlayer, slot.ItemClass, maxAdd);
-			slot.Amount -= maxAdd;
-			if (slot.Amount == 0)
-			{
-				slot.Destroy();
-			}
-		}
-	}
-
-	void DropInvItem(InventorySlot slot, bool force = false)
-	{
-		if (!slot || !CanInteractWith())
-		{
-			return;
-		}
-
-		if (!force && Health <= 0)
-		{
-			switch (CanReach(MaxInventoryDistance))
-			{
-				case 1: ThinkMessage(LinkedPlayer, "$TOOFAR_PLR"); return;
-				case 2: ThinkMessage(LinkedPlayer, "$NOTFACING_PLR"); return;
-			}
-		}
-
-		// [Ace] HMMMMMM THIS CODE LOOKS FAMILIAR.
-		Inventory Spawned = Inventory(Actor.Spawn(slot.ItemClass, pos));
-		HDPickup newitem = HDPickup(Spawned);
-		if (slot.ItemClass is 'HDMagAmmo')
-		{
-			HDMagAmmo(newitem).Mags.Push(slot.Amount);
-		}
-		else
-		{
-			newitem.Amount = slot.Amount;
-		}
-		newitem.angle = angle;
-		newitem.A_ChangeVelocity(1.5, 0, 1, CVF_RELATIVE);
-		newitem.vel += vel;
-		slot.Destroy();
-	}
-
-	// [Ace] Used for mags.
-	bool AddMag(HDMagAmmo mag, int magIndex = -1, int slot = -1, int flags = 0)
-	{
-		if (!(flags & FIF_FORCE))
-		{
-			switch (CanReach(MaxInventoryDistance))
-			{
-				case 1: ThinkMessage(LinkedPlayer, "$TOOFAR_PLR"); return false;
-				case 2: ThinkMessage(LinkedPlayer, "$NOTFACING_PLR"); return false;
-			}
-		}
-
-		int index = GetFirstEmptySlotIndex(slot == -1 ? 0 : slot);
-		if (index == -1)
-		{
-			return false;
-		}
-
-		Slots[index] = new('InventorySlot');
-		Slots[index].ItemClass = mag.GetClass();
-		Slots[index].Icon = AceCore.GetIcon(mag);
-		Slots[index].Multipickup = false;
-		if (magIndex == -1)
-		{
-			magIndex = mag.Mags.Size() - 1;
-		}
-		int magAmt = mag.Mags[magIndex];
-		Slots[index].Icon = AceCore.GetIcon(mag, magAmt);
-		Slots[index].Amount = magAmt; // [Ace] This is probably a bad idea.
-		mag.Mags.Delete(magIndex);
-		mag.Amount--;
-		if (mag.Amount == 0)
-		{
-			mag.Destroy();
-		}
-
-		return true;
-	}
-
-	// [Ace] Anything that's not a mag. Including loose ammo.
-	bool AddItem(HDPickup item, int amt = 1, int maxAmt = MaxLooseAmmoAmount, int slot = -1, int flags = 0)
-	{
-		if (!(flags & FIF_FORCE))
-		{
-			switch (CanReach(MaxInventoryDistance))
-			{
-				case 1: ThinkMessage(LinkedPlayer, "$TOOFAR_PLR"); return false;
-				case 2: ThinkMessage(LinkedPlayer, "$NOTFACING_PLR"); return false;
-			}
-		}
-
-		while (amt > 0 && item.Amount > 0)
-		{
-			// [Ace] Always fill partials first.
-			int index = GetPartialItemIndex(item.GetClass(), maxAmt: maxAmt);
-			if (index == -1)
-			{
-				index = GetFirstEmptySlotIndex(slot == -1 ? 0 : slot);
-				if (index == -1)
-				{
-					return false;
-				}
-			}
-
-			if (!Slots[index])
-			{
-				Slots[index] = new('InventorySlot');
-			}
-			Slots[index].ItemClass = item.GetClass();
-			Slots[index].Icon = TexMan.GetName(item.Icon);
-			Slots[index].Multipickup = item.bMULTIPICKUP;
-			int LeftInSlot = maxAmt - Slots[index].Amount;
-			int ToAdd = min(LeftInSlot, amt, item.Amount);
-			item.Amount -= ToAdd;
-			Slots[index].Amount += ToAdd;
-			amt -= ToAdd;
-			if (item.Amount == 0)
-			{
-				item.Destroy();
-				break;
-			}
-		}
-
-		return true;
+		return Total;
 	}
 
 	clearscope int GetFirstEmptySlotIndex(int startIndex = 0)
@@ -270,10 +287,9 @@ extend class HDFollower
 		return -1;
 	}
 
-	virtual clearscope bool IsValidItem(class<HDPickup> cls, bool ignoreWeaponValidity = false)
-	{
-		return cls && ((cls is 'HDAmmo' && AmmoIsUsed((class<HDAmmo>)(cls)) || ignoreWeaponValidity) || cls == 'PortableMedikit' || cls == 'PortableStimpack');
-	}
+	// --------------------------------------------------
+	// CONSTANTS/VARIABLES
+	// --------------------------------------------------
 
 	const SlotCount = 30;
 	const MaxInventoryDistance = 48;

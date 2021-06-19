@@ -1,5 +1,9 @@
 extend class HDFollower
 {
+	// --------------------------------------------------
+	// VIRTUALS
+	// --------------------------------------------------
+	
 	virtual void GiveStartingItems(string input = "")
 	{
 		input = input.MakeLower();

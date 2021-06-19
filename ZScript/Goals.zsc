@@ -1,6 +1,24 @@
 extend class HDFollower
 {
-	private bool TrySetGoal(vector3 spawnPos, bool force = false)
+	// --------------------------------------------------
+	// ACTIONS
+	// --------------------------------------------------
+
+	protected void ClearGoal(bool keepLastPos = false)
+	{
+		if (TGoal is 'TargetGoal')
+		{
+			TGoal.Destroy();
+		}
+		TGoal = null; // [Ace] Just in case it's the player.
+
+		if (!keepLastPos)
+		{
+			LastKnownPos = (0, 0, 0);
+		}
+	}
+
+	protected bool TrySetGoal(vector3 spawnPos, bool force = false)
 	{
 		Actor tg = Spawn('TargetGoal', spawnPos);
 		if (tg && tg.pos.z - tg.floorz <= MaxStepHeight - 8 && Distance2D(tg) < MaxGoalRange && CheckSight(tg) && (force || tg.TestMobjLocation() && level.IsPointInLevel(spawnPos) && !CheckProximity('HDFollower', 64, 1, CPXF_ANCESTOR)))
@@ -16,19 +34,9 @@ extend class HDFollower
 		}
 	}
 
-	private void ClearGoal(bool keepLastPos = false)
-	{
-		if (TGoal is 'TargetGoal')
-		{
-			TGoal.Destroy();
-		}
-		TGoal = null; // [Ace] Just in case it's the player.
-
-		if (!keepLastPos)
-		{
-			LastKnownPos = (0, 0, 0);
-		}
-	}
+	// --------------------------------------------------
+	// CONSTANTS/VARIABLES
+	// --------------------------------------------------
 
 	const MaxGoalRange = 2048;
 }

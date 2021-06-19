@@ -9,6 +9,10 @@ enum FStatus
 
 extend class HDFollower
 {
+	// --------------------------------------------------
+	// ACTIONS
+	// --------------------------------------------------
+
 	private void AiThink()
 	{
 		Actor Next = GetNextInChain();
@@ -168,7 +172,7 @@ extend class HDFollower
 		scale.y = default.scale.y * (1.0 - CrouchFactor);
 		A_SetSize(-1, default.Height * (1.0 - CrouchFactor));
 		
-		if (Weapons.Size() > 0 && (Status != FStatus_InCombat || !SelWeapon) && (!bFRIENDLY || Order == FOrder_Follow || Order == FOrder_Cover || Order == FOrder_ComeAndHelp))
+		if (Weapons.Size() > 0 && HasUsableWeapons() && (Status != FStatus_InCombat || !SelWeapon) && (!bFRIENDLY || Order == FOrder_Follow || Order == FOrder_Cover || Order == FOrder_ComeAndHelp))
 		{
 			LookForEnemies();
 		}
@@ -261,6 +265,11 @@ extend class HDFollower
 		}
 	}
 
+	private void ResetIdleTimer()
+	{
+		IdleTimer = random(35 * 3, 35 * 6) * (Order == FOrder_Cover ? 3 : 1);
+	}
+
 	private void TryActivateLine()
 	{
 		FLineTraceData LineData;
@@ -279,22 +288,35 @@ extend class HDFollower
 		ActivateAsPlayer = false;
 	}
 
-	private bool IsInIdleState()
+	// --------------------------------------------------
+	// INFORMATION
+	// --------------------------------------------------
+	
+	private Actor GetNextInChain()
+	{
+		int FIndex = Handler.Followers.Find(self);
+		for (int i = FIndex - 1; i >= 0; --i)
+		{
+			HDFollower flw = Handler.Followers[i];
+			if (flw.Status != FStatus_InactiveOrDead && flw.bFRIENDLY && (flw.Order == FOrder_Follow || flw.Order == FOrder_FollowIgnore) && flw.LinkedPlayer == LinkedPlayer && Distance3D(flw) < MaxFollowRange)
+			{
+				return Handler.Followers[i];
+			}
+		}
+		return LinkedPlayer;
+	}
+
+	bool IsInIdleState()
 	{
 		return InStateSequence(CurState, FindState('Idle'));
 	}
 
-	private bool IsInMovingState()
+	bool IsInMovingState()
 	{
 		return InStateSequence(CurState, FindState('Moving'));
 	}
 
-	private void ResetIdleTimer()
-	{
-		IdleTimer = random(35 * 3, 35 * 6) * (Order == FOrder_Cover ? 3 : 1);
-	}
-
-	private bool IsSteppingOnSomeone()
+	bool IsSteppingOnSomeone()
 	{
 		if (bOnMobj)
 		{
@@ -313,20 +335,6 @@ extend class HDFollower
 		}
 
 		return false;
-	}
-
-	private Actor GetNextInChain()
-	{
-		int FIndex = Handler.Followers.Find(self);
-		for (int i = FIndex - 1; i >= 0; --i)
-		{
-			HDFollower flw = Handler.Followers[i];
-			if (flw.Status != FStatus_InactiveOrDead && flw.bFRIENDLY && (flw.Order == FOrder_Follow || flw.Order == FOrder_FollowIgnore) && flw.LinkedPlayer == LinkedPlayer && Distance3D(flw) < MaxFollowRange)
-			{
-				return Handler.Followers[i];
-			}
-		}
-		return LinkedPlayer;
 	}
 
 	const MinFollowRangeStop = 42 * 2.3; // [Ace] If following the player, stop if closer than this distance.

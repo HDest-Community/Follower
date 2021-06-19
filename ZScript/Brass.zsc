@@ -1,5 +1,9 @@
 extend class HDFollower
 {
+	// --------------------------------------------------
+	// ACTIONS
+	// --------------------------------------------------
+	
 	private void VacuumBrass()
 	{
 		if (CheckProximity('SevenMilBrass', 192, 1, CPXF_SETTRACER))

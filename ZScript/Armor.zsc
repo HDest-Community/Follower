@@ -1,38 +1,8 @@
 extend class HDFollower
 {
-	// [Ace] Drop the best armor. Don't be a cheapskate.
-	// This function only makes follower wait for armor, unless you call it again, in which case they drop their current armor.
-	void TryUseArmor()
-	{
-		if (Status == FStatus_InactiveOrDead)
-		{
-			return;
-		}
-		
-		let wornArmor = FindInventory("HDArmourWorn");
-		if (Status == FStatus_WaitingForArmor)
-		{
-			if (wornArmor)
-			{
-				A_DropInventory(wornArmor.GetClass());
-				PrintMessage(GetResponse("ARMORGIVE_STRIP"), "ArmorGive/Strip", PMType_General);
-				Status = FStatus_None;
-				return;
-			}
-			else
-			{
-				PrintMessage(GetResponse("ARMORGIVE_CANCEL"), "ArmorGive/Cancel", PMType_Important);
-				Status = FStatus_None;
-				return;
-			}
-		}
-
-		Status = FStatus_WaitingForArmor;
-		
-		string Message = GetResponse("ARMORGIVE_INIT")..(FindInventory("HDArmourWorn") ? " "..GetResponse("ARMORGIVE_MAYBEDROP") : "");
-		string VoiceLine = FindInventory("HDArmourWorn") ? "ArmorGive/Init2" : "ArmorGive/Init1";
-		PrintMessage(Message, VoiceLine, PMType_Important);
-	}
+	// --------------------------------------------------
+	// ACTIONS
+	// --------------------------------------------------
 
 	private void LookForArmor()
 	{
@@ -74,5 +44,39 @@ extend class HDFollower
 		}
 
 		tracer = null;
+	}
+	
+	// [Ace] Drop the best armor. Don't be a cheapskate.
+	// This function only makes follower wait for armor, unless you call it again, in which case they drop their current armor.
+	void TryUseArmor()
+	{
+		if (Status == FStatus_InactiveOrDead)
+		{
+			return;
+		}
+		
+		let wornArmor = FindInventory("HDArmourWorn");
+		if (Status == FStatus_WaitingForArmor)
+		{
+			if (wornArmor)
+			{
+				A_DropInventory(wornArmor.GetClass());
+				PrintMessage(GetResponse("ARMORGIVE_STRIP"), "ArmorGive/Strip", PMType_General);
+				Status = FStatus_None;
+				return;
+			}
+			else
+			{
+				PrintMessage(GetResponse("ARMORGIVE_CANCEL"), "ArmorGive/Cancel", PMType_Important);
+				Status = FStatus_None;
+				return;
+			}
+		}
+
+		Status = FStatus_WaitingForArmor;
+		
+		string Message = GetResponse("ARMORGIVE_INIT")..(FindInventory("HDArmourWorn") ? " "..GetResponse("ARMORGIVE_MAYBEDROP") : "");
+		string VoiceLine = FindInventory("HDArmourWorn") ? "ArmorGive/Init2" : "ArmorGive/Init1";
+		PrintMessage(Message, VoiceLine, PMType_Important);
 	}
 }

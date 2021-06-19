@@ -32,7 +32,7 @@ extend class HDFollower
 			if (MTarget && (bFRIENDLY && !MTarget.bFRIENDLY || !bFRIENDLY && MTarget.bFRIENDLY) && MTarget.bISMONSTER && MTarget.bSHOOTABLE && MTarget != self && MTarget.Health > 0 && CheckSight(MTarget, SF_SEEPASTSHOOTABLELINES) && !TargetIsIncapped(MTarget))
 			{
 				// [Ace] Sometimes resurrected troops can have a ridiculous body damage and won't get attacked, but one single shot will blow them to pieces.
-				if (MTarget is "HERPBot" || MTarget is "DERPBot" || (!TargetUncountable.GetBool() && !MTarget.bCOUNTKILL) || MTarget is "HDMobBase" && HDMobBase(MTarget).BodyDamage > MTarget.SpawnHealth() * 1.2)
+				if (MTarget is "HERPBot" || MTarget is "DERPBot" || (!TargetUncountable.GetBool() && !MTarget.bCOUNTKILL))
 				{
 					continue;
 				}
@@ -44,6 +44,11 @@ extend class HDFollower
 				if (hdf_debug == 1)
 				{
 					Console.Printf("%s is attempting to target %s with %i bodydamage and %i shields.", GetDisplayName(), MTarget.GetClassName(), HDMon ? HDMon.BodyDamage : -1, Shields ? Shields.Amount : 0);
+				}
+
+				if (MTarget is "HDMobBase" && HDMobBase(MTarget).BodyDamage > MTarget.SpawnHealth() * 1.2)
+				{
+					continue;
 				}
 
 				if (!CanHitTarget(MTarget))
@@ -218,67 +223,59 @@ extend class HDFollower
 		for (int i = 0; i < wpns.Size(); ++i)
 		{
 			FollowerWeapon w = FindWeapon(wpns[i]);
-			if (w && w.Enabled)
+			if (w && w.Enabled && w.CheckWeaponCondition(self, other))
 			{
 				ActualWeapons.Push(w);
 			}
 		}
 
-		FollowerWeapon highestAmmo = null;
-		FollowerWeapon highestSpare = null;
 		SelWeapon = null;
-
-		// [Ace] Find a weapon that has ammo in it. Start from the end and work backwards.
-		for (int i = ActualWeapons.Size() - 1; i >= 0; --i)
-		{
-			// [Ace] Ignore weapons that don't fulfill the required condition. When it comes to, say, a rocket launcher, this is the check that makes sure you don't get blasted to bits by accident.
-			if (!ActualWeapons[i].CheckWeaponCondition(self, other))
-			{
-				continue;
-			}
-
-			class<HDAmmo> AType, MType;
-			[AType, MType] = ActualWeapons[i].GetAmmoType();
-			if (ActualWeapons[i].Mag > 0 || ActualWeapons[i].ChamberedRound == FollowerWeapon.CRType_Chambered)
-			{
-				highestAmmo = ActualWeapons[i];
-			}
-			if (MType && GetAmount(MType) > 0 || !MType && GetAmount(AType) > 0)
-			{
-				highestSpare = ActualWeapons[i];
-			}
-		}
-
-		if (hdf_debug == 1)
-		{
-			Console.Printf("ETF_NOSWITCH is %s.", flags & ETF_NOSWITCH ? "enabled" : "disabled");
-			Console.Printf("Highest with spare is "..(highestSpare ? highestSpare.GetName() : "nothing")..".");
-			Console.Printf("Highest with ammo is "..(highestAmmo ? highestAmmo.GetName() : "nothing")..".");
-		}
-
-		// [Ace] If ETF_NOSWITCH, reload the highest weapon instead of swapping with another weapon that has ammo.
-		if ((flags & ETF_NOSWITCH) && highestSpare && highestAmmo != highestSpare)
-		{
-			SelWeapon = highestSpare;
-			TryReloadWeapon(SelWeapon, RLF_FORCE | RLF_SILENT | RLF_NOJUMP);
-			return;
-		}
-
-		if (highestAmmo)
-		{
-			SelWeapon = highestAmmo;
-		}
-		else if (highestSpare)
-		{
-			SelWeapon = highestSpare;
-			TryReloadWeapon(SelWeapon, RLF_FORCE | RLF_SILENT | RLF_NOJUMP);
-			return;
-		}
 		
-		if (other && SelWeapon)
+		// [Ace] First try to find the highest weapon in the priority list that has any ammo in it. If it doesn't and NOSWITCH is enabled, try to reload it.
+		for (int i = 0; i < ActualWeapons.Size(); ++i)
 		{
-			CTarget = other;
-			SetStateLabel('See');
+			if (ActualWeapons[i].HasAmmo())
+			{
+				SelWeapon = ActualWeapons[i];
+				if (hdf_debug == 1)
+				{
+					Console.Printf("Selected %s with %i rounds and %s spare ammo.", SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no");
+				}
+				if (other)
+				{
+					CTarget = other;
+					SetStateLabel('See');
+				}
+				break;
+			}
+			else if ((flags & ETF_NOSWITCH) && ActualWeapons[i].HasSpare())
+			{
+				SelWeapon = ActualWeapons[i];
+				if (hdf_debug == 1)
+				{
+					Console.Printf("ETF_NOSWITCH is enabled. Selected %s with %i rounds and %s spare ammo.", SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no");
+				}
+				TryReloadWeapon(SelWeapon, RLF_FORCE | RLF_SILENT | RLF_NOJUMP);
+				return;
+			}
+		}
+
+		// [Ace] Still nothing? Reload the highest weapon.
+		if (!SelWeapon)
+		{
+			for (int i = 0; i < ActualWeapons.Size(); ++i)
+			{
+				if (ActualWeapons[i].HasSpare())
+				{
+					SelWeapon = ActualWeapons[i];
+					if (hdf_debug == 1)
+					{
+						Console.Printf("ETF_NOSWITCH is disabled. Selected %s with %i rounds and %s spare ammo.", SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no");
+					}
+					TryReloadWeapon(SelWeapon, RLF_FORCE | RLF_SILENT | RLF_NOJUMP);
+					return;
+				}
+			}
 		}
 	}
 

@@ -1,94 +1,26 @@
 extend class FollowerHandler
 {
-	private string GetUniqueMarineName(int gender)
+	// --------------------------------------------------
+	// STATIC
+	// --------------------------------------------------
+
+	static bool IsPuppet(Actor a)
 	{
-		string UniqueName = "Anonymous";
-		static const string MaleNames[] =
+		ThinkerIterator it = ThinkerIterator.Create('AngelFire', Thinker.STAT_DEFAULT);
+		AngelFire f;
+		while ((f = AngelFire(it.Next())))
 		{
-			"Arcturus", "Proteus", "Orion", "Deimos", "Kawaimomona", "Kaihalulu", "Kalani", "Akamu", "Amari", "Sanjuro", "Tezuka", "Hoshino", "Ota", "Soma", "Kashiwa", "Nakada",
-			"Haddi", "Gunnar", "Isekai", "Mikkel", "Adel", "Jónar", "Kasper", "Steinn", "Gustav", "Leonhard", "Leon", "Loki", "Vilbert", "Almar", "Stadius", "Mikail", "Koen", "Gino",
-			"Marc", "Fabio", "Andrea", "Bernard", "Aleksy", "Roch", "Bartosz", "Maciej", "Marek", "Stryker", "Arkadiusz", "Adoranz", "Tristan", "Isaiah", "Mebunai", "Eleazar", "Ishbaal",
-			"Ahiam", "Hiddai", "Elhanan", "Abiezer", "Ithai", "Eliam", "Uriah", "Fane", "Reks", "Zayne", "Salvador", "Zeus", "Axton", "Zane", "Blake", "Raynor", "Jim", "Thomas", "Ronald",
-			"Wayn", "Lero", "Leon", "Jack", "Armanis", "Krieg", "Emerton", "Samael", "Kragoth", "Blisk", "Ryo", "Nathaniel", "Killian", "Dominic", "Santiago", "Sebastian", "Malcolm",
-			"Rakanoth", "Ixanos", "Nick", "Bane", "Kaada", "Loque", "Xan", "Isaak", "Hawkins", "Ne'Ban", "Miller", "Othello", "Abaddon", "Anubis", "Raiden", "Mengsk"
-		};
-		static const string FemaleNames[] =
-		{
-			"Arlin", "Elaine", "Ophelia", "Almedha", "Sana", "Karmin", "Ashera", "Liv", "Yrsa", "Kristiane", "Irene", "Hedvig", "Lena", "Freja", "Maya", "Kristine", "Elin", "Emeryn",
-			"Amelix", "Emson", "Rayne", "Azraelle", "Visse", "Ephemera", "Samantha", "Kura", "Kyra", "Malise", "Faith", "Edela", "Alice", "Ymir", "Lauren", "Alana", "Akasha", "Avicia",
-			"Lillian", "Lilith", "May", "Eleanor", "Yuzuki", "Kaede", "Aida", "Sapphire", "Selket", "Bastet", "Hathor", "Nekhbet", "Tayet", "Auriel", "Nephthys", "Athena", "Artemis",
-			"Eirene", "Eris", "Freya", "Hera", "Juno", "Kali", "Luna", "Maeve", "Minerva", "Persephone", "Rhea", "Selene", "Themis"
-		};
-		static const string NeutralNames[] =
-		{
-			"Tempest", "Cinder", "Vexx", "Drace", "Klyn", "Vayne", "Vail", "Brick", "Zero", "Blade", "Apocalypse", "Thunder", "Void", "Kanzaxe", "Hatchet", "Blink", "Whiskey", "Splinter",
-			"Light", "Reaper", "Jet", "Wraith", "Quill", "Discount", "Death", "Nil", "Umbra", "Scar", "Curse", "Banshee", "Arrow", "Dash", "Niven", "Phantom", "Barricade", "Enigma",
-			"Matrix", "Entropy", "Raven", "Nomad", "Prophet", "Jester", "Psycho", "Blitz", "Scorpion", "Fury", "Arclite", "Redeemer", "Bishop", "War", "Wrath", "Pestilence", "Inferno"
-		};
-
-		string PickedName = "";
-		Array<int> IteratedIndices;
-
-		int Size = 0;
-		switch (gender)
-		{
-			case 0: Size = MaleNames.Size(); break;
-			case 1: Size = FemaleNames.Size(); break;
-			case 2: Size = NeutralNames.Size(); break;
-		}
-
-		do
-		{
-			int Index = random[rmnamerand](0, Size - 1);
-			if (IteratedIndices.Size() > 0 && IteratedIndices.Find(Index) != IteratedIndices.Size())
-			{
-				continue;
-			}
-
-			IteratedIndices.Push(Index);
-
-			switch (gender)
-			{
-				case 0: PickedName = MaleNames[Index]; break;
-				case 1: PickedName = FemaleNames[Index]; break;
-				case 2: PickedName = NeutralNames[Index]; break;
-			}
-
-			if (!NameExists(PickedName))
-			{
-				UniqueName = PickedName;
-				break;
-			}
-		} while (IteratedIndices.Size() < Size);
-
-		return UniqueName;
-	}
-
-	private bool NameExists(string followerName)
-	{
-		for (int i = 0; i < Followers.Size(); ++i)
-		{
-			if (Followers[i].DisplayName ~== followerName)
+			if (f.master && f.master == a)
 			{
 				return true;
 			}
 		}
-
-		Array<FollowerBody> InvFollowers;
-		FetchFollowersInInventory(InvFollowers);
-		for (int i = 0; i < InvFollowers.Size(); ++i)
-		{
-			for (int j = 0; j < InvFollowers[i].Data.Size(); ++j)
-			{
-				if (InvFollowers[i].Data[j].DisplayName ~== followerName)
-				{
-					return true;
-				}
-			}
-		}
-
 		return false;
 	}
+
+	// --------------------------------------------------
+	// ACTIONS
+	// --------------------------------------------------
 
 	private void RecruitMarine(HDMarine m, int owningPlayer)
 	{
@@ -191,17 +123,97 @@ extend class FollowerHandler
 		m.Destroy();
 	}
 
-	static bool IsPuppet(Actor a)
+	// --------------------------------------------------
+	// INFORMATION
+	// --------------------------------------------------
+
+	private string GetUniqueMarineName(int gender)
 	{
-		ThinkerIterator it = ThinkerIterator.Create('AngelFire', Thinker.STAT_DEFAULT);
-		AngelFire f;
-		while ((f = AngelFire(it.Next())))
+		string UniqueName = "Anonymous";
+		static const string MaleNames[] =
 		{
-			if (f.master && f.master == a)
+			"Arcturus", "Proteus", "Orion", "Deimos", "Kawaimomona", "Kaihalulu", "Kalani", "Akamu", "Amari", "Sanjuro", "Tezuka", "Hoshino", "Ota", "Soma", "Kashiwa", "Nakada",
+			"Haddi", "Gunnar", "Isekai", "Mikkel", "Adel", "Jónar", "Kasper", "Steinn", "Gustav", "Leonhard", "Leon", "Loki", "Vilbert", "Almar", "Stadius", "Mikail", "Koen", "Gino",
+			"Marc", "Fabio", "Andrea", "Bernard", "Aleksy", "Roch", "Bartosz", "Maciej", "Marek", "Stryker", "Arkadiusz", "Adoranz", "Tristan", "Isaiah", "Mebunai", "Eleazar", "Ishbaal",
+			"Ahiam", "Hiddai", "Elhanan", "Abiezer", "Ithai", "Eliam", "Uriah", "Fane", "Reks", "Zayne", "Salvador", "Zeus", "Axton", "Zane", "Blake", "Raynor", "Jim", "Thomas", "Ronald",
+			"Wayn", "Lero", "Leon", "Jack", "Armanis", "Krieg", "Emerton", "Samael", "Kragoth", "Blisk", "Ryo", "Nathaniel", "Killian", "Dominic", "Santiago", "Sebastian", "Malcolm",
+			"Rakanoth", "Ixanos", "Nick", "Bane", "Kaada", "Loque", "Xan", "Isaak", "Hawkins", "Ne'Ban", "Miller", "Othello", "Abaddon", "Anubis", "Raiden", "Mengsk"
+		};
+		static const string FemaleNames[] =
+		{
+			"Arlin", "Elaine", "Ophelia", "Almedha", "Sana", "Karmin", "Ashera", "Liv", "Yrsa", "Kristiane", "Irene", "Hedvig", "Lena", "Freja", "Maya", "Kristine", "Elin", "Emeryn",
+			"Amelix", "Emson", "Rayne", "Azraelle", "Visse", "Ephemera", "Samantha", "Kura", "Kyra", "Malise", "Faith", "Edela", "Alice", "Ymir", "Lauren", "Alana", "Akasha", "Avicia",
+			"Lillian", "Lilith", "May", "Eleanor", "Yuzuki", "Kaede", "Aida", "Sapphire", "Selket", "Bastet", "Hathor", "Nekhbet", "Tayet", "Auriel", "Nephthys", "Athena", "Artemis",
+			"Eirene", "Eris", "Freya", "Hera", "Juno", "Kali", "Luna", "Maeve", "Minerva", "Persephone", "Rhea", "Selene", "Themis"
+		};
+		static const string NeutralNames[] =
+		{
+			"Tempest", "Cinder", "Vexx", "Drace", "Klyn", "Vayne", "Vail", "Brick", "Zero", "Blade", "Apocalypse", "Thunder", "Void", "Kanzaxe", "Hatchet", "Blink", "Whiskey", "Splinter",
+			"Light", "Reaper", "Jet", "Wraith", "Quill", "Discount", "Death", "Nil", "Umbra", "Scar", "Curse", "Banshee", "Arrow", "Dash", "Niven", "Phantom", "Barricade", "Enigma",
+			"Matrix", "Entropy", "Raven", "Nomad", "Prophet", "Jester", "Psycho", "Blitz", "Scorpion", "Fury", "Arclite", "Redeemer", "Bishop", "War", "Wrath", "Pestilence", "Inferno"
+		};
+
+		string PickedName = "";
+		Array<int> IteratedIndices;
+
+		int Size = 0;
+		switch (gender)
+		{
+			case 0: Size = MaleNames.Size(); break;
+			case 1: Size = FemaleNames.Size(); break;
+			case 2: Size = NeutralNames.Size(); break;
+		}
+
+		do
+		{
+			int Index = random[rmnamerand](0, Size - 1);
+			if (IteratedIndices.Size() > 0 && IteratedIndices.Find(Index) != IteratedIndices.Size())
+			{
+				continue;
+			}
+
+			IteratedIndices.Push(Index);
+
+			switch (gender)
+			{
+				case 0: PickedName = MaleNames[Index]; break;
+				case 1: PickedName = FemaleNames[Index]; break;
+				case 2: PickedName = NeutralNames[Index]; break;
+			}
+
+			if (!NameExists(PickedName))
+			{
+				UniqueName = PickedName;
+				break;
+			}
+		} while (IteratedIndices.Size() < Size);
+
+		return UniqueName;
+	}
+
+	private bool NameExists(string followerName)
+	{
+		for (int i = 0; i < Followers.Size(); ++i)
+		{
+			if (Followers[i].DisplayName ~== followerName)
 			{
 				return true;
 			}
 		}
+
+		Array<FollowerBody> InvFollowers;
+		FetchFollowersInInventory(InvFollowers);
+		for (int i = 0; i < InvFollowers.Size(); ++i)
+		{
+			for (int j = 0; j < InvFollowers[i].Data.Size(); ++j)
+			{
+				if (InvFollowers[i].Data[j].DisplayName ~== followerName)
+				{
+					return true;
+				}
+			}
+		}
+
 		return false;
 	}
 }

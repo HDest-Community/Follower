@@ -3,6 +3,43 @@ extend class FollowerHandler
 	const InternalFollowers = 6;
 	Array<HDFollower> Followers;
 
+	private HDFollower CreateFollower(class<HDFollower> flw, int playerNum, vector3 pos = (0, 0, 0))
+	{
+		let plr = players[playerNum].mo;
+		if (plr)
+		{
+			let FollowerDef = GetDefaultByType(flw);
+
+			// [Ace] New map who dis? Spawn a new follower.
+			if (!FollowerDef.MissingClass || !plr.CheckInventory(FollowerDef.MissingClass, 1))
+			{
+				Actor a; bool success;
+				if (pos == (0, 0, 0))
+				{
+					[success, a] = plr.A_SpawnItemEx(flw, random(16, 48), 0, random(0, 32), angle: random(0, 359), flags: SXF_NOCHECKPOSITION);
+				}
+				else
+				{
+					a = Actor.Spawn(flw, pos);
+					success = true;
+				}
+				if (success)
+				{
+					let Follower = HDFollower(a);
+					InsertFollower(Follower);
+					
+					Follower.ChangeLinkedPlayer(HDPlayerPawn(plr));
+
+					// [Ace] These are here so that they are only called once when the follower is created.
+					Follower.InitWeapons();
+					Follower.GiveStartingItems();
+					return Follower;
+				}
+			}
+		}
+		return null;
+	}
+
 	void InsertFollower(HDFollower flw)
 	{
 		int InsIndex = 0;
@@ -40,43 +77,6 @@ extend class FollowerHandler
 			}
 			Followers.Delete(Index);
 		}
-	}
-
-	private HDFollower CreateFollower(class<HDFollower> flw, int playerNum, vector3 pos = (0, 0, 0))
-	{
-		let plr = players[playerNum].mo;
-		if (plr)
-		{
-			let FollowerDef = GetDefaultByType(flw);
-
-			// [Ace] New map who dis? Spawn a new follower.
-			if (!FollowerDef.MissingClass || !plr.CheckInventory(FollowerDef.MissingClass, 1))
-			{
-				Actor a; bool success;
-				if (pos == (0, 0, 0))
-				{
-					[success, a] = plr.A_SpawnItemEx(flw, random(16, 48), 0, random(0, 32), angle: random(0, 359), flags: SXF_NOCHECKPOSITION);
-				}
-				else
-				{
-					a = Actor.Spawn(flw, pos);
-					success = true;
-				}
-				if (success)
-				{
-					let Follower = HDFollower(a);
-					InsertFollower(Follower);
-					
-					Follower.ChangeLinkedPlayer(HDPlayerPawn(plr));
-
-					// [Ace] These are here so that they are only called once when the follower is created.
-					Follower.InitWeapons();
-					Follower.GiveStartingItems();
-					return Follower;
-				}
-			}
-		}
-		return null;
 	}
 }
 

@@ -1,5 +1,9 @@
 extend class HDFollower
 {
+	// --------------------------------------------------
+	// ACTIONS
+	// --------------------------------------------------
+
 	protected void CheckOhana()
 	{
 		if (!OhanaMode) { OhanaMode = CVar.GetCVar('hdf_ohana'); }
@@ -24,6 +28,10 @@ extend class HDFollower
 			OhanaTicker = 0;
 		}
 	}
+
+	// --------------------------------------------------
+	// CONSTANTS/VARIABLES
+	// --------------------------------------------------
 
 	private transient CVar OhanaMode;
 	private int OhanaTicker;

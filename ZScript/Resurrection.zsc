@@ -6,6 +6,98 @@ extend class HDFollower
 		RESF_BLOOD = 1 << 1
 	}
 
+	// --------------------------------------------------
+	// VIRTUALS
+	// --------------------------------------------------
+
+	virtual clearscope int GetRequiredSips()
+	{
+		return clamp(BodyDamage / 200, 2, 12);
+	}
+
+	virtual clearscope int GetRequiredBlood()
+	{
+		return min(BloodReviveTicker / (35 * 4), 60);
+	}
+
+	// --------------------------------------------------
+	// ACTIONS
+	// --------------------------------------------------
+
+	private void SpawnReviveParticles(color col)
+	{
+		for (int i = 0; i < 3; ++i)
+		{
+			A_SpawnParticle(col, SPF_RELATIVE, random(15, 35), 4, random(0, 359), frandom(0, Radius), 0, 0, frandom(0.1, 1.0), 0, random(2, 4), 0, 0, -0.2);
+		}
+	}
+
+	protected void CheckRevive()
+	{
+		if (Blues > 0)
+		{
+			SpawnReviveParticles("2222FF");
+			if (++AbsorbedBlues >= 105 + GetRequiredSips() * 12 && level.time % 35 == 0)
+			{
+				if (!A_RaiseSelf())
+				{
+					ThinkMessage(LinkedPlayer, "$REVIVE_NOROOM_PLR");
+				}
+				else
+				{
+					if (FindState('Raise.Blues', true))
+					{
+						SetStateLabel('Raise.Blues');
+					}
+					bFRIENDLY = true;
+					PrintMessage(GetResponse("REVIVE_BLUES_SUCCESS"), "Revive/Blues/Success", PMType_Important);
+				}
+			}
+		}
+		else // [Ace] Always check if player is bleeding if not currently healed by blues.
+		{
+			int RequiredBlood = GetRequiredBlood();
+			if (CanReach(MaxReviveDistance) == 0 && LinkedPlayer.woundcount > min(RequiredBlood, 40) && PlayerIsCrouching())
+			{
+				AbsorbedBlood++;
+				SpawnReviveParticles("FF1111");
+			}
+			else
+			{
+				BloodReviveTicker++;
+			}
+
+			if (AbsorbedBlood >= min(105 + RequiredBlood * 8, 350) && level.time % 70 == 0)
+			{
+				if (!A_RaiseSelf())
+				{
+					ThinkMessage(LinkedPlayer, "$REVIVE_NOROOM_PLR");
+				}
+				else
+				{
+					if (FindState('Raise.Blood', true))
+					{
+						SetStateLabel('Raise.Blood');
+					}
+					LinkedPlayer.AggravatedDamage += RequiredBlood;
+					bFRIENDLY = true;
+					PrintMessage(GetResponse("REVIVE_BLOOD_SUCCESS"), "Revive/Blood/Success", PMType_Important);
+				}
+			}
+		}
+	}
+
+	// [Ace] This is technically cheating, but otherwise the follower can get absolutely assblasted and become useless.
+	// It needs to be called directly after Raise so that the correct state is entered, if one actually exists.
+	protected void OnRevive()
+	{
+		BodyDamage = 0;
+		Blues = 0;
+		AbsorbedBlues = 0;
+		AbsorbedBlood = 0;
+		BloodReviveTicker = 0;
+	}
+
 	bool TryRevive(int type)
 	{
 		if (DistanceToPlayer > radius + MaxReviveDistance)
@@ -78,89 +170,9 @@ extend class HDFollower
 		return true;
 	}
 
-	protected void CheckRevive()
-	{
-		if (Blues > 0)
-		{
-			SpawnReviveParticles("2222FF");
-			if (++AbsorbedBlues >= 105 + GetRequiredSips() * 12 && level.time % 35 == 0)
-			{
-				if (!A_RaiseSelf())
-				{
-					ThinkMessage(LinkedPlayer, "$REVIVE_NOROOM_PLR");
-				}
-				else
-				{
-					if (FindState('Raise.Blues', true))
-					{
-						SetStateLabel('Raise.Blues');
-					}
-					bFRIENDLY = true;
-					PrintMessage(GetResponse("REVIVE_BLUES_SUCCESS"), "Revive/Blues/Success", PMType_Important);
-				}
-			}
-		}
-		else // [Ace] Always check if player is bleeding if not currently healed by blues.
-		{
-			int RequiredBlood = GetRequiredBlood();
-			if (CanReach(MaxReviveDistance) == 0 && LinkedPlayer.woundcount > min(RequiredBlood, 40) && PlayerIsCrouching())
-			{
-				AbsorbedBlood++;
-				SpawnReviveParticles("FF1111");
-			}
-			else
-			{
-				BloodReviveTicker++;
-			}
-
-			if (AbsorbedBlood >= min(105 + RequiredBlood * 8, 350) && level.time % 70 == 0)
-			{
-				if (!A_RaiseSelf())
-				{
-					ThinkMessage(LinkedPlayer, "$REVIVE_NOROOM_PLR");
-				}
-				else
-				{
-					if (FindState('Raise.Blood', true))
-					{
-						SetStateLabel('Raise.Blood');
-					}
-					LinkedPlayer.AggravatedDamage += RequiredBlood;
-					bFRIENDLY = true;
-					PrintMessage(GetResponse("REVIVE_BLOOD_SUCCESS"), "Revive/Blood/Success", PMType_Important);
-				}
-			}
-		}
-	}
-
-	// [Ace] This is technically cheating, but otherwise the follower can get absolutely assblasted and become useless.
-	// It needs to be called directly after Raise so that the correct state is entered, if one actually exists.
-	protected void OnRevive()
-	{
-		BodyDamage = 0;
-		Blues = 0;
-		AbsorbedBlues = 0;
-		AbsorbedBlood = 0;
-		BloodReviveTicker = 0;
-	}
-
-	private void SpawnReviveParticles(color col)
-	{
-		for (int i = 0; i < 3; ++i)
-		{
-			A_SpawnParticle(col, SPF_RELATIVE, random(15, 35), 4, random(0, 359), frandom(0, Radius), 0, 0, frandom(0.1, 1.0), 0, random(2, 4), 0, 0, -0.2);
-		}
-	}
-
-	virtual clearscope int GetRequiredSips()
-	{
-		return clamp(BodyDamage / 200, 2, 12);
-	}
-
-	virtual clearscope int GetRequiredBlood()
-	{
-		return min(BloodReviveTicker / (35 * 4), 60);
-	}
+	// --------------------------------------------------
+	// CONSTANTS/VARIABLES	
+	// --------------------------------------------------
 
 	const MaxReviveDistance = 24;
 

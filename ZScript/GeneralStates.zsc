@@ -9,17 +9,6 @@ extend class HDFollower
 		A_KnockedDown();
 	}
 
-	protected void OnFalldown()
-	{
-		MaxStepHeight = 0; // [Ace] Prevents you from sombrero-ing the follower if you stand over them while they're incapped.
-		Status = FStatus_InactiveOrDead;
-		A_SetSize(-1, deathheight);
-		A_StartSound(PainSound, CHAN_VOICE);
-		ClearWeapon();
-		scale = default.scale;
-		CrouchFactor = 0;
-	}
-
 	protected void FinishRaise()
 	{
 		ThinkerIterator it = ThinkerIterator.Create('AngelFire', STAT_DEFAULT);
@@ -43,6 +32,17 @@ extend class HDFollower
 		ClearTarget();
 		ClearWeapon();
 		Status = FStatus_InactiveOrDead;
+		scale = default.scale;
+		CrouchFactor = 0;
+	}
+
+	protected void OnFalldown()
+	{
+		MaxStepHeight = 0; // [Ace] Prevents you from sombrero-ing the follower if you stand over them while they're incapped.
+		Status = FStatus_InactiveOrDead;
+		A_SetSize(-1, deathheight);
+		A_StartSound(PainSound, CHAN_VOICE);
+		ClearWeapon();
 		scale = default.scale;
 		CrouchFactor = 0;
 	}

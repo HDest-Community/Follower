@@ -9,6 +9,18 @@ enum FOrder
 
 extend class HDFollower
 {
+	// --------------------------------------------------
+	// ACTIONS
+	// --------------------------------------------------
+
+	private void HaulAss()
+	{
+		ClearTarget();
+		ClearWeapon();
+		SetStateLabel('Idle'); // [Ace] Surely putting this here can't backfire. Right? :uhh:
+		Status = FStatus_None;
+	}
+
 	bool ChangeOrders(FOrder newOrder)
 	{
 		if (Status == FStatus_InactiveOrDead)
@@ -75,13 +87,5 @@ extend class HDFollower
 		}
 
 		return false;
-	}
-
-	private void HaulAss()
-	{
-		ClearTarget();
-		ClearWeapon();
-		SetStateLabel('Idle'); // [Ace] Surely putting this here can't backfire. Right? :uhh:
-		Status = FStatus_None;
 	}
 }

@@ -1,5 +1,24 @@
 class FollowerWeapon abstract
 {
+	enum CRType
+	{
+		CRType_Empty,
+		CRType_Spent,
+		CRType_Chambered
+	}
+
+	enum RResult
+	{
+		RResult_CanReload,
+		RResult_MagFull,
+		RResult_NoAmmo,
+		RResult_Invalid
+	}
+
+	// --------------------------------------------------
+	// STATIC
+	// --------------------------------------------------
+
 	static play void CreateAndAdd(class<FollowerWeapon> wpn, HDFollower flw, bool enabled = false)
 	{
 		FollowerWeapon fw = FollowerWeapon(new(wpn));
@@ -24,27 +43,10 @@ class FollowerWeapon abstract
 		flw.Weapons.Push(fw);
 	}
 
-	enum CRType
-	{
-		CRType_Empty,
-		CRType_Spent,
-		CRType_Chambered
-	}
-
-	enum RResult
-	{
-		RResult_CanReload,
-		RResult_MagFull,
-		RResult_NoAmmo,
-		RResult_Invalid
-	}
-
-	CRType ChamberedRound;
-	int Mag;
-	bool HasWarnedLowAmmo;
-	HDFollower Owner;
-	bool Enabled;
-
+	// --------------------------------------------------
+	// VIRTUALS
+	// --------------------------------------------------
+	
 	abstract string GetName();
 	abstract string GetIcon();
 	abstract class<HDAmmo>, class<HDMagAmmo>, int GetAmmoType();
@@ -57,21 +59,6 @@ class FollowerWeapon abstract
 	virtual string GetLocalizationTag() { return GetName(); }
 	virtual double GetAdjustmentMult() { return 1.0; }
 	virtual play bool CheckWeaponCondition(HDFollower caller, Actor trgt) { return true; }
-
-	play void EjectMag(bool keep = true)
-	{
-		class<HDAmmo> AType, MType; int MaxMag;
-		[AType, MType, MaxMag] = GetAmmoType();
-		if (MType && Mag > -1)
-		{
-			HDMagAmmo m = HDMagAmmo(HDMagAmmo.SpawnMag(Owner, MType, Mag));
-			if (keep)
-			{
-				Owner.AddMag(m, flags: HDFollower.FIF_FORCE);
-			}
-			Mag = -1;
-		}
-	}
 
 	virtual play RResult TryReload(bool justCheck = false)
 	{
@@ -111,18 +98,6 @@ class FollowerWeapon abstract
 		return RResult_CanReload;
 	}
 
-	play bool TryChamberRound()
-	{
-		if (ChamberedRound == CRType_Empty && Mag > 0)
-		{
-			Mag--;
-			ChamberedRound = CRType_Chambered;
-			return true;
-		}
-
-		return false;
-	}
-
 	virtual play void EmptyWeapon()
 	{
 		class<HDAmmo> AType; class<HDMagAmmo> MType;
@@ -149,4 +124,61 @@ class FollowerWeapon abstract
 			Mag = 0;
 		}
 	}
+
+	// --------------------------------------------------
+	// ACTIONS
+	// --------------------------------------------------
+	
+	play void EjectMag(bool keep = true)
+	{
+		class<HDAmmo> AType, MType; int MaxMag;
+		[AType, MType, MaxMag] = GetAmmoType();
+		if (MType && Mag > -1)
+		{
+			HDMagAmmo m = HDMagAmmo(HDMagAmmo.SpawnMag(Owner, MType, Mag));
+			if (keep)
+			{
+				Owner.AddMag(m, flags: HDFollower.FIF_FORCE);
+			}
+			Mag = -1;
+		}
+	}
+
+	play bool TryChamberRound()
+	{
+		if (ChamberedRound == CRType_Empty && Mag > 0)
+		{
+			Mag--;
+			ChamberedRound = CRType_Chambered;
+			return true;
+		}
+
+		return false;
+	}
+
+	// --------------------------------------------------
+	// INFORMATION
+	// --------------------------------------------------
+
+	clearscope bool HasAmmo()
+	{
+		return Mag > 0 || ChamberedRound == CRType_Chambered;
+	}
+
+	clearscope bool HasSpare()
+	{
+		class<HDAmmo> AType, MType;
+		[AType, MType] = GetAmmoType();
+		return MType && Owner.GetAmount(MType) > 0 || !MType && Owner.GetAmount(AType) > 0;
+	}
+
+	// --------------------------------------------------
+	// CONSTANTS/VARIABLES
+	// --------------------------------------------------
+
+	CRType ChamberedRound;
+	int Mag;
+	bool HasWarnedLowAmmo;
+	HDFollower Owner;
+	bool Enabled;
 }
