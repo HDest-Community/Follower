@@ -43,7 +43,22 @@ class HDFollower : HDMobMan abstract
 	}
 
 	// --------------------------------------------------
-	// NEVER GONNA TOUCH THESE PROBABLY
+	// ACTIONS
+	// --------------------------------------------------
+
+	void ChangeLinkedPlayer(HDPlayerPawn plr)
+	{
+		LinkedPlayer = plr;
+		master = plr; // [Ace] War Trophies compatibility.
+	}
+
+	void WarpToPlayer()
+	{
+		Warp(LinkedPlayer, 16, flags: WARPF_NOCHECKPOSITION);
+	}
+
+	// --------------------------------------------------
+	// INFORMATION
 	// --------------------------------------------------
 
 	private HDBleedingWound GetBleedThinker()
@@ -58,19 +73,6 @@ class HDFollower : HDMobMan abstract
 			}
 		}
 		return BleedThinker;
-	}
-
-	bool IsDeadOrMissing()
-	{
-		bool FollowerDead = Health <= 0;
-		bool TooFar = self.Distance2D(LinkedPlayer) > 42 * 15;
-
-		return TooFar || FollowerDead;
-	}
-
-	void WarpToPlayer()
-	{
-		Warp(LinkedPlayer, 16, flags: WARPF_NOCHECKPOSITION);
 	}
 
 	clearscope bool CanInteractWith(bool validIfDead = true)
@@ -92,16 +94,14 @@ class HDFollower : HDMobMan abstract
 		return 0;
 	}
 
-	private clearscope bool PlayerIsCrouching()
+	clearscope string GetDisplayName()
 	{
-		return LinkedPlayer.player.crouchfactor < 1.0;
+		return DisplayName != "" ? DisplayName : GetTag();
 	}
 
-	private clearscope bool IsFacedByPlayer()
+	override string GetObituary(Actor victim, Actor inflictor, Name mod, bool playerattack)
 	{
-		double PAngle = LinkedPlayer.angle;
-		double PAngleTo = self.AngleTo(LinkedPlayer) + 180; // [Ace] Add 180 to invert direction, otherwise you need to face away from the follower.
-		return AbsAngle(PAngle, PAngleTo) <= MaxFaceAngle;
+		return String.Format("%s suffered friendly fire from %s, but friendly fire, isn't.", HDPlayerPawn(victim).player.GetUserName(), inflictor.target ? HDFollower(inflictor.target).GetDisplayName() : inflictor.GetTag());
 	}
 
 	clearscope string GetPronoun(bool upper)
@@ -118,15 +118,24 @@ class HDFollower : HDMobMan abstract
 		return "??????";
 	}
 
-	clearscope string GetDisplayName()
+	clearscope bool IsDeadOrMissing()
 	{
-		return DisplayName != "" ? DisplayName : GetTag();
+		bool FollowerDead = Health <= 0;
+		bool TooFar = self.Distance2D(LinkedPlayer) > 42 * 15;
+
+		return TooFar || FollowerDead;
 	}
 
-	void ChangeLinkedPlayer(HDPlayerPawn plr)
+	clearscope bool IsFacedByPlayer()
 	{
-		LinkedPlayer = plr;
-		master = plr; // [Ace] War Trophies compatibility.
+		double PAngle = LinkedPlayer.angle;
+		double PAngleTo = self.AngleTo(LinkedPlayer) + 180; // [Ace] Add 180 to invert direction, otherwise you need to face away from the follower.
+		return AbsAngle(PAngle, PAngleTo) <= MaxFaceAngle;
+	}
+
+	clearscope bool PlayerIsCrouching()
+	{
+		return LinkedPlayer.player.crouchfactor < 1.0;
 	}
 
 	// --------------------------------------------------
@@ -176,11 +185,6 @@ class HDFollower : HDMobMan abstract
 		}
 	}
 
-	override string GetObituary(Actor victim, Actor inflictor, Name mod, bool playerattack)
-	{
-		return String.Format("%s suffered friendly fire from %s, but friendly fire, isn't.", HDPlayerPawn(victim).player.GetUserName(), inflictor.target ? inflictor.target.GetTag() : inflictor.GetTag());
-	}
-
 	// --------------------------------------------------
 	// INITIALIZATION
 	// --------------------------------------------------
@@ -216,6 +220,10 @@ class HDFollower : HDMobMan abstract
 			ShieldInv.bSTANDSTILL = RegenerateShields;
 		}
 	}
+
+	// --------------------------------------------------
+	// CONSTANTS/VARIABLES	
+	// --------------------------------------------------
 	
 	FollowerHandler Handler;
 
