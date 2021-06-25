@@ -20,6 +20,7 @@ extend class HDFollower
 		if (!CanSeeNext && !TGoal && CanSeePlayer)
 		{
 			Next = LinkedPlayer;
+			CanSeeNext = true;
 		}
 
 		if (hdf_debug == 3)
