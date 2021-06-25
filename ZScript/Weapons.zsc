@@ -337,6 +337,10 @@ class FW_ZM66 : FollowerWeapon
 	{
 		Mag = wpn.WeaponStatus[ZM66S_MAG];
 		ChamberedRound = wpn.WeaponStatus[ZM66S_FLAGS] & ZM66F_CHAMBER ? 2 : 0;
+		if (wpn.WeaponStatus[0] & ZM66F_GRENADELOADED)
+		{
+			Owner.A_DropItem('HDRocketAmmo', 1);
+		}
 	}
 }
 
@@ -445,6 +449,10 @@ class FW_Liberator : FollowerWeapon
 	{
 		Mag = wpn.WeaponStatus[LIBS_MAG];
 		ChamberedRound = wpn.WeaponStatus[LIBS_CHAMBER];
+		if (wpn.WeaponStatus[0] & LIBF_GRENADELOADED)
+		{
+			Owner.A_DropItem('HDRocketAmmo', 1);
+		}
 	}
 }
 
