@@ -112,7 +112,7 @@ MARINE_WEAPONGIVE_INIT_1 = "New equipment, sir?";
 MARINE_WEAPONGIVE_INIT_2 = "Looks like it's time to rock!";
 MARINE_WEAPONGIVE_INIT_3 = "Hoorah, commander!";
 
-MARINE_WEAPONGIVE_CANCEL_1 = "Roger that, sir. No hard feelings/";
+MARINE_WEAPONGIVE_CANCEL_1 = "Roger that, sir. No hard feelings.";
 MARINE_WEAPONGIVE_CANCEL_2 = "Understood.";
 MARINE_WEAPONGIVE_CANCEL_3 = "Alright, commander.";
 
