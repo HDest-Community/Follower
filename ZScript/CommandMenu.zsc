@@ -33,6 +33,14 @@ extend class FollowerHandler
 		FMenu_Miscellaneous,
 		FMenu_ColorPicker
 	}
+
+	enum KeyHold
+	{
+		HOLD_LEFT = 1,
+		HOLD_RIGHT = 2,
+		HOLD_UP = 4,
+		HOLD_DOWN = 8,
+	}
 	
 	private transient ui HUDFont MainFont;
 
@@ -42,12 +50,13 @@ extend class FollowerHandler
 	private transient FollowerSelection Selection[MAXPLAYERS];
 	private transient int Modifiers[MAXPLAYERS];
 
+	private transient ui int ArrowKeysHeld[MAXPLAYERS];
+
 	private transient ui int SlotFocused[MAXPLAYERS];
 	private transient ui ValidItemsHolder ValidItems[MAXPLAYERS];
 	private transient ui int PSlotIndex[MAXPLAYERS];
 	private transient ui int PSlotSubIndex[MAXPLAYERS];
 	private transient ui int TransferAmount[MAXPLAYERS];
-	private transient ui int AmountDirection[MAXPLAYERS];
 	private transient ui int SelWeaponIndex[MAXPLAYERS];
 	private transient ui int FSlotIndex[MAXPLAYERS];
 
@@ -85,10 +94,115 @@ extend class FollowerHandler
 	{
 		Super.UiTick();
 
-		if (level.time % 2 == 0 && AmountDirection[consoleplayer] != 0)
+		if (level.time % 2 == 0 && SlotFocused[consoleplayer] == 2)
 		{
 			int amt = Modifiers[consoleplayer] & OpMod_Shift ? 20 : 2;
-			TransferAmount[consoleplayer] = clamp(TransferAmount[consoleplayer] + amt * AmountDirection[consoleplayer], 0, 1000);
+			int mult = ArrowKeysHeld[consoleplayer] & HOLD_RIGHT ? 1 : ArrowKeysHeld[consoleplayer] & HOLD_LEFT ? -1 : 0;
+			TransferAmount[consoleplayer] = clamp(TransferAmount[consoleplayer] + amt * mult, 0, 1000);
+		}
+
+		if (level.time % 3 == 0)
+		{
+			switch (FollowerMenuLevel[consoleplayer])
+			{
+				case FMenu_Inventory:
+				{
+					HDFollower SFol = Selection[consoleplayer].GetLast();
+					int maxSIndex = HDFollower.SlotCount - 1;
+					if (ArrowKeysHeld[consoleplayer] & HOLD_LEFT)
+					{
+						if (SlotFocused[consoleplayer] == 0)
+						{
+							FSlotIndex[consoleplayer] = max(FSlotIndex[consoleplayer] - 1, 0);
+						}
+						else if (SlotFocused[consoleplayer] == 1)
+						{
+							if (--PSlotSubIndex[consoleplayer] < 0)
+							{
+								PSlotSubIndex[consoleplayer] = maxSIndex;
+							}
+						}
+					}
+					if (ArrowKeysHeld[consoleplayer] & HOLD_RIGHT)
+					{
+						if (SlotFocused[consoleplayer] == 0)
+						{
+							FSlotIndex[consoleplayer] = min(FSlotIndex[consoleplayer] + 1, maxSIndex);
+						}
+						else if (SlotFocused[consoleplayer] == 1)
+						{
+							if (++PSlotSubIndex[consoleplayer] > maxSIndex)
+							{
+								PSlotSubIndex[consoleplayer] = 0;
+							}
+						}
+					}
+					if (ArrowKeysHeld[consoleplayer] & HOLD_UP)
+					{
+						if (SlotFocused[consoleplayer] == 0)
+						{
+							if (FSlotIndex[consoleplayer] > InvColumns - 1)
+							{
+								FSlotIndex[consoleplayer] = max(FSlotIndex[consoleplayer] - InvColumns, 0);
+							}
+						}
+						else if (SlotFocused[consoleplayer] == 1)
+						{
+							UpdateValidItems(SFol);
+							if (--PSlotIndex[consoleplayer] < 0)
+							{
+								PSlotIndex[consoleplayer] = ValidItems[consoleplayer].Items.Size() - 1;
+							}
+						}
+					}
+					if (ArrowKeysHeld[consoleplayer] & HOLD_DOWN)
+					{
+						if (SlotFocused[consoleplayer] == 0)
+						{
+							if (FSlotIndex[consoleplayer] < maxSIndex - (InvColumns - 1))
+							{
+								FSlotIndex[consoleplayer] = min(FSlotIndex[consoleplayer] + InvColumns, maxSIndex);
+							}
+						}
+						else if (SlotFocused[consoleplayer] == 1)
+						{
+							UpdateValidItems(SFol);
+							if (++PSlotIndex[consoleplayer] == ValidItems[consoleplayer].Items.Size())
+							{
+								PSlotIndex[consoleplayer] = 0;
+							}
+						}
+					}
+					break;
+				}
+
+				// --------------------------------------------------------------------------------
+				//
+				// --------------------------------------------------------------------------------
+
+				case FMenu_ColorPicker:
+				{
+					int maxIndex = TColors.Size() - 1;
+					if (ArrowKeysHeld[consoleplayer] & HOLD_LEFT)
+					{
+						SelectedColorIndex[consoleplayer] = max(SelectedColorIndex[consoleplayer] - 1, 0);
+					}
+					if (ArrowKeysHeld[consoleplayer] & HOLD_RIGHT)
+					{
+						SelectedColorIndex[consoleplayer] = min(SelectedColorIndex[consoleplayer] + 1, maxIndex);
+					}
+					if (ArrowKeysHeld[consoleplayer] & HOLD_UP && SelectedColorIndex[consoleplayer] > PickerColumns - 1)
+					{
+						SelectedColorIndex[consoleplayer] = max(SelectedColorIndex[consoleplayer] - PickerColumns, 0);
+					}
+					if (ArrowKeysHeld[consoleplayer] & HOLD_DOWN)
+					{
+						SelectedColorIndex[consoleplayer] = min(SelectedColorIndex[consoleplayer] + PickerColumns, maxIndex);
+					}
+					break;
+				}
+			}
+			
 		}
 
 		if (FollowerMenuLevel[consoleplayer] != FMenu_Inventory)
@@ -102,7 +216,6 @@ extend class FollowerHandler
 		if (SlotFocused[consoleplayer] < 2)
 		{
 			TransferAmount[consoleplayer] = 0;
-			AmountDirection[consoleplayer] = 0;
 		}
 
 		if (SlotFocused[consoleplayer] < 1)
@@ -119,7 +232,6 @@ extend class FollowerHandler
 			{
 				SlotFocused[consoleplayer] = 1;
 				TransferAmount[consoleplayer] = 0;
-				AmountDirection[consoleplayer] = 0;
 			}
 		}
 	}
@@ -690,23 +802,31 @@ extend class FollowerHandler
 			}
 		}
 
-		// [Ace] The amount selection for when you've selected a multipickup item.
-		if (SlotFocused[consoleplayer] == 2)
+		if (e.Type == InputEvent.Type_KeyDown)
 		{
-			if (e.Type == InputEvent.Type_KeyDown)
+			switch (e.KeyScan)
 			{
-				switch (e.KeyScan)
-				{
-					case InputEvent.Key_LeftArrow: AmountDirection[consoleplayer] = -1; break;
-					case InputEvent.Key_RightArrow: AmountDirection[consoleplayer] = 1; break;
-				}
+				case InputEvent.Key_LeftArrow: ArrowKeysHeld[consoleplayer] |= HOLD_LEFT; break;
+				case InputEvent.Key_RightArrow: ArrowKeysHeld[consoleplayer] |= HOLD_RIGHT; break;
+				case InputEvent.Key_UpArrow: ArrowKeysHeld[consoleplayer] |= HOLD_UP; break;
+				case InputEvent.Key_DownArrow: ArrowKeysHeld[consoleplayer] |= HOLD_DOWN; break;
 			}
-			else if (e.Type == InputEvent.Type_KeyUp && (e.KeyScan == InputEvent.Key_LeftArrow || e.KeyScan == InputEvent.Key_RightArrow))
+		}
+		else if (e.Type == InputEvent.Type_KeyUp)
+		{
+			switch (e.KeyScan)
 			{
-				AmountDirection[consoleplayer] = 0;
+				case InputEvent.Key_LeftArrow: ArrowKeysHeld[consoleplayer] &= ~HOLD_LEFT; break;
+				case InputEvent.Key_RightArrow: ArrowKeysHeld[consoleplayer] &= ~HOLD_RIGHT; break;
+				case InputEvent.Key_UpArrow: ArrowKeysHeld[consoleplayer] &= ~HOLD_UP; break;
+				case InputEvent.Key_DownArrow: ArrowKeysHeld[consoleplayer] &= ~HOLD_DOWN; break;
 			}
 		}
 		
+		// --------------------------------------------------------------------------------
+		// THIS IS WHERE THE REAL FUN BEGINS
+		// --------------------------------------------------------------------------------
+
 		if (FollowerMenuLevel[consoleplayer] > FMenu_Closed && e.Type == InputEvent.Type_KeyDown)
 		{
 			int NumKey = e.KeyChar - 48;
@@ -983,81 +1103,6 @@ extend class FollowerHandler
 							}
 							break;
 						}
-
-						// [Ace] This SlotFocused stuff was in a switch at one point, but due my mandatory braces the code ended up being too long.
-						// It's unlikely that I'll touch this anytime soon so if/else if will suffice.
-						case InputEvent.Key_LeftArrow:
-						{
-							if (SlotFocused[consoleplayer] == 0)
-							{
-								FSlotIndex[consoleplayer] = max(FSlotIndex[consoleplayer] - 1, 0);
-							}
-							else if (SlotFocused[consoleplayer] == 1)
-							{
-								if (--PSlotSubIndex[consoleplayer] < 0)
-								{
-									PSlotSubIndex[consoleplayer] = maxSIndex;
-								}
-							}
-							ret = true;
-							break;
-						}
-						case InputEvent.Key_RightArrow:
-						{
-							if (SlotFocused[consoleplayer] == 0)
-							{
-								FSlotIndex[consoleplayer] = min(FSlotIndex[consoleplayer] + 1, maxSIndex);
-							}
-							else if (SlotFocused[consoleplayer] == 1)
-							{
-								if (++PSlotSubIndex[consoleplayer] > maxSIndex)
-								{
-									PSlotSubIndex[consoleplayer] = 0;
-								}
-							}
-							ret = true;
-							break;
-						}
-						case InputEvent.Key_UpArrow:
-						{
-							if (SlotFocused[consoleplayer] == 0)
-							{
-								if (FSlotIndex[consoleplayer] > InvColumns - 1)
-								{
-									FSlotIndex[consoleplayer] = max(FSlotIndex[consoleplayer] - InvColumns, 0);
-								}
-							}
-							else if (SlotFocused[consoleplayer] == 1)
-							{
-								UpdateValidItems(SFol);
-								if (--PSlotIndex[consoleplayer] < 0)
-								{
-									PSlotIndex[consoleplayer] = ValidItems[consoleplayer].Items.Size() - 1;
-								}
-							}
-							ret = true;
-							break;
-						}
-						case InputEvent.Key_DownArrow:
-						{
-							if (SlotFocused[consoleplayer] == 0)
-							{
-								if (FSlotIndex[consoleplayer] < maxSIndex - (InvColumns - 1))
-								{
-									FSlotIndex[consoleplayer] = min(FSlotIndex[consoleplayer] + InvColumns, maxSIndex);
-								}
-							}
-							else if (SlotFocused[consoleplayer] == 1)
-							{
-								UpdateValidItems(SFol);
-								if (++PSlotIndex[consoleplayer] == ValidItems[consoleplayer].Items.Size())
-								{
-									PSlotIndex[consoleplayer] = 0;
-								}
-							}
-							ret = true;
-							break;
-						}
 					}
 
 					if (e.KeyChar == 80 || e.KeyChar == 112)
@@ -1108,45 +1153,10 @@ extend class FollowerHandler
 
 				case FMenu_ColorPicker:
 				{
-					int maxIndex = TColors.Size() - 1;
-					switch (e.KeyScan)
+					if (e.KeyScan == InputEvent.Key_Enter)
 					{
-						case InputEvent.Key_Enter:
-						{
-							SendNetworkEvent("HDF_ChangeColor", SelectedColorIndex[consoleplayer]);
-							ret = true;
-							break;
-						}
-						case InputEvent.Key_LeftArrow:
-						{
-							SelectedColorIndex[consoleplayer] = max(SelectedColorIndex[consoleplayer] - 1, 0);
-							ret = true;
-							break;
-						}
-						case InputEvent.Key_RightArrow:
-						{
-							SelectedColorIndex[consoleplayer] = min(SelectedColorIndex[consoleplayer] + 1, maxIndex);
-							ret = true;
-							break;
-						}
-						case InputEvent.Key_UpArrow:
-						{
-							if (SelectedColorIndex[consoleplayer] > PickerColumns - 1)
-							{
-								SelectedColorIndex[consoleplayer] = max(SelectedColorIndex[consoleplayer] - PickerColumns, 0);
-							}
-							ret = true;
-							break;
-						}
-						case InputEvent.Key_DownArrow:
-						{
-							if (SelectedColorIndex[consoleplayer] < maxIndex - (PickerColumns - 1))
-							{
-								SelectedColorIndex[consoleplayer] = min(SelectedColorIndex[consoleplayer] + PickerColumns, maxIndex);
-							}
-							ret = true;
-							break;
-						}
+						SendNetworkEvent("HDF_ChangeColor", SelectedColorIndex[consoleplayer]);
+						ret = true;
 					}
 					if (NumKey == 10)
 					{
