@@ -51,6 +51,7 @@ extend class FollowerHandler
 	private transient int Modifiers[MAXPLAYERS];
 
 	private transient ui int ArrowKeysHeld[MAXPLAYERS];
+	private transient ui int RepeatTics[MAXPLAYERS];
 
 	private transient ui int SlotFocused[MAXPLAYERS];
 	private transient ui ValidItemsHolder ValidItems[MAXPLAYERS];
@@ -90,28 +91,31 @@ extend class FollowerHandler
 		StatusBar.SetSize(StatusBar.RelTop, OriginalWidth, OriginalHeight);
 	}
 
+	// ----------------------------------------------------------------------
+	//
+	// NAVIGATION AND WHATNOT
+	//
+	// ----------------------------------------------------------------------
+
 	override void UiTick()
 	{
 		Super.UiTick();
 
-		if (level.time % 2 == 0 && SlotFocused[consoleplayer] == 2)
-		{
-			int amt = Modifiers[consoleplayer] & OpMod_Shift ? 20 : 2;
-			int mult = ArrowKeysHeld[consoleplayer] & HOLD_RIGHT ? 1 : ArrowKeysHeld[consoleplayer] & HOLD_LEFT ? -1 : 0;
-			TransferAmount[consoleplayer] = clamp(TransferAmount[consoleplayer] + amt * mult, 0, 1000);
-		}
-
-		if (level.time % 3 == 0)
+		if (RepeatTics[consoleplayer] % 3 == 0)
 		{
 			switch (FollowerMenuLevel[consoleplayer])
 			{
+				// --------------------------------------------------------------------------------
+				//
+				// --------------------------------------------------------------------------------
+
 				case FMenu_Inventory:
 				{
 					HDFollower SFol = Selection[consoleplayer].GetLast();
 					int maxSIndex = HDFollower.SlotCount - 1;
 					if (ArrowKeysHeld[consoleplayer] & HOLD_LEFT)
 					{
-						if (SlotFocused[consoleplayer] == 0)
+						if (SlotFocused[consoleplayer] == 0 && FSlotIndex[consoleplayer] % InvColumns > 0)
 						{
 							FSlotIndex[consoleplayer] = max(FSlotIndex[consoleplayer] - 1, 0);
 						}
@@ -122,10 +126,15 @@ extend class FollowerHandler
 								PSlotSubIndex[consoleplayer] = maxSIndex;
 							}
 						}
+						else if (SlotFocused[consoleplayer] == 2)
+						{
+							int amt = Modifiers[consoleplayer] & OpMod_Shift ? 20 : 2;
+							TransferAmount[consoleplayer] = clamp(TransferAmount[consoleplayer] - amt, 0, 1000);
+						}
 					}
 					if (ArrowKeysHeld[consoleplayer] & HOLD_RIGHT)
 					{
-						if (SlotFocused[consoleplayer] == 0)
+						if (SlotFocused[consoleplayer] == 0 && FSlotIndex[consoleplayer] % InvColumns < InvColumns - 1)
 						{
 							FSlotIndex[consoleplayer] = min(FSlotIndex[consoleplayer] + 1, maxSIndex);
 						}
@@ -135,6 +144,11 @@ extend class FollowerHandler
 							{
 								PSlotSubIndex[consoleplayer] = 0;
 							}
+						}
+						else if (SlotFocused[consoleplayer] == 2)
+						{
+							int amt = Modifiers[consoleplayer] & OpMod_Shift ? 20 : 2;
+							TransferAmount[consoleplayer] = clamp(TransferAmount[consoleplayer] + amt, 0, 1000);
 						}
 					}
 					if (ArrowKeysHeld[consoleplayer] & HOLD_UP)
@@ -183,11 +197,11 @@ extend class FollowerHandler
 				case FMenu_ColorPicker:
 				{
 					int maxIndex = TColors.Size() - 1;
-					if (ArrowKeysHeld[consoleplayer] & HOLD_LEFT)
+					if (ArrowKeysHeld[consoleplayer] & HOLD_LEFT && SelectedColorIndex[consoleplayer] % PickerColumns > 0)
 					{
 						SelectedColorIndex[consoleplayer] = max(SelectedColorIndex[consoleplayer] - 1, 0);
 					}
-					if (ArrowKeysHeld[consoleplayer] & HOLD_RIGHT)
+					if (ArrowKeysHeld[consoleplayer] & HOLD_RIGHT && SelectedColorIndex[consoleplayer] % PickerColumns < PickerColumns - 1)
 					{
 						SelectedColorIndex[consoleplayer] = min(SelectedColorIndex[consoleplayer] + 1, maxIndex);
 					}
@@ -201,8 +215,16 @@ extend class FollowerHandler
 					}
 					break;
 				}
-			}
-			
+			}	
+		}
+
+		if (ArrowKeysHeld[consoleplayer] & HOLD_LEFT || ArrowKeysHeld[consoleplayer] & HOLD_RIGHT || ArrowKeysHeld[consoleplayer] & HOLD_UP || ArrowKeysHeld[consoleplayer] & HOLD_DOWN)
+		{
+			RepeatTics[consoleplayer]++;
+		}
+		else
+		{
+			RepeatTics[consoleplayer] = 0;
 		}
 
 		if (FollowerMenuLevel[consoleplayer] != FMenu_Inventory)
