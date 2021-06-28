@@ -550,7 +550,7 @@ extend class FollowerHandler
 				if (wSize > 0)
 				{
 					SelWeaponIndex[consoleplayer] = min(SelWeaponIndex[consoleplayer], wSize - 1);
-					DrawWeaponRectangle(sb, pos, (w, RectangleHeight * 3), MainFont, flags, lastFol, lastFol.Weapons[SelWeaponIndex[consoleplayer]]);
+					DrawWeaponRectangle(sb, pos, (w, RectangleHeight * 3), MainFont, flags, lastFol, lastFol.Weapons[SelWeaponIndex[consoleplayer]], selSize > 1 ? 1 : 0);
 					pos.y += RectangleHeight * 3 + Spacing;
 				}
 
@@ -707,9 +707,12 @@ extend class FollowerHandler
 		}
 	}
 
-	private ui void DrawWeaponRectangle(HDStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, int flags, HDFollower flw, FollowerWeapon wpn)
+	private ui void DrawWeaponRectangle(HDStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, int flags, HDFollower flw, FollowerWeapon wpn, int flags2 = 0)
 	{
-		Color col = wpn.Enabled ? Color(64, 128, 192, 255) : Color(128, 192, 64, 64);
+		// [Ace] flags2 values are as follows:
+		// 1 - multiselect
+
+		Color col = flags2 & 1 || wpn.Enabled ? Color(64, 128, 192, 255) : Color(128, 192, 64, 64);
 		sb.Fill(col, pos.x, pos.y, size.x, size.y, flags);
 		sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 
@@ -719,23 +722,26 @@ extend class FollowerHandler
 		sb.DrawImage(wpn.GetIcon(), pos + (4, 12), flags | sb.DI_ITEM_LEFT_TOP, 1.0, (size.x / 2, 17));
 
 		// [Ace] Spare ammo.
-		class<HDAmmo> AType, MType; int MaxMag;
-		[AType, MType, MaxMag] = wpn.GetAmmoType();
-
-		sb.DrawString(fnt, "Ammo", pos + (size.x - 4, size.y - 24), flags | sb.DI_TEXT_ALIGN_RIGHT, Font.CR_WHITE);
-		string ChamberString = "";
-		switch (wpn.ChamberedRound)
+		if (!(flags2 & 1))
 		{
-			case FollowerWeapon.CRType_Chambered: ChamberString = "+"; break;
-			case FollowerWeapon.CRType_Spent: ChamberString = "_"; break;
-		}
-		sb.DrawString(fnt, ChamberString..sb.FormatNumber(flw.GetAmount(MType ? MType : AType), 1, 4), pos + (size.x - 4, size.y - 15), flags | sb.DI_TEXT_ALIGN_RIGHT, Font.CR_WHITE);
+			class<HDAmmo> AType, MType; int MaxMag;
+			[AType, MType, MaxMag] = wpn.GetAmmoType();
 
-		// [Ace] Magazine bar.
-		sb.Fill(col, pos.x + 1, pos.y + (size.y - 4), size.x - 2, 1, flags);
-		sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + (size.y - 3), size.x - 2, 2, flags);
-		double AmPercent = clamp(wpn.Mag / double(MaxMag), 0, 1.0);
-		sb.Fill(GetPercentColor(AmPercent), pos.x + 1, pos.y + (size.y - 3), (size.x - 2) * AmPercent, 2, flags);
+			sb.DrawString(fnt, "Ammo", pos + (size.x - 4, size.y - 24), flags | sb.DI_TEXT_ALIGN_RIGHT, Font.CR_WHITE);
+			string ChamberString = "";
+			switch (wpn.ChamberedRound)
+			{
+				case FollowerWeapon.CRType_Chambered: ChamberString = "+"; break;
+				case FollowerWeapon.CRType_Spent: ChamberString = "_"; break;
+			}
+			sb.DrawString(fnt, ChamberString..sb.FormatNumber(flw.GetAmount(MType ? MType : AType), 1, 4), pos + (size.x - 4, size.y - 15), flags | sb.DI_TEXT_ALIGN_RIGHT, Font.CR_WHITE);
+
+			// [Ace] Magazine bar.
+			sb.Fill(col, pos.x + 1, pos.y + (size.y - 4), size.x - 2, 1, flags);
+			sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + (size.y - 3), size.x - 2, 2, flags);
+			double AmPercent = clamp(wpn.Mag / double(MaxMag), 0, 1.0);
+			sb.Fill(GetPercentColor(AmPercent), pos.x + 1, pos.y + (size.y - 3), (size.x - 2) * AmPercent, 2, flags);
+		}
 	}
 
 	private ui void DrawFollowerInventory(HDStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, int flags, HDFollower flw)
