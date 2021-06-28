@@ -293,7 +293,7 @@ extend class HDFollower
 
 	const SlotCount = 30;
 	const MaxInventoryDistance = 48;
-	const MaxFaceAngle = 20;
+	const MaxFaceAngle = 35;
 	const MaxLooseAmmoAmount = 50;
 	InventorySlot Slots[SlotCount];
 }
