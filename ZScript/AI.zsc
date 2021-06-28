@@ -124,7 +124,7 @@ extend class HDFollower
 						// [Ace] If following the player and the player is nearby but suddenly goes around a corner, try to go around the same corner.
 						else if (LastKnownPos != (0, 0, 0) && (!TGoal || TGoal && TGoal.pos != LastKnownPos))
 						{
-							TrySetGoal(LastKnownPos, true);
+							TrySetGoal(LastKnownPos, SGF_IGNOREVALID);
 						}
 					}
 

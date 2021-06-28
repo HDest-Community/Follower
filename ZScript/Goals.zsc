@@ -1,5 +1,11 @@
 extend class HDFollower
 {
+	enum SetGoalFlags
+	{
+		SGF_IGNOREVALID = 1,
+		SGF_MULTI = 2
+	}
+
 	// --------------------------------------------------
 	// ACTIONS
 	// --------------------------------------------------
@@ -18,11 +24,20 @@ extend class HDFollower
 		}
 	}
 
-	protected bool TrySetGoal(vector3 spawnPos, bool force = false)
+	protected bool TrySetGoal(vector3 spawnPos, int flags = 0)
 	{
 		Actor tg = Spawn('TargetGoal', spawnPos);
-		if (tg && tg.pos.z - tg.floorz <= MaxStepHeight - 8 && Distance2D(tg) < MaxGoalRange && CheckSight(tg) && (force || tg.TestMobjLocation() && level.IsPointInLevel(spawnPos) && !CheckProximity('HDFollower', 64, 1, CPXF_ANCESTOR)))
+		if (tg && tg.pos.z - tg.floorz <= MaxStepHeight - 8 && Distance2D(tg) < MaxGoalRange && CheckSight(tg) && (flags & SGF_IGNOREVALID || tg.TestMobjLocation() && level.IsPointInLevel(spawnPos) && !CheckProximity('HDFollower', 64, 1, CPXF_ANCESTOR)))
 		{
+
+			if (flags & SGF_MULTI)
+			{
+				int count = tg.CountProximity('TargetGoal', 64);
+				if (count > 0)
+				{
+					tg.SetOrigin((tg.Vec2Angle(radius * 2 * count, random(0, 359)), tg.pos.z), false);
+				}
+			}
 			ClearGoal(); // [Ace] Nuke old goal.
 			TGoal = tg;
 			return true;

@@ -1,14 +1,19 @@
-enum FOrder
-{
-	FOrder_Follow,
-	FOrder_FollowIgnore,
-	FOrder_Cover,
-	FOrder_GoAndCover,
-	FOrder_ComeAndHelp
-}
-
 extend class HDFollower
 {
+	enum FOrder
+	{
+		FOrder_Follow,
+		FOrder_FollowIgnore,
+		FOrder_Cover,
+		FOrder_GoAndCover,
+		FOrder_ComeAndHelp
+	}
+
+	enum ChangeOrderFlags
+	{
+		COF_MULTI = 1
+	}
+
 	// --------------------------------------------------
 	// ACTIONS
 	// --------------------------------------------------
@@ -21,7 +26,7 @@ extend class HDFollower
 		Status = FStatus_None;
 	}
 
-	bool ChangeOrders(FOrder newOrder)
+	bool ChangeOrders(FOrder newOrder, int flags = 0)
 	{
 		if (Status == FStatus_InactiveOrDead)
 		{
@@ -58,7 +63,7 @@ extend class HDFollower
 			case FOrder_GoAndCover:
 				FLineTraceData TraceData;
 				LinkedPlayer.LineTrace(LinkedPlayer.angle, MaxGoalRange * 2, LinkedPlayer.pitch, TRF_THRUACTORS, LinkedPlayer.Height - 8, data: TraceData);
-				if ((TraceData.HitType == TraceData.TRACE_HitFloor || TraceData.HitType == TraceData.TRACE_HitWall) && TrySetGoal(TraceData.HitLocation, true))
+				if ((TraceData.HitType == TraceData.TRACE_HitFloor || TraceData.HitType == TraceData.TRACE_HitWall) && TrySetGoal(TraceData.HitLocation, SGF_IGNOREVALID | (flags & COF_MULTI ? SGF_MULTI : 0)))
 				{
 					// [Ace] Drop whatever they're doing and haul ass to their destination.
 					HaulAss();

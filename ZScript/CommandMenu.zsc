@@ -28,7 +28,6 @@ extend class FollowerHandler
 		FMenu_Followers,
 		FMenu_Main,
 		FMenu_Orders,
-		FMenu_OrdersMulti,
 		FMenu_Inventory,
 		FMenu_Miscellaneous,
 		FMenu_ColorPicker
@@ -111,7 +110,13 @@ extend class FollowerHandler
 
 				case FMenu_Inventory:
 				{
-					HDFollower SFol = Selection[consoleplayer].GetLast();
+					int size = Selection[consoleplayer].SelFollowers.Size();
+					if (size > 1)
+					{
+						break;
+					}
+
+					HDFollower lastFol = Selection[consoleplayer].GetLast();
 					int maxSIndex = HDFollower.SlotCount - 1;
 					if (ArrowKeysHeld[consoleplayer] & HOLD_LEFT)
 					{
@@ -162,7 +167,7 @@ extend class FollowerHandler
 						}
 						else if (SlotFocused[consoleplayer] == 1)
 						{
-							UpdateValidItems(SFol);
+							UpdateValidItems(lastFol);
 							if (--PSlotIndex[consoleplayer] < 0)
 							{
 								PSlotIndex[consoleplayer] = ValidItems[consoleplayer].Items.Size() - 1;
@@ -180,7 +185,7 @@ extend class FollowerHandler
 						}
 						else if (SlotFocused[consoleplayer] == 1)
 						{
-							UpdateValidItems(SFol);
+							UpdateValidItems(lastFol);
 							if (++PSlotIndex[consoleplayer] == ValidItems[consoleplayer].Items.Size())
 							{
 								PSlotIndex[consoleplayer] = 0;
@@ -269,7 +274,9 @@ extend class FollowerHandler
 		vector2 OriginalPos = pos;
 		int RectangleHeight = MainFont.mFont.GetHeight() + 4;
 
-		HDFollower SFol = Selection[consoleplayer].GetLast();
+		// [Ace] This is still valid even when multiple followers are selected. In that case lastFol isn't really used.
+		HDFollower lastFol = Selection[consoleplayer].GetLast();
+		int selSize = Selection[consoleplayer].SelFollowers.Size();
 
 		switch (FollowerMenuLevel[consoleplayer])
 		{
@@ -350,15 +357,39 @@ extend class FollowerHandler
 
 			case FMenu_Main:
 			{
-				if (!SFol)
+				if (!lastFol)
 				{
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
 					return;
 				}
-				if (SFol.Health <= 0)
+
+				if (selSize > 1)
 				{
-					int RequiredSips = SFol.GetRequiredSips();
-					int RequiredBlood = SFol.GetRequiredBlood();
+					DrawRectangle(sb, pos, (160, RectangleHeight), MainFont, selSize.." followers", flags, Font.FindFontColor('FLW_NameBlue'));
+					pos.y += RectangleHeight + Spacing;
+
+					Array<string> Commands;
+					Commands.Push("Orders");
+					Commands.Push("Manage inventory");
+					Commands.Push("Misc commands");
+					if (Followers.Size() > 1)
+					{
+						Commands.Push("Back...");
+					}
+
+					for (int i = 0; i < Commands.Size(); ++i)
+					{
+						DrawRectangle(sb, pos, (160, RectangleHeight), MainFont, (i + 1)..") "..Commands[i], flags);
+						pos.y += RectangleHeight + Spacing;
+					}
+				}
+				else if (lastFol.Health <= 0)
+				{
+					DrawRectangle(sb, pos, (240, RectangleHeight), MainFont, GetTruncatedText(lastFol.GetDisplayName(), 25), flags, Font.FindFontColor('FLW_NameBlue'));
+					pos.y += RectangleHeight + Spacing;
+
+					int RequiredSips = lastFol.GetRequiredSips();
+					int RequiredBlood = lastFol.GetRequiredBlood();
 					string BloodDanger;
 					if (RequiredBlood < 10)
 					{
@@ -387,16 +418,16 @@ extend class FollowerHandler
 
 					Array<string> Commands;
 					Commands.Push("Carry follower");
-					if (SFol.ResurrectType & HDFollower.RESF_BLUES)
+					if (lastFol.ResurrectType & HDFollower.RESF_BLUES)
 					{
 						Commands.Push((sb.CheckInventory("BluePotion", 1) ? "" : "\c[Red]").."Give blue potion\c- ".."\c[Blue]("..RequiredSips.."/12)\c-");
 					}
-					if (SFol.ResurrectType & HDFollower.RESF_BLOOD)
+					if (lastFol.ResurrectType & HDFollower.RESF_BLOOD)
 					{
 						Commands.Push("Feed blood "..BloodDanger);
 					}
 					Commands.Push("Manage inventory");
-					if (SFol.bCANDISMISS)
+					if (lastFol.bCANDISMISS)
 					{
 						Commands.Push("\c[FLW_BloodRed]Dismiss\c-");
 					}
@@ -405,25 +436,37 @@ extend class FollowerHandler
 						Commands.Push("Back...");
 					}
 
-					DrawRectangle(sb, pos, (240, RectangleHeight), MainFont, GetTruncatedText(SFol.GetDisplayName(), 25), flags, Font.FindFontColor('FLW_NameBlue'));
-					pos.y += RectangleHeight + Spacing;
-
 					for (int i = 0; i < Commands.Size(); ++i)
 					{
 						DrawRectangle(sb, pos, (240, RectangleHeight), MainFont, (i + 1)..") "..Commands[i], flags);
 						pos.y += RectangleHeight + Spacing;
 					}
 				}
-				else if (SFol.bFRIENDLY)
+				else if (lastFol.bFRIENDLY)
 				{
+					int RectangleWidth = 160;
 					int Durability = 0;
 					bool Mega = false;
-					bool Waiting = SFol.Status == FStatus_WaitingForArmor;
-					let Armor = HDArmourWorn(SFol.FindInventory("HDArmourWorn"));
+					bool Waiting = lastFol.Status == FStatus_WaitingForArmor;
+					let Armor = HDArmourWorn(lastFol.FindInventory("HDArmourWorn"));
 					if (Armor)
 					{
 						Durability = Armor.Durability;
 						Mega = Armor.Mega;
+						if (!Waiting)
+						{
+							RectangleWidth += 40;
+						}
+					}
+
+					DrawRectangle(sb, pos, (RectangleWidth, RectangleHeight), MainFont, GetTruncatedText(lastFol.GetDisplayName(), RectangleWidth > 160 ? 24 : 20), flags, Font.FindFontColor('FLW_NameBlue'));
+					pos.y += RectangleHeight + Spacing;
+
+					if (Followers.Size() == 1 && lastFol.CanInteractWith(false))
+					{
+						double Dist = lastFol.Distance3D(lastFol.LinkedPlayer) / 42.0;
+						DrawRectangle(sb, pos, (RectangleWidth, RectangleHeight), MainFont, String.Format("%.2fm", Dist), flags, Font.CR_DARKGRAY);
+						pos.y += RectangleHeight + Spacing;
 					}
 
 					Array<string> Commands;
@@ -435,22 +478,6 @@ extend class FollowerHandler
 					if (Followers.Size() > 1)
 					{
 						Commands.Push("Back...");
-					}
-
-					int RectangleWidth = 160;
-					if (!Waiting && Durability > 0)
-					{
-						RectangleWidth += 40;
-					}
-
-					DrawRectangle(sb, pos, (RectangleWidth, RectangleHeight), MainFont, GetTruncatedText(SFol.GetDisplayName(), RectangleWidth > 160 ? 24 : 20), flags, Font.FindFontColor('FLW_NameBlue'));
-					pos.y += RectangleHeight + Spacing;
-					
-					if (Followers.Size() == 1 && SFol.CanInteractWith(false))
-					{
-						double Dist = SFol.Distance3D(SFol.LinkedPlayer) / 42.0;
-						DrawRectangle(sb, pos, (RectangleWidth, RectangleHeight), MainFont, String.Format("%.2fm", Dist), flags, Font.CR_DARKGRAY);
-						pos.y += RectangleHeight + Spacing;
 					}
 
 					for (int i = 0; i < Commands.Size(); ++i)
@@ -468,37 +495,26 @@ extend class FollowerHandler
 
 			case FMenu_Orders:
 			{
-				if (!SFol)
+				if (!lastFol)
 				{
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
 					return;
 				}
 				static const string Orders[] = { "Follow", "Follow and ignore hostiles", "Stay and provide cover", "Go there and provide cover", "Come and help me" };
 
-				DrawRectangle(sb, pos, (240, RectangleHeight), MainFont, GetTruncatedText(SFol.GetDisplayName(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
+				if (selSize > 1)
+				{
+					DrawRectangle(sb, pos, (240, RectangleHeight), MainFont, selSize.." followers", flags, Font.FindFontColor('FLW_NameBlue'));
+				}
+				else
+				{
+					DrawRectangle(sb, pos, (240, RectangleHeight), MainFont, GetTruncatedText(lastFol.GetDisplayName(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
+				}
 				pos.y += RectangleHeight + Spacing;
-				for (int i = 0; i < Orders.Size(); ++i)
-				{
-					DrawRectangle(sb, pos, (240, RectangleHeight), MainFont, (i + 1)..") "..(SFol.Order == i ? "\c[Green]" : "")..Orders[i].."\c-", flags);
-					pos.y += RectangleHeight + Spacing;
-				}
-				DrawRectangle(sb, pos, (240, RectangleHeight), MainFont, (Orders.Size() + 1)..") Back...", flags);
-				break;
-			}
-			case FMenu_OrdersMulti:
-			{
-				if (Followers.Size() == 0)
-				{
-					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
-					return;
-				}
-				static const string Orders[] = { "Follow", "Follow and ignore hostiles", "Stay and provide cover" };
 
-				DrawRectangle(sb, pos, (240, RectangleHeight), MainFont, Selection[consoleplayer].SelFollowers.Size().." followers selected", flags, Font.FindFontColor('FLW_NameBlue'));
-				pos.y += RectangleHeight + Spacing;
 				for (int i = 0; i < Orders.Size(); ++i)
 				{
-					DrawRectangle(sb, pos, (240, RectangleHeight), MainFont, (i + 1)..") "..Orders[i], flags);
+					DrawRectangle(sb, pos, (240, RectangleHeight), MainFont, (i + 1)..") "..(selSize == 1 && lastFol.Order == i ? "\c[Green]" : "")..Orders[i].."\c-", flags);
 					pos.y += RectangleHeight + Spacing;
 				}
 				DrawRectangle(sb, pos, (240, RectangleHeight), MainFont, (Orders.Size() + 1)..") Back...", flags);
@@ -511,60 +527,74 @@ extend class FollowerHandler
 
 			case FMenu_Inventory:
 			{
-				if (!SFol)
+				if (!lastFol)
 				{
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
 					return;
 				}
 
-				int RectangleWidth = InvColumns * SlotSize + (InvColumns - 1) + 2;
-
-				pos.y -= 120;
-				DrawRectangle(sb, pos, (RectangleWidth, RectangleHeight), MainFont, GetTruncatedText(SFol.GetDisplayName(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
+				int w = InvColumns * SlotSize + (InvColumns - 1) + 2;
+				
+				if (selSize > 1)
+				{
+					DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, selSize.." followers", flags, Font.FindFontColor('FLW_NameBlue'));
+				}
+				else
+				{
+					pos.y -= 120;
+					DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, GetTruncatedText(lastFol.GetDisplayName(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
+				}
 				pos.y += RectangleHeight + Spacing;
 
-				int wSize = SFol.Weapons.Size();
+				int wSize = lastFol.Weapons.Size();
 				if (wSize > 0)
 				{
 					SelWeaponIndex[consoleplayer] = min(SelWeaponIndex[consoleplayer], wSize - 1);
-					DrawWeaponRectangle(sb, pos, (RectangleWidth, RectangleHeight * 3), MainFont, flags, SFol, SFol.Weapons[SelWeaponIndex[consoleplayer]]);
+					DrawWeaponRectangle(sb, pos, (w, RectangleHeight * 3), MainFont, flags, lastFol, lastFol.Weapons[SelWeaponIndex[consoleplayer]]);
 					pos.y += RectangleHeight * 3 + Spacing;
 				}
 
-				int rows = int(ceil(HDFollower.SlotCount / double(InvColumns)));
-				int invRectHeight = Rows * SlotSize + (Rows - 1) + 2;
-				DrawFollowerInventory(sb, pos, (RectangleWidth, invRectHeight), MainFont, flags, SFol);
-
-				if (SlotFocused[consoleplayer] > 0)
+				if (selSize == 1)
 				{
-					DrawPlayerInventory(sb, pos + (RectangleWidth + 1, 0), (RectangleWidth, invRectHeight), MainFont, flags);
+					int rows = int(ceil(HDFollower.SlotCount / double(InvColumns)));
+					int invh = rows * SlotSize + (rows - 1) + 2;
+					DrawFollowerInventory(sb, pos, (w, invh), MainFont, flags, lastFol);
+
+					if (SlotFocused[consoleplayer] > 0)
+					{
+						DrawPlayerInventory(sb, pos + (w + 1, 0), (w, invh), MainFont, flags);
+					}
+					pos.y += invh;
 				}
 
-				DrawRectangle(sb, pos + (0, invRectHeight + 1), (RectangleWidth, RectangleHeight), MainFont, "0) Cancel/Back", flags);
+				DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, "0) Cancel/Back", flags);
 				pos.y += RectangleHeight + Spacing;
 
 				if (wSize > 0)
 				{
 					if (wSize > 1)
 					{
-						DrawRectangle(sb, pos + (0, invRectHeight + 1), (RectangleWidth, RectangleHeight), MainFont, String.Format("1-%i) Weapon 1-%i", wSize, wSize), flags);
+						DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, String.Format("1-%i) Weapon 1-%i", wSize, wSize), flags);
 						pos.y += RectangleHeight + Spacing;
 					}
 
-					if (SFol.CanInteractWith(false))
+					if (lastFol.CanInteractWith(false))
 					{
-						DrawRectangle(sb, pos + (0, invRectHeight + 1), (RectangleWidth, RectangleHeight), MainFont, "Spc) Reload", flags);
+						DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, "Spc) Reload", flags);
 						pos.y += RectangleHeight + Spacing;
 					}
 				}
 
-				DrawRectangle(sb, pos + (0, invRectHeight + 1), (RectangleWidth, RectangleHeight), MainFont, "Bsp) Take", flags); pos.y += RectangleHeight + Spacing;
-				DrawRectangle(sb, pos + (0, invRectHeight + 1), (RectangleWidth, RectangleHeight), MainFont, "Ent) Select/Give", flags); pos.y += RectangleHeight + Spacing;
-
-				if (wSize > 0)
+				if (selSize == 1)
 				{
-					bool Waiting = SFol.Status == FStatus_WaitingForWeapon;
-					DrawRectangle(sb, pos + (0, invRectHeight + 1), (RectangleWidth, RectangleHeight), MainFont, "P) "..(Waiting ? "Confirm/Cancel?" : "Pickup weapon"), flags); pos.y += RectangleHeight + Spacing;
+					DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, "Bsp) Take", flags); pos.y += RectangleHeight + Spacing;
+					DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, "Ent) Select/Give", flags); pos.y += RectangleHeight + Spacing;
+
+					if (wSize > 0)
+					{
+						bool Waiting = lastFol.Status == FStatus_WaitingForWeapon;
+						DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, "P) "..(Waiting ? "Confirm/Cancel?" : "Pickup weapon"), flags); pos.y += RectangleHeight + Spacing;
+					}
 				}
 				break;
 			}
@@ -575,26 +605,33 @@ extend class FollowerHandler
 
 			case FMenu_Miscellaneous:
 			{
-				if (!SFol)
+				if (!lastFol)
 				{
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
 					return;
 				}
 
+				if (selSize > 1)
+				{
+					DrawRectangle(sb, pos, (200, RectangleHeight), MainFont, selSize.." followers", flags, Font.FindFontColor('FLW_NameBlue'));
+				}
+				else
+				{
+					DrawRectangle(sb, pos, (200, RectangleHeight), MainFont, GetTruncatedText(lastFol.GetDisplayName(), 24), flags, Font.FindFontColor('FLW_NameBlue'));
+				}
+				pos.y += RectangleHeight + Spacing;
+
 				Array<string> Commands;
 				Commands.Push("Change color");
-				if (SFol.bCANDISMISS)
+				if (selSize == 1 && lastFol.bCANDISMISS)
 				{
 					Commands.Push("\c[FLW_BloodRed]Dismiss\c-");
 				}
 				Commands.Push("Back...");
 
-				DrawRectangle(sb, pos, (160, RectangleHeight), MainFont, GetTruncatedText(SFol.GetDisplayName(), 20), flags, Font.FindFontColor('FLW_NameBlue'));
-				pos.y += RectangleHeight + Spacing;
-
 				for (int i = 0; i < Commands.Size(); ++i)
 				{
-					DrawRectangle(sb, pos, (160, RectangleHeight), MainFont, (i + 1)..") "..Commands[i], flags);
+					DrawRectangle(sb, pos, (200, RectangleHeight), MainFont, (i + 1)..") "..Commands[i], flags);
 					pos.y += RectangleHeight + Spacing;
 				}
 				break;
@@ -606,7 +643,7 @@ extend class FollowerHandler
 
 			case FMenu_ColorPicker:
 			{
-				if (!SFol)
+				if (!lastFol)
 				{
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
 					return;
@@ -617,11 +654,17 @@ extend class FollowerHandler
 				double w = PickerColumns * ColSquareSize + (PickerColumns - 1) + 2;
 				double h = rows * ColSquareSize + (rows - 1) + 2;
 
-				DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, GetTruncatedText(SFol.GetDisplayName(), int(ceil(w / 8))), flags, Font.FindFontColor('FLW_NameBlue'));
+				if (selSize > 1)
+				{
+					DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, selSize.." followers", flags, Font.FindFontColor('FLW_NameBlue'));
+				}
+				else
+				{
+					DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, GetTruncatedText(lastFol.GetDisplayName(), int(ceil(w / 8))), flags, Font.FindFontColor('FLW_NameBlue'));
+				}
 				pos.y += RectangleHeight + Spacing;
 
 				sb.Fill(Color(64, 128, 192, 255), pos.x, pos.y, w, h, flags);
-				
 				for (int i = 0; i < tSize; ++i)
 				{
 					if (SelectedColorIndex[consoleplayer] == i)
@@ -940,21 +983,40 @@ extend class FollowerHandler
 
 				case FMenu_Main:
 				{
-					HDFollower SFol = Selection[consoleplayer].GetLast();
-					if (SFol.Health <= 0)
+					HDFollower lastFol = Selection[consoleplayer].GetLast();
+					int selSize = Selection[consoleplayer].SelFollowers.Size();
+
+					if (selSize > 1)
+					{
+						Array<FollowerCommand> Commands;
+						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Orders));
+						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Inventory));
+						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Miscellaneous));
+						if (Followers.Size() > 1)
+						{
+							Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Followers));
+						}
+						
+						if (NumKey > 0 && NumKey - 1 < Commands.Size())
+						{
+							FollowerCommand cmd = Commands[NumKey - 1];
+							SendNetworkEvent(cmd.EventName, cmd.Args[0], cmd.Args[1], cmd.Args[2]);
+						}
+					}
+					else if (lastFol.Health <= 0)
 					{
 						Array<FollowerCommand> Commands;
 						Commands.Push(CreateCommand("HDF_CarryFollower"));
-						if (SFol.ResurrectType & HDFollower.RESF_BLUES)
+						if (lastFol.ResurrectType & HDFollower.RESF_BLUES)
 						{
 							Commands.Push(CreateCommand("HDF_TryRevive", 0));
 						}
-						if (SFol.ResurrectType & HDFollower.RESF_BLOOD)
+						if (lastFol.ResurrectType & HDFollower.RESF_BLOOD)
 						{
 							Commands.Push(CreateCommand("HDF_TryRevive", 1));
 						}
 						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Inventory));
-						if (SFol.bCANDISMISS)
+						if (lastFol.bCANDISMISS)
 						{
 							Commands.Push(CreateCommand("HDF_DismissFollower"));
 						}
@@ -969,7 +1031,7 @@ extend class FollowerHandler
 							SendNetworkEvent(cmd.EventName, cmd.Args[0], cmd.Args[1], cmd.Args[2]);
 						}
 					}
-					else if (SFol.bFRIENDLY)
+					else if (lastFol.bFRIENDLY)
 					{
 						Array<FollowerCommand> Commands;
 						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Orders));
@@ -999,28 +1061,12 @@ extend class FollowerHandler
 				{
 					switch (NumKey)
 					{
-						case 1: SendNetworkEvent("HDF_ChangeOrders", FOrder_Follow); break;
-						case 2: SendNetworkEvent("HDF_ChangeOrders", FOrder_FollowIgnore); break;
-						case 3: SendNetworkEvent("HDF_ChangeOrders", FOrder_Cover); break;
-						case 4: SendNetworkEvent("HDF_ChangeOrders", FOrder_GoAndCover); break;
-						case 5: SendNetworkEvent("HDF_ChangeOrders", FOrder_ComeAndHelp); break;
+						case 1: SendNetworkEvent("HDF_ChangeOrders", HDFollower.FOrder_Follow); break;
+						case 2: SendNetworkEvent("HDF_ChangeOrders", HDFollower.FOrder_FollowIgnore); break;
+						case 3: SendNetworkEvent("HDF_ChangeOrders", HDFollower.FOrder_Cover); break;
+						case 4: SendNetworkEvent("HDF_ChangeOrders", HDFollower.FOrder_GoAndCover); break;
+						case 5: SendNetworkEvent("HDF_ChangeOrders", HDFollower.FOrder_ComeAndHelp); break;
 						case 6: SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Main); break;
-					}
-					break;
-				}
-
-				// --------------------------------------------------------------------------------
-				//
-				// --------------------------------------------------------------------------------
-
-				case FMenu_OrdersMulti:
-				{
-					switch (NumKey)
-					{
-						case 1: SendNetworkEvent("HDF_ChangeOrdersMulti", FOrder_Follow); break;
-						case 2: SendNetworkEvent("HDF_ChangeOrdersMulti", FOrder_FollowIgnore); break;
-						case 3: SendNetworkEvent("HDF_ChangeOrdersMulti", FOrder_Cover); break;
-						case 4: SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Followers); break;
 					}
 					break;
 				}
@@ -1031,12 +1077,14 @@ extend class FollowerHandler
 
 				case FMenu_Inventory:
 				{
-					HDFollower SFol = Selection[consoleplayer].GetLast();
+					HDFollower lastFol = Selection[consoleplayer].GetLast();
 					if (NumKey > 0 && NumKey < 10)
 					{
-						SelWeaponIndex[consoleplayer] = min(NumKey - 1, SFol.Weapons.Size() - 1);
+						SelWeaponIndex[consoleplayer] = min(NumKey - 1, lastFol.Weapons.Size() - 1);
 						ret = true;
 					}
+
+					int selSize = Selection[consoleplayer].SelFollowers.Size();
 
 					// [Ace] Navigation.
 					int maxSIndex = HDFollower.SlotCount - 1;
@@ -1050,16 +1098,20 @@ extend class FollowerHandler
 						}
 						case InputEvent.Key_Enter:
 						{
+							if (selSize > 1)
+							{
+								break;
+							}
 							if (SlotFocused[consoleplayer] == 0)
 							{
-								UpdateValidItems(SFol);
+								UpdateValidItems(lastFol);
 								SlotFocused[consoleplayer]++;
 								for (int i = 0; i < ValidItems[consoleplayer].Items.Size(); ++i)
 								{
 									class<HDAmmo> AType, MType; int MaxMag;
-									[AType, MType, MaxMag] = SFol.Weapons[SelWeaponIndex[consoleplayer]].GetAmmoType();
+									[AType, MType, MaxMag] = lastFol.Weapons[SelWeaponIndex[consoleplayer]].GetAmmoType();
 
-									InventorySlot selSlot = SFol.Slots[FSlotIndex[consoleplayer]];
+									InventorySlot selSlot = lastFol.Slots[FSlotIndex[consoleplayer]];
 									class<HDPickup> itemcls = ValidItems[consoleplayer].Items[i].GetClass();
 									if (SelSlot && SelSlot.ItemClass == itemcls || !SelSlot && itemcls == (MType ? MType : AType))
 									{
@@ -1092,7 +1144,7 @@ extend class FollowerHandler
 											SlotFocused[consoleplayer]++;
 										}
 									}
-									UpdateValidItems(SFol);
+									UpdateValidItems(lastFol);
 								}
 								else
 								{
@@ -1118,7 +1170,11 @@ extend class FollowerHandler
 						}
 						case InputEvent.Key_Backspace:
 						{
-							if (SFol.Slots[FSlotIndex[consoleplayer]] && SlotFocused[consoleplayer] < 2)
+							if (selSize > 1)
+							{
+								break;
+							}
+							if (lastFol.Slots[FSlotIndex[consoleplayer]] && SlotFocused[consoleplayer] < 2)
 							{
 								SendNetworkEvent("HDF_TakeInvItem", FSlotIndex[consoleplayer]);
 								ret = true;
@@ -1129,6 +1185,10 @@ extend class FollowerHandler
 
 					if (e.KeyChar == 80 || e.KeyChar == 112)
 					{
+						if (selSize > 1)
+						{
+							break;
+						}
 						SendNetworkEvent("HDF_TryWeapon");
 						ret = true;
 					}
@@ -1154,10 +1214,15 @@ extend class FollowerHandler
 
 				case FMenu_Miscellaneous:
 				{
-					Array<FollowerCommand> Commands;
+					HDFollower lastFol = Selection[consoleplayer].GetLast();
+					int selSize = Selection[consoleplayer].SelFollowers.Size();
 
+					Array<FollowerCommand> Commands;
 					Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_ColorPicker));
-					Commands.Push(CreateCommand("HDF_DismissFollower"));
+					if (selSize == 1 && lastFol.bCANDISMISS)
+					{
+						Commands.Push(CreateCommand("HDF_DismissFollower"));
+					}
 					Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Main));
 					
 					if (NumKey > 0 && NumKey - 1 < Commands.Size())
@@ -1393,15 +1458,15 @@ extend class FollowerHandler
 			return;
 		}
 
-		HDFollower SFol = Selection[e.Player].GetLast();
-		if (!SFol || !SFol.CanInteractWith())
+		HDFollower lastFol = Selection[e.Player].GetLast();
+		if (!lastFol || !lastFol.CanInteractWith())
 		{
 			return;
 		}
 
 		if (e.Name ~== "HDF_DismissFollower")
 		{
-			SFol.Dismiss();
+			lastFol.Dismiss();
 			CloseFollowerMenu(e.Player);
 			return;
 		}
@@ -1409,7 +1474,7 @@ extend class FollowerHandler
 		// [Ace] These commands cannot be used if alive and hostile.
 		if (e.Name ~== "HDF_CarryFollower")
 		{
-			if (SFol.PackFollower())
+			if (lastFol.PackFollower())
 			{
 				CloseFollowerMenu(e.Player);
 			}
@@ -1418,7 +1483,7 @@ extend class FollowerHandler
 
 		if (e.Name ~== "HDF_TryRevive")
 		{
-			if (SFol.TryRevive(e.Args[0]))
+			if (lastFol.TryRevive(e.Args[0]))
 			{
 				CloseFollowerMenu(e.Player);
 			}
@@ -1427,39 +1492,42 @@ extend class FollowerHandler
 
 		if (e.Name ~== "HDF_TryArmor")
 		{
-			SFol.TryUseArmor();
+			lastFol.TryUseArmor();
 			return;
 		}
 
 		if (e.Name ~== "HDF_TryWeapon")
 		{
-			SFol.TryUseWeapon();
+			lastFol.TryUseWeapon();
 			return;
 		}
 
 		if (e.Name ~== "HDF_ChangeOrders")
 		{
-			if (SFol.ChangeOrders(e.Args[0]))
+			int size = Selection[e.Player].SelFollowers.Size();
+			bool result = false;
+			for (int i = 0; i < size; ++i)
+			{
+				result = Selection[e.Player].SelFollowers[i].ChangeOrders(e.Args[0], size > 1 ? HDFollower.COF_MULTI : 0);
+			}
+			if (result || size > 1)
 			{
 				CloseFollowerMenu(e.Player);
 			}
 			return;
 		}
 
-		if (e.Name ~== "HDF_ChangeOrdersMulti")
+		if (e.Name ~== "HDF_TryReloadWeapon")
 		{
-			for (int i = 0; i < Selection[e.Player].SelFollowers.Size(); ++i)
+			for (int i = 0; i < Selection[consoleplayer].SelFollowers.Size(); ++i)
 			{
-				Selection[e.Player].SelFollowers[i].ChangeOrders(e.Args[0]);
+				let flw = Selection[consoleplayer].SelFollowers[i];
+				if (!flw.CanInteractWith(false) || flw.Weapons.Size() == 0)
+				{
+					continue;
+				}
+				flw.TryReloadWeapon(flw.Weapons[e.Args[0]], HDFollower.RLF_MANUAL);
 			}
-			CloseFollowerMenu(e.Player);
-			return;
-		}
-
-		if (e.Name ~== "HDF_TryReloadWeapon" && SFol.CanInteractWith(false) && SFol.Weapons.Size() > 0)
-		{
-			FollowerWeapon wpn = SFol.Weapons[e.Args[0]];
-			SFol.TryReloadWeapon(wpn, HDFollower.RLF_MANUAL);
 			return;
 		}
 
@@ -1470,7 +1538,7 @@ extend class FollowerHandler
 			HDMagAmmo item = HDMagAmmo(players[e.Player].mo.FindInventory(split[1]));
 			if (item)
 			{
-				SFol.AddMag(item, e.Args[0], e.Args[1]);
+				lastFol.AddMag(item, e.Args[0], e.Args[1]);
 			}
 			return;
 		}
@@ -1482,20 +1550,24 @@ extend class FollowerHandler
 			HDPickup item = HDPickup(players[e.Player].mo.FindInventory(split[1]));
 			if (item)
 			{
-				SFol.AddItem(item, e.Args[0], item.bMULTIPICKUP ? HDFollower.MaxLooseAmmoAmount : 1, e.Args[1]);
+				lastFol.AddItem(item, e.Args[0], item.bMULTIPICKUP ? HDFollower.MaxLooseAmmoAmount : 1, e.Args[1]);
 			}
 			return;
 		}
 
 		if (e.Name ~== "HDF_TakeInvItem")
 		{
-			SFol.TakeInvItem(SFol.Slots[e.Args[0]]);
+			lastFol.TakeInvItem(lastFol.Slots[e.Args[0]]);
 			return;
 		}
 
 		if (e.Name ~== "HDF_ChangeColor")
 		{
-			SFol.A_SetTranslation("FollowerTranslation"..e.Args[0]);
+			for (int i = 0; i < Selection[consoleplayer].SelFollowers.Size(); ++i)
+			{
+				let flw = Selection[consoleplayer].SelFollowers[i];
+				flw.A_SetTranslation("FollowerTranslation"..e.Args[0]);
+			}
 			return;
 		}
 	}
@@ -1595,14 +1667,14 @@ extend class FollowerHandler
 
 	private void ApplySelection(int plrNum)
 	{
-		int Size = Selection[plrNum].SelFollowers.Size();
-		if (Size == 0 || Modifiers[plrNum] != 0)
+		int size = Selection[plrNum].SelFollowers.Size();
+		if (size == 0 || Modifiers[plrNum] != 0)
 		{
 			return;
 		}
 
-		FollowerMenuLevel[plrNum] = Size > 1 ? FMenu_OrdersMulti : FMenu_Main;
-		for (int i = 0; i < Size; ++i)
+		FollowerMenuLevel[plrNum] = FMenu_Main;
+		for (int i = 0; i < size; ++i)
 		{
 			Selection[plrNum].SelFollowers[i].ChangeLinkedPlayer(HDPlayerPawn(players[plrNum].mo));
 		}

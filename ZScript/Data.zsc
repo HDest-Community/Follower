@@ -26,7 +26,7 @@ class FollowerData play
 	InventorySlot Slots[HDFollower.SlotCount];
 
 	int SuturesLeft;
-	FOrder Order;
+	int Order;
 
 	int ArmorDurability;
 	bool ArmorMega;
