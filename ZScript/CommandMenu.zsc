@@ -14,9 +14,10 @@ struct FollowerSelection
 	}
 }
 
-struct ValidItemsHolder
+struct UiDataHolder
 {
-	Array<HDPickup> Items;
+	Array<HDPickup> ValidItems;
+	int RepeatTics[4];
 }
 
 extend class FollowerHandler
@@ -49,11 +50,10 @@ extend class FollowerHandler
 	private transient FollowerSelection Selection[MAXPLAYERS];
 	private transient int Modifiers[MAXPLAYERS];
 
-	private transient ui int ArrowKeysHeld[MAXPLAYERS];
-	private transient ui int RepeatTics[MAXPLAYERS];
+	private transient ui UiDataHolder UiData[MAXPLAYERS];
 
+	private transient ui int ArrowKeysHeld[MAXPLAYERS];
 	private transient ui int SlotFocused[MAXPLAYERS];
-	private transient ui ValidItemsHolder ValidItems[MAXPLAYERS];
 	private transient ui int PSlotIndex[MAXPLAYERS];
 	private transient ui int PSlotSubIndex[MAXPLAYERS];
 	private transient ui int TransferAmount[MAXPLAYERS];
@@ -100,137 +100,130 @@ extend class FollowerHandler
 	{
 		Super.UiTick();
 
-		if (RepeatTics[consoleplayer] % 3 == 0)
+		switch (FollowerMenuLevel[consoleplayer])
 		{
-			switch (FollowerMenuLevel[consoleplayer])
+			// --------------------------------------------------------------------------------
+			//
+			// --------------------------------------------------------------------------------
+
+			case FMenu_Inventory:
 			{
-				// --------------------------------------------------------------------------------
-				//
-				// --------------------------------------------------------------------------------
-
-				case FMenu_Inventory:
+				int size = Selection[consoleplayer].SelFollowers.Size();
+				if (size > 1)
 				{
-					int size = Selection[consoleplayer].SelFollowers.Size();
-					if (size > 1)
-					{
-						break;
-					}
-
-					HDFollower lastFol = Selection[consoleplayer].GetLast();
-					int maxSIndex = HDFollower.SlotCount - 1;
-					if (ArrowKeysHeld[consoleplayer] & HOLD_LEFT)
-					{
-						if (SlotFocused[consoleplayer] == 0 && FSlotIndex[consoleplayer] % InvColumns > 0)
-						{
-							FSlotIndex[consoleplayer] = max(FSlotIndex[consoleplayer] - 1, 0);
-						}
-						else if (SlotFocused[consoleplayer] == 1)
-						{
-							if (--PSlotSubIndex[consoleplayer] < 0)
-							{
-								PSlotSubIndex[consoleplayer] = maxSIndex;
-							}
-						}
-						else if (SlotFocused[consoleplayer] == 2)
-						{
-							int amt = Modifiers[consoleplayer] & OpMod_Shift ? 20 : 2;
-							TransferAmount[consoleplayer] = clamp(TransferAmount[consoleplayer] - amt, 0, 1000);
-						}
-					}
-					if (ArrowKeysHeld[consoleplayer] & HOLD_RIGHT)
-					{
-						if (SlotFocused[consoleplayer] == 0 && FSlotIndex[consoleplayer] % InvColumns < InvColumns - 1)
-						{
-							FSlotIndex[consoleplayer] = min(FSlotIndex[consoleplayer] + 1, maxSIndex);
-						}
-						else if (SlotFocused[consoleplayer] == 1)
-						{
-							if (++PSlotSubIndex[consoleplayer] > maxSIndex)
-							{
-								PSlotSubIndex[consoleplayer] = 0;
-							}
-						}
-						else if (SlotFocused[consoleplayer] == 2)
-						{
-							int amt = Modifiers[consoleplayer] & OpMod_Shift ? 20 : 2;
-							TransferAmount[consoleplayer] = clamp(TransferAmount[consoleplayer] + amt, 0, 1000);
-						}
-					}
-					if (ArrowKeysHeld[consoleplayer] & HOLD_UP)
-					{
-						if (SlotFocused[consoleplayer] == 0)
-						{
-							if (FSlotIndex[consoleplayer] > InvColumns - 1)
-							{
-								FSlotIndex[consoleplayer] = max(FSlotIndex[consoleplayer] - InvColumns, 0);
-							}
-						}
-						else if (SlotFocused[consoleplayer] == 1)
-						{
-							UpdateValidItems(lastFol);
-							if (--PSlotIndex[consoleplayer] < 0)
-							{
-								PSlotIndex[consoleplayer] = ValidItems[consoleplayer].Items.Size() - 1;
-							}
-						}
-					}
-					if (ArrowKeysHeld[consoleplayer] & HOLD_DOWN)
-					{
-						if (SlotFocused[consoleplayer] == 0)
-						{
-							if (FSlotIndex[consoleplayer] < maxSIndex - (InvColumns - 1))
-							{
-								FSlotIndex[consoleplayer] = min(FSlotIndex[consoleplayer] + InvColumns, maxSIndex);
-							}
-						}
-						else if (SlotFocused[consoleplayer] == 1)
-						{
-							UpdateValidItems(lastFol);
-							if (++PSlotIndex[consoleplayer] == ValidItems[consoleplayer].Items.Size())
-							{
-								PSlotIndex[consoleplayer] = 0;
-							}
-						}
-					}
 					break;
 				}
 
-				// --------------------------------------------------------------------------------
-				//
-				// --------------------------------------------------------------------------------
-
-				case FMenu_ColorPicker:
+				HDFollower lastFol = Selection[consoleplayer].GetLast();
+				int maxSIndex = HDFollower.SlotCount - 1;
+				if (ArrowKeysHeld[consoleplayer] & HOLD_LEFT && UiData[consoleplayer].RepeatTics[0] % 3 == 0)
 				{
-					int maxIndex = TColors.Size() - 1;
-					if (ArrowKeysHeld[consoleplayer] & HOLD_LEFT && SelectedColorIndex[consoleplayer] % PickerColumns > 0)
+					if (SlotFocused[consoleplayer] == 0 && FSlotIndex[consoleplayer] % InvColumns > 0)
 					{
-						SelectedColorIndex[consoleplayer] = max(SelectedColorIndex[consoleplayer] - 1, 0);
+						FSlotIndex[consoleplayer] = max(FSlotIndex[consoleplayer] - 1, 0);
 					}
-					if (ArrowKeysHeld[consoleplayer] & HOLD_RIGHT && SelectedColorIndex[consoleplayer] % PickerColumns < PickerColumns - 1)
+					else if (SlotFocused[consoleplayer] == 1)
 					{
-						SelectedColorIndex[consoleplayer] = min(SelectedColorIndex[consoleplayer] + 1, maxIndex);
+						if (--PSlotSubIndex[consoleplayer] < 0)
+						{
+							PSlotSubIndex[consoleplayer] = maxSIndex;
+						}
 					}
-					if (ArrowKeysHeld[consoleplayer] & HOLD_UP && SelectedColorIndex[consoleplayer] > PickerColumns - 1)
+					else if (SlotFocused[consoleplayer] == 2)
 					{
-						SelectedColorIndex[consoleplayer] = max(SelectedColorIndex[consoleplayer] - PickerColumns, 0);
+						int amt = Modifiers[consoleplayer] & OpMod_Shift ? 20 : 2;
+						TransferAmount[consoleplayer] = clamp(TransferAmount[consoleplayer] - amt, 0, 1000);
 					}
-					if (ArrowKeysHeld[consoleplayer] & HOLD_DOWN)
-					{
-						SelectedColorIndex[consoleplayer] = min(SelectedColorIndex[consoleplayer] + PickerColumns, maxIndex);
-					}
-					break;
 				}
-			}	
+				if (ArrowKeysHeld[consoleplayer] & HOLD_RIGHT && UiData[consoleplayer].RepeatTics[1] % 3 == 0)
+				{
+					if (SlotFocused[consoleplayer] == 0 && FSlotIndex[consoleplayer] % InvColumns < InvColumns - 1)
+					{
+						FSlotIndex[consoleplayer] = min(FSlotIndex[consoleplayer] + 1, maxSIndex);
+					}
+					else if (SlotFocused[consoleplayer] == 1)
+					{
+						if (++PSlotSubIndex[consoleplayer] > maxSIndex)
+						{
+							PSlotSubIndex[consoleplayer] = 0;
+						}
+					}
+					else if (SlotFocused[consoleplayer] == 2)
+					{
+						int amt = Modifiers[consoleplayer] & OpMod_Shift ? 20 : 2;
+						TransferAmount[consoleplayer] = clamp(TransferAmount[consoleplayer] + amt, 0, 1000);
+					}
+				}
+				if (ArrowKeysHeld[consoleplayer] & HOLD_UP && UiData[consoleplayer].RepeatTics[2] % 3 == 0)
+				{
+					if (SlotFocused[consoleplayer] == 0)
+					{
+						if (FSlotIndex[consoleplayer] > InvColumns - 1)
+						{
+							FSlotIndex[consoleplayer] = max(FSlotIndex[consoleplayer] - InvColumns, 0);
+						}
+					}
+					else if (SlotFocused[consoleplayer] == 1)
+					{
+						UpdateValidItems(lastFol);
+						if (--PSlotIndex[consoleplayer] < 0)
+						{
+							PSlotIndex[consoleplayer] = UiData[consoleplayer].ValidItems.Size() - 1;
+						}
+					}
+				}
+				if (ArrowKeysHeld[consoleplayer] & HOLD_DOWN && UiData[consoleplayer].RepeatTics[3] % 3 == 0)
+				{
+					if (SlotFocused[consoleplayer] == 0)
+					{
+						if (FSlotIndex[consoleplayer] < maxSIndex - (InvColumns - 1))
+						{
+							FSlotIndex[consoleplayer] = min(FSlotIndex[consoleplayer] + InvColumns, maxSIndex);
+						}
+					}
+					else if (SlotFocused[consoleplayer] == 1)
+					{
+						UpdateValidItems(lastFol);
+						if (++PSlotIndex[consoleplayer] == UiData[consoleplayer].ValidItems.Size())
+						{
+							PSlotIndex[consoleplayer] = 0;
+						}
+					}
+				}
+				break;
+			}
+
+			// --------------------------------------------------------------------------------
+			//
+			// --------------------------------------------------------------------------------
+
+			case FMenu_ColorPicker:
+			{
+				int maxIndex = TColors.Size() - 1;
+				if (ArrowKeysHeld[consoleplayer] & HOLD_LEFT && SelectedColorIndex[consoleplayer] % PickerColumns > 0 && UiData[consoleplayer].RepeatTics[0] % 3 == 0)
+				{
+					SelectedColorIndex[consoleplayer] = max(SelectedColorIndex[consoleplayer] - 1, 0);
+				}
+				if (ArrowKeysHeld[consoleplayer] & HOLD_RIGHT && SelectedColorIndex[consoleplayer] % PickerColumns < PickerColumns - 1 && UiData[consoleplayer].RepeatTics[1] % 3 == 0)
+				{
+					SelectedColorIndex[consoleplayer] = min(SelectedColorIndex[consoleplayer] + 1, maxIndex);
+				}
+				if (ArrowKeysHeld[consoleplayer] & HOLD_UP && SelectedColorIndex[consoleplayer] > PickerColumns - 1 && UiData[consoleplayer].RepeatTics[2] % 3 == 0)
+				{
+					SelectedColorIndex[consoleplayer] = max(SelectedColorIndex[consoleplayer] - PickerColumns, 0);
+				}
+				if (ArrowKeysHeld[consoleplayer] & HOLD_DOWN && UiData[consoleplayer].RepeatTics[3] % 3 == 0)
+				{
+					SelectedColorIndex[consoleplayer] = min(SelectedColorIndex[consoleplayer] + PickerColumns, maxIndex);
+				}
+				break;
+			}
 		}
 
-		if (ArrowKeysHeld[consoleplayer] & HOLD_LEFT || ArrowKeysHeld[consoleplayer] & HOLD_RIGHT || ArrowKeysHeld[consoleplayer] & HOLD_UP || ArrowKeysHeld[consoleplayer] & HOLD_DOWN)
-		{
-			RepeatTics[consoleplayer]++;
-		}
-		else
-		{
-			RepeatTics[consoleplayer] = 0;
-		}
+		UiData[consoleplayer].RepeatTics[0] = ArrowKeysHeld[consoleplayer] & HOLD_LEFT ? UiData[consoleplayer].RepeatTics[0] + 1 : 0;
+		UiData[consoleplayer].RepeatTics[1] = ArrowKeysHeld[consoleplayer] & HOLD_RIGHT ? UiData[consoleplayer].RepeatTics[1] + 1 : 0;
+		UiData[consoleplayer].RepeatTics[2] = ArrowKeysHeld[consoleplayer] & HOLD_UP ? UiData[consoleplayer].RepeatTics[2] + 1 : 0;
+		UiData[consoleplayer].RepeatTics[3] = ArrowKeysHeld[consoleplayer] & HOLD_DOWN ? UiData[consoleplayer].RepeatTics[3] + 1 : 0;
 
 		if (FollowerMenuLevel[consoleplayer] != FMenu_Inventory)
 		{
@@ -250,11 +243,11 @@ extend class FollowerHandler
 			PSlotSubIndex[consoleplayer] = 0;
 		}
 
-		int size = ValidItems[consoleplayer].Items.Size();
+		int size = UiData[consoleplayer].ValidItems.Size();
 		PSlotIndex[consoleplayer] = clamp(PSlotIndex[consoleplayer], 0, size - 1);
-		if (size > 0 && !ValidItems[consoleplayer].Items[PSlotIndex[consoleplayer]])
+		if (size > 0 && !UiData[consoleplayer].ValidItems[PSlotIndex[consoleplayer]])
 		{
-			ValidItems[consoleplayer].Items.Delete(PSlotIndex[consoleplayer]);
+			UiData[consoleplayer].ValidItems.Delete(PSlotIndex[consoleplayer]);
 			if (SlotFocused[consoleplayer] == 2)
 			{
 				SlotFocused[consoleplayer] = 1;
@@ -796,8 +789,8 @@ extend class FollowerHandler
 			sb.Fill(Color(128, 0, 0, 0), pos.x + 2 + RealPos.x, pos.y + 2 + RealPos.y, SlotSize - 2, SlotSize - 2, flags);
 		}
 
-		int vSize = ValidItems[consoleplayer].Items.Size();
-		HDPickup item = vSize > 0 && PSlotIndex[consoleplayer] < vSize ? ValidItems[consoleplayer].Items[PSlotIndex[consoleplayer]] : null;
+		int vSize = UiData[consoleplayer].ValidItems.Size();
+		HDPickup item = vSize > 0 && PSlotIndex[consoleplayer] < vSize ? UiData[consoleplayer].ValidItems[PSlotIndex[consoleplayer]] : null;
 		if (!item)
 		{
 			return;
@@ -1112,13 +1105,13 @@ extend class FollowerHandler
 							{
 								UpdateValidItems(lastFol);
 								SlotFocused[consoleplayer]++;
-								for (int i = 0; i < ValidItems[consoleplayer].Items.Size(); ++i)
+								for (int i = 0; i < UiData[consoleplayer].ValidItems.Size(); ++i)
 								{
 									class<HDAmmo> AType, MType; int MaxMag;
 									[AType, MType, MaxMag] = lastFol.Weapons[SelWeaponIndex[consoleplayer]].GetAmmoType();
 
 									InventorySlot selSlot = lastFol.Slots[FSlotIndex[consoleplayer]];
-									class<HDPickup> itemcls = ValidItems[consoleplayer].Items[i].GetClass();
+									class<HDPickup> itemcls = UiData[consoleplayer].ValidItems[i].GetClass();
 									if (SelSlot && SelSlot.ItemClass == itemcls || !SelSlot && itemcls == (MType ? MType : AType))
 									{
 										PSlotIndex[consoleplayer] = i;
@@ -1128,10 +1121,10 @@ extend class FollowerHandler
 							}
 							else if (SlotFocused[consoleplayer] == 1)
 							{
-								int size = ValidItems[consoleplayer].Items.Size();
+								int size = UiData[consoleplayer].ValidItems.Size();
 								if (size > 0 && PSlotIndex[consoleplayer] < size)
 								{
-									HDPickup item = ValidItems[consoleplayer].Items[PSlotIndex[consoleplayer]];
+									HDPickup item = UiData[consoleplayer].ValidItems[PSlotIndex[consoleplayer]];
 									if (IsValidIndex(item, PSlotSubIndex[consoleplayer]))
 									{
 										if (item is 'HDMagAmmo' || !item.bMULTIPICKUP)
@@ -1159,10 +1152,10 @@ extend class FollowerHandler
 							}
 							else if (SlotFocused[consoleplayer] == 2)
 							{
-								int size = ValidItems[consoleplayer].Items.Size();
+								int size = UiData[consoleplayer].ValidItems.Size();
 								if (size > 0 && PSlotIndex[consoleplayer] < size)
 								{
-									HDPickup item = ValidItems[consoleplayer].Items[PSlotIndex[consoleplayer]];
+									HDPickup item = UiData[consoleplayer].ValidItems[PSlotIndex[consoleplayer]];
 									SendNetworkEvent('hdf_transferitem:'..item.GetClassName(), TransferAmount[consoleplayer], FSlotIndex[consoleplayer]);
 									SlotFocused[consoleplayer] = 0;
 								}
@@ -1597,14 +1590,14 @@ extend class FollowerHandler
 
 	private ui void UpdateValidItems(HDFollower flw)
 	{
-		ValidItems[consoleplayer].Items.Clear();
+		UiData[consoleplayer].ValidItems.Clear();
 		Actor plr = players[consoleplayer].mo;
 		for (Inventory Next = plr.Inv; Next; Next = Next.Inv)
 		{
 			HDPickup item = HDPickup(Next);
 			if (item && flw.IsValidItem(item.GetClass()))
 			{
-				ValidItems[consoleplayer].Items.Push(item);
+				UiData[consoleplayer].ValidItems.Push(item);
 			}
 		}
 	}
