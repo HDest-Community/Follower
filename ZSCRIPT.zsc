@@ -147,6 +147,19 @@ class HDFollower : HDMobMan abstract
 	{
 		Super.Tick();
 
+		// [Ace] It's possible for LinkedPlayer to become null if the attached player leaves the game. In that case, automatically assign it to the first non-null player.
+		if (!LinkedPlayer)
+		{
+			for (int i = 0; i < MAXPLAYERS; ++i)
+			{
+				if (players[i].mo)
+				{
+					ChangeLinkedPlayer(HDPlayerPawn(players[i].mo));
+					break;
+				}
+			}
+		}
+
 		if (!LinkedPlayer || bFRIENDLY && Health > 0 && LinkedPlayer.Health <= 0) // [Ace] If LinkedPlayer ever goes null, something is horribly wrong.
 		{
 			return;

@@ -350,7 +350,7 @@ extend class FollowerHandler
 
 			case FMenu_Main:
 			{
-				if (!lastFol)
+				if (!lastFol || lastFol.LinkedPlayer != players[consoleplayer].mo)
 				{
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
 					return;
@@ -488,7 +488,7 @@ extend class FollowerHandler
 
 			case FMenu_Orders:
 			{
-				if (!lastFol)
+				if (!lastFol || lastFol.LinkedPlayer != players[consoleplayer].mo)
 				{
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
 					return;
@@ -520,7 +520,7 @@ extend class FollowerHandler
 
 			case FMenu_Inventory:
 			{
-				if (!lastFol)
+				if (!lastFol || lastFol.LinkedPlayer != players[consoleplayer].mo)
 				{
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
 					return;
@@ -598,7 +598,7 @@ extend class FollowerHandler
 
 			case FMenu_Miscellaneous:
 			{
-				if (!lastFol)
+				if (!lastFol || lastFol.LinkedPlayer != players[consoleplayer].mo)
 				{
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
 					return;
@@ -636,7 +636,7 @@ extend class FollowerHandler
 
 			case FMenu_ColorPicker:
 			{
-				if (!lastFol)
+				if (!lastFol || lastFol.LinkedPlayer != players[consoleplayer].mo)
 				{
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
 					return;
