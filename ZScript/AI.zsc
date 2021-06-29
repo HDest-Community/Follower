@@ -17,7 +17,7 @@ extend class HDFollower
 	{
 		Actor Next = GetNextInChain();
 		bool CanSeeNext = CheckSight(Next, SF_SEEPASTSHOOTABLELINES);
-		if (!CanSeeNext && !TGoal && CanSeePlayer)
+		if (!CanSeeNext && (!TGoal || IsStuck()) && CanSeePlayer)
 		{
 			Next = LinkedPlayer;
 			CanSeeNext = true;
@@ -273,17 +273,17 @@ extend class HDFollower
 
 	private void TryActivateLine()
 	{
-		FLineTraceData LineData;
-		LineTrace(angle, 40, 0, 0, height - 8, data: LineData);
-		if (LineData.HitType == FLineTraceData.TRACE_HitWall)
+		FLineTraceData data;
+		LineTrace(angle, 40, 0, 0, height - 8, data: data);
+		if (data.HitType == FLineTraceData.TRACE_HitWall)
 		{
 			if (ActivateAsPlayer)
 			{
-				LineData.HitLine.Activate(LinkedPlayer, 0, SPAC_Use);
+				data.HitLine.Activate(LinkedPlayer, 0, SPAC_Use);
 			}
 			else
 			{
-				LineData.HitLine.Activate(self, 0, SPAC_Use);
+				data.HitLine.Activate(self, 0, SPAC_Use);
 			}
 		}
 		ActivateAsPlayer = false;
@@ -338,11 +338,26 @@ extend class HDFollower
 		return false;
 	}
 
+	bool IsStuck()
+	{
+		FLineTraceData data;
+		LineTrace(angle, radius + 5, 0, 0, height - 8, data: data);
+		return data.HitLine != null;
+	}
+
+	// --------------------------------------------------
+	// CONSTANTS
+	// --------------------------------------------------
+
 	const MinFollowRangeStop = 42 * 2.3; // [Ace] If following the player, stop if closer than this distance.
 	const MinFollowRange = 42 * 3;
 	const MaxFollowRange = 42 * 20;
 	const MaxWaitRange = 42 * 12;
 	const MaxSearchRange = 24; // [Ace] This is for the LookFor* stuff.
+
+	// --------------------------------------------------
+	// VARIABLES
+	// --------------------------------------------------
 
 	HDPlayerPawn LinkedPlayer;
 	protected Actor CTarget;
