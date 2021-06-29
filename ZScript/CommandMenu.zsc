@@ -2,6 +2,7 @@ class FollowerCommand ui
 {
 	string EventName;
 	int Args[3];
+	bool UseUiHandler;
 }
 
 struct FollowerSelection
@@ -44,6 +45,8 @@ extend class FollowerHandler
 	
 	private transient ui HUDFont MainFont;
 
+	// [Ace] Because this is the 5th time I've tried to convert these to UI scope: FUCKING DON'T.
+	// These are data/play scope because NetworkProcess needs to access them.
 	private transient int FollowerMenuLevel[MAXPLAYERS];
 	private transient int FollowerPage[MAXPLAYERS];
 	private transient HDMarine SelMarine[MAXPLAYERS];
@@ -59,6 +62,7 @@ extend class FollowerHandler
 	private transient ui int TransferAmount[MAXPLAYERS];
 	private transient ui int SelWeaponIndex[MAXPLAYERS];
 	private transient ui int FSlotIndex[MAXPLAYERS];
+	private transient ui bool Confirmation[MAXPLAYERS];
 
 	private transient ui int SelectedColorIndex[MAXPLAYERS];
 
@@ -231,6 +235,22 @@ extend class FollowerHandler
 			FSlotIndex[consoleplayer] = 0;
 			PSlotIndex[consoleplayer] = 0;
 			PSlotSubIndex[consoleplayer] = 0;
+		}
+
+		if (Confirmation[consoleplayer])
+		{
+			if (FollowerMenuLevel[consoleplayer] == FMenu_Closed)
+			{
+				Confirmation[consoleplayer] = false;
+			}
+			else
+			{
+				HDFollower lastFol = Selection[consoleplayer].GetLast();
+				if (lastFol.Health > 0 && FollowerMenuLevel[consoleplayer] != FMenu_Miscellaneous || lastFol.Health <= 0 && FollowerMenuLevel[consoleplayer] != FMenu_Main)
+				{
+					Confirmation[consoleplayer] = false;
+				}
+			}
 		}
 
 		if (SlotFocused[consoleplayer] < 2)
@@ -422,7 +442,7 @@ extend class FollowerHandler
 					Commands.Push("Manage inventory");
 					if (lastFol.bCANDISMISS)
 					{
-						Commands.Push("\c[FLW_BloodRed]Dismiss\c-");
+						Commands.Push("\c[FLW_BloodRed]"..(Confirmation[consoleplayer] ? "Confirm?" : "Dismiss").."\c-");
 					}
 					if (Followers.Size() > 1)
 					{
@@ -618,7 +638,7 @@ extend class FollowerHandler
 				Commands.Push("Change color");
 				if (selSize == 1 && lastFol.bCANDISMISS)
 				{
-					Commands.Push("\c[FLW_BloodRed]Dismiss\c-");
+					Commands.Push("\c[FLW_BloodRed]"..(Confirmation[consoleplayer] ? "Confirm?" : "Dismiss").."\c-");
 				}
 				Commands.Push("Back...");
 
@@ -1017,7 +1037,14 @@ extend class FollowerHandler
 						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Inventory));
 						if (lastFol.bCANDISMISS)
 						{
-							Commands.Push(CreateCommand("HDF_DismissFollower"));
+							if (Confirmation[consoleplayer])
+							{
+								Commands.Push(CreateCommand("HDF_DismissFollower"));
+							}
+							else
+							{
+								Confirmation[consoleplayer] = true;
+							}
 						}
 						if (Followers.Size() > 1)
 						{
@@ -1220,14 +1247,28 @@ extend class FollowerHandler
 					Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_ColorPicker));
 					if (selSize == 1 && lastFol.bCANDISMISS)
 					{
-						Commands.Push(CreateCommand("HDF_DismissFollower"));
+						if (Confirmation[consoleplayer])
+						{
+							Commands.Push(CreateCommand("HDF_DismissFollower"));
+						}
+						else
+						{
+							Commands.Push(CreateCommand("HDF_ToggleConfirmation", true, useUiHandler: true));
+						}
 					}
 					Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Main));
 					
 					if (NumKey > 0 && NumKey - 1 < Commands.Size())
 					{
 						FollowerCommand cmd = Commands[NumKey - 1];
-						SendNetworkEvent(cmd.EventName, cmd.Args[0], cmd.Args[1], cmd.Args[2]);
+						if (cmd.UseUiHandler)
+						{
+							HandleUiCommand(cmd);
+						}
+						else
+						{
+							SendNetworkEvent(cmd.EventName, cmd.Args[0], cmd.Args[1], cmd.Args[2]);
+						}
 						ret = true;
 					}
 					break;
@@ -1276,6 +1317,21 @@ extend class FollowerHandler
 			}
 		}
 		return ret;
+	}
+
+	// ----------------------------------------------------------------------
+	//
+	// UI COMMAND HANDLER
+	//
+	// ----------------------------------------------------------------------
+
+	private ui void HandleUiCommand(FollowerCommand cmd)
+	{
+		if (cmd.EventName ~== "HDF_ToggleConfirmation")
+		{
+			Confirmation[consoleplayer] = cmd.Args[0];
+			return;
+		}
 	}
 
 	// ----------------------------------------------------------------------
@@ -1578,13 +1634,14 @@ extend class FollowerHandler
 	// ----------------------------------------------------------------------
 
 	// [Ace] The only reason this is used is to allow dynamic menus with a variable number of options. That's literally the only reason.
-	private ui FollowerCommand CreateCommand(string evName, int arg1 = 0, int arg2 = 0, int arg3 = 0)
+	private ui FollowerCommand CreateCommand(string evName, int arg1 = 0, int arg2 = 0, int arg3 = 0, bool useUiHandler = false)
 	{
 		let Command = new('FollowerCommand');
 		Command.EventName = evName;
 		Command.Args[0] = arg1;
 		Command.Args[1] = arg2;
 		Command.Args[2] = arg3;
+		Command.UseUiHandler = useUiHandler;
 		return Command;
 	}
 
