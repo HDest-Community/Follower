@@ -33,7 +33,7 @@ version "4.6"
 // [Ace] Needs to be last or else it messes with the Enabled check in the creation loop in FollowerHandler::WorldLoaded().
 #include "ZScript/Followers/RecruitedMarine.zsc"
 
-class HDFollower : HDMobMan abstract
+class HDFollower : HDHumanoid abstract
 {
 	enum PrintMessageType
 	{
