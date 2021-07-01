@@ -51,26 +51,22 @@ extend class HDFollower
 
 	clearscope bool CanApplyStim()
 	{
-		let plr = HDPlayerPawn(LinkedPlayer);
-		return plr.stimcount < 4 && GetAmount('PortableStimpack') > 0 && plr.regenblues <= 2 && plr.Health < 30; // [Ace] Don't stim player unless it's necessary.
+		return LinkedPlayer && LinkedPlayer.stimcount < 4 && GetAmount('PortableStimpack') > 0 && LinkedPlayer.regenblues <= 2 && LinkedPlayer.Health < 30; // [Ace] Don't stim player unless it's necessary.
 	}
 
 	clearscope bool PlayerHasWounds()
 	{
-		let plr = HDPlayerPawn(LinkedPlayer);
-		return plr && (plr.woundcount > 0 || plr.unstablewoundcount > 0);
+		return LinkedPlayer && (LinkedPlayer.woundcount > 0 || LinkedPlayer.unstablewoundcount > 0);
 	}
 
 	clearscope bool PlayerIsIncapped()
 	{
-		let plr = HDPlayerPawn(LinkedPlayer);
-		return plr && plr.incapacitated >= 20 && (plr.incaptimer > MinIncap || plr.Health < 15); // [Ace] Player can't get up if lying on the floor at < 15 health, even if timer is 0.
+		return LinkedPlayer && LinkedPlayer.incapacitated >= 20 && (LinkedPlayer.incaptimer > MinIncap || LinkedPlayer.Health < 15); // [Ace] Player can't get up if lying on the floor at < 15 health, even if timer is 0.
 	}
 
 	clearscope bool PlayerNeedsMedic()
 	{
-		let plr = HDPlayerPawn(LinkedPlayer);
-		return plr && plr.Health > 2 && PlayerIsIncapped() && (PlayerHasWounds() && (GetAmount('PortableMedikit') > 0 || SuturesLeft > 0) || CanApplyStim());
+		return LinkedPlayer && LinkedPlayer.Health > 2 && PlayerIsIncapped() && (PlayerHasWounds() && (GetAmount('PortableMedikit') > 0 || SuturesLeft > 0) || CanApplyStim());
 	}
 	
 	clearscope bool IsHelpingPlayer()
@@ -119,15 +115,14 @@ extend class HDFollower
 					return;
 				}
 
-				let plr = HDPlayerPawn(LinkedPlayer);
-				if (plr.incaptimer > MinIncap)
+				if (LinkedPlayer.incaptimer > MinIncap)
 				{
-					A_Face(plr);
+					A_Face(LinkedPlayer);
 					if (!random(0, 4))
 					{
-						plr.A_StartSound("weapons/pocket", 20, CHANF_NOSTOP);
+						LinkedPlayer.A_StartSound("weapons/pocket", 20, CHANF_NOSTOP);
 					}
-					plr.incaptimer -= 6;
+					LinkedPlayer.incaptimer -= 6;
 				}
 			}
 			Loop;
@@ -159,18 +154,17 @@ extend class HDFollower
 			}
 			#### LLLLL 3
 			{
-				let plr = HDPlayerPawn(LinkedPlayer);
 				A_StartSound("medikit/staple", CHAN_WEAPON);
-				A_Face(plr);
+				A_Face(LinkedPlayer);
 
-				plr.A_StartSound("misc/smallslop", CHAN_BODY, CHANF_OVERLAP);
+				LinkedPlayer.A_StartSound("misc/smallslop", CHAN_BODY, CHANF_OVERLAP);
 				if(!random(0, 6))
 				{
 					SetStateLabel('PatchUpEnd');
 				}
-				plr.GiveBody(1);
-				plr.DamageMobj(invoker, null, 1, 'staples', DMG_FORCED);
-				HDPlayerPawn(plr).secondflesh++;
+				LinkedPlayer.GiveBody(1);
+				LinkedPlayer.DamageMobj(invoker, null, 1, 'staples', DMG_FORCED);
+				LinkedPlayer.secondflesh++;
 			}
 		PatchUpEnd:
 			#### J 10
@@ -183,16 +177,15 @@ extend class HDFollower
 			#### J 25 A_Face(LinkedPlayer);
 			#### J 20
 			{
-				let plr = HDPlayerPawn(LinkedPlayer);
-				A_Face(plr);
-				plr.A_SetBlend("7a 3a 18", 0.1, 4);
-				plr.A_SetPitch(pitch + 2, SPF_INTERPOLATE);
-				plr.A_StartSound(plr.medsound, CHAN_VOICE);
-				plr.A_StartSound("misc/bulletflesh", CHAN_WEAPON);
+				A_Face(LinkedPlayer);
+				LinkedPlayer.A_SetBlend("7a 3a 18", 0.1, 4);
+				LinkedPlayer.A_SetPitch(pitch + 2, SPF_INTERPOLATE);
+				LinkedPlayer.A_StartSound(LinkedPlayer.medsound, CHAN_VOICE);
+				LinkedPlayer.A_StartSound("misc/bulletflesh", CHAN_WEAPON);
 
 				Actor a = Spawn("InjectStimDummy", pos, ALLOW_REPLACE);
 				a.Accuracy = 40;
-				a.target = plr;
+				a.target = LinkedPlayer;
 
 				Actor b = Spawn("SpentStim", pos + (0, 0, height - 8), ALLOW_REPLACE);
 				b.A_ChangeVelocity(3, 1, 2, CVF_RELATIVE);
