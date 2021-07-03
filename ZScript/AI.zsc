@@ -9,18 +9,25 @@ enum FStatus
 
 extend class HDFollower
 {
+	enum BlockedSide
+	{
+		BSide_Left = 1,
+		BSide_Right = 2
+	}
 	// --------------------------------------------------
 	// ACTIONS
 	// --------------------------------------------------
 
 	private void AiThink()
 	{
-		Actor Next = GetNextInChain();
-		bool CanSeeNext = CheckSight(Next, SF_SEEPASTSHOOTABLELINES);
-		if (!CanSeeNext && (!TGoal || IsStuck()) && CanSeePlayer)
+		int blockedSides = GetBlockedSides();
+
+		Actor next = GetNextInChain();
+		bool canSeeNext = CheckSight(next, SF_SEEPASTSHOOTABLELINES);
+		if (!canSeeNext && (!TGoal || (blockedSides & (BSide_Left | BSide_Right))) && CanSeePlayer)
 		{
-			Next = LinkedPlayer;
-			CanSeeNext = true;
+			next = LinkedPlayer;
+			canSeeNext = true;
 		}
 
 		if (hdf_debug == 3)
@@ -28,15 +35,15 @@ extend class HDFollower
 			Console.Printf("Follower "..GetDisplayName().." has %s out.\nCurrent status is %i.\nFollower is targeting %s. Follower following %s.\n--------------------",
 				SelWeapon ? SelWeapon.GetName() : "no weapon",
 				Status, CTarget ? CTarget.GetTag() : "nothing",
-				Next is 'HDFollower' ? HDFollower(Next).GetDisplayName() : (Next ? Next.GetTag() : "nothing"));
+				next is 'HDFollower' ? HDFollower(next).GetDisplayName() : (next ? next.GetTag() : "nothing"));
 		}
 
-		PNeedsHelp = PlayerIsIncapped(); // [Ace] You're just incapped.
-		PNeedsMedic = PlayerNeedsMedic(); // [Ace] You're bleeding and incapped.
-		bool IsHelping = IsHelpingPlayer();
-		int FFCount = Handler.FollowingFollowersCount();
-		int FIndex = Handler.Followers.Find(self);
-		double DistDiv = Next != LinkedPlayer ? 1.0 + 0.13 * (min(8, FFCount - 1)) : 1.0;
+		pNeedsHelp = PlayerIsIncapped(); // [Ace] You're just incapped.
+		pNeedsMedic = PlayerNeedsMedic(); // [Ace] You're bleeding and incapped.
+		bool isHelping = IsHelpingPlayer();
+		int ffcount = Handler.FollowingFollowersCount();
+		int findex = Handler.Followers.Find(self);
+		double distDiv = next != LinkedPlayer ? 1.0 + 0.13 * (min(8, ffcount - 1)) : 1.0;
 		
 		if (Status != FStatus_InCombat)
 		{
@@ -49,7 +56,7 @@ extend class HDFollower
 				ClearTarget();
 			}
 
-			if (!IsHelping)
+			if (!isHelping)
 			{
 				if (!Moving && !IsInIdleState())
 				{
@@ -86,13 +93,13 @@ extend class HDFollower
 			{
 				if (Order == FOrder_ComeAndHelp && bFRIENDLY && DistanceToPlayer < 512 && CanSeePlayer)
 				{
-					if (DistanceToPlayer < MedicRange && !IsHelping) // [Ace] Start stapling if close enough. Minimum distance is 22. Don't go any lower or follower will be stuck walking towards you.
+					if (DistanceToPlayer < MedicRange && !isHelping) // [Ace] Start stapling if close enough. Minimum distance is 22. Don't go any lower or follower will be stuck walking towards you.
 					{
-						if (PNeedsMedic)
+						if (pNeedsMedic)
 						{
 							SetStateLabel('StapleHumptyDumptyBackTogetherAgain');
 						}
-						else if (PNeedsHelp)
+						else if (pNeedsHelp)
 						{
 							SetStateLabel('PullYouUp');
 						}
@@ -108,18 +115,18 @@ extend class HDFollower
 				}
 				else if (Order < FOrder_Cover)
 				{
-					if (CanSeeNext)
+					if (canSeeNext)
 					{
-						LastKnownPos = Next.Pos;
+						LastKnownPos = next.Pos;
 					}
 
 					// [Ace] Go to goal if they're too far away.
-					double DistanceToNext = Distance3D(Next);
-					if (bFRIENDLY && DistanceToNext > MinFollowRange / DistDiv && DistanceToNext < MaxFollowRange)
+					double DistanceToNext = Distance3D(next);
+					if (bFRIENDLY && DistanceToNext > MinFollowRange / distDiv && DistanceToNext < MaxFollowRange)
 					{
-						if (CanSeeNext)
+						if (canSeeNext)
 						{
-							TGoal = Next;
+							TGoal = next;
 						}
 						// [Ace] If following the player and the player is nearby but suddenly goes around a corner, try to go around the same corner.
 						else if (LastKnownPos != (0, 0, 0) && (!TGoal || TGoal && TGoal.pos != LastKnownPos))
@@ -179,10 +186,10 @@ extend class HDFollower
 		}
 
 		// [Ace] Movement. Always travel to goals if there are any. Status between moving and idle should not be set elsewhere.
-		if (Status == FStatus_None && TGoal && (TGoal is Next.GetClass() && Distance2D(TGoal) > (Order == FOrder_ComeAndHelp && (PNeedsMedic || PNeedsHelp) ? MedicRange : (MinFollowRangeStop / DistDiv)) || TGoal is "TargetGoal" && Distance2D(TGoal) > 16) && Distance2D(TGoal) < MaxGoalRange)
+		if (Status == FStatus_None && TGoal && (TGoal is next.GetClass() && Distance2D(TGoal) > (Order == FOrder_ComeAndHelp && (pNeedsMedic || pNeedsHelp) ? MedicRange : (MinFollowRangeStop / distDiv)) || TGoal is "TargetGoal" && Distance2D(TGoal) > 16) && Distance2D(TGoal) < MaxGoalRange)
 		{
 			// [Ace] Don't slow down if player is bleeding out their ass or needs help getting up.
-			if (TGoal is "PlayerPawn" && Order == FOrder_ComeAndHelp && (PNeedsMedic || PNeedsHelp))
+			if (TGoal is "PlayerPawn" && Order == FOrder_ComeAndHelp && (pNeedsMedic || pNeedsHelp))
 			{
 				if (tics == 2)
 				{
@@ -203,14 +210,14 @@ extend class HDFollower
 					{
 						tics = 1;
 					}
-					MovementSpeed = min(default.MovementSpeed + Distance2D(TGoal) / (84 - 7 * min(FFCount - 1, 6)), MaxMovementSpeed);
+					MovementSpeed = min(default.MovementSpeed + Distance2D(TGoal) / (84 - 7 * min(ffcount - 1, 6)), MaxMovementSpeed);
 				}
 			}
 
 			// [Ace] Same as the corner thing from above but does it if the follower is moving.
-			if (TGoal == Next)
+			if (TGoal == next)
 			{
-				if (CanSeeNext)
+				if (canSeeNext)
 				{
 					LastKnownPos = TGoal.Pos;
 					A_Face(TGoal, 0, 0);
@@ -227,13 +234,22 @@ extend class HDFollower
 
 			ResetIdleTimer();
 
-			A_ChangeVelocity(MovementSpeed, 0, vel.z, CVF_RELATIVE | CVF_REPLACE);
+			int sideVel = 0;
+			if (!(blockedSides & BSide_Left) && blockedSides & BSide_Right)
+			{
+				sideVel = 1;
+			}
+			if (blockedSides & BSide_Left && !(blockedSides & BSide_Right))
+			{
+				sideVel = -1;
+			}
+			A_ChangeVelocity(MovementSpeed, MovementSpeed * sideVel, vel.z, CVF_RELATIVE | CVF_REPLACE);
 			Moving = true;
 
 			// [Ace] Ascend/descend ladders.
-			bool NearLadder = CheckProximity('hdladdertop', radius + 32) || CheckProximity('hdladderbottom', radius + 32);
+			bool nearLadder = CheckProximity('hdladdertop', radius + 32) || CheckProximity('hdladderbottom', radius + 32);
 			MaxDropOffHeight = default.MaxDropOffHeight + (NearLadder ? LADDER_MAX : 0);
-			bFLOORHUGGER = NearLadder;
+			bFLOORHUGGER = nearLadder;
 
 			// [Ace] Stop trying to reach goal shortly after losing LOS.
 			if (!CheckSight(TGoal, SF_SEEPASTSHOOTABLELINES) && ++NoSightTics == 35 * 3)
@@ -295,8 +311,8 @@ extend class HDFollower
 	
 	private Actor GetNextInChain()
 	{
-		int FIndex = Handler.Followers.Find(self);
-		for (int i = FIndex - 1; i >= 0; --i)
+		int findex = Handler.Followers.Find(self);
+		for (int i = findex - 1; i >= 0; --i)
 		{
 			HDFollower flw = Handler.Followers[i];
 			if (flw.Status != FStatus_InactiveOrDead && flw.bFRIENDLY && (flw.Order == FOrder_Follow || flw.Order == FOrder_FollowIgnore) && flw.LinkedPlayer == LinkedPlayer && Distance3D(flw) < MaxFollowRange)
@@ -338,15 +354,23 @@ extend class HDFollower
 		return false;
 	}
 
-	bool IsStuck()
+	int GetBlockedSides()
 	{
-		bool hitLeft, hitRight;
+		int sides = 0;
 		FLineTraceData data;
-		LineTrace(angle - 25, radius + 5, 0, 0, height - 8, data: data);
-		hitLeft = data.HitLine != null;
-		LineTrace(angle + 25, radius + 5, 0, 0, height - 8, data: data);
-		hitRight = data.HitLine != null;
-		return hitleft && hitRight;
+
+		LineTrace(angle, radius + 5, 0, TRF_THRUACTORS, height / 4, 0, -radius, data);
+		if (data.HitLine)
+		{
+			sides |= BSide_Left;
+		}
+		LineTrace(angle, radius + 5, 0, TRF_THRUACTORS, height / 4, 0, radius, data);
+		if (data.HitLine)
+		{
+			sides |= BSide_Right;
+		}
+		
+		return sides;
 	}
 
 	// --------------------------------------------------
@@ -380,7 +404,7 @@ extend class HDFollower
 
 	private bool CanSeePlayer;
 	private double DistanceToPlayer;
-	private bool PNeedsHelp;
-	private bool PNeedsMedic;
+	private bool pNeedsHelp;
+	private bool pNeedsMedic;
 	private double CrouchFactor;
 }
