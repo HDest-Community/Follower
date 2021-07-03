@@ -36,7 +36,7 @@ extend class HDFollower
 		bool IsHelping = IsHelpingPlayer();
 		int FFCount = Handler.FollowingFollowersCount();
 		int FIndex = Handler.Followers.Find(self);
-		double DistDiv = Next != LinkedPlayer ? 1.0 + 0.1 * (min(8, FFCount - 1)) : 1.0;
+		double DistDiv = Next != LinkedPlayer ? 1.0 + 0.13 * (min(8, FFCount - 1)) : 1.0;
 		
 		if (Status != FStatus_InCombat)
 		{
@@ -340,9 +340,13 @@ extend class HDFollower
 
 	bool IsStuck()
 	{
+		bool hitLeft, hitRight;
 		FLineTraceData data;
-		LineTrace(angle, radius + 5, 0, 0, height - 8, data: data);
-		return data.HitLine != null;
+		LineTrace(angle - 25, radius + 5, 0, 0, height - 8, data: data);
+		hitLeft = data.HitLine != null;
+		LineTrace(angle + 25, radius + 5, 0, 0, height - 8, data: data);
+		hitRight = data.HitLine != null;
+		return hitleft && hitRight;
 	}
 
 	// --------------------------------------------------
