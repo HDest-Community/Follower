@@ -919,15 +919,13 @@ extend class FollowerHandler
 				NumKey = 10;
 			}
 
+			Array<FollowerCommand> Commands;
 			switch (FollowerMenuLevel[consoleplayer])
 			{
 				case FMenu_Recruitment:
 				{
-					switch (NumKey)
-					{
-						case 1: SendNetworkEvent("HDF_ConfirmRecruitment"); break;
-						case 2: SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed); break;
-					}
+					Commands.Push(CreateCommand("HDF_ConfirmRecruitment"));
+					Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Closed));
 					break;
 				}
 
@@ -1007,7 +1005,6 @@ extend class FollowerHandler
 
 					if (selSize > 1)
 					{
-						Array<FollowerCommand> Commands;
 						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Orders));
 						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Inventory));
 						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Miscellaneous));
@@ -1024,7 +1021,6 @@ extend class FollowerHandler
 					}
 					else if (lastFol.Health <= 0)
 					{
-						Array<FollowerCommand> Commands;
 						Commands.Push(CreateCommand("HDF_CarryFollower"));
 						if (lastFol.ResurrectType & HDFollower.RESF_BLUES)
 						{
@@ -1043,23 +1039,16 @@ extend class FollowerHandler
 							}
 							else
 							{
-								Confirmation[consoleplayer] = true;
+								Commands.Push(CreateCommand("HDF_ToggleConfirmation", true, useUiHandler: true));
 							}
 						}
 						if (Followers.Size() > 1)
 						{
 							Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Followers));
 						}
-
-						if (NumKey > 0 && NumKey - 1 < Commands.Size())
-						{
-							FollowerCommand cmd = Commands[NumKey - 1];
-							SendNetworkEvent(cmd.EventName, cmd.Args[0], cmd.Args[1], cmd.Args[2]);
-						}
 					}
 					else if (lastFol.bFRIENDLY)
 					{
-						Array<FollowerCommand> Commands;
 						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Orders));
 						Commands.Push(CreateCommand("HDF_CarryFollower"));
 						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Inventory));
@@ -1068,12 +1057,6 @@ extend class FollowerHandler
 						if (Followers.Size() > 1)
 						{
 							Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Followers));
-						}
-						
-						if (NumKey > 0 && NumKey - 1 < Commands.Size())
-						{
-							FollowerCommand cmd = Commands[NumKey - 1];
-							SendNetworkEvent(cmd.EventName, cmd.Args[0], cmd.Args[1], cmd.Args[2]);
 						}
 					}
 					break;
@@ -1085,15 +1068,12 @@ extend class FollowerHandler
 					
 				case FMenu_Orders:
 				{
-					switch (NumKey)
-					{
-						case 1: SendNetworkEvent("HDF_ChangeOrders", HDFollower.FOrder_Follow); break;
-						case 2: SendNetworkEvent("HDF_ChangeOrders", HDFollower.FOrder_FollowIgnore); break;
-						case 3: SendNetworkEvent("HDF_ChangeOrders", HDFollower.FOrder_Cover); break;
-						case 4: SendNetworkEvent("HDF_ChangeOrders", HDFollower.FOrder_GoAndCover); break;
-						case 5: SendNetworkEvent("HDF_ChangeOrders", HDFollower.FOrder_ComeAndHelp); break;
-						case 6: SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Main); break;
-					}
+					Commands.Push(CreateCommand("HDF_ChangeOrders", HDFollower.FOrder_Follow));
+					Commands.Push(CreateCommand("HDF_ChangeOrders", HDFollower.FOrder_FollowIgnore));
+					Commands.Push(CreateCommand("HDF_ChangeOrders", HDFollower.FOrder_Cover));
+					Commands.Push(CreateCommand("HDF_ChangeOrders", HDFollower.FOrder_GoAndCover));
+					Commands.Push(CreateCommand("HDF_ChangeOrders", HDFollower.FOrder_ComeAndHelp));
+					Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Main));
 					break;
 				}
 
@@ -1243,7 +1223,6 @@ extend class FollowerHandler
 					HDFollower lastFol = Selection[consoleplayer].GetLast();
 					int selSize = Selection[consoleplayer].SelFollowers.Size();
 
-					Array<FollowerCommand> Commands;
 					Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_ColorPicker));
 					if (selSize == 1 && lastFol.bCANDISMISS)
 					{
@@ -1257,20 +1236,6 @@ extend class FollowerHandler
 						}
 					}
 					Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Main));
-					
-					if (NumKey > 0 && NumKey - 1 < Commands.Size())
-					{
-						FollowerCommand cmd = Commands[NumKey - 1];
-						if (cmd.UseUiHandler)
-						{
-							HandleUiCommand(cmd);
-						}
-						else
-						{
-							SendNetworkEvent(cmd.EventName, cmd.Args[0], cmd.Args[1], cmd.Args[2]);
-						}
-						ret = true;
-					}
 					break;
 				}
 
@@ -1291,6 +1256,19 @@ extend class FollowerHandler
 						ret = true;
 					}
 					break;
+				}
+			}
+
+			if (NumKey > 0 && NumKey - 1 < Commands.Size())
+			{
+				FollowerCommand cmd = Commands[NumKey - 1];
+				if (cmd.useUiHandler)
+				{
+					HandleUiCommand(cmd);
+				}
+				else
+				{
+					SendNetworkEvent(cmd.EventName, cmd.Args[0], cmd.Args[1], cmd.Args[2]);
 				}
 			}
 
