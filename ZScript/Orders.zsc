@@ -33,7 +33,7 @@ extend class HDFollower
 			return false;
 		}
 		
-		if (Status == FStatus_WaitingForArmor)
+		if (Status >= FStatus_WaitingForArmor && Status <= FStatus_WaitingForWeapon)
 		{
 			Status = FStatus_None;
 		}
