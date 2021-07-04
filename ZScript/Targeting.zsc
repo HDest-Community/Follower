@@ -193,7 +193,7 @@ extend class HDFollower
 	{
 		for (int i = 0; i < Handler.Followers.Size(); ++i)
 		{
-			if (Handler.Followers[i] != self && Handler.Followers[i].CTarget == a)
+			if (Handler.Followers[i] != self && Handler.Followers[i].CTarget == a && Handler.Followers[i].Status != FStatus_InactiveOrDead)
 			{
 				return true;
 			}

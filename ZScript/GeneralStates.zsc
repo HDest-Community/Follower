@@ -38,13 +38,10 @@ extend class HDFollower
 
 	protected void OnFalldown()
 	{
+		OnDeath();
 		MaxStepHeight = 0; // [Ace] Prevents you from sombrero-ing the follower if you stand over them while they're incapped.
-		Status = FStatus_InactiveOrDead;
 		A_SetSize(-1, deathheight);
 		A_StartSound(PainSound, CHAN_VOICE);
-		ClearWeapon();
-		scale = default.scale;
-		CrouchFactor = 0;
 	}
 
 	States
