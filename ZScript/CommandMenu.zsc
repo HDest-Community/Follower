@@ -752,8 +752,9 @@ extend class FollowerHandler
 			// [Ace] Magazine bar.
 			sb.Fill(col, pos.x + 1, pos.y + (size.y - 4), size.x - 2, 1, flags);
 			sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + (size.y - 3), size.x - 2, 2, flags);
-			double AmPercent = clamp(wpn.Mag / double(MaxMag), 0, 1.0);
-			sb.Fill(GetPercentColor(AmPercent), pos.x + 1, pos.y + (size.y - 3), (size.x - 2) * AmPercent, 2, flags);
+			int mag = MaxMag == 1 ? int(wpn.ChamberedRound == wpn.CRType_Chambered) : wpn.Mag;
+			double amPercent = clamp(mag / double(MaxMag), 0, 1.0);
+			sb.Fill(GetPercentColor(amPercent), pos.x + 1, pos.y + (size.y - 3), (size.x - 2) * AmPercent, 2, flags);
 		}
 	}
 
