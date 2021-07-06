@@ -151,7 +151,7 @@ extend class HDFollower
 					EngageTarget(UsedWeapons, CTarget, ETF_NOSWITCH);
 				}
 			}
-			else if (!bFRIENDLY && PTarget && PTarget.Health > 0 && CheckSight(PTarget, SF_SEEPASTSHOOTABLELINES))
+			else if (!bFRIENDLY && PTarget && PTarget.Health > 0 && CheckSight(PTarget, SF_SEEPASTSHOOTABLELINES | SF_IGNOREVISIBILITY))
 			{
 				W = 'FW_ZM66'; UsedWeapons.Push(W);
 				W = 'FW_SMG'; UsedWeapons.Push(W);
@@ -176,7 +176,7 @@ extend class HDFollower
 
 		bool FriendlyCheck = bFRIENDLY && !CTarget.bFRIENDLY && CTarget != LinkedPlayer;
 		bool HostileCheck = !bFRIENDLY && (CTarget == LinkedPlayer || CTarget.bFRIENDLY);
-		return (FriendlyCheck || HostileCHeck) && CTarget.Health > 0 && CheckSight(CTarget, SF_SEEPASTSHOOTABLELINES) && !TargetIsIncapped(CTarget) && CTarget.bSHOOTABLE;
+		return (FriendlyCheck || HostileCHeck) && CTarget.Health > 0 && CheckSight(CTarget, SF_SEEPASTSHOOTABLELINES | SF_IGNOREVISIBILITY) && !TargetIsIncapped(CTarget) && CTarget.bSHOOTABLE;
 	}
 
 	protected bool TargetIsIncapped(Actor other)

@@ -23,7 +23,7 @@ extend class HDFollower
 		int blockedSides = GetBlockedSides();
 
 		Actor next = GetNextInChain();
-		bool canSeeNext = CheckSight(next, SF_SEEPASTSHOOTABLELINES);
+		bool canSeeNext = CheckSight(next, SF_SEEPASTSHOOTABLELINES | SF_IGNOREVISIBILITY);
 		if (!canSeeNext && (!TGoal || (blockedSides & (BSide_Left | BSide_Right))) && CanSeePlayer)
 		{
 			next = LinkedPlayer;
@@ -252,7 +252,7 @@ extend class HDFollower
 			bFLOORHUGGER = nearLadder;
 
 			// [Ace] Stop trying to reach goal shortly after losing LOS.
-			if (!CheckSight(TGoal, SF_SEEPASTSHOOTABLELINES) && ++NoSightTics == 35 * 3)
+			if (!CheckSight(TGoal, SF_SEEPASTSHOOTABLELINES | SF_IGNOREVISIBILITY) && ++NoSightTics == 35 * 3)
 			{
 				NoSightTics = 0;
 				ClearGoal();
