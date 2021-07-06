@@ -370,7 +370,7 @@ extend class FollowerHandler
 
 			case FMenu_Main:
 			{
-				if (!lastFol || lastFol.LinkedPlayer != players[consoleplayer].mo)
+				if (!lastFol || lastFol.LinkedPlayer != players[consoleplayer].mo || !lastFol.bFRIENDLY)
 				{
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
 					return;
@@ -455,7 +455,7 @@ extend class FollowerHandler
 						pos.y += RectangleHeight + Spacing;
 					}
 				}
-				else if (lastFol.bFRIENDLY)
+				else
 				{
 					int RectangleWidth = 160;
 					int Durability = 0;
