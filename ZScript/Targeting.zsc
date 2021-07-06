@@ -29,7 +29,7 @@ extend class HDFollower
 			// If a weapon is missing from the list, the follower will never attack with that weapon.
 			class<FollowerWeapon> W; // [Ace] I won't even bother giving it a full name. This is how much I care at this point.
 
-			if (MTarget && (bFRIENDLY && !MTarget.bFRIENDLY || !bFRIENDLY && MTarget.bFRIENDLY) && MTarget.bISMONSTER && MTarget.bSHOOTABLE && MTarget != self && MTarget.Health > 0 && CheckSight(MTarget, SF_SEEPASTSHOOTABLELINES) && !TargetIsIncapped(MTarget))
+			if (MTarget && (bFRIENDLY && !MTarget.bFRIENDLY || !bFRIENDLY && MTarget.bFRIENDLY) && MTarget.bISMONSTER && MTarget.bSHOOTABLE && MTarget != self && MTarget.Health > 0 && CheckSight(MTarget, SF_SEEPASTSHOOTABLELINES | SF_IGNOREVISIBILITY) && !TargetIsIncapped(MTarget))
 			{
 				// [Ace] Sometimes resurrected troops can have a ridiculous body damage and won't get attacked, but one single shot will blow them to pieces.
 				if (MTarget is "HERPBot" || MTarget is "DERPBot" || (!TargetUncountable.GetBool() && !MTarget.bCOUNTKILL))
