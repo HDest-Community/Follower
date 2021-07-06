@@ -370,7 +370,7 @@ extend class FollowerHandler
 
 			case FMenu_Main:
 			{
-				if (!lastFol || lastFol.LinkedPlayer != players[consoleplayer].mo || !lastFol.bFRIENDLY)
+				if (!lastFol || lastFol.LinkedPlayer != players[consoleplayer].mo || !lastFol.bFRIENDLY && lastFol.Health > 0)
 				{
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
 					return;
