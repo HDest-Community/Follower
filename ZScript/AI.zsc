@@ -243,7 +243,7 @@ extend class HDFollower
 			bFLOORHUGGER = nearLadder;
 
 			// [Ace] Stop trying to reach goal shortly after losing LOS.
-			if (!CheckSight(TGoal, SF_SEEPASTSHOOTABLELINES | SF_IGNOREVISIBILITY) && ++NoSightTics == 35 * 3)
+			if (!CheckSight(TGoal, SF_SEEPASTSHOOTABLELINES | SF_IGNOREVISIBILITY) && ++NoSightTics == 35 * 6)
 			{
 				NoSightTics = 0;
 				ClearGoal();
