@@ -44,14 +44,12 @@ extend class HDFollower
 			case FOrder_Follow:
 				PrintMessage(GetResponse("ORDER_FOLLOW"..Index), "Order/Follow"..Index, PMType_General);
 				Order = FOrder_Follow;
-				ResetIdleTimer();
 				return true;
 
 			case FOrder_FollowIgnore:
 				PrintMessage(GetResponse("ORDER_FOLLOWIGNORE"..Index), "Order/FollowIgnore"..Index, PMType_General);
 				HaulAss();
 				Order = FOrder_FollowIgnore;
-				ResetIdleTimer();
 				return true;
 
 			case FOrder_Cover:
@@ -87,7 +85,6 @@ extend class HDFollower
 				PrintMessage(GetResponse("ORDER_HELP"..Index), "Order/Help"..Index, PMType_Important);
 				HaulAss();
 				Order = FOrder_ComeAndHelp;
-				ResetIdleTimer();
 				return true;
 		}
 

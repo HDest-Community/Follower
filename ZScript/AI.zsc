@@ -135,7 +135,7 @@ extend class HDFollower
 						}
 					}
 
-					if (!Moving && (IdleTimer <= 0 || IsSteppingOnSomeone()))
+					if (!Moving && IsSteppingOnSomeone())
 					{
 						// [Ace] Spawn a new idle spot.
 						for (int i = 0; i < 100; ++i)
@@ -146,7 +146,6 @@ extend class HDFollower
 								break;
 							}
 						}
-						ResetIdleTimer();
 					}
 				}
 				else if (Order == FOrder_Cover && DistanceToPlayer < 42 * 5)
@@ -232,8 +231,6 @@ extend class HDFollower
 				A_Face(TGoal, 0, 0);
 			}
 
-			ResetIdleTimer();
-
 			int sideVel = 0;
 			if (!(blockedSides & BSide_Left) && blockedSides & BSide_Right)
 			{
@@ -280,11 +277,6 @@ extend class HDFollower
 				Moving = false;
 			}
 		}
-	}
-
-	private void ResetIdleTimer()
-	{
-		IdleTimer = random(35 * 3, 35 * 6) * (Order == FOrder_Cover ? 3 : 1);
 	}
 
 	private void TryActivateLine()
@@ -397,7 +389,6 @@ extend class HDFollower
 
 	private vector3 LastKnownPos;
 
-	private int IdleTimer;
 	private int CommentTimer;
 	private bool ActivateAsPlayer;
 	private int NoSightTics; // [Ace] Used with CheckSight.
