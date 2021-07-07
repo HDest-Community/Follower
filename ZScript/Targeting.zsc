@@ -248,7 +248,7 @@ extend class HDFollower
 				}
 				break;
 			}
-			else if ((flags & ETF_NOSWITCH) && ActualWeapons[i].HasSpare())
+			else if ((flags & ETF_NOSWITCH || ActualWeapons[i].GetFlags() & FollowerWeapon.FWF_NOSWITCH) && ActualWeapons[i].HasSpare())
 			{
 				SelWeapon = ActualWeapons[i];
 				if (hdf_debug == 1)

@@ -430,6 +430,7 @@ class FW_Liberator : FollowerWeapon
 	override StateLabel GetFireState() { return 'ShootLiberator'; }
 	override StateLabel GetReloadState() { return 'ReloadLiberator'; }
 	override double GetAdjustmentMult() { return 0.70; }
+	override int GetFlags() { return FWF_NOSWITCH; }
 
 	override void FireWeapon()
 	{
@@ -466,6 +467,7 @@ class FW_Boss : FollowerWeapon
 	override StateLabel GetReloadState() { return 'ReloadBoss'; }
 	override string GetLocalizationTag() { return "Boss"; }
 	override double GetAdjustmentMult() { return 0.40; }
+	override int GetFlags() { return FWF_NOSWITCH; }
 
 	override void FireWeapon()
 	{
@@ -518,6 +520,7 @@ class FW_Bronto : FollowerWeapon
 	override StateLabel GetFireState() { return "ShootBronto"; }
 	override StateLabel GetReloadState() { return "ReloadBronto"; }
 	override string GetLocalizationTag() { return "Bronto"; }
+	override int GetFlags() { return FWF_NOSWITCH; }
 
 	override void FireWeapon()
 	{

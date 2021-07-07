@@ -15,6 +15,11 @@ class FollowerWeapon abstract
 		RResult_Invalid
 	}
 
+	enum FollowerWeaponFlags
+	{
+		FWF_NOSWITCH = 1
+	}
+
 	// --------------------------------------------------
 	// STATIC
 	// --------------------------------------------------
@@ -56,10 +61,37 @@ class FollowerWeapon abstract
 	abstract play void FireWeapon();
 	abstract play void OnTransfer(HDWeapon wpn);
 
-	virtual string GetLocalizationTag() { return GetName(); }
-	virtual double GetAdjustmentMult() { return 1.0; }
 	virtual play bool CheckWeaponCondition(HDFollower caller, Actor trgt) { return true; }
+	virtual play void EmptyWeapon()
+	{
+		class<HDAmmo> AType; class<HDMagAmmo> MType;
+		[AType, MType] = GetAmmoType();
 
+		if (ChamberedRound == CRType_Chambered)
+		{
+			ChamberedRound = FollowerWeapon.CRType_Empty;
+			Owner.A_SpawnItemEx(AType, random(0, 16), 0, 0, frandom(1.0, 2.0), 0, frandom(2.0, 5.0), 0, SXF_NOCHECKPOSITION);
+		}
+
+		if (Mag > 0)
+		{
+			if (MType)
+			{
+				HDMagAmmo.SpawnMag(Owner, MType, Mag);
+			}
+			else
+			{
+				Actor a; bool success;
+				[success, a] = Owner.A_SpawnItemEx(AType, random(0, 16), 0, 0, frandom(1.0, 2.0), 0, frandom(2.0, 5.0), 0, SXF_NOCHECKPOSITION);
+				Inventory(a).Amount = Mag;
+			}
+			Mag = 0;
+		}
+	}
+
+	virtual double GetAdjustmentMult() { return 1.0; }
+	virtual int GetFlags() { return 0; }
+	virtual string GetLocalizationTag() { return GetName(); }
 	virtual play RResult TryReload(bool justCheck = false)
 	{
 		class<HDAmmo> AType, MType; int MaxMag;
@@ -96,33 +128,6 @@ class FollowerWeapon abstract
 		}
 
 		return RResult_CanReload;
-	}
-
-	virtual play void EmptyWeapon()
-	{
-		class<HDAmmo> AType; class<HDMagAmmo> MType;
-		[AType, MType] = GetAmmoType();
-
-		if (ChamberedRound == CRType_Chambered)
-		{
-			ChamberedRound = FollowerWeapon.CRType_Empty;
-			Owner.A_SpawnItemEx(AType, random(0, 16), 0, 0, frandom(1.0, 2.0), 0, frandom(2.0, 5.0), 0, SXF_NOCHECKPOSITION);
-		}
-
-		if (Mag > 0)
-		{
-			if (MType)
-			{
-				HDMagAmmo.SpawnMag(Owner, MType, Mag);
-			}
-			else
-			{
-				Actor a; bool success;
-				[success, a] = Owner.A_SpawnItemEx(AType, random(0, 16), 0, 0, frandom(1.0, 2.0), 0, frandom(2.0, 5.0), 0, SXF_NOCHECKPOSITION);
-				Inventory(a).Amount = Mag;
-			}
-			Mag = 0;
-		}
 	}
 
 	// --------------------------------------------------
