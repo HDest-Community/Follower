@@ -178,7 +178,6 @@ class HDFollower : HDHumanoid abstract
 		// [Ace] Only tick timer if idling.
 		if (!Moving)
 		{
-			IdleTimer--;
 			CommentTimer--;
 		}
 
@@ -212,7 +211,6 @@ class HDFollower : HDHumanoid abstract
 
 	override void PostBeginPlay()
 	{
-		ResetIdleTimer();
 		ResetCommentTimer();
 
 		// [Ace] Skip HDMobMan's PostBeginPlay because the Resize call in it has A_SetHealth which fucks shit up.
