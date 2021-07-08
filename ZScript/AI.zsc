@@ -203,7 +203,7 @@ extend class HDFollower
 					{
 						tics = 1;
 					}
-					MovementSpeed = min(default.MovementSpeed + Distance2D(TGoal) / (84 - 7 * min(ffcount - 1, 6)), MaxMovementSpeed);
+					MovementSpeed = min(default.MovementSpeed + Distance2D(TGoal) / (42 - 2 * min(ffcount - 1, 6)), MaxMovementSpeed);
 				}
 			}
 
