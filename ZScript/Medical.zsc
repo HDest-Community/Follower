@@ -31,9 +31,9 @@ extend class HDFollower
 	{
 		if (GetAmount('PortableMedikit') > 0)
 		{
-			let Stim = HDMagAmmo(GiveInventoryType('PortableStimpack'));
-			Stim.SyncAmount();
-			if (!AddMag(Stim, true))
+			let stim = HDMagAmmo(GiveInventoryType('PortableStimpack'));
+			stim.SyncAmount();
+			if (!AddMag(stim, flags: FIF_FORCE))
 			{
 				A_DropInventory('PortableStimpack');
 			}
