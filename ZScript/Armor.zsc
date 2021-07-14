@@ -19,7 +19,7 @@ extend class HDFollower
 			else if (wornArmor)
 			{
 				// [Ace] 1030 because mega armor's durability is calculated as 1000 + actual durability. Only while on the ground, though.
-				if (!wornArmor.Mega && foundArmor.Mega && foundArmor.Mags[0] >= 1030 || wornArmor.Mega && wornArmor.Durability < 20 && !foundArmor.Mega && foundArmor.Mags[0] > 60)
+				if (!wornArmor.Mega && foundArmor.Mega && foundArmor.Mags[0] >= 1020 || wornArmor.Mega && wornArmor.Durability < 20 && !foundArmor.Mega && foundArmor.Mags[0] > 60)
 				{
 					PrintMessage(GetResponse("ARMORGIVE_UPGRADE"), "ArmorGive/Upgrade", PMType_General);
 				}
