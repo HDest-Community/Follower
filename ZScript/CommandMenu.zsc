@@ -64,6 +64,8 @@ extend class FollowerHandler
 	private transient ui int FSlotIndex[MAXPLAYERS];
 	private transient ui bool Confirmation[MAXPLAYERS];
 
+	private transient ui CVar Scale[MAXPLAYERS];
+
 	private transient ui int SelectedColorIndex[MAXPLAYERS];
 
 	const FollowersPerPage = 8;
@@ -80,8 +82,13 @@ extend class FollowerHandler
 		int OriginalWidth = StatusBar.HorizontalResolution;
 		int OriginalHeight = StatusBar.VerticalResolution;
 
+		if (!Scale[consoleplayer])
+		{
+			Scale[consoleplayer] = CVar.GetCVar('hdf_uiscale', players[consoleplayer]);
+		}
+		double uiScale = Scale[consoleplayer].GetFloat();
 		StatusBar.BeginHUD(1.0, true);
-		StatusBar.SetSize(StatusBar.RelTop, 640, 480);
+		StatusBar.SetSize(StatusBar.RelTop, int(640 / uiScale), int(480 / uiScale));
 
 		if (FollowerMenuLevel[consoleplayer] > FMenu_Closed && !AutomapActive && GameState == GS_LEVEL)
 		{

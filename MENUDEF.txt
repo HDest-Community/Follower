@@ -37,6 +37,8 @@ OptionMenu "HDFollowerMenu"
 	StaticText ""
 
 	StaticText "----- Audio/Visual -----", "Teal"
+	Slider "UI Scale", "hdf_uiscale", 0.1, 3.0, 0.1, 1
+	StaticText ""
 	Option "Chat Responses", "hdf_printlevel_chat", "PrintLevel"
 	Option "Voice Responses", "hdf_printlevel_voice", "PrintLevel"
 	StaticText ""

@@ -5,6 +5,7 @@ server int hdf_extrabrass = 0;
 
 server bool hdf_ohana = false;
 
+user float hdf_uiscale = 1.0;
 user bool hdf_enablecomments = true;
 user int hdf_printlevel_chat = 3;
 user int hdf_printlevel_voice = 3;
