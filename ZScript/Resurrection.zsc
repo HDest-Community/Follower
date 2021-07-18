@@ -96,6 +96,7 @@ extend class HDFollower
 		AbsorbedBlues = 0;
 		AbsorbedBlood = 0;
 		BloodReviveTicker = 0;
+		OhanaTicker = 0;
 	}
 
 	bool TryRevive(int type)
