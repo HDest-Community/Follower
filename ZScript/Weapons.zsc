@@ -180,7 +180,7 @@ extend class HDFollower
 
 	clearscope int AdjustForDistance(double distance, double mult = 1.0)
 	{
-		return int(clamp((distance / 42.0) * mult, 8, MaxTargetRange / 42.0));
+		return int(clamp((distance / 84.0) * mult, 6, MaxTargetRange / 84.0));
 	}
 
 	clearscope FollowerWeapon FindWeapon(class<FollowerWeapon> wpn)
