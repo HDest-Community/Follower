@@ -15,6 +15,16 @@ class FollowerWeapon abstract
 		RResult_Invalid
 	}
 
+	enum TryReloadFlags
+	{
+		TRF_CHECK = 1
+	}
+
+	enum EjectMagFlags
+	{
+		EMF_KEEP = 1
+	}
+
 	enum FollowerWeaponFlags
 	{
 		FWF_NOSWITCH = 1
@@ -92,7 +102,7 @@ class FollowerWeapon abstract
 	virtual double GetAdjustmentMult() { return 1.0; }
 	virtual int GetFlags() { return 0; }
 	virtual string GetLocalizationTag() { return GetName(); }
-	virtual play RResult TryReload(bool justCheck = false)
+	virtual play RResult TryReload(int flags = 0)
 	{
 		class<HDAmmo> AType, MType; int MaxMag;
 		[AType, MType, MaxMag] = GetAmmoType();
@@ -105,7 +115,7 @@ class FollowerWeapon abstract
 		{
 			return RResult_NoAmmo;
 		}
-		if (justCheck)
+		if (flags & TRF_CHECK)
 		{
 			return RResult_CanReload;
 		}
@@ -134,14 +144,14 @@ class FollowerWeapon abstract
 	// ACTIONS
 	// --------------------------------------------------
 	
-	play void EjectMag(bool keep = true)
+	play void EjectMag(int flags = EMF_KEEP)
 	{
 		class<HDAmmo> AType, MType; int MaxMag;
 		[AType, MType, MaxMag] = GetAmmoType();
 		if (MType && Mag > -1)
 		{
 			HDMagAmmo m = HDMagAmmo(HDMagAmmo.SpawnMag(Owner, MType, Mag));
-			if (keep)
+			if (flags & EMF_KEEP)
 			{
 				Owner.AddMag(m, flags: HDFollower.FIF_FORCE);
 			}

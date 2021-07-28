@@ -165,7 +165,7 @@ extend class HDFollower
 			#### H 3
 			{
 				A_StartSound("weapons/rifleload");
-				SelWeapon.EjectMag(false);
+				SelWeapon.EjectMag(0);
 			}
 			#### H 35 A_StartSound("weapons/pocket", 8);
 			#### H 10
@@ -317,11 +317,17 @@ extend class HDFollower
 			#### H 8
 			{
 				A_StartSound("weapons/rifleclick");
-				if(SelWeapon.TryReload() == FollowerWeapon.RResult_CanReload)
+				if (SelWeapon.TryReload(FollowerWeapon.TRF_CHECK) == FollowerWeapon.RResult_CanReload)
 				{
+					// [Ace] Technically there is no mag. It magically creates a clip out of thin air before taking the real one.
+					// For the purpose of the reload, this does not matter as it's instanteneous.
+					// Is there a better way to do it? Probably. Is it worth it? Probably not.
 					SelWeapon.EjectMag();
+					SelWeapon.TryReload();
 				}
-
+			}
+			#### H 0
+			{
 				if (SelWeapon.ChamberedRound < FollowerWeapon.CRType_Chambered)
 				{
 					SetStateLabel('ChamberRoundBoss');

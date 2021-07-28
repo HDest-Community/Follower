@@ -120,7 +120,7 @@ extend class HDFollower
 			return false;
 		}
 
-		int ReloadResult = wpn.TryReload(true);
+		int ReloadResult = wpn.TryReload(FollowerWeapon.TRF_CHECK);
 		if (ReloadResult == FollowerWeapon.RResult_CanReload)
 		{
 			if (hdf_debug == 1)
@@ -482,9 +482,9 @@ class FW_Boss : FollowerWeapon
 		ChamberedRound = CRType_Spent;
 	}
 
-	override RResult TryReload()
+	override RResult TryReload(int flags)
 	{
-		return Mag > 0 ? RResult_MagFull : Super.TryReload();
+		return Mag > 0 ? RResult_MagFull : Super.TryReload(flags);
 	}
 
 	override void EmptyWeapon()
@@ -538,9 +538,9 @@ class FW_Bronto : FollowerWeapon
 		ChamberedRound = CRType_Spent;
 	}
 
-	override RResult TryReload(bool justCheck)
+	override RResult TryReload(int flags)
 	{
-		return ChamberedRound == CRType_Chambered ? RResult_MagFull : Super.TryReload(justCheck);
+		return ChamberedRound == CRType_Chambered ? RResult_MagFull : Super.TryReload(flags);
 	}
 
 	override void OnTransfer(HDWeapon wpn)
