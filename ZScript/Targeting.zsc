@@ -219,7 +219,7 @@ extend class HDFollower
 		A_Face(a, 0, 0, flags: FAF_MIDDLE);
 
 		FLineTraceData TraceData;
-		LineTrace(angle, MaxTargetRange, pitch, TRF_NOSKY, Height - HDCONST_CROWNTOSHOULDER, data: TraceData);
+		LineTrace(angle, MaxTargetRange, pitch, TRF_NOSKY, GetShotHeight(), data: TraceData);
 		angle = OldAngle;
 		pitch = OldPitch;
 
