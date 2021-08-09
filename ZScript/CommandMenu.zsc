@@ -49,7 +49,7 @@ extend class FollowerHandler
 	// These are data/play scope because NetworkProcess needs to access them.
 	private transient int FollowerMenuLevel[MAXPLAYERS];
 	private transient int FollowerPage[MAXPLAYERS];
-	private transient HDMarine SelMarine[MAXPLAYERS];
+	private transient HDOperator SelMarine[MAXPLAYERS];
 	private transient FollowerSelection Selection[MAXPLAYERS];
 	private transient int Modifiers[MAXPLAYERS];
 
@@ -1402,10 +1402,10 @@ extend class FollowerHandler
 			plr.LineTrace(plr.angle, 42 * 20, plr.pitch, TRF_NOSKY, plr.Height - HDCONST_CROWNTOSHOULDER, data: TraceData);
 			Actor ATarget = TraceData.HitActor;
 
-			if (ATarget is 'HDMarine' && ATarget.Health > 0 && TraceData.Distance < 42 * 2 && !IsPuppet(ATarget) && (ATarget.bFRIENDLY || ATarget.InStateSequence(ATarget.CurState, ATarget.FindState('Falldown')) && HDMarine(ATarget).Stunned > 70))
+			if (ATarget is 'HDOperator' && ATarget.Health > 0 && TraceData.Distance < 42 * 2 && !IsPuppet(ATarget) && (ATarget.bFRIENDLY || ATarget.InStateSequence(ATarget.CurState, ATarget.FindState('Falldown')) && HDOperator(ATarget).Stunned > 70))
 			{
 				FollowerMenuLevel[e.Player] = FMenu_Recruitment;
-				SelMarine[e.Player] = HDMarine(ATarget);
+				SelMarine[e.Player] = HDOperator(ATarget);
 			}
 			else
 			{

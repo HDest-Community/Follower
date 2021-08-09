@@ -22,7 +22,7 @@ extend class FollowerHandler
 	// ACTIONS
 	// --------------------------------------------------
 
-	private void RecruitMarine(HDMarine m, int owningPlayer)
+	private void RecruitMarine(HDOperator m, int owningPlayer)
 	{
 		if (!m)
 		{
@@ -100,10 +100,10 @@ extend class FollowerHandler
 
 		switch (m.wep)
 		{
-			case HDMarine.HDMW_SMG: Recruit.FindWeapon('FW_SMG').Enabled = true; break;
-			case HDMarine.HDMW_HUNTER: Recruit.FindWeapon('FW_Hunter').Enabled = true; break;
-			case HDMarine.HDMW_ZM66: Recruit.FindWeapon('FW_ZM66').Enabled = true; break;
-			case HDMarine.HDMW_ROCKET: Recruit.FindWeapon('FW_RocketLauncher').Enabled = true; break;
+			case HDOperator.HDMW_SMG: Recruit.FindWeapon('FW_SMG').Enabled = true; break;
+			case HDOperator.HDMW_HUNTER: Recruit.FindWeapon('FW_Hunter').Enabled = true; break;
+			case HDOperator.HDMW_ZM66: Recruit.FindWeapon('FW_ZM66').Enabled = true; break;
+			case HDOperator.HDMW_ROCKET: Recruit.FindWeapon('FW_RocketLauncher').Enabled = true; break;
 		}
 
 		let Armor = HDArmourWorn(m.FindInventory('HDArmourWorn'));
