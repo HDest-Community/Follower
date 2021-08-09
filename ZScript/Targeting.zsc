@@ -111,6 +111,16 @@ extend class HDFollower
 					EngageTarget(UsedWeapons, MTarget);
 					break;
 				}
+				else if (MTarget is 'Trilobite')
+				{
+					W = 'FW_RocketLauncher'; UsedWeapons.Push(W);
+					W = 'FW_Liberator'; UsedWeapons.Push(W);
+					W = 'FW_Boss'; UsedWeapons.Push(W);	
+					W = 'FW_ZM66'; UsedWeapons.Push(W);
+					W = 'FW_SMG'; UsedWeapons.Push(W);
+					W = 'FW_Hunter'; UsedWeapons.Push(W);
+					EngageTarget(UsedWeapons, MTarget);
+				}
 				else if (MTarget is 'HDMobBase' && Shields && Shields.Amount > 150)
 				{
 					W = 'FW_RocketLauncher'; UsedWeapons.Push(W);
@@ -130,7 +140,7 @@ extend class HDFollower
 				else if (MTarget.FindInventory('HDArmourWorn') && !AlreadyTargeted) // [Ace] Don't focus fire on trash.
 				{
 					W = 'FW_Liberator'; UsedWeapons.Push(W);
-					W = 'FW_Boss'; UsedWeapons.Push(W);		
+					W = 'FW_Boss'; UsedWeapons.Push(W);	
 					W = 'FW_ZM66'; UsedWeapons.Push(W);
 					W = 'FW_SMG'; UsedWeapons.Push(W);
 					W = 'FW_Hunter'; UsedWeapons.Push(W);
