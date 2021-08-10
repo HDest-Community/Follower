@@ -81,11 +81,11 @@ extend class FollowerHandler
 
 		int Gender = 0;
 		string snd = m.SeeSound;
-		if (snd.IndexOf("marinef") != -1)
+		if (snd.IndexOf("operatorf") != -1)
 		{
 			Gender = 1;
 		}
-		else if (snd.IndexOf("marinen") != -1 || snd.IndexOf("marineb") != -1)
+		else if (snd.IndexOf("operatorn") != -1 || snd.IndexOf("operatorb") != -1)
 		{
 			Gender = 2;
 		}
