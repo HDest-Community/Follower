@@ -312,7 +312,7 @@ extend class FollowerHandler
 				Commands.Push("Recruit?");
 				Commands.Push("Cancel");
 
-				string n = (SelMarine[consoleplayer].bFRIENDLY ? "Friendly " : "Hostile ")..SelMarine[consoleplayer].GetTag();
+				string n = (SelMarine[consoleplayer].bFRIENDLY ? "Friendly " : "Hostile ").."marine";
 				DrawRectangle(sb, pos, (140, RectangleHeight), MainFont, GetTruncatedText(n, 16), flags, Font.FindFontColor('FLW_NameBlue'));
 				pos.y += RectangleHeight + Spacing;
 
