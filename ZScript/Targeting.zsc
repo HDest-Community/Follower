@@ -113,12 +113,15 @@ extend class HDFollower
 				}
 				else if (MTarget is 'Trilobite')
 				{
-					if (MTarget.Health > MTarget.SpawnHealth() / 2)
+					if (!AlreadyTargeted)
 					{
-						W = 'FW_RocketLauncher'; UsedWeapons.Push(W);
+						if (MTarget.Health > MTarget.SpawnHealth() / 2)
+						{
+							W = 'FW_RocketLauncher'; UsedWeapons.Push(W);
+						}
+						W = 'FW_Liberator'; UsedWeapons.Push(W);
+						W = 'FW_Boss'; UsedWeapons.Push(W);	
 					}
-					W = 'FW_Liberator'; UsedWeapons.Push(W);
-					W = 'FW_Boss'; UsedWeapons.Push(W);	
 					W = 'FW_ZM66'; UsedWeapons.Push(W);
 					W = 'FW_SMG'; UsedWeapons.Push(W);
 					W = 'FW_Hunter'; UsedWeapons.Push(W);
