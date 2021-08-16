@@ -405,7 +405,7 @@ extend class FollowerHandler
 				}
 				else if (lastFol.Health <= 0)
 				{
-					DrawRectangle(sb, pos, (240, RectangleHeight), MainFont, GetTruncatedText(lastFol.GetDisplayName(), 25), flags, Font.FindFontColor('FLW_NameBlue'));
+					DrawRectangle(sb, pos, (260, RectangleHeight), MainFont, GetTruncatedText(lastFol.GetDisplayName(), 27), flags, Font.FindFontColor('FLW_NameBlue'));
 					pos.y += RectangleHeight + Spacing;
 
 					int RequiredSips = lastFol.GetRequiredSips();
@@ -458,7 +458,7 @@ extend class FollowerHandler
 
 					for (int i = 0; i < Commands.Size(); ++i)
 					{
-						DrawRectangle(sb, pos, (240, RectangleHeight), MainFont, (i + 1)..") "..Commands[i], flags);
+						DrawRectangle(sb, pos, (260, RectangleHeight), MainFont, (i + 1)..") "..Commands[i], flags);
 						pos.y += RectangleHeight + Spacing;
 					}
 				}

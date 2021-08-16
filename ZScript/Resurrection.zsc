@@ -160,10 +160,7 @@ extend class HDFollower
 					return false;
 				}
 
-				int RequiredBlood = GetRequiredBlood();
-				int CurrentWounds = LinkedPlayer.woundcount;
-				int RequiredWounds = (RequiredBlood - CurrentWounds) * 2;
-				HDBleedingWound.Inflict(LinkedPlayer, RequiredWounds + 3, 17, false, LinkedPlayer);
+				LinkedPlayer.woundcount += ((GetRequiredBlood() - LinkedPlayer.woundcount) + 3) * (LinkedPlayer.regenblues > 20 ? 2 : 1);
 				break;
 			}
 		}
