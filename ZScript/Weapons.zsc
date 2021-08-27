@@ -25,6 +25,11 @@ extend class HDFollower
 		}
 	}
 
+	virtual clearscope int AdjustForDistance(Actor trgt, double mult = 1.0)
+	{
+		return int(clamp((Distance3D(trgt) / 84.0) * mult, 6, MaxTargetRange / 84.0));
+	}
+
 	// --------------------------------------------------
 	// ACTIONS
 	// --------------------------------------------------
@@ -176,11 +181,6 @@ extend class HDFollower
 	clearscope double GetShotHeight()
 	{
 		return height - HDCONST_CROWNTOSHOULDER;
-	}
-
-	clearscope int AdjustForDistance(double distance, double mult = 1.0)
-	{
-		return int(clamp((distance / 84.0) * mult, 6, MaxTargetRange / 84.0));
 	}
 
 	clearscope FollowerWeapon FindWeapon(class<FollowerWeapon> wpn)
