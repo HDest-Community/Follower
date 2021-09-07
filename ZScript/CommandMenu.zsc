@@ -484,7 +484,7 @@ extend class FollowerHandler
 
 					if (Followers.Size() == 1 && lastFol.CanInteractWith(false))
 					{
-						double Dist = lastFol.Distance3D(lastFol.LinkedPlayer) / 42.0;
+						double Dist = lastFol.Distance3D(lastFol.LinkedPlayer) / HDCONST_ONEMETRE;
 						DrawRectangle(sb, pos, (RectangleWidth, RectangleHeight), MainFont, String.Format("%.2fm", Dist), flags, Font.CR_DARKGRAY);
 						pos.y += RectangleHeight + Spacing;
 					}
@@ -722,7 +722,7 @@ extend class FollowerHandler
 
 		if (valid)
 		{
-			double Dist = flw.Distance3D(flw.LinkedPlayer) / 42.0;
+			double Dist = flw.Distance3D(flw.LinkedPlayer) / HDCONST_ONEMETRE;
 			sb.DrawString(fnt, String.Format("%.2fm", Dist), pos, flags, Font.CR_DARKGRAY); pos.y += FontHeight + 1;
 		}
 	}
@@ -1399,10 +1399,10 @@ extend class FollowerHandler
 			let plr = HDPlayerPawn(players[e.Player].mo);
 
 			FLineTraceData TraceData;
-			plr.LineTrace(plr.angle, 42 * 20, plr.pitch, TRF_NOSKY, plr.Height - HDCONST_CROWNTOSHOULDER, data: TraceData);
+			plr.LineTrace(plr.angle, HDCONST_ONEMETRE * 20, plr.pitch, TRF_NOSKY, plr.Height - HDCONST_CROWNTOSHOULDER, data: TraceData);
 			Actor ATarget = TraceData.HitActor;
 
-			if (ATarget is 'HDOperator' && ATarget.Health > 0 && TraceData.Distance < 42 * 2 && !IsPuppet(ATarget) && (ATarget.bFRIENDLY || ATarget.InStateSequence(ATarget.CurState, ATarget.FindState('Falldown')) && HDOperator(ATarget).Stunned > 70))
+			if (ATarget is 'HDOperator' && ATarget.Health > 0 && TraceData.Distance < HDCONST_ONEMETRE * 2 && !IsPuppet(ATarget) && (ATarget.bFRIENDLY || ATarget.InStateSequence(ATarget.CurState, ATarget.FindState('Falldown')) && HDOperator(ATarget).Stunned > 70))
 			{
 				FollowerMenuLevel[e.Player] = FMenu_Recruitment;
 				SelMarine[e.Player] = HDOperator(ATarget);

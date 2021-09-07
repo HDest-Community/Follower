@@ -90,7 +90,7 @@ extend class HDFollower
 		Actor BlockActor = AimBlocked();
 		if (BlockActor)
 		{
-			if (Distance3D(BlockActor) < 42 * 5)
+			if (Distance3D(BlockActor) < HDCONST_ONEMETRE * 5)
 			{
 				double dangle = DeltaAngle(angle, AngleTo(BlockActor));
 				int dir = dangle > 0 ? -1 : 1;
@@ -378,7 +378,7 @@ class FW_RocketLauncher : FollowerWeapon
 
 	override bool CheckWeaponCondition(HDFollower caller, Actor trgt)
 	{
-		if (caller.Distance3D(trgt) < 42 * 11)
+		if (caller.Distance3D(trgt) < HDCONST_ONEMETRE * 11)
 		{
 			return false;
 		}
@@ -389,7 +389,7 @@ class FW_RocketLauncher : FollowerWeapon
 			HDFollower f = caller.Handler.Followers[i];
 			bool HasSight = f.CheckSight(trgt, SF_SEEPASTSHOOTABLELINES | SF_IGNOREVISIBILITY);
 			double Dist = f.Distance3D(trgt);
-			if (Dist < 42 * 3 || Dist < 42 * 15 && HasSight)
+			if (Dist < HDCONST_ONEMETRE * 3 || Dist < HDCONST_ONEMETRE * 15 && HasSight)
 			{
 				OtherFollowersSafe = false;
 				break;
@@ -403,7 +403,7 @@ class FW_RocketLauncher : FollowerWeapon
 			{
 				bool HasSight = plr.CheckSight(trgt, SF_SEEPASTSHOOTABLELINES | SF_IGNOREVISIBILITY);
 				double Dist = plr.Distance3D(trgt);
-				if (Dist < 42 * 3 || Dist < 42 * 15 && HasSight)
+				if (Dist < HDCONST_ONEMETRE * 3 || Dist < HDCONST_ONEMETRE * 15 && HasSight)
 				{
 					OtherPlayersSafe = false;
 					break;

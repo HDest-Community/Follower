@@ -148,7 +148,7 @@ extend class HDFollower
 						}
 					}
 				}
-				else if (Order == FOrder_Cover && DistanceToPlayer < 42 * 5)
+				else if (Order == FOrder_Cover && DistanceToPlayer < HDCONST_ONEMETRE * 5)
 				{
 					A_Face(LinkedPlayer, 45);
 				}
@@ -192,7 +192,7 @@ extend class HDFollower
 			}
 			else
 			{
-				if (Distance2D(TGoal) < 42)
+				if (Distance2D(TGoal) < HDCONST_ONEMETRE)
 				{
 					MovementSpeed = default.MovementSpeed / 2;
 				}
@@ -203,7 +203,7 @@ extend class HDFollower
 					{
 						tics = 1;
 					}
-					MovementSpeed = min(default.MovementSpeed + Distance2D(TGoal) / (42 - 2 * min(ffcount - 1, 6)), MaxMovementSpeed);
+					MovementSpeed = min(default.MovementSpeed + Distance2D(TGoal) / (HDCONST_ONEMETRE - 2 * min(ffcount - 1, 6)), MaxMovementSpeed);
 				}
 			}
 
@@ -363,10 +363,10 @@ extend class HDFollower
 	// CONSTANTS
 	// --------------------------------------------------
 
-	const MinFollowRangeStop = 42 * 2.3; // [Ace] If following the player, stop if closer than this distance.
-	const MinFollowRange = 42 * 3;
-	const MaxFollowRange = 42 * 20;
-	const MaxWaitRange = 42 * 12;
+	const MinFollowRangeStop = HDCONST_ONEMETRE * 2.3; // [Ace] If following the player, stop if closer than this distance.
+	const MinFollowRange = HDCONST_ONEMETRE * 3;
+	const MaxFollowRange = HDCONST_ONEMETRE * 20;
+	const MaxWaitRange = HDCONST_ONEMETRE * 12;
 	const MaxSearchRange = 24; // [Ace] This is for the LookFor* stuff.
 
 	// --------------------------------------------------
