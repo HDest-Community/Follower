@@ -4,6 +4,11 @@ class InventorySlot
 	string Icon;
 	int Amount;
 	bool Multipickup;
+
+	static clearscope bool IsRealMag(class<HDPickup> mag)
+	{
+		return mag is 'HDMagAmmo' && GetDefaultByType((class<HDMagAmmo>)(mag)).MaxPerUnit > 0;
+	}
 }
 
 extend class HDFollower
@@ -286,6 +291,7 @@ extend class HDFollower
 		}
 		return -1;
 	}
+
 
 	// --------------------------------------------------
 	// CONSTANTS/VARIABLES
