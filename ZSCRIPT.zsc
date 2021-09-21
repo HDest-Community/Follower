@@ -136,7 +136,7 @@ class HDFollower : HDHumanoid abstract
 
 	clearscope bool PlayerIsCrouching()
 	{
-		return LinkedPlayer.player.crouchfactor < 1.0;
+		return LinkedPlayer.player.crouchfactor < 0.6;
 	}
 
 	// --------------------------------------------------
