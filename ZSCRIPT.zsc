@@ -139,6 +139,11 @@ class HDFollower : HDHumanoid abstract
 		return LinkedPlayer.player.crouchfactor < 0.6;
 	}
 
+	clearscope bool PlayerIsProne()
+	{
+		return LinkedPlayer.incapacitated > 0 && LinkedPlayer.incaptimer <= 0;
+	}
+
 	// --------------------------------------------------
 	// TICKER
 	// --------------------------------------------------
