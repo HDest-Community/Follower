@@ -106,7 +106,7 @@ extend class HDFollower
 		}
 		int magAmt = mag.Mags[magIndex];
 		Slots[index].Icon = AceCore.GetIcon(mag, magAmt);
-		Slots[index].Amount = magAmt; // [Ace] This is probably a bad idea.
+		Slots[index].Amount = max(1, magAmt);
 		mag.Mags.Delete(magIndex);
 		mag.Amount--;
 		if (mag.Amount == 0)
