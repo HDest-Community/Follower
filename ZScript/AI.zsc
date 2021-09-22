@@ -242,6 +242,11 @@ extend class HDFollower
 			MaxDropOffHeight = default.MaxDropOffHeight + (NearLadder ? LADDER_MAX : 0);
 			bFLOORHUGGER = nearLadder;
 
+			// [Ace] There is a gap that can be cleared.
+			vector2 adjPos = Vec2Angle(HDCONST_ONEMETRE / 3, 0);
+			Sector s = level.PointInSector(adjPos);
+			bNODROPOFF = !s || pos.z < s.floorplane.ZAtPoint(adjPos) - 8;
+
 			// [Ace] Stop trying to reach goal shortly after losing LOS.
 			if (!CheckSight(TGoal, SF_SEEPASTSHOOTABLELINES | SF_IGNOREVISIBILITY) && ++NoSightTics == 35 * 6)
 			{
