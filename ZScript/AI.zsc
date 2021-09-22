@@ -242,10 +242,8 @@ extend class HDFollower
 			MaxDropOffHeight = default.MaxDropOffHeight + (NearLadder ? LADDER_MAX : 0);
 			bFLOORHUGGER = nearLadder;
 
-			// [Ace] There is a gap that can be cleared.
-			vector2 adjPos = Vec2Angle(HDCONST_ONEMETRE / 3, 0);
-			Sector s = level.PointInSector(adjPos);
-			bNODROPOFF = !s || pos.z < s.floorplane.ZAtPoint(adjPos) - 8;
+			// [Ace] There is a gap that can be crossed. If the player can do it, so can the follower.
+			bNODROPOFF = !((pos.z > floorz || abs(TGoal.floorz - floorz) < default.MaxDropOffHeight) && abs(TGoal.pos.z - pos.z) < default.MaxDropOffHeight);
 
 			// [Ace] Stop trying to reach goal shortly after losing LOS.
 			if (!CheckSight(TGoal, SF_SEEPASTSHOOTABLELINES | SF_IGNOREVISIBILITY) && ++NoSightTics == 35 * 6)
