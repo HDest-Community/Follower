@@ -294,7 +294,10 @@ extend class FollowerHandler
 		vector2 OriginalPos = pos;
 		int RectangleHeight = MainFont.mFont.GetHeight() + 4;
 
-		// [Ace] This is still valid even when multiple followers are selected. In that case lastFol isn't really used.
+		// [Ace] This is still valid even when multiple followers are selected.
+		// [24.09.2021] Note to self: before you freak out again that "THE INVENTORY MENUS ARE BUGGED", keep in mind that dead and hostile followers are always
+		// excluded from the selection. They will not mess up all of the lastFol conditions because lastFol is GUARANTEED to be a living being. Friendly, too.
+
 		HDFollower lastFol = Selection[consoleplayer].GetLast();
 		int selSize = Selection[consoleplayer].SelFollowers.Size();
 
@@ -610,7 +613,7 @@ extend class FollowerHandler
 					DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, "Bsp) Take", flags); pos.y += RectangleHeight + Spacing;
 					DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, "Ent) Select/Give", flags); pos.y += RectangleHeight + Spacing;
 
-					if (wSize > 0)
+					if (wSize > 0 && lastFol.CanInteractWith(false))
 					{
 						bool Waiting = lastFol.Status == FStatus_WaitingForWeapon;
 						DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, "P) "..(Waiting ? "Confirm/Cancel?" : "Pickup weapon"), flags); pos.y += RectangleHeight + Spacing;
