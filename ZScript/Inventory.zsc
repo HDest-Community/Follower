@@ -15,7 +15,8 @@ extend class HDFollower
 {
 	enum FollowerInventoryFlags
 	{
-		FIF_FORCE = 1
+		FIF_FORCE = 1,
+		FIF_REVERSEDIRECTION = 2
 	}
 
 	// --------------------------------------------------
@@ -49,7 +50,15 @@ extend class HDFollower
 			int index = GetPartialItemIndex(item.GetClass(), maxAmt: maxAmt);
 			if (index == -1)
 			{
-				index = GetFirstEmptySlotIndex(slot == -1 ? 0 : slot);
+				if (flags & FIF_REVERSEDIRECTION)
+				{
+					index = GetLastEmptySlotIndex(slot == -1 ? SlotCount - 1 : slot);
+				}
+				else
+				{
+					index = GetFirstEmptySlotIndex(slot == -1 ? 0 : slot);
+				}
+
 				if (index == -1)
 				{
 					return false;
@@ -90,7 +99,15 @@ extend class HDFollower
 			}
 		}
 
-		int index = GetFirstEmptySlotIndex(slot == -1 ? 0 : slot);
+		int index = -1;
+		if (flags & FIF_REVERSEDIRECTION)
+		{
+			index = GetLastEmptySlotIndex(slot == -1 ? SlotCount - 1 : slot);
+		}
+		else
+		{
+			index = GetFirstEmptySlotIndex(slot == -1 ? 0 : slot);
+		}
 		if (index == -1)
 		{
 			return false;
@@ -268,9 +285,21 @@ extend class HDFollower
 		return Total;
 	}
 
-	clearscope int GetFirstEmptySlotIndex(int startIndex = 0)
+	clearscope int GetFirstEmptySlotIndex(int startIndex)
 	{
 		for (int i = startIndex; i < SlotCount; ++i)
+		{
+			if (!Slots[i])
+			{
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	clearscope int GetLastEmptySlotIndex(int startIndex)
+	{
+		for (int i = startIndex; i >= 0; --i)
 		{
 			if (!Slots[i])
 			{

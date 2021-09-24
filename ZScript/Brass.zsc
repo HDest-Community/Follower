@@ -13,7 +13,7 @@ extend class HDFollower
 				return;
 			}
 			
-			AddItem(HDPickup(tracer), 1, 250, flags: FIF_FORCE);
+			AddItem(HDPickup(tracer), 1, 250, flags: FIF_FORCE | FIF_REVERSEDIRECTION);
 		}
 	}
 }
