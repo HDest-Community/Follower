@@ -33,17 +33,6 @@ extend class HDFollower
 		}
 	}
 
-	protected void CheckMerchantHealing()
-	{
-		Name clsStr = 'HDMerchant';
-		class<Actor> cls = clsStr;
-		if (!cls)
-		{
-			return;
-		}
-		
-	}
-
 	protected void CheckRevive()
 	{
 		if (ResurrectType & RESF_BLUES && Blues > 0)
@@ -107,8 +96,8 @@ extend class HDFollower
 			}
 			if (CountProximity(cls, HDCONST_ONEMETRE * 2, CPXF_CLOSEST | CPXF_ANCESTOR) > 0)
 			{
-				SpawnReviveParticles("8822FF");
-				if (++MerchantReviveTicker >= 35 * 120 && level.time % 140 == 0)
+				SpawnReviveParticles("8844FF");
+				if (++MerchantReviveTicker >= 35 * 60 * 10 && level.time % 140 == 0)
 				{
 					if (!A_RaiseSelf())
 					{
