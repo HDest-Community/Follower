@@ -88,6 +88,10 @@ FREYLIS_REVIVE_BLOOD_SUCCESS_1 = "I wish I could have more, but this will suffic
 FREYLIS_REVIVE_BLOOD_SUCCESS_2 = "Thank you. This was rejuvenating.";
 FREYLIS_REVIVE_BLOOD_SUCCESS_3 = "We should do this again sometime.";
 
+FREYLIS_REVIVE_MERCHANT_SUCCESS_1 = "I don't appreciate being touched by strangers, but I am nonetheless thankful for the healing.";
+FREYLIS_REVIVE_MERCHANT_SUCCESS_2 = "Thank you for bringing me to this trader.";
+FREYLIS_REVIVE_MERCHANT_SUCCESS_3 = "It feels good to be back.";
+
 FREYLIS_ARMORGIVE_INIT_1 = "Free armor? Don't mind if I do.";
 FREYLIS_ARMORGIVE_INIT_2 = "Just put it over here.";
 FREYLIS_ARMORGIVE_INIT_3 = "Would really be appreciated.";

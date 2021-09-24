@@ -3,21 +3,22 @@ extend class HDFollower
 	enum ResurrectionFlags
 	{
 		RESF_BLUES = 1 << 0,
-		RESF_BLOOD = 1 << 1
+		RESF_BLOOD = 1 << 1,
+		RESF_MERCHANT = 1 << 2
 	}
 
 	// --------------------------------------------------
 	// VIRTUALS
 	// --------------------------------------------------
 
-	virtual clearscope int GetRequiredSips()
-	{
-		return clamp(BodyDamage / 200, 2, 12);
-	}
-
 	virtual clearscope int GetRequiredBlood()
 	{
 		return min(BloodReviveTicker / (35 * 4), 60);
+	}
+
+	virtual clearscope int GetRequiredSips()
+	{
+		return clamp(BodyDamage / 200, 2, 12);
 	}
 
 	// --------------------------------------------------
@@ -32,9 +33,20 @@ extend class HDFollower
 		}
 	}
 
+	protected void CheckMerchantHealing()
+	{
+		Name clsStr = 'HDMerchant';
+		class<Actor> cls = clsStr;
+		if (!cls)
+		{
+			return;
+		}
+		
+	}
+
 	protected void CheckRevive()
 	{
-		if (Blues > 0)
+		if (ResurrectType & RESF_BLUES && Blues > 0)
 		{
 			SpawnReviveParticles("2222FF");
 			if (++AbsorbedBlues >= 105 + GetRequiredSips() * 12 && level.time % 35 == 0)
@@ -54,7 +66,7 @@ extend class HDFollower
 				}
 			}
 		}
-		else // [Ace] Always check if player is bleeding if not currently healed by blues.
+		else if (ResurrectType & RESF_BLOOD && LinkedPlayer.woundcount > 0)
 		{
 			int RequiredBlood = GetRequiredBlood();
 			if (CanReach(MaxReviveDistance) == 0 && LinkedPlayer.woundcount > min(RequiredBlood, 40) && PlayerIsCrouching())
@@ -85,6 +97,35 @@ extend class HDFollower
 				}
 			}
 		}
+		else if (ResurrectType & RESF_MERCHANT)
+		{
+			Name clsStr = 'HDMerchant';
+			class<Actor> cls = clsStr;
+			if (!cls)
+			{
+				return;
+			}
+			if (CountProximity(cls, HDCONST_ONEMETRE * 2, CPXF_CLOSEST | CPXF_ANCESTOR) > 0)
+			{
+				SpawnReviveParticles("8822FF");
+				if (++MerchantReviveTicker >= 35 * 120 && level.time % 140 == 0)
+				{
+					if (!A_RaiseSelf())
+					{
+						ThinkMessage(LinkedPlayer, "$REVIVE_NOROOM_PLR");
+					}
+					else
+					{
+						if (FindState('Raise.Merchant', true))
+						{
+							SetStateLabel('Raise.Merchant');
+						}
+						bFRIENDLY = true;
+						PrintMessage(GetResponse("REVIVE_MERCHANT_SUCCESS"), "Revive/Merchant/Success", PMType_Important);
+					}
+				}
+			}
+		}
 	}
 
 	// [Ace] This is technically cheating, but otherwise the follower can get absolutely assblasted and become useless.
@@ -96,6 +137,7 @@ extend class HDFollower
 		AbsorbedBlues = 0;
 		AbsorbedBlood = 0;
 		BloodReviveTicker = 0;
+		MerchantReviveTicker = 0;
 		OhanaTicker = 0;
 	}
 
@@ -180,5 +222,8 @@ extend class HDFollower
 	private int AbsorbedBlood;
 	int BloodReviveTicker;
 
+	private int MerchantReviveTicker;
+
 	private int ReviveMethod;
+
 }

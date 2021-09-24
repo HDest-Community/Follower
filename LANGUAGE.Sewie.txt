@@ -88,6 +88,10 @@ SEWIE_REVIVE_BLOOD_SUCCESS_1 = "Mmm, delicious. Thanks!";
 SEWIE_REVIVE_BLOOD_SUCCESS_2 = "Uhm... You're bleeding.";
 SEWIE_REVIVE_BLOOD_SUCCESS_3 = "You taste funny. Have you been using blood bags lately?";
 
+SEWIE_REVIVE_MERCHANT_SUCCESS_1 = "I really hope I didn't get touched in inappropriate places.";
+SEWIE_REVIVE_MERCHANT_SUCCESS_2 = "These days even traders are surgeons. Or are they necromancers?";
+SEWIE_REVIVE_MERCHANT_SUCCESS_3 = "Aaaaaah! Spooky merchant!";
+
 SEWIE_ARMORGIVE_INIT_1 = "Oh, you have something for me? I'll wait for you to drop it.";
 SEWIE_ARMORGIVE_INIT_2 = "Sure, just drop it here.";
 SEWIE_ARMORGIVE_INIT_3 = "Gimme gimme!";

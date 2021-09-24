@@ -175,11 +175,6 @@ class HDFollower : HDHumanoid abstract
 
 		CheckOhana();
 
-		if (bFRIENDLY && Health > 0 && LinkedPlayer.Health <= 0)
-		{
-			return;
-		}
-
 		// [Ace] Only tick timer if idling.
 		if (!Moving)
 		{

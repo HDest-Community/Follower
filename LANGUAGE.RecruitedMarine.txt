@@ -68,9 +68,9 @@ MARINE_MEDIC_STIMMED_1 = "The fight isn't over yet, commander.";
 MARINE_MEDIC_STIMMED_2 = "This will help you, sir.";
 MARINE_MEDIC_STIMMED_3 = "Let's get you back into the fight, sir.";
 
-MARINE_REVIVE_BLUES_SUCCESS_1 = "Apologies for dying, sir. Won't happen again!";
-MARINE_REVIVE_BLUES_SUCCESS_2 = "I can't believe I got killed in action.";
-MARINE_REVIVE_BLUES_SUCCESS_3 = "I died? Damn.";
+MARINE_REVIVE_MERCHANT_SUCCESS_1 = "I owe them so much.";
+MARINE_REVIVE_MERCHANT_SUCCESS_2 = "I cannot thank them enough.";
+MARINE_REVIVE_MERCHANT_SUCCESS_3 = "Merchants are heroes.";
 
 MARINE_ARMORGIVE_INIT_1 = "Armor, sir? Wouldn't say no to that.";
 MARINE_ARMORGIVE_INIT_2 = "Just drop it right here, sir.";

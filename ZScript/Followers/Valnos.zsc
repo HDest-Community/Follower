@@ -13,7 +13,7 @@ class FollowerValnos : HDFollower
 		Tag "Valnos";
 		+HDFOLLOWER.SILENT
 		HDFollower.FollowerInfo 3, GENDER_MALE, 'FollowerBodyValnos', 'LeftBehindValnos';
-		HDFollower.ResurrectType RESF_BLUES;
+		HDFollower.ResurrectType RESF_BLUES | RESF_MERCHANT;
 		Scale 1;
 	}
 

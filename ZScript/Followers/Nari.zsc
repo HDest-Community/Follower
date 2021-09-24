@@ -12,7 +12,7 @@ class FollowerNari : HDFollower
 		DeathSound "Follower/Nari/Death";
 		Tag "Nari";
 		HDFollower.FollowerInfo 6, GENDER_FEMALE, 'FollowerBodyNari', 'LeftBehindNari';
-		HDFollower.ResurrectType RESF_BLUES;
+		HDFollower.ResurrectType RESF_BLUES | RESF_MERCHANT;
 	}
 
 	States

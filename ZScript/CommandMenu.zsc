@@ -1691,7 +1691,7 @@ extend class FollowerHandler
 		let mag = HDMagAmmo(pkp);
 		if (mag)
 		{
-			int mSize =  mag.Mags.Size();
+			int mSize = mag.Mags.Size();
 			return mSize > 0 && index < mSize;
 		}
 		if (pkp.bMULTIPICKUP)

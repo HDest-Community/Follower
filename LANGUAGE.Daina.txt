@@ -160,6 +160,10 @@ DAINA_REVIVE_BLOOD_SUCCESS_1 = "Mmm, delicious. Thanks!";
 DAINA_REVIVE_BLOOD_SUCCESS_2 = "Uhm... You're bleeding.";
 DAINA_REVIVE_BLOOD_SUCCESS_3 = "You taste funny. Have you been using blood bags lately?";
 
+DAINA_REVIVE_MERCHANT_SUCCESS_1 = "I really hope I didn't get touched in inappropriate places.";
+DAINA_REVIVE_MERCHANT_SUCCESS_2 = "These days even traders are surgeons. Or are they necromancers?";
+DAINA_REVIVE_MERCHANT_SUCCESS_3 = "Aaaaaah! Spooky merchant!";
+
 DAINA_ARMORGIVE_INIT_1 = "Oh, you have something for me? I'll wait for you to drop it.";
 DAINA_ARMORGIVE_INIT_2 = "Sure, just drop it here.";
 DAINA_ARMORGIVE_INIT_3 = "Gimme gimme!";

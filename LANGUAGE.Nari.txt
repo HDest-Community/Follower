@@ -84,9 +84,9 @@ NARI_REVIVE_BLUES_SUCCESS_1 = "Huh? What happened? How long have I been gone for
 NARI_REVIVE_BLUES_SUCCESS_2 = "I don't recall anything. Did I pass out?";
 NARI_REVIVE_BLUES_SUCCESS_3 = "Ow, my head hurts.";
 
-NARI_REVIVE_BLOOD_SUCCESS_1 = "Mmm, delicious. Thanks!";
-NARI_REVIVE_BLOOD_SUCCESS_2 = "Uhm... You're bleeding.";
-NARI_REVIVE_BLOOD_SUCCESS_3 = "You taste funny. Have you been using blood bags lately?";
+NARI_REVIVE_MERCHANT_SUCCESS_1 = "Oh wow, I got repaired!";
+NARI_REVIVE_MERCHANT_SUCCESS_2 = "All systems nominal, only thanks to this lovely trader here.";
+NARI_REVIVE_MERCHANT_SUCCESS_3 = "Hello, I'm back!";
 
 NARI_ARMORGIVE_INIT_1 = "Oh, you have something for me? I'll wait for you to drop it.";
 NARI_ARMORGIVE_INIT_2 = "Sure, just drop it here.";
