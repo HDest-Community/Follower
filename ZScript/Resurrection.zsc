@@ -94,10 +94,13 @@ extend class HDFollower
 			{
 				return;
 			}
-			if (CountProximity(cls, HDCONST_ONEMETRE * 2, CPXF_CLOSEST | CPXF_ANCESTOR) > 0)
+
+			int count = CountProximity(cls, HDCONST_ONEMETRE * 2, CPXF_CLOSEST | CPXF_ANCESTOR);
+			if (count > 0)
 			{
 				SpawnReviveParticles("8844FF");
-				if (++MerchantReviveTicker >= 35 * 60 * 10 && level.time % 140 == 0)
+				MerchantReviveTicker += count;
+				if (MerchantReviveTicker >= 35 * 60 * 10 && level.time % 140 == 0)
 				{
 					if (!A_RaiseSelf())
 					{
@@ -114,15 +117,17 @@ extend class HDFollower
 					}
 				}
 			}
+			else
+			{
+				MerchantReviveTicker = 0;
+			}
 		}
 	}
 
-	// [Ace] This is technically cheating, but otherwise the follower can get absolutely assblasted and become useless.
-	// It needs to be called directly after Raise so that the correct state is entered, if one actually exists.
 	protected void OnRevive()
 	{
 		Bloodloss = 0;
-		BodyDamage = 0;
+		BodyDamage = 0; // [Ace] This is technically cheating, but otherwise the follower can get absolutely assblasted and become useless.
 		Blues = 0;
 		AbsorbedBlues = 0;
 		AbsorbedBlood = 0;
