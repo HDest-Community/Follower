@@ -40,6 +40,16 @@ extend class HDFollower
 				next is 'HDFollower' ? HDFollower(next).GetDisplayName() : (next ? next.GetTag() : "nothing"));
 		}
 
+		if (hdf_debug == 4)
+		{
+			Console.Printf("Follower %s has %i/%i health, %i body damage, %i bloodloss, and %i shield.\n--------------------",
+				GetDisplayName(),
+				Health, default.Health,
+				BodyDamage,
+				Bloodloss,
+				GetAmount('HDMagicShield'));
+		}
+
 		pNeedsHelp = PlayerIsIncapped(); // [Ace] You're just incapped.
 		pNeedsMedic = PlayerNeedsMedic(); // [Ace] You're bleeding and incapped.
 		bool isHelping = IsHelpingPlayer();
@@ -158,6 +168,34 @@ extend class HDFollower
 				if (hdf_collectbrass)
 				{
 					VacuumBrass();
+				}
+
+				if (!Moving && Health < default.Health * 0.75 && GetAmount('BluePotion') > 0 && GetAge() % 20 == 0)
+				{
+					let potion = FindLowestAmount('BluePotion');
+					potion.Amount--;
+
+					int toHeal = default.Health / 4;
+					GiveBody(toHeal);
+					BodyDamage = max(0, BodyDamage - toHeal);
+					Bloodloss = max(0, Bloodloss - toHeal);
+					A_StartSound("potion/chug", 5);
+
+					if (potion.Amount == 0)
+					{
+						potion.Destroy();
+						A_StartSound("potion/open", 6);
+						
+						Actor a = Spawn("SpentBottle", pos + (0, 0, height- 4 ), ALLOW_REPLACE);
+						a.angle = angle + 2;
+						a.vel = vel;
+						a.A_ChangeVelocity(3, 1, 4, CVF_RELATIVE);
+						
+						a = Spawn("SpentCork", pos + (0, 0, height - 4) , ALLOW_REPLACE);
+						a.angle = angle + 3;
+						a.vel = vel;
+						a.A_ChangeVelocity(5, 3, 4, CVF_RELATIVE);
+					}
 				}
 			}
 		}

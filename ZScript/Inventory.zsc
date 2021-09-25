@@ -25,7 +25,7 @@ extend class HDFollower
 
 	virtual clearscope bool IsValidItem(class<HDPickup> cls, bool ignoreWeaponValidity = false)
 	{
-		return cls && ((cls is 'HDAmmo' && AmmoIsUsed((class<HDAmmo>)(cls)) || ignoreWeaponValidity) || cls == 'PortableMedikit' || cls == 'PortableStimpack');
+		return cls && ((cls is 'HDAmmo' && AmmoIsUsed((class<HDAmmo>)(cls)) || ignoreWeaponValidity) || cls == 'PortableMedikit' || cls == 'PortableStimpack' || cls == 'BluePotion');
 	}
 
 	// --------------------------------------------------
