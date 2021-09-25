@@ -77,7 +77,7 @@ extend class FollowerHandler
 			players[owningPlayer].mo.A_StartSound("misc/chat", 20, CHANF_LOCAL);
 		}
 
-		HDFollower Recruit = CreateFollower('RecruitedMarine', owningPlayer, m.pos);
+		HDFollower recruit = CreateFollower('RecruitedMarine', owningPlayer, GetUniqueIndex(10000), m.pos);
 
 		int Gender = 0;
 		string snd = m.SeeSound;
@@ -89,14 +89,14 @@ extend class FollowerHandler
 		{
 			Gender = 2;
 		}
-		Recruit.angle = m.angle;
-		Recruit.Health = m.Health;
-		Recruit.Gender = Gender;
-		Recruit.SeeSound = m.SeeSound;
-		Recruit.PainSound = m.PainSound;
-		Recruit.DeathSound = m.DeathSound;
-		Recruit.DisplayName = GetUniqueMarineName(Gender);
-		Recruit.Translation = m.Translation;
+		recruit.angle = m.angle;
+		recruit.Health = m.Health;
+		recruit.Gender = Gender;
+		recruit.SeeSound = m.SeeSound;
+		recruit.PainSound = m.PainSound;
+		recruit.DeathSound = m.DeathSound;
+		recruit.DisplayName = GetUniqueMarineName(Gender);
+		recruit.Translation = m.Translation;
 
 		switch (m.wep)
 		{

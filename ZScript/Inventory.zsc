@@ -134,6 +134,18 @@ extend class HDFollower
 		return true;
 	}
 
+	override void ClearInventory()
+	{
+		for (int i = 0; i < SlotCount; ++i)
+		{
+			if (Slots[i])
+			{
+				Slots[i].Destroy();
+			}
+		}
+		Super.ClearInventory();
+	}
+
 	void DropInvItem(InventorySlot slot, bool force = false)
 	{
 		if (!slot || !CanInteractWith())

@@ -74,5 +74,4 @@ Marines basically function the exact same way as regular followers, and you can 
 ### Modding
 ---
 - New followers can be added by inheriting from HDFollower and overriding the provided virtuals (if desired).
-- When making new followers, use a higher index. Internally, the three followers use indices 1-6. The index in KEYCONF and HDFollower.FollowerInfo needs to be the same number in both places. This index controls which follower gets manipulated by the reset/warp commands and where they get put in the list. To prevent conflicts, it is recommended to use numbers between 100 and 100 000 000 (excl.) to avoid conflicts with the base mod.
 - Do **NOT** add an `hdf_followers` option. This is an internal CVar and its only purpose is to allow players to control the built-in followers. If you don't want an addon follower to show up, don't load the addon.

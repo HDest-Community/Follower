@@ -247,11 +247,11 @@ class HDFollower : HDHumanoid abstract
 
 	string DisplayName;
 
-	meta uint Index;
+	uint Index;
 	int Gender;
 	meta class<FollowerBody> DataClass;
 	meta class<LeftBehindFollower> MissingClass; // [Ace] If this is null, assume follower is non-essential. Like marines.
-	property FollowerInfo: Index, Gender, DataClass, MissingClass;
+	property FollowerInfo: Gender, DataClass, MissingClass;
 
 	private int BehaviourFlags;
 	flagdef Silent: BehaviourFlags, 0;
@@ -282,6 +282,7 @@ class HDFollower : HDHumanoid abstract
 		+BOSSDEATH
 		+NOFEAR
 		+THRUSPECIES
+		+DONTTRANSLATE
 		HDMobBase.DownedFrame 16;
 		HDMobBase.MaxBloodLoss 400;
 		Species 'HDFollower';

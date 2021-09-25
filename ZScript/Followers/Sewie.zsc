@@ -11,7 +11,7 @@ class FollowerSewie : HDFollower
 		PainSound "Follower/Sewie/Pain";
 		DeathSound "Follower/Sewie/Death";
 		Tag "Sewie";
-		HDFollower.FollowerInfo 5, GENDER_FEMALE, 'FollowerBodySewie', 'LeftBehindSewie';
+		HDFollower.FollowerInfo GENDER_FEMALE, 'FollowerBodySewie', 'LeftBehindSewie';
 	}
 
 	States

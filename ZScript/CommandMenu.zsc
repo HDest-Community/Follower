@@ -645,7 +645,10 @@ extend class FollowerHandler
 				pos.y += RectangleHeight + Spacing;
 
 				Array<string> Commands;
-				Commands.Push("Change color");
+				if (!(lastFol.bDONTTRANSLATE))
+				{
+					Commands.Push("Change color");
+				}
 				if (selSize == 1 && lastFol.bCANDISMISS)
 				{
 					Commands.Push("\c[FLW_BloodRed]"..(Confirmation[consoleplayer] ? "Confirm?" : "Dismiss").."\c-");
@@ -1234,7 +1237,10 @@ extend class FollowerHandler
 					HDFollower lastFol = Selection[consoleplayer].GetLast();
 					int selSize = Selection[consoleplayer].SelFollowers.Size();
 
-					Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_ColorPicker));
+					if (!(lastFol.bDONTTRANSLATE))
+					{
+						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_ColorPicker));
+					}
 					if (selSize == 1 && lastFol.bCANDISMISS)
 					{
 						if (Confirmation[consoleplayer])
@@ -1351,43 +1357,22 @@ extend class FollowerHandler
 			return;
 		}
 
-		if (e.Name ~== "HDF_ResetFollower" && e.Args[0] > 0)
+		if (e.Name.MakeLower().IndexOf("hdf_resetfollower") != -1)
 		{
-			Array<class<HDFollower> > FollowerClasses;
+			Array<class<HDFollower> > classes;
+			FetchFollowerClasses(classes);
 
-			// [Ace] Find all follower classes first.
-			for (int i = 0; i < AllActorClasses.Size(); ++i)
-			{
-				if (AllActorClasses[i] is 'HDFollower' && AllActorClasses[i].GetClassName() != 'HDFollower')
-				{
-					FollowerClasses.Push((class<HDFollower>)(AllActorClasses[i]));
-				}
-			}
+			Array<string> split;
+			e.Name.Split(split, ":");
 
-			int FollowerIndex = e.Args[0];
-
-			// [Ace; 23.03.2021]
-			// The problem with FollowerIndex, in hindsight, is that if two followers share the same index, only the first one would get deleted.
-			// I should have used class name for filtering. Unfortunately, it's too late. Not without breaking all of the existing follower sub-addons. Ah well.
-
-			// [Ace] Destroy the class that is being reset, if applicable, then recreate it.
 			for (int i = 0; i < Followers.Size(); ++i)
 			{
-				if (Followers[i].Index == FollowerIndex)
+				if (Followers[i].GetDisplayName() ~== split[1])
 				{
-					RemoveFollower(Followers[i]);
+					Followers[i].Reset();
 					break;
 				}
 			}
-			for (int i = 0; i < FollowerClasses.Size(); ++i)
-			{
-				if (GetDefaultByType(FollowerClasses[i]).Index == FollowerIndex)
-				{
-					CreateFollower(FollowerClasses[i], e.Player);
-					break;
-				}
-			}
-			return;
 		}
 
 		if (e.Name ~== "HDF_ConfirmRecruitment" && !e.IsManual)
@@ -1461,11 +1446,14 @@ extend class FollowerHandler
 		}
 
 		// [Ace] This is an obvious cheat, so don't use it unless you absolutely HAVE to.
-		if (e.Name ~== "HDF_WarpToPlayer")
+		if (e.Name.MakeLower().IndexOf("hdf_warptoplayer") != -1)
 		{
+			Array<string> split;
+			e.Name.Split(split, ":");
+
 			for (int i = 0; i < Followers.Size(); ++i)
 			{
-				if (Followers[i].Index == e.Args[0])
+				if (Followers[i].GetDisplayName() ~== split[1])
 				{
 					Followers[i].WarpToPlayer();
 					break;
@@ -1610,7 +1598,10 @@ extend class FollowerHandler
 			for (int i = 0; i < Selection[consoleplayer].SelFollowers.Size(); ++i)
 			{
 				let flw = Selection[consoleplayer].SelFollowers[i];
-				flw.A_SetTranslation("FollowerTranslation"..e.Args[0]);
+				if (!(flw.bDONTTRANSLATE))
+				{
+					flw.A_SetTranslation("FollowerTranslation"..e.Args[0]);
+				}
 			}
 			return;
 		}

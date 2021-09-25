@@ -5,7 +5,7 @@ class RecruitedMarine : HDFollower
 		Tag "Marine";
 		+HDMOBBASE.HASHELMET
 		+HDFOLLOWER.CANDISMISS
-		HDFollower.FollowerInfo 100000000, GENDER_MALE, 'FollowerBodyMarine', '';
+		HDFollower.FollowerInfo GENDER_MALE, 'FollowerBodyMarine', '';
 		HDFollower.ResurrectType RESF_MERCHANT;
 	}
 

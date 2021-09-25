@@ -1,6 +1,7 @@
 class FollowerData play
 {
 	class<HDFollower> FollowerClass;
+	uint Index;
 
 	string DisplayName;
 	int Gender;
@@ -67,6 +68,7 @@ extend class HDFollower
 		let FBody = FollowerBody(LinkedPlayer.FindInventory(DataClass));
 
 		FData.FollowerClass = GetClass();
+		FData.Index = Index;
 
 		FData.DisplayName = GetDisplayName();
 		FData.Gender = Gender;
@@ -223,6 +225,8 @@ class FollowerBody : HDPickup abstract
 					if (success)
 					{
 						let Follower = HDFollower(a);
+						Follower.Index = FData.Index;
+						
 						let Handler = FollowerHandler(EventHandler.Find("FollowerHandler"));
 						Handler.InsertFollower(Follower);
 

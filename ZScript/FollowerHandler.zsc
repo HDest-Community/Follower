@@ -38,63 +38,40 @@ class FollowerHandler : EventHandler
 			}
 		}
 
-		int FollowerSpawns = hdf_followers;
+		int spawnFlags = hdf_followers;
 		Array<FollowerBody> InvFollowers;
 		FetchFollowersInInventory(InvFollowers);
 		for (int i = 0; i < FollowerClasses.Size(); ++i)
 		{
-			// [Ace] FollowerSpawns only affects built-in followers.
-			if (FollowerSpawns & (1 << i) || i > InternalFollowers - 1)
+			// [Ace] spawnFlags only affects built-in followers.
+			if (spawnFlags & (1 << i) || i > InternalFollowers - 1)
 			{
-				int Index = -1;
+				int index = -1;
 				for (int j = 0; j < InvFollowers.Size(); ++j)
 				{
 					if (InvFollowers[j].Data[InvFollowers[j].Data.Size() - 1].FollowerClass == FollowerClasses[i])
 					{
-						Index = j;
+						index = j;
 						break;
 					}
 				}
 				
 				// [Ace] Only attempt to spawn a follower if they haven't been picked up by any of the other players.
-				if (Index == -1)
+				if (index == -1)
 				{
 					if (GetDefaultByType(FollowerClasses[i]).MissingClass)
 					{
-						CreateFollower(FollowerClasses[i], Net_Arbitrator);
+						CreateFollower(FollowerClasses[i], Net_Arbitrator, GetUniqueIndex(1));
 					}
 				}
-				else if (CVar.GetCVar('hdf_droponstart', InvFollowers[Index].owner.player).GetBool())
+				else if (CVar.GetCVar('hdf_droponstart', InvFollowers[index].owner.player).GetBool())
 				{
-					for (int j = 0; j < 50 && InvFollowers[Index]; ++j)
+					for (int j = 0; j < 50 && InvFollowers[index]; ++j)
 					{
-						InvFollowers[Index].owner.UseInventory(InvFollowers[Index]);
+						InvFollowers[index].owner.UseInventory(InvFollowers[index]);
 					}
-					InvFollowers.Delete(Index);
+					InvFollowers.Delete(index);
 				}
-			}
-		}
-	}
-
-	private void FetchFollowersInInventory(out Array<FollowerBody> arr)
-	{
-		arr.Clear();
-		for (int i = 0; i < MAXPLAYERS; ++i)
-		{
-			let plr = players[i].mo;
-			if (!plr)
-			{
-				continue;
-			}
-
-			Inventory Next = plr.Inv;
-			while (Next)
-			{
-				if (Next is 'FollowerBody')
-				{
-					arr.Push(FollowerBody(Next));
-				}
-				Next = Next.Inv;
 			}
 		}
 	}
@@ -167,6 +144,45 @@ class FollowerHandler : EventHandler
 		if (FollowerPage[consoleplayer] > 0 && FollowerMenuLevel[consoleplayer] == FMenu_Closed)
 		{
 			FollowerPage[consoleplayer] = 0;
+		}
+	}
+
+	// ----------------------------------------------------------
+	// ACTIONS
+	// ----------------------------------------------------------
+
+	private void FetchFollowersInInventory(out Array<FollowerBody> arr)
+	{
+		arr.Clear();
+		for (int i = 0; i < MAXPLAYERS; ++i)
+		{
+			let plr = players[i].mo;
+			if (!plr)
+			{
+				continue;
+			}
+
+			Inventory Next = plr.Inv;
+			while (Next)
+			{
+				if (Next is 'FollowerBody')
+				{
+					arr.Push(FollowerBody(Next));
+				}
+				Next = Next.Inv;
+			}
+		}
+	}
+
+	private void FetchFollowerClasses(out Array<class<HDFollower> > arr)
+	{
+		arr.Clear();
+		for (int i = 0; i < AllActorClasses.Size(); ++i)
+		{
+			if (AllActorClasses[i] is 'HDFollower' && !AllActorClasses[i].IsAbstract())
+			{
+				arr.Push((class<HDFollower>)(AllActorClasses[i]));
+			}
 		}
 	}
 

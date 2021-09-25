@@ -11,7 +11,7 @@ class FollowerDaina : HDFollower
 		PainSound "Follower/Daina/Pain";
 		DeathSound "Follower/Daina/Death";
 		Tag "Daina";
-		HDFollower.FollowerInfo 4, GENDER_FEMALE, 'FollowerBodyDaina', 'LeftBehindDaina';
+		HDFollower.FollowerInfo GENDER_FEMALE, 'FollowerBodyDaina', 'LeftBehindDaina';
 	}
 
 	States

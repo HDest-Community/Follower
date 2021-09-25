@@ -11,7 +11,7 @@ class FollowerFreylis : HDFollower
 		PainSound "Follower/Freylis/Pain";
 		DeathSound "Follower/Freylis/Death";
 		Tag "Freylis";
-		HDFollower.FollowerInfo 1, GENDER_FEMALE, 'FollowerBodyFreylis', 'LeftBehindFreylis';
+		HDFollower.FollowerInfo GENDER_FEMALE, 'FollowerBodyFreylis', 'LeftBehindFreylis';
 		XScale 1.06;
 	}
 

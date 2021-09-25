@@ -3,7 +3,7 @@ extend class FollowerHandler
 	const InternalFollowers = 6;
 	Array<HDFollower> Followers;
 
-	private HDFollower CreateFollower(class<HDFollower> flw, int playerNum, vector3 pos = (0, 0, 0))
+	private HDFollower CreateFollower(class<HDFollower> flw, int playerNum, uint newIndex, vector3 pos = (0, 0, 0))
 	{
 		let plr = players[playerNum].mo;
 		if (plr)
@@ -25,15 +25,17 @@ extend class FollowerHandler
 				}
 				if (success)
 				{
-					let Follower = HDFollower(a);
-					InsertFollower(Follower);
+					let fol = HDFollower(a);
+					fol.Index = newIndex;
 					
-					Follower.ChangeLinkedPlayer(HDPlayerPawn(plr));
+					InsertFollower(fol);
+					
+					fol.ChangeLinkedPlayer(HDPlayerPawn(plr));
 
 					// [Ace] These are here so that they are only called once when the follower is created.
-					Follower.InitWeapons();
-					Follower.GiveStartingItems();
-					return Follower;
+					fol.InitWeapons();
+					fol.GiveStartingItems();
+					return fol;
 				}
 			}
 		}
@@ -42,7 +44,7 @@ extend class FollowerHandler
 
 	void InsertFollower(HDFollower flw)
 	{
-		int InsIndex = 0;
+		int insIndex = 0;
 		int FollowerCount = Followers.Size();
 		if (FollowerCount > 0)
 		{
@@ -50,16 +52,16 @@ extend class FollowerHandler
 			{
 				if (flw.Index >= Followers[i].Index)
 				{
-					InsIndex = i + 1;
+					insIndex = i + 1;
 				}
 				else
 				{
-					InsIndex = i;
+					insIndex = i;
 					break;
 				}
 			}
 		}
-		Followers.Insert(InsIndex, flw);
+		Followers.Insert(insIndex, flw);
 	}
 
 	void RemoveFollower(HDFollower flw, bool permanent = false, bool noDestroy = false)
@@ -77,6 +79,37 @@ extend class FollowerHandler
 			}
 			Followers.Delete(Index);
 		}
+	}
+
+	// --------------------------------------------------
+	// INFORMATION
+	// --------------------------------------------------
+
+	private int GetUniqueIndex(int start = 100000000)
+	{
+		Array<FollowerBody> invFol;
+		FetchFollowersInInventory(invFol);
+
+		Array<int> indices;
+		for (int i = 0; i < Followers.Size(); ++i)
+		{
+			indices.Push(Followers[i].Index);
+		}
+		for (int i = 0; i < invFol.Size(); ++i)
+		{
+			for (int j = 0; j < invFol[i].Data.Size(); ++j)
+			{
+				indices.Push(invFol[i].Data[j].Index);
+			}
+		}
+
+		int size = indices.Size();
+		while (size > 0 && indices.Find(start) != size)
+		{
+			start++;
+		}
+
+		return start;
 	}
 }
 
@@ -118,5 +151,24 @@ extend class HDFollower
 			Console.Printf("%s disconnected.", DisplayName);
 		}
 		Handler.RemoveFollower(self, true);
+	}
+
+	virtual void Reset()
+	{
+		OnRevive();
+		ResetDamageCounters();
+		GiveBody(-100);
+
+		InitWeapons();
+		ClearInventory();
+		GiveStartingItems();
+
+		SuturesLeft = 0;
+
+		Status = FStatus_None;
+		Order = FOrder_Follow;
+
+		bNOPAIN = default.bNOPAIN;
+		Translation = default.Translation;
 	}
 }

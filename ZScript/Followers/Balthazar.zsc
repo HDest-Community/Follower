@@ -12,8 +12,9 @@ class FollowerBalthazar : HDFollower
 		DeathSound "Follower/Balthazar/Death";
 		Tag "Balthazar";
 		+HDMOBBASE.HASHELMET
-		HDFollower.FollowerInfo 2, GENDER_MALE, 'FollowerBodyBalthazar', 'LeftBehindBalthazar';
+		HDFollower.FollowerInfo GENDER_MALE, 'FollowerBodyBalthazar', 'LeftBehindBalthazar';
 		Scale 0.9;
+		-DONTTRANSLATE
 	}
 
 	States

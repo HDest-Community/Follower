@@ -121,6 +121,7 @@ extend class HDFollower
 	// It needs to be called directly after Raise so that the correct state is entered, if one actually exists.
 	protected void OnRevive()
 	{
+		Bloodloss = 0;
 		BodyDamage = 0;
 		Blues = 0;
 		AbsorbedBlues = 0;

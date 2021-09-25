@@ -12,7 +12,7 @@ class FollowerValnos : HDFollower
 		DeathSound "Follower/Valnos/Death";
 		Tag "Valnos";
 		+HDFOLLOWER.SILENT
-		HDFollower.FollowerInfo 3, GENDER_MALE, 'FollowerBodyValnos', 'LeftBehindValnos';
+		HDFollower.FollowerInfo GENDER_MALE, 'FollowerBodyValnos', 'LeftBehindValnos';
 		HDFollower.ResurrectType RESF_BLUES | RESF_MERCHANT;
 		Scale 1;
 	}
