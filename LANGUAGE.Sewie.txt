@@ -44,6 +44,22 @@ SEWIE_ORDER_HELP3_1 = "I don't see anything wrong.";
 SEWIE_ORDER_HELP3_2 = "Are you sure you need help?";
 SEWIE_ORDER_HELP3_3 = "If you want me to come, there are easier ways to do that.";
 
+SEWIE_ORDER_HEAL_NOSUPPLIES_1 = "I'm all out of supplies.";
+SEWIE_ORDER_HEAL_NOSUPPLIES_2 = "Would you mind tossing me a medikit?";
+SEWIE_ORDER_HEAL_NOSUPPLIES_3 = "Oops! Looks like I'm all out of staples!";
+
+SEWIE_ORDER_HEAL_NONEED_1 = "Thanks, sweetheart, but I feel just fine.";
+SEWIE_ORDER_HEAL_NONEED_2 = "I feel A-OK!";
+SEWIE_ORDER_HEAL_NONEED_3 = "B-but I'm not even hurt!";
+
+SEWIE_ORDER_HEAL1_1 = "Working on it.";
+SEWIE_ORDER_HEAL1_2 = "I could do it faster if you give me a hand.";
+SEWIE_ORDER_HEAL1_3 = "I'm stapling as fast as I can. It really hurts!";
+
+SEWIE_ORDER_HEAL2_1 = "Ouchie!";
+SEWIE_ORDER_HEAL2_2 = "This feels just like sewing clothes! Oof.";
+SEWIE_ORDER_HEAL2_3 = "Oh boy, this is going to hurt.";
+
 SEWIE_CARRY_SUCCESS_1 = "Be gentle, okay?";
 SEWIE_CARRY_SUCCESS_2 = "Wheeeee!";
 SEWIE_CARRY_SUCCESS_3 = "This is fun!";

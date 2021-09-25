@@ -4,27 +4,38 @@ extend class HDFollower
 	// ACTIONS
 	// --------------------------------------------------
 
-	protected void PatchWound(int amt, actor targ)
+	protected void StopHealing()
 	{
-		let plr = HDPlayerPawn(targ);
-		if(plr)
+		ClearGoal();
+		Status = FStatus_None;
+		Order = PrevOrder;
+		SetStateLabel('Idle');
+	}
+
+	protected void HealSelf(int amt)
+	{
+		GiveBody(amt);
+		BodyDamage = max(0, BodyDamage - amt);
+		Bloodloss = max(0, Bloodloss - amt);
+	}
+
+	protected void HealPlayer(int amt)
+	{
+		int wound = max(LinkedPlayer.woundcount, 0);
+		int unstablewound = max(LinkedPlayer.unstablewoundcount, 0);
+		if (wound)
 		{
-			int wound = max(plr.woundcount, 0);
-			int unstablewound = max(plr.unstablewoundcount, 0);
-			if (wound)
-			{
-				plr.woundcount = max(0, wound - amt);
-			}
-			else if (unstablewound)
-			{
-				plr.unstablewoundcount = max(0, unstablewound - amt);
-			}
-			else
-			{
-				amt = 0;
-			}
-			plr.oldwoundcount += amt;
+			LinkedPlayer.woundcount = max(0, wound - amt);
 		}
+		else if (unstablewound)
+		{
+			LinkedPlayer.unstablewoundcount = max(0, unstablewound - amt);
+		}
+		else
+		{
+			amt = 0;
+		}
+		LinkedPlayer.oldwoundcount += amt;
 	}
 
 	protected bool TryUnwrapMedikit()
@@ -54,29 +65,6 @@ extend class HDFollower
 		return LinkedPlayer && LinkedPlayer.stimcount < 4 && GetAmount('PortableStimpack') > 0 && LinkedPlayer.regenblues <= 2 && LinkedPlayer.Health < 30; // [Ace] Don't stim player unless it's necessary.
 	}
 
-	clearscope bool IsHelpingPlayer()
-	{
-		if (Order != FOrder_ComeAndHelp)
-		{
-			return false;
-		}
-
-		static const StateLabel HealingStates[] =
-		{
-			"StapleHumptyDumptyBackTogetherAgain", "PatchUpEnd", "ApplyStim", "PullYouUp"
-		};
-
-		for (int i = 0; i < HealingStates.Size(); ++i)
-		{
-			if (InStateSequence(CurState, FindState(HealingStates[i])))
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-
 	clearscope bool PlayerHasWounds()
 	{
 		return LinkedPlayer && (LinkedPlayer.woundcount > 0 || LinkedPlayer.unstablewoundcount > 0);
@@ -103,6 +91,8 @@ extend class HDFollower
 
 	const MedicRange = 40;
 
+	const MinSelfHealPercent = 0.9;
+
 	States
 	{
 		PullYouUp:
@@ -110,8 +100,7 @@ extend class HDFollower
 			{
 				if (!PNeedsHelp)
 				{
-					ClearGoal();
-					SetStateLabel('Idle');
+					StopHealing();
 					return;
 				}
 
@@ -145,7 +134,11 @@ extend class HDFollower
 
 				if (SuturesLeft == 0)
 				{
-					TryUnwrapMedikit();
+					if (!TryUnwrapMedikit())
+					{
+						StopHealing();
+						return;
+					}
 				}
 
 				A_Face(LinkedPlayer);
@@ -158,7 +151,7 @@ extend class HDFollower
 				A_Face(LinkedPlayer);
 
 				LinkedPlayer.A_StartSound("misc/smallslop", CHAN_BODY, CHANF_OVERLAP);
-				if(!random(0, 6))
+				if (!random(0, 6))
 				{
 					SetStateLabel('PatchUpEnd');
 				}
@@ -170,9 +163,46 @@ extend class HDFollower
 			#### J 10
 			{
 				SuturesLeft--;
-				PatchWound(1, LinkedPlayer);
+				HealPlayer(1);
 			}
 			Goto StapleHumptyDumptyBackTogetherAgain;
+
+		StapleOwnAss:
+			#### A 10;
+			#### A 5
+			{
+				if (Health > default.Health * MinSelfHealPercent)
+				{
+					StopHealing();
+					return;
+				}
+
+				if (SuturesLeft == 0)
+				{
+					if (!TryUnwrapMedikit())
+					{
+						StopHealing();
+						return;
+					}
+				}
+
+				A_StartSound("medikit/stopper", CHAN_WEAPON, CHANF_OVERLAP);
+				A_StartSound("misc/bulletflesh", CHAN_BODY, CHANF_OVERLAP);
+			}
+			#### GGGGG 3
+			{
+				A_StartSound("medikit/staple", CHAN_WEAPON);
+				A_StartSound("misc/smallslop", CHAN_BODY, CHANF_OVERLAP);
+				A_StartSound(PainSound, CHAN_VOICE, CHANF_NOSTOP);
+			}
+		PatchUpSelfEnd:
+			#### A 10
+			{
+				GiveBody(10);
+				SuturesLeft--;
+			}
+			Goto StapleOwnAss;
+
 		ApplyStim:
 			#### J 25 A_Face(LinkedPlayer);
 			#### J 20

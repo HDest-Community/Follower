@@ -2,6 +2,8 @@ enum FStatus
 {
 	FStatus_None,
 	FStatus_InCombat,
+	FStatus_HealingSelf,
+	FStatus_HealingPlayer,
 	FStatus_WaitingForArmor,
 	FStatus_WaitingForWeapon,
 	FStatus_InactiveOrDead
@@ -18,8 +20,13 @@ extend class HDFollower
 	// ACTIONS
 	// --------------------------------------------------
 
-	private void AiThink()
+	protected void AiThink()
 	{
+		if (Status == FStatus_InactiveOrDead || InStateSequence(CurState, FindState("Spawn"))) // [Ace] I don't remember why the Spawn state check...
+		{
+			return;
+		}
+
 		int blockedSides = GetBlockedSides();
 
 		Actor next = GetNextInChain();
@@ -52,33 +59,20 @@ extend class HDFollower
 
 		pNeedsHelp = PlayerIsIncapped(); // [Ace] You're just incapped.
 		pNeedsMedic = PlayerNeedsMedic(); // [Ace] You're bleeding and incapped.
-		bool isHelping = IsHelpingPlayer();
 		int ffcount = Handler.FollowingFollowersCount();
 		int findex = Handler.Followers.Find(self);
 		double distDiv = next != LinkedPlayer ? 1.0 + 0.13 * (min(8, ffcount - 1)) : 1.0;
 		
 		if (Status != FStatus_InCombat)
 		{
-			if (SelWeapon)
+			if (Order == FOrder_HealSelf && !Moving && Status != FStatus_HealingSelf)
 			{
-				ClearWeapon();
-			}
-			else
-			{
-				ClearTarget();
+				Status = FStatus_HealingSelf;
+				SetStateLabel('StapleOwnAss');
 			}
 
-			if (!isHelping)
-			{
-				if (!Moving && !IsInIdleState())
-				{
-					SetStateLabel('Idle');
-				}
-				else if (Moving && !IsInMovingState())
-				{
-					SetStateLabel('Moving');
-				}
-			}
+			ClearWeapon();
+			ClearTarget();
 
 			if (Status >= FStatus_WaitingForArmor && Status <= FStatus_WaitingForWeapon)
 			{
@@ -103,16 +97,27 @@ extend class HDFollower
 			}
 			else if (Status == FStatus_None)
 			{
+				if (!Moving && !IsInIdleState())
+				{
+					SetStateLabel('Idle');
+				}
+				else if (Moving && !IsInMovingState())
+				{
+					SetStateLabel('Moving');
+				}
+
 				if (Order == FOrder_ComeAndHelp && bFRIENDLY && DistanceToPlayer < 512 && CanSeePlayer)
 				{
-					if (DistanceToPlayer < MedicRange && !isHelping) // [Ace] Start stapling if close enough. Minimum distance is 22. Don't go any lower or follower will be stuck walking towards you.
+					if (DistanceToPlayer < MedicRange && Status != FStatus_HealingPlayer) // [Ace] Start stapling if close enough. Minimum distance is 22. Don't go any lower or follower will be stuck walking towards you.
 					{
 						if (pNeedsMedic)
 						{
+							Status = FStatus_HealingPlayer;
 							SetStateLabel('StapleHumptyDumptyBackTogetherAgain');
 						}
 						else if (pNeedsHelp)
 						{
+							Status = FStatus_HealingPlayer;
 							SetStateLabel('PullYouUp');
 						}
 						else
@@ -170,15 +175,13 @@ extend class HDFollower
 					VacuumBrass();
 				}
 
-				if (!Moving && Health < default.Health * 0.75 && GetAmount('BluePotion') > 0 && GetAge() % 20 == 0)
+				if (Order <= FOrder_Cover && !Moving && Health < default.Health * 0.75 && GetAmount('BluePotion') > 0 && GetAge() % 20 == 0)
 				{
 					let potion = FindLowestAmount('BluePotion');
 					potion.Amount--;
 
 					int toHeal = default.Health / 4;
-					GiveBody(toHeal);
-					BodyDamage = max(0, BodyDamage - toHeal);
-					Bloodloss = max(0, Bloodloss - toHeal);
+					HealSelf(toHeal);
 					A_StartSound("potion/chug", 5);
 
 					if (potion.Amount == 0)
@@ -213,7 +216,7 @@ extend class HDFollower
 		scale.y = default.scale.y * (1.0 - CrouchFactor);
 		A_SetSize(-1, default.Height * (1.0 - CrouchFactor));
 		
-		if (Weapons.Size() > 0 && HasUsableWeapons() && (Status != FStatus_InCombat || !SelWeapon) && (!bFRIENDLY || Order == FOrder_Follow || Order == FOrder_Cover || Order == FOrder_ComeAndHelp))
+		if (Weapons.Size() > 0 && HasUsableWeapons() && (Status != FStatus_InCombat || !SelWeapon) && (!bFRIENDLY || Order != FOrder_FollowIgnore && Order != FOrder_GoAndCover))
 		{
 			LookForEnemies();
 		}
@@ -423,6 +426,7 @@ extend class HDFollower
 	private bool Moving;
 	FStatus Status;
 	FOrder Order;
+	private FOrder PrevOrder;
 
 	private vector3 LastKnownPos;
 

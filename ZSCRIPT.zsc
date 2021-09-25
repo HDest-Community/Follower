@@ -183,7 +183,7 @@ class HDFollower : HDHumanoid abstract
 
 		if (Health > 0)
 		{
-			if (level.time % 3 == 0 && Status != FStatus_InactiveOrDead && !InStateSequence(CurState, FindState("Spawn")))
+			if (level.time % 3 == 0)
 			{
 				AiThink();
 			}

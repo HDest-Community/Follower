@@ -523,7 +523,7 @@ extend class FollowerHandler
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
 					return;
 				}
-				static const string Orders[] = { "Follow", "Follow and ignore hostiles", "Stay and provide cover", "Go there and provide cover", "Come and help me" };
+				static const string Orders[] = { "Follow", "Follow and ignore hostiles", "Stay and provide cover", "Go there and provide cover", "Come and help me", "Do some healing" };
 
 				if (selSize > 1)
 				{
@@ -1087,6 +1087,7 @@ extend class FollowerHandler
 					Commands.Push(CreateCommand("HDF_ChangeOrders", HDFollower.FOrder_Cover));
 					Commands.Push(CreateCommand("HDF_ChangeOrders", HDFollower.FOrder_GoAndCover));
 					Commands.Push(CreateCommand("HDF_ChangeOrders", HDFollower.FOrder_ComeAndHelp));
+					Commands.Push(CreateCommand("HDF_ChangeOrders", HDFollower.FOrder_HealSelf));
 					Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Main));
 					break;
 				}

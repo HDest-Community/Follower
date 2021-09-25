@@ -299,7 +299,7 @@ extend class HDFollower
 			}
 			#### H 0
 			{
-				bNOPAIN = false;
+				bNOPAIN = default.bNOPAIN;
 			}
 			Goto ShootBoss;
 		ReloadBoss:

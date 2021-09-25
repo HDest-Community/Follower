@@ -44,6 +44,23 @@ FREYLIS_ORDER_HELP3_1 = "You look okay to me.";
 FREYLIS_ORDER_HELP3_2 = "I don't need to do that.";
 FREYLIS_ORDER_HELP3_3 = "You'll be just fine.";
 
+FREYLIS_ORDER_HEAL_NOSUPPLIES_1 = "I don't really have anything to do that with.";
+FREYLIS_ORDER_HEAL_NOSUPPLIES_2 = "That's great and all, but I don't have a medikit.";
+FREYLIS_ORDER_HEAL_NOSUPPLIES_3 = "I would if you give me supplies.";
+
+FREYLIS_ORDER_HEAL_NONEED_1 = "I'm good, but I appreciate the concern.";
+FREYLIS_ORDER_HEAL_NONEED_2 = "Nah. No need.";
+FREYLIS_ORDER_HEAL_NONEED_3 = "I'm feeling well enough. Why waste precious staples?";
+
+FREYLIS_ORDER_HEAL1_1 = "What does it look like I'm doing!?";
+FREYLIS_ORDER_HEAL1_2 = "Shut up.";
+FREYLIS_ORDER_HEAL1_3 = "I'll staple your mouth shut if you don't stop telling me that.";
+
+FREYLIS_ORDER_HEAL2_1 = "This is going to hurt.";
+FREYLIS_ORDER_HEAL2_2 = "Yeah, I think it's time for some stapling.";
+FREYLIS_ORDER_HEAL2_3 = "I'm going to look like just incredible after this...";
+FREYLIS_ORDER_HEAL2_4 = "I really wish vampires didn't feel pain. Ouch.";
+
 FREYLIS_CARRY_SUCCESS_1 = "I don't like being carried, but if you insist...";
 FREYLIS_CARRY_SUCCESS_2 = "Put me down, damn it!";
 FREYLIS_CARRY_SUCCESS_3 = "I'm not a backpack.";

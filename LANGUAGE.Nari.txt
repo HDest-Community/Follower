@@ -44,6 +44,22 @@ NARI_ORDER_HELP3_1 = "I don't see anything wrong.";
 NARI_ORDER_HELP3_2 = "Are you sure you need help?";
 NARI_ORDER_HELP3_3 = "If you want me to come, there are easier ways to do that.";
 
+NARI_ORDER_HEAL_NOSUPPLIES_1 = "I'm all out of supplies.";
+NARI_ORDER_HEAL_NOSUPPLIES_2 = "Would you mind tossing me a medikit?";
+NARI_ORDER_HEAL_NOSUPPLIES_3 = "Oops! Looks like I'm all out of staples!";
+
+NARI_ORDER_HEAL_NONEED_1 = "Thanks, sweetheart, but I feel just fine.";
+NARI_ORDER_HEAL_NONEED_2 = "I feel A-OK!";
+NARI_ORDER_HEAL_NONEED_3 = "B-but I'm not even hurt!";
+
+NARI_ORDER_HEAL1_1 = "Working on it.";
+NARI_ORDER_HEAL1_2 = "I could do it faster if you give me a hand.";
+NARI_ORDER_HEAL1_3 = "I'm stapling as fast as I can. It really hurts!";
+
+NARI_ORDER_HEAL2_1 = "Ouchie!";
+NARI_ORDER_HEAL2_2 = "This feels just like sewing clothes! Oof.";
+NARI_ORDER_HEAL2_3 = "Oh boy, this is going to hurt.";
+
 NARI_CARRY_SUCCESS_1 = "Be gentle, okay?";
 NARI_CARRY_SUCCESS_2 = "Wheeeee!";
 NARI_CARRY_SUCCESS_3 = "This is fun!";
