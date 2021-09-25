@@ -77,7 +77,7 @@ extend class HDFollower
 
 	clearscope bool PlayerNeedsMedic()
 	{
-		return LinkedPlayer && LinkedPlayer.Health > 2 && PlayerIsIncapped() && (PlayerHasWounds() && !LinkedPlayer.FindInventory('HDArmourWorn') && (GetAmount('PortableMedikit') > 0 || SuturesLeft > 0) || CanApplyStim());
+		return LinkedPlayer && LinkedPlayer.Health > 2 && (PlayerHasWounds() && !LinkedPlayer.FindInventory('HDArmourWorn') && (GetAmount('PortableMedikit') > 0 || SuturesLeft > 0) || CanApplyStim());
 	}
 
 	// --------------------------------------------------
@@ -119,12 +119,19 @@ extend class HDFollower
 			#### JK 5;
 			#### L 5
 			{
+				if (DistanceToPlayer > HDCONST_ONEMETRE * 1.2)
+				{
+					StopHealing();
+					return;
+				}
+
 				if (CanApplyStim())
 				{
 					Find('PortableStimpack').Destroy();
 					SetStateLabel('ApplyStim');
 					return;
 				}
+
 				if (!PNeedsMedic)
 				{
 					ClearGoal();
@@ -147,6 +154,12 @@ extend class HDFollower
 			}
 			#### LLLLL 3
 			{
+				if (DistanceToPlayer > HDCONST_ONEMETRE * 1.2)
+				{
+					StopHealing();
+					return;
+				}
+
 				A_StartSound("medikit/staple", CHAN_WEAPON);
 				A_Face(LinkedPlayer);
 
