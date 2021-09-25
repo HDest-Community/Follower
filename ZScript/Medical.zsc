@@ -54,21 +54,6 @@ extend class HDFollower
 		return LinkedPlayer && LinkedPlayer.stimcount < 4 && GetAmount('PortableStimpack') > 0 && LinkedPlayer.regenblues <= 2 && LinkedPlayer.Health < 30; // [Ace] Don't stim player unless it's necessary.
 	}
 
-	clearscope bool PlayerHasWounds()
-	{
-		return LinkedPlayer && (LinkedPlayer.woundcount > 0 || LinkedPlayer.unstablewoundcount > 0);
-	}
-
-	clearscope bool PlayerIsIncapped()
-	{
-		return LinkedPlayer && LinkedPlayer.incapacitated >= 20 && (LinkedPlayer.incaptimer > MinIncap || LinkedPlayer.Health < 15); // [Ace] Player can't get up if lying on the floor at < 15 health, even if timer is 0.
-	}
-
-	clearscope bool PlayerNeedsMedic()
-	{
-		return LinkedPlayer && LinkedPlayer.Health > 2 && PlayerIsIncapped() && (PlayerHasWounds() && !LinkedPlayer.FindInventory('HDArmourWorn') && (GetAmount('PortableMedikit') > 0 || SuturesLeft > 0) || CanApplyStim());
-	}
-	
 	clearscope bool IsHelpingPlayer()
 	{
 		if (Order != FOrder_ComeAndHelp)
@@ -90,6 +75,21 @@ extend class HDFollower
 		}
 
 		return false;
+	}
+
+	clearscope bool PlayerHasWounds()
+	{
+		return LinkedPlayer && (LinkedPlayer.woundcount > 0 || LinkedPlayer.unstablewoundcount > 0);
+	}
+
+	clearscope bool PlayerIsIncapped()
+	{
+		return LinkedPlayer && LinkedPlayer.incapacitated >= 20 && (LinkedPlayer.incaptimer > MinIncap || LinkedPlayer.Health < 15); // [Ace] Player can't get up if lying on the floor at < 15 health, even if timer is 0.
+	}
+
+	clearscope bool PlayerNeedsMedic()
+	{
+		return LinkedPlayer && LinkedPlayer.Health > 2 && PlayerIsIncapped() && (PlayerHasWounds() && !LinkedPlayer.FindInventory('HDArmourWorn') && (GetAmount('PortableMedikit') > 0 || SuturesLeft > 0) || CanApplyStim());
 	}
 
 	// --------------------------------------------------
