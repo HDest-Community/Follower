@@ -98,7 +98,7 @@ extend class HDFollower
 		PullYouUp:
 			#### J 1
 			{
-				if (!PNeedsHelp)
+				if (!PNeedsHelp || Order != FOrder_ComeAndHelp)
 				{
 					StopHealing();
 					return;
@@ -119,7 +119,7 @@ extend class HDFollower
 			#### JK 5;
 			#### L 5
 			{
-				if (DistanceToPlayer > HDCONST_ONEMETRE * 1.2)
+				if (DistanceToPlayer > HDCONST_ONEMETRE * 1.2 || Order != FOrder_ComeAndHelp)
 				{
 					StopHealing();
 					return;
@@ -154,7 +154,7 @@ extend class HDFollower
 			}
 			#### LLLLL 3
 			{
-				if (DistanceToPlayer > HDCONST_ONEMETRE * 1.2)
+				if (DistanceToPlayer > HDCONST_ONEMETRE * 1.2 || Order != FOrder_ComeAndHelp)
 				{
 					StopHealing();
 					return;
@@ -184,7 +184,7 @@ extend class HDFollower
 			#### A 10;
 			#### A 5
 			{
-				if (Health > default.Health * MinSelfHealPercent)
+				if (Health > default.Health * MinSelfHealPercent || Order != FOrder_HealSelf)
 				{
 					StopHealing();
 					return;
@@ -204,6 +204,12 @@ extend class HDFollower
 			}
 			#### GGGGG 3
 			{
+				if (Order != FOrder_HealSelf)
+				{
+					StopHealing();
+					return;
+				}
+
 				A_StartSound("medikit/staple", CHAN_WEAPON);
 				A_StartSound("misc/smallslop", CHAN_BODY, CHANF_OVERLAP);
 				A_StartSound(PainSound, CHAN_VOICE, CHANF_NOSTOP);
