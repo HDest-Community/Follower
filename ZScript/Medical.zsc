@@ -1,5 +1,13 @@
 extend class HDFollower
 {
+	enum HealSelfFlags
+	{
+		HSF_HEALTH = 1,
+		HSF_BODYDAMAGE = 2,
+		HSF_BLOOD = 3,
+		HSF_ALL = HSF_HEALTH | HSF_BODYDAMAGE | HSF_BLOOD
+	}
+
 	// --------------------------------------------------
 	// ACTIONS
 	// --------------------------------------------------
@@ -12,11 +20,20 @@ extend class HDFollower
 		SetStateLabel('Idle');
 	}
 
-	protected void HealSelf(int amt)
+	protected void HealSelf(int amt, int flags = HSF_ALL)
 	{
-		GiveBody(amt);
-		BodyDamage = max(0, BodyDamage - amt);
-		Bloodloss = max(0, Bloodloss - amt);
+		if (flags & HSF_HEALTH)
+		{
+			GiveBody(amt);
+		}
+		if (flags & HSF_BODYDAMAGE)
+		{
+			BodyDamage = max(0, BodyDamage - amt);
+		}
+		if (flags & HSF_BLOOD)
+		{
+			Bloodloss = max(0, Bloodloss - amt);
+		}
 	}
 
 	protected void HealPlayer(int amt)
@@ -63,6 +80,11 @@ extend class HDFollower
 	clearscope bool CanApplyStim()
 	{
 		return LinkedPlayer && LinkedPlayer.stimcount < 4 && GetAmount('PortableStimpack') > 0 && LinkedPlayer.regenblues <= 2 && LinkedPlayer.Health < 30; // [Ace] Don't stim player unless it's necessary.
+	}
+
+	clearscope bool CanHealSelf()
+	{
+		return Health < default.Health * MinSelfHealPercent || BodyDamage < default.Health * MinSelfHealPercent;
 	}
 
 	clearscope bool PlayerHasWounds()
@@ -184,7 +206,7 @@ extend class HDFollower
 			#### A 10;
 			#### A 5
 			{
-				if (Health > default.Health * MinSelfHealPercent || Order != FOrder_HealSelf)
+				if (!CanHealSelf() || Order != FOrder_HealSelf)
 				{
 					StopHealing();
 					return;
@@ -217,7 +239,7 @@ extend class HDFollower
 		PatchUpSelfEnd:
 			#### A 10
 			{
-				GiveBody(10);
+				HealSelf(10, HSF_HEALTH | HSF_BODYDAMAGE);
 				SuturesLeft--;
 			}
 			Goto StapleOwnAss;

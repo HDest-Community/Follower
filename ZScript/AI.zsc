@@ -175,7 +175,7 @@ extend class HDFollower
 					VacuumBrass();
 				}
 
-				if (Order <= FOrder_Cover && !Moving && Health < default.Health * 0.75 && GetAmount('BluePotion') > 0 && GetAge() % 20 == 0)
+				if (Order <= FOrder_Cover && !Moving && CanHealSelf() && GetAmount('BluePotion') > 0 && GetAge() % 20 == 0)
 				{
 					let potion = FindLowestAmount('BluePotion');
 					potion.Amount--;
