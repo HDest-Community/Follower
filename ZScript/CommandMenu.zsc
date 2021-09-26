@@ -1360,9 +1360,6 @@ extend class FollowerHandler
 
 		if (e.Name.MakeLower().IndexOf("hdf_resetfollower") != -1)
 		{
-			Array<class<HDFollower> > classes;
-			FetchFollowerClasses(classes);
-
 			Array<string> split;
 			e.Name.Split(split, ":");
 

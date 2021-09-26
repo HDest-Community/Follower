@@ -56,7 +56,7 @@ OptionMenu "HDFollowerMenuFreylis"
 	FlagOption "Enabled", "hdf_followers", "YesNo", 0
 	StaticText ""
 	SafeCommand "Teleport To Player", "HDF_WarpFreylisToPlayer"
-	SafeCommand "Create/Recreate Follower", "HDF_ResetFreylis"
+	SafeCommand "Reset Follower", "HDF_ResetFreylis"
 	StaticText ""
 	TextField "Loadout:", "hdf_loadout_freylis"
 }
@@ -68,7 +68,7 @@ OptionMenu "HDFollowerMenuBalthazar"
 	FlagOption "Enabled", "hdf_followers", "YesNo", 1
 	StaticText ""
 	SafeCommand "Teleport To Player", "HDF_WarpBalthazarToPlayer"
-	SafeCommand "Create/Recreate Follower", "HDF_ResetBalthazar"
+	SafeCommand "Reset Follower", "HDF_ResetBalthazar"
 	StaticText ""
 	TextField "Loadout:", "hdf_loadout_balthazar"
 }
@@ -80,7 +80,7 @@ OptionMenu "HDFollowerMenuValnos"
 	FlagOption "Enabled", "hdf_followers", "YesNo", 2
 	StaticText ""
 	SafeCommand "Teleport To Player", "HDF_WarpValnosToPlayer"
-	SafeCommand "Create/Recreate Follower", "HDF_ResetValnos"
+	SafeCommand "Reset Follower", "HDF_ResetValnos"
 	StaticText ""
 	TextField "Loadout:", "hdf_loadout_valnos"
 }
@@ -92,7 +92,7 @@ OptionMenu "HDFollowerMenuDaina"
 	FlagOption "Enabled", "hdf_followers", "YesNo", 3
 	StaticText ""
 	SafeCommand "Teleport To Player", "HDF_WarpDainaToPlayer"
-	SafeCommand "Create/Recreate Follower", "HDF_ResetDaina"
+	SafeCommand "Reset Follower", "HDF_ResetDaina"
 	StaticText ""
 	TextField "Loadout:", "hdf_loadout_daina"
 }
@@ -104,7 +104,7 @@ OptionMenu "HDFollowerMenuSewie"
 	FlagOption "Enabled", "hdf_followers", "YesNo", 4
 	StaticText ""
 	SafeCommand "Teleport To Player", "HDF_WarpSewieToPlayer"
-	SafeCommand "Create/Recreate Follower", "HDF_ResetSewie"
+	SafeCommand "Reset Follower", "HDF_ResetSewie"
 	StaticText ""
 	TextField "Loadout:", "hdf_loadout_sewie"
 }
@@ -116,7 +116,7 @@ OptionMenu "HDFollowerMenuNari"
 	FlagOption "Enabled", "hdf_followers", "YesNo", 5
 	StaticText ""
 	SafeCommand "Teleport To Player", "HDF_WarpNariToPlayer"
-	SafeCommand "Create/Recreate Follower", "HDF_ResetNari"
+	SafeCommand "Reset Follower", "HDF_ResetNari"
 	StaticText ""
 	TextField "Loadout:", "hdf_loadout_nari"
 }
