@@ -84,7 +84,7 @@ extend class HDFollower
 
 	clearscope bool CanHealSelf()
 	{
-		return Health < default.Health * MinSelfHealPercent || BodyDamage < default.Health * MinSelfHealPercent;
+		return Health < default.Health * 0.9 || BodyDamage > default.Health * 0.1;
 	}
 
 	clearscope bool PlayerHasWounds()
@@ -112,8 +112,6 @@ extend class HDFollower
 	const MaxSutures = 42;
 
 	const MedicRange = 40;
-
-	const MinSelfHealPercent = 0.9;
 
 	States
 	{

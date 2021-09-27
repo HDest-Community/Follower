@@ -105,7 +105,7 @@ extend class HDFollower
 					PrintMessage(GetResponse("ORDER_HEAL_NOSUPPLIES"), "Order/Heal/NoSupplies", PMType_Important);
 					return true;
 				}
-				if (Health > default.Health * MinSelfHealPercent)
+				if (!CanHealSelf())
 				{
 					PrintMessage(GetResponse("ORDER_HEAL_NONEED"), "Order/Heal/NoNeed", PMType_Important);
 					return true;
