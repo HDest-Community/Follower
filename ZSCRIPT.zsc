@@ -95,6 +95,21 @@ class HDFollower : HDHumanoid abstract
 		return 0;
 	}
 
+	// [Ace] These are relative to the follower. 0 means facing/moving directly towards the follower. 
+	clearscope double GetPlayerFacingAngle()
+	{
+		double PAngle = LinkedPlayer.angle;
+		double PAngleTo = LinkedPlayer.AngleTo(self);
+		return AbsAngle(PAngle, PAngleTo);
+	}
+
+	clearscope double GetPlayerMovementAngle()
+	{
+		double pMovAngle = VectorAngle(LinkedPlayer.vel.x, LinkedPlayer.vel.y);
+		double pAngTo = LinkedPlayer.AngleTo(self);
+		return AbsAngle(pMovAngle, pAngTo);
+	}
+
 	override string GetObituary(Actor victim, Actor inflictor, Name mod, bool playerattack)
 	{
 		return String.Format("%s suffered friendly fire from %s, but friendly fire, isn't.", HDPlayerPawn(victim).player.GetUserName(), inflictor.target ? HDFollower(inflictor.target).GetTag() : inflictor.GetTag());
@@ -124,9 +139,7 @@ class HDFollower : HDHumanoid abstract
 
 	clearscope bool IsFacedByPlayer()
 	{
-		double PAngle = LinkedPlayer.angle;
-		double PAngleTo = self.AngleTo(LinkedPlayer) + 180; // [Ace] Add 180 to invert direction, otherwise you need to face away from the follower.
-		return AbsAngle(PAngle, PAngleTo) <= MaxFaceAngle;
+		return GetPlayerFacingAngle() <= MaxFaceAngle;
 	}
 
 	clearscope bool PlayerIsCrouching()
@@ -231,6 +244,9 @@ class HDFollower : HDHumanoid abstract
 	// --------------------------------------------------
 	// CONSTANTS/VARIABLES	
 	// --------------------------------------------------
+
+	const MaxFaceAngle = 35;
+	const MaxMovementAngle = 50;
 	
 	FollowerHandler Handler;
 

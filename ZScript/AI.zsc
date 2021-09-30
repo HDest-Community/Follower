@@ -189,7 +189,7 @@ extend class HDFollower
 						potion.Destroy();
 						A_StartSound("potion/open", 6);
 						
-						Actor a = Spawn("SpentBottle", pos + (0, 0, height- 4 ), ALLOW_REPLACE);
+						Actor a = Spawn("SpentBottle", pos + (0, 0, height- 4), ALLOW_REPLACE);
 						a.angle = angle + 2;
 						a.vel = vel;
 						a.A_ChangeVelocity(3, 1, 4, CVF_RELATIVE);
@@ -199,6 +199,12 @@ extend class HDFollower
 						a.vel = vel;
 						a.A_ChangeVelocity(5, 3, 4, CVF_RELATIVE);
 					}
+				}
+
+				if (!Moving && DistanceToPlayer <= HDCONST_ONEMETRE + radius + LinkedPlayer.radius && GetPlayerMovementAngle() <= MaxMovementAngle)
+				{
+					double angTo = AngleTo(LinkedPlayer);
+					TrySetGoal(Vec3Angle(HDCONST_ONEMETRE * 2, angTo + 180), SGF_IGNOREVALID);
 				}
 			}
 		}
@@ -221,7 +227,7 @@ extend class HDFollower
 			LookForEnemies();
 		}
 
-		// [Ace] Movement. Always travel to goals if there are any. Status between moving and idle should not be set elsewhere.
+		// [Ace] Movement. Always travel to goals if there are any.
 		if (Status == FStatus_None && TGoal && (TGoal is next.GetClass() && Distance2D(TGoal) > (Order == FOrder_ComeAndHelp && (pNeedsMedic || pNeedsHelp) ? MedicRange : (MinFollowRangeStop / distDiv)) || TGoal is "TargetGoal" && Distance2D(TGoal) > 16) && Distance2D(TGoal) < MaxGoalRange)
 		{
 			// [Ace] Don't slow down if player is bleeding out their ass or needs help getting up.
