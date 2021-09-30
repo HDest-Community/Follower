@@ -408,7 +408,7 @@ extend class FollowerHandler
 				}
 				else if (lastFol.Health <= 0)
 				{
-					DrawRectangle(sb, pos, (260, RectangleHeight), MainFont, GetTruncatedText(lastFol.GetDisplayName(), 27), flags, Font.FindFontColor('FLW_NameBlue'));
+					DrawRectangle(sb, pos, (260, RectangleHeight), MainFont, GetTruncatedText(lastFol.GetTag(), 27), flags, Font.FindFontColor('FLW_NameBlue'));
 					pos.y += RectangleHeight + Spacing;
 
 					int RequiredSips = lastFol.GetRequiredSips();
@@ -482,7 +482,7 @@ extend class FollowerHandler
 						}
 					}
 
-					DrawRectangle(sb, pos, (RectangleWidth, RectangleHeight), MainFont, GetTruncatedText(lastFol.GetDisplayName(), RectangleWidth > 160 ? 24 : 20), flags, Font.FindFontColor('FLW_NameBlue'));
+					DrawRectangle(sb, pos, (RectangleWidth, RectangleHeight), MainFont, GetTruncatedText(lastFol.GetTag(), RectangleWidth > 160 ? 24 : 20), flags, Font.FindFontColor('FLW_NameBlue'));
 					pos.y += RectangleHeight + Spacing;
 
 					if (Followers.Size() == 1 && lastFol.CanInteractWith(false))
@@ -531,7 +531,7 @@ extend class FollowerHandler
 				}
 				else
 				{
-					DrawRectangle(sb, pos, (240, RectangleHeight), MainFont, GetTruncatedText(lastFol.GetDisplayName(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
+					DrawRectangle(sb, pos, (240, RectangleHeight), MainFont, GetTruncatedText(lastFol.GetTag(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
 				}
 				pos.y += RectangleHeight + Spacing;
 
@@ -565,7 +565,7 @@ extend class FollowerHandler
 				else
 				{
 					pos.y -= 120;
-					DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, GetTruncatedText(lastFol.GetDisplayName(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
+					DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, GetTruncatedText(lastFol.GetTag(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
 				}
 				pos.y += RectangleHeight + Spacing;
 
@@ -640,7 +640,7 @@ extend class FollowerHandler
 				}
 				else
 				{
-					DrawRectangle(sb, pos, (200, RectangleHeight), MainFont, GetTruncatedText(lastFol.GetDisplayName(), 24), flags, Font.FindFontColor('FLW_NameBlue'));
+					DrawRectangle(sb, pos, (200, RectangleHeight), MainFont, GetTruncatedText(lastFol.GetTag(), 24), flags, Font.FindFontColor('FLW_NameBlue'));
 				}
 				pos.y += RectangleHeight + Spacing;
 
@@ -686,7 +686,7 @@ extend class FollowerHandler
 				}
 				else
 				{
-					DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, GetTruncatedText(lastFol.GetDisplayName(), int(ceil(w / 8))), flags, Font.FindFontColor('FLW_NameBlue'));
+					DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, GetTruncatedText(lastFol.GetTag(), int(ceil(w / 8))), flags, Font.FindFontColor('FLW_NameBlue'));
 				}
 				pos.y += RectangleHeight + Spacing;
 
@@ -724,7 +724,7 @@ extend class FollowerHandler
 
 		pos += (2, 2);
 		int FontHeight = fnt.mFont.GetHeight();
-		sb.DrawString(fnt, index..") "..GetTruncatedText(flw.GetDisplayName(), 15), pos, flags, Font.FindFontColor('FLW_NameBlue')); pos.y += FontHeight + 1;
+		sb.DrawString(fnt, index..") "..GetTruncatedText(flw.GetTag(), 15), pos, flags, Font.FindFontColor('FLW_NameBlue')); pos.y += FontHeight + 1;
 
 		if (valid)
 		{
@@ -1358,6 +1358,23 @@ extend class FollowerHandler
 			return;
 		}
 
+		if (e.Name.MakeLower().IndexOf("hdf_rename") != -1)
+		{
+			Array<string> split;
+			e.Name.Split(split, ":");
+
+			if (split.size() == 2)
+			{
+				let plr = players[e.Player].mo;
+				FLineTraceData data;
+				plr.LineTrace(plr.angle, HDCONST_ONEMETRE * 100, plr.pitch, TRF_SOLIDACTORS | TRF_THRUBLOCK, plr.height - 5, data: data);
+				if (data.HitActor is 'HDFollower')
+				{
+					data.HitActor.SetTag(split[1]);
+				}
+			}
+		}
+
 		if (e.Name.MakeLower().IndexOf("hdf_resetfollower") != -1)
 		{
 			Array<string> split;
@@ -1365,7 +1382,7 @@ extend class FollowerHandler
 
 			for (int i = 0; i < Followers.Size(); ++i)
 			{
-				if (Followers[i].GetDisplayName() ~== split[1])
+				if (Followers[i].GetTag() ~== split[1])
 				{
 					Followers[i].Reset();
 					break;
@@ -1451,7 +1468,7 @@ extend class FollowerHandler
 
 			for (int i = 0; i < Followers.Size(); ++i)
 			{
-				if (Followers[i].GetDisplayName() ~== split[1])
+				if (Followers[i].GetTag() ~== split[1])
 				{
 					Followers[i].WarpToPlayer();
 					break;

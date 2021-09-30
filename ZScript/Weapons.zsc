@@ -82,7 +82,7 @@ extend class HDFollower
 
 		if (hdf_debug == 1)
 		{
-			Console.Printf("%s is aiming at %s.", GetDisplayName(), CTarget.GetClassName());
+			Console.Printf("%s is aiming at %s.", GetTag(), CTarget.GetClassName());
 		}
 
 		A_Face(CTarget, 0, 0, flags: FAF_MIDDLE);
@@ -111,7 +111,7 @@ extend class HDFollower
 		{
 			if (hdf_debug == 2)
 			{
-				Console.Printf("%s's aim is being blocked by %s.", GetDisplayName(), a.GetClassName());
+				Console.Printf("%s's aim is being blocked by %s.", GetTag(), a.GetClassName());
 			}
 			return a;
 		}
@@ -131,7 +131,7 @@ extend class HDFollower
 		{
 			if (hdf_debug == 1)
 			{
-				Console.Printf("%s is trying to reload %s.", GetDisplayName(), wpn.GetName());
+				Console.Printf("%s is trying to reload %s.", GetTag(), wpn.GetName());
 			}
 			SelWeapon = wpn;
 			Status = FStatus_InCombat;

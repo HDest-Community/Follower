@@ -95,7 +95,7 @@ extend class FollowerHandler
 		recruit.SeeSound = m.SeeSound;
 		recruit.PainSound = m.PainSound;
 		recruit.DeathSound = m.DeathSound;
-		recruit.DisplayName = GetUniqueMarineName(Gender);
+		recruit.SetTag(GetUniqueMarineName(Gender));
 		recruit.Translation = m.Translation;
 
 		switch (m.wep)
@@ -195,7 +195,7 @@ extend class FollowerHandler
 	{
 		for (int i = 0; i < Followers.Size(); ++i)
 		{
-			if (Followers[i].DisplayName ~== followerName)
+			if (Followers[i].GetTag() ~== followerName)
 			{
 				return true;
 			}
@@ -207,7 +207,7 @@ extend class FollowerHandler
 		{
 			for (int j = 0; j < InvFollowers[i].Data.Size(); ++j)
 			{
-				if (InvFollowers[i].Data[j].DisplayName ~== followerName)
+				if (InvFollowers[i].Data[j].Tag ~== followerName)
 				{
 					return true;
 				}

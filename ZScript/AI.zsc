@@ -40,17 +40,17 @@ extend class HDFollower
 		if (hdf_debug == 3)
 		{
 			Console.Printf("%s (index %i) has %s out.\nCurrent status is %i.\nFollower is targeting %s. Follower following %s.\n--------------------",
-				GetDisplayName(),
+				GetTag(),
 				Index,
 				SelWeapon ? SelWeapon.GetName() : "no weapon",
 				Status, CTarget ? CTarget.GetTag() : "nothing",
-				next is 'HDFollower' ? HDFollower(next).GetDisplayName() : (next ? next.GetTag() : "nothing"));
+				next is 'HDFollower' ? HDFollower(next).GetTag() : (next ? next.GetTag() : "nothing"));
 		}
 
 		if (hdf_debug == 4)
 		{
 			Console.Printf("%s has %i/%i health, %i body damage, %i bloodloss, and %i shield.\n--------------------",
-				GetDisplayName(),
+				GetTag(),
 				Health, default.Health,
 				BodyDamage,
 				Bloodloss,

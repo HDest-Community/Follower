@@ -3,7 +3,7 @@ class FollowerData play
 	class<HDFollower> FollowerClass;
 	uint Index;
 
-	string DisplayName;
+	string Tag;
 	int Gender;
 	string Sounds[3];
 	int SpriteTranslation;
@@ -70,7 +70,7 @@ extend class HDFollower
 		FData.FollowerClass = GetClass();
 		FData.Index = Index;
 
-		FData.DisplayName = GetDisplayName();
+		FData.Tag = GetTag();
 		FData.Gender = Gender;
 		FData.Sounds[0] = SeeSound;
 		FData.Sounds[1] = PainSound;
@@ -232,7 +232,7 @@ class FollowerBody : HDPickup abstract
 
 						Follower.ChangeLinkedPlayer(HDPlayerPawn(self));
 
-						Follower.DisplayName = FData.DisplayName;
+						Follower.SetTag(FData.Tag);
 						Follower.Gender = FData.Gender;
 						Follower.SeeSound = FData.Sounds[0];
 						Follower.PainSound = FData.Sounds[1];

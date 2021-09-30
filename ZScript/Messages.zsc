@@ -6,7 +6,7 @@ extend class HDFollower
 
 	static void ChatMessage(HDFollower flw, Actor other, string message)
 	{
-		other.A_Log("\c[White]"..flw.GetDisplayName()..": \c[Green]"..message.."\c-");
+		other.A_Log("\c[White]"..flw.GetTag()..": \c[Green]"..message.."\c-");
 		other.A_StartSound("misc/chat", 20, CHANF_LOCAL);
 	}
 

@@ -43,7 +43,7 @@ extend class HDFollower
 
 				if (hdf_debug == 1)
 				{
-					Console.Printf("%s is attempting to target %s with %i bodydamage and %i shields.", GetDisplayName(), MTarget.GetClassName(), HDMon ? HDMon.BodyDamage : -1, Shields ? Shields.Amount : 0);
+					Console.Printf("%s is attempting to target %s with %i bodydamage and %i shields.", GetTag(), MTarget.GetClassName(), HDMon ? HDMon.BodyDamage : -1, Shields ? Shields.Amount : 0);
 				}
 
 				if (MTarget is "HDMobBase" && HDMobBase(MTarget).BodyDamage > MTarget.SpawnHealth() * 1.2)
@@ -256,7 +256,7 @@ extend class HDFollower
 				SelWeapon = ActualWeapons[i];
 				if (hdf_debug == 1)
 				{
-					Console.Printf("%s selected %s with %i rounds and %s spare ammo.", GetDisplayName(), SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no");
+					Console.Printf("%s selected %s with %i rounds and %s spare ammo.", GetTag(), SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no");
 				}
 				if (other)
 				{
@@ -270,7 +270,7 @@ extend class HDFollower
 				SelWeapon = ActualWeapons[i];
 				if (hdf_debug == 1)
 				{
-					Console.Printf("ETF_NOSWITCH is enabled. %s selected %s with %i rounds and %s spare ammo.", GetDisplayName(), SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no");
+					Console.Printf("ETF_NOSWITCH is enabled. %s selected %s with %i rounds and %s spare ammo.", GetTag(), SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no");
 				}
 				TryReloadWeapon(SelWeapon, RLF_FORCE | RLF_SILENT | RLF_NOJUMP);
 				return;
@@ -287,7 +287,7 @@ extend class HDFollower
 					SelWeapon = ActualWeapons[i];
 					if (hdf_debug == 1)
 					{
-						Console.Printf("ETF_NOSWITCH is disabled. %s selected %s with %i rounds and %s spare ammo.", GetDisplayName(), SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no");
+						Console.Printf("ETF_NOSWITCH is disabled. %s selected %s with %i rounds and %s spare ammo.", GetTag(), SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no");
 					}
 					TryReloadWeapon(SelWeapon, RLF_FORCE | RLF_SILENT | RLF_NOJUMP);
 					return;

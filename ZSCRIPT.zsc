@@ -95,14 +95,9 @@ class HDFollower : HDHumanoid abstract
 		return 0;
 	}
 
-	clearscope string GetDisplayName()
-	{
-		return DisplayName != "" ? DisplayName : GetTag();
-	}
-
 	override string GetObituary(Actor victim, Actor inflictor, Name mod, bool playerattack)
 	{
-		return String.Format("%s suffered friendly fire from %s, but friendly fire, isn't.", HDPlayerPawn(victim).player.GetUserName(), inflictor.target ? HDFollower(inflictor.target).GetDisplayName() : inflictor.GetTag());
+		return String.Format("%s suffered friendly fire from %s, but friendly fire, isn't.", HDPlayerPawn(victim).player.GetUserName(), inflictor.target ? HDFollower(inflictor.target).GetTag() : inflictor.GetTag());
 	}
 
 	clearscope string GetPronoun(bool upper)
@@ -244,8 +239,6 @@ class HDFollower : HDHumanoid abstract
 
 	meta int ResurrectType;
 	property ResurrectType: ResurrectType;
-
-	string DisplayName;
 
 	uint Index;
 	int Gender;

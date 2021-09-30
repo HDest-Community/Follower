@@ -17,7 +17,7 @@ extend class HDFollower
 				{
 					if (hdf_debug == 1)
 					{
-						Console.Printf("%s is trying to fire %s at %s.", GetDisplayName(), SelWeapon.GetName(), CTarget.GetClassName());
+						Console.Printf("%s is trying to fire %s at %s.", GetTag(), SelWeapon.GetName(), CTarget.GetClassName());
 					}
 					AimTimer = 0;
 					SetStateLabel(SelWeapon.GetFireState());

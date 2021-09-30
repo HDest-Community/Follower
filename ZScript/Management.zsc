@@ -148,7 +148,7 @@ extend class HDFollower
 		}
 		if (!random[dismissrand](0, 10))
 		{
-			Console.Printf("%s disconnected.", DisplayName);
+			Console.Printf("%s disconnected.", GetTag());
 		}
 		Handler.RemoveFollower(self, true);
 	}
