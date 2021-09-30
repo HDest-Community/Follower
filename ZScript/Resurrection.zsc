@@ -4,7 +4,8 @@ extend class HDFollower
 	{
 		RESF_BLUES = 1 << 0,
 		RESF_BLOOD = 1 << 1,
-		RESF_MERCHANT = 1 << 2
+		RESF_MERCHANT = 1 << 2,
+		RESF_ALL = RESF_BLUES | RESF_BLOOD | RESF_MERCHANT
 	}
 
 	// --------------------------------------------------

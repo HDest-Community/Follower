@@ -286,7 +286,7 @@ class HDFollower : HDHumanoid abstract
 		HDMobBase.DownedFrame 16;
 		HDMobBase.MaxBloodLoss 400;
 		Species 'HDFollower';
-		HDFollower.ResurrectType RESF_BLUES | RESF_BLOOD;
+		HDFollower.ResurrectType RESF_ALL;
 	}
 }
 
