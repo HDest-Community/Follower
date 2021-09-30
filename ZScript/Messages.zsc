@@ -16,6 +16,15 @@ extend class HDFollower
 	}
 
 	// --------------------------------------------------
+	// VIRTUAL
+	// --------------------------------------------------
+
+	protected virtual string GetLocalizationTag() const
+	{
+		return GetTag();
+	}
+
+	// --------------------------------------------------
 	// ACTIONS
 	// --------------------------------------------------
 
@@ -62,7 +71,7 @@ extend class HDFollower
 
 		if (type <= CVar.GetCVar('hdf_printlevel_voice', LinkedPlayer.player).GetInt())
 		{
-			voiceLine = "Follower/"..GetTag().."/"..voiceLine;
+			voiceLine = "Follower/"..GetLocalizationTag().."/"..voiceLine;
 			if (Distance3D(LinkedPlayer) < 512)
 			{
 				A_StartSound(voiceLine, 21);
@@ -81,7 +90,7 @@ extend class HDFollower
 	// [Ace] Looks up the response in LANGUAGE and picks a random one out of the existing, unless none exist, in which case it'll return the raw string or an empty one.
 	protected string GetResponse(string raw)
 	{
-		raw = ("$"..GetTag().."_"..raw).MakeUpper();
+		raw = ("$"..GetLocalizationTag().."_"..raw).MakeUpper();
 		int MaxIndex = 0;
 		for (int i = 1; i <= 20; ++i) // [Ace] 20 should be enough.
 		{

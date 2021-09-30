@@ -62,12 +62,12 @@ class FollowerWeapon abstract
 	// VIRTUALS
 	// --------------------------------------------------
 	
-	abstract string GetName();
-	abstract string GetIcon();
-	abstract class<HDAmmo>, class<HDMagAmmo>, int GetAmmoType();
-	abstract Name GetRequiredWeapon(); // [Ace] Empty string means the weapon will be available from the get go.
-	abstract StateLabel GetFireState();
-	abstract StateLabel GetReloadState();
+	abstract string GetName() const;
+	abstract string GetIcon() const;
+	abstract class<HDAmmo>, class<HDMagAmmo>, int GetAmmoType() const;
+	abstract Name GetRequiredWeapon() const; // [Ace] Empty string means the weapon will be available from the get go.
+	abstract StateLabel GetFireState() const;
+	abstract StateLabel GetReloadState() const;
 	abstract play void FireWeapon();
 	abstract play void OnTransfer(HDWeapon wpn);
 
@@ -99,9 +99,9 @@ class FollowerWeapon abstract
 		}
 	}
 
-	virtual double GetAdjustmentMult() { return 1.0; }
-	virtual int GetFlags() { return 0; }
-	virtual string GetLocalizationTag() { return GetName(); }
+	virtual double GetAdjustmentMult() const { return 1.0; }
+	virtual int GetFlags() const { return 0; }
+	virtual string GetLocalizationTag() const { return GetName(); }
 	virtual play RResult TryReload(int flags = 0)
 	{
 		class<HDAmmo> AType, MType; int MaxMag;

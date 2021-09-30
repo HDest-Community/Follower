@@ -1,5 +1,10 @@
 class RecruitedMarine : HDFollower
 {
+	override string GetLocalizationTag()
+	{
+		return "Marine";
+	}
+
 	Default
 	{
 		Tag "Marine";
