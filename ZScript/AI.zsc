@@ -204,7 +204,7 @@ extend class HDFollower
 				if (!Moving && DistanceToPlayer <= HDCONST_ONEMETRE + radius + LinkedPlayer.radius && GetPlayerMovementAngle() <= MaxMovementAngle)
 				{
 					double angTo = AngleTo(LinkedPlayer);
-					TrySetGoal(Vec3Angle(HDCONST_ONEMETRE * 2, angTo + 180), SGF_IGNOREVALID);
+					TrySetGoal(Vec3Angle(HDCONST_ONEMETRE * 2, angTo + 180), SGF_IGNOREVALID | SGF_MOVEAWAY);
 				}
 			}
 		}
@@ -257,7 +257,8 @@ extend class HDFollower
 			}
 
 			// [Ace] Same as the corner thing from above but does it if the follower is moving.
-			if (TGoal == next)
+			// STANDSTILL forces the follower to go to that specific goal, ignoring all other checks.
+			if (TGoal == next && !TGoal.bSTANDSTILL)
 			{
 				if (canSeeNext)
 				{
