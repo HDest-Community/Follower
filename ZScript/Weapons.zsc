@@ -28,7 +28,7 @@ extend class HDFollower
 
 	virtual clearscope int AdjustForDistance(Actor trgt, double mult = 1.0)
 	{
-		return int(clamp((Distance3D(trgt) / 84.0) * mult, 6, MaxTargetRange / 84.0));
+		return int(clamp((Distance3D(trgt) / (HDCONST_ONEMETRE * 2)) * mult, 6, MaxTargetRange / (HDCONST_ONEMETRE * 2)));
 	}
 
 	// --------------------------------------------------
@@ -82,7 +82,7 @@ extend class HDFollower
 
 		if (hdf_debug == 1)
 		{
-			Console.Printf("Aiming at %s.", CTarget.GetClassName());
+			Console.Printf("%s is aiming at %s.", GetDisplayName(), CTarget.GetClassName());
 		}
 
 		A_Face(CTarget, 0, 0, flags: FAF_MIDDLE);
@@ -111,7 +111,7 @@ extend class HDFollower
 		{
 			if (hdf_debug == 2)
 			{
-				Console.Printf("Aim is being blocked by %s.", a.GetClassName());
+				Console.Printf("%s's aim is being blocked by %s.", GetDisplayName(), a.GetClassName());
 			}
 			return a;
 		}
@@ -131,7 +131,7 @@ extend class HDFollower
 		{
 			if (hdf_debug == 1)
 			{
-				Console.Printf("Trying to reload "..wpn.GetName()..".");
+				Console.Printf("%s is trying to reload %s.", GetDisplayName(), wpn.GetName());
 			}
 			SelWeapon = wpn;
 			Status = FStatus_InCombat;

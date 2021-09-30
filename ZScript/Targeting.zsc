@@ -256,7 +256,7 @@ extend class HDFollower
 				SelWeapon = ActualWeapons[i];
 				if (hdf_debug == 1)
 				{
-					Console.Printf("Selected %s with %i rounds and %s spare ammo.", SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no");
+					Console.Printf("%s selected %s with %i rounds and %s spare ammo.", GetDisplayName(), SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no");
 				}
 				if (other)
 				{
@@ -270,7 +270,7 @@ extend class HDFollower
 				SelWeapon = ActualWeapons[i];
 				if (hdf_debug == 1)
 				{
-					Console.Printf("ETF_NOSWITCH is enabled. Selected %s with %i rounds and %s spare ammo.", SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no");
+					Console.Printf("ETF_NOSWITCH is enabled. %s selected %s with %i rounds and %s spare ammo.", GetDisplayName(), SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no");
 				}
 				TryReloadWeapon(SelWeapon, RLF_FORCE | RLF_SILENT | RLF_NOJUMP);
 				return;
@@ -287,7 +287,7 @@ extend class HDFollower
 					SelWeapon = ActualWeapons[i];
 					if (hdf_debug == 1)
 					{
-						Console.Printf("ETF_NOSWITCH is disabled. Selected %s with %i rounds and %s spare ammo.", SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no");
+						Console.Printf("ETF_NOSWITCH is disabled. %s selected %s with %i rounds and %s spare ammo.", GetDisplayName(), SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no");
 					}
 					TryReloadWeapon(SelWeapon, RLF_FORCE | RLF_SILENT | RLF_NOJUMP);
 					return;
