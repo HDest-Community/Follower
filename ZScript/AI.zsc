@@ -201,10 +201,10 @@ extend class HDFollower
 					}
 				}
 
-				if (!Moving && DistanceToPlayer <= HDCONST_ONEMETRE + radius + LinkedPlayer.radius && GetPlayerMovementAngle() <= MaxMovementAngle)
+				if (!Moving && DistanceToPlayer <= HDCONST_ONEMETRE / 2 + radius + LinkedPlayer.radius && GetPlayerMovementAngle() <= MaxMovementAngle)
 				{
 					double angTo = AngleTo(LinkedPlayer);
-					TrySetGoal(Vec3Angle(HDCONST_ONEMETRE * 2, angTo + 180), SGF_IGNOREVALID | SGF_MOVEAWAY);
+					TrySetGoal(Vec3Angle(HDCONST_ONEMETRE, angTo + 180), SGF_IGNOREVALID | SGF_MOVEAWAY);
 				}
 			}
 		}
