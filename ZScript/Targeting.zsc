@@ -53,10 +53,6 @@ extend class HDFollower
 
 				if (!CanHitTarget(MTarget))
 				{
-					if (hdf_debug == 1)
-					{
-						Console.Printf("Failed to target %s.", MTarget.GetClassName());
-					}
 					continue;
 				}
 
@@ -225,12 +221,17 @@ extend class HDFollower
 		double OldPitch = pitch;
 		A_Face(a, 0, 0, flags: FAF_MIDDLE);
 
-		FLineTraceData TraceData;
-		LineTrace(angle, MaxTargetRange, pitch, TRF_NOSKY, GetShotHeight(), data: TraceData);
+		FLineTraceData data;
+		LineTrace(angle, MaxTargetRange, pitch, TRF_NOSKY, GetShotHeight(), data: data);
 		angle = OldAngle;
 		pitch = OldPitch;
 
-		return TraceData.HitActor == a;
+		if (data.HitActor != a && hdf_debug == 1)
+		{
+			Console.Printf("Failed to target %s. %s is blocking the line of fire.", a.GetClassName(), data.HitActor ? data.HitActor.GetClassName() : 'Nothing?????');
+		}
+
+		return data.HitActor == a;
 	}
 
 	protected void EngageTarget(Array<class<FollowerWeapon> > wpns, Actor other, int flags = 0)
