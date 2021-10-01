@@ -138,8 +138,9 @@ extend class HDFollower
 					}
 
 					// [Ace] Go to goal if they're too far away.
+					// !bSTANDSTILL means the follower will only chase goals if its current goal isn't forced.
 					double DistanceToNext = Distance3D(next);
-					if (bFRIENDLY && DistanceToNext > MinFollowRange / distDiv && DistanceToNext < MaxFollowRange)
+					if (bFRIENDLY && DistanceToNext > MinFollowRange / distDiv && DistanceToNext < MaxFollowRange && (!TGoal || TGoal && !TGoal.bSTANDSTILL))
 					{
 						if (canSeeNext)
 						{
@@ -257,8 +258,7 @@ extend class HDFollower
 			}
 
 			// [Ace] Same as the corner thing from above but does it if the follower is moving.
-			// STANDSTILL forces the follower to go to that specific goal, ignoring all other checks.
-			if (TGoal == next && !TGoal.bSTANDSTILL)
+			if (TGoal == next)
 			{
 				if (canSeeNext)
 				{
