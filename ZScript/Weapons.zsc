@@ -26,9 +26,9 @@ extend class HDFollower
 		}
 	}
 
-	virtual clearscope int AdjustForDistance(Actor trgt, double mult = 1.0)
+	virtual clearscope int AdjustForDistance(Actor trgt, FollowerWeapon wpn)
 	{
-		return int(clamp((Distance3D(trgt) / (HDCONST_ONEMETRE * 2)) * mult, 6, MaxTargetRange / (HDCONST_ONEMETRE * 2)));
+		return int(clamp((Distance3D(trgt) / (HDCONST_ONEMETRE * 2)) * wpn.GetAdjustmentMult(), 6, MaxTargetRange / (HDCONST_ONEMETRE * 2)));
 	}
 
 	// --------------------------------------------------

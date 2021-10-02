@@ -13,7 +13,7 @@ extend class HDFollower
 			#### H 0 Aim(); // [Ace] This is on this line and not inside the anonymous function because of SetStateLabel.
 			#### H 0
 			{
-				if (AimTimer++ > AdjustForDistance(CTarget, SelWeapon.GetAdjustmentMult()))
+				if (AimTimer++ > AdjustForDistance(CTarget, SelWeapon))
 				{
 					if (hdf_debug == 1)
 					{
