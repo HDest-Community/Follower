@@ -70,7 +70,7 @@ extend class HDFollower
 				ClearWeapon();
 				ClearTarget();
 			}
-			else if (--ReactionTime <= 0)
+			else if (ReactionTime-- <= 0)
 			{
 				ReactionTime = default.ReactionTime;
 				Status = FStatus_InCombat;
