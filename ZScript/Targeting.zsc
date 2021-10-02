@@ -1,8 +1,8 @@
 extend class HDFollower
 {
-	enum EngageTargetFlags
+	enum AcquireTargetFlags
 	{
-		ETF_NOSWITCH = 1 // [Ace] Don't switch to backup weapons. Instead, reload the top priority weapon, if available.
+		ATF_NOSWITCH = 1 // [Ace] Don't switch to backup weapons. Instead, reload the top priority weapon, if available.
 	}
 
 	protected virtual void LookForEnemies()
@@ -67,7 +67,7 @@ extend class HDFollower
 					W = 'FW_Boss'; UsedWeapons.Push(W);
 					W = 'FW_SMG'; UsedWeapons.Push(W);
 					W = 'FW_ZM66'; UsedWeapons.Push(W);
-					EngageTarget(UsedWeapons, MTarget);
+					AcquireTarget(UsedWeapons, MTarget);
 					break;
 				}
 				else if (MTarget is 'Necromancer' && !AlreadyTargeted)
@@ -77,7 +77,7 @@ extend class HDFollower
 					W = 'FW_SMG'; UsedWeapons.Push(W);
 					W = 'FW_Boss'; UsedWeapons.Push(W);
 					W = 'FW_Liberator'; UsedWeapons.Push(W);
-					EngageTarget(UsedWeapons, MTarget);
+					AcquireTarget(UsedWeapons, MTarget);
 					break;
 				}
 				else if (MTarget is 'PainLord' || MTarget is 'PainBringer')
@@ -104,7 +104,7 @@ extend class HDFollower
 						W = 'FW_SMG'; UsedWeapons.Push(W);
 						W = 'FW_Hunter'; UsedWeapons.Push(W);
 					}
-					EngageTarget(UsedWeapons, MTarget);
+					AcquireTarget(UsedWeapons, MTarget);
 					break;
 				}
 				else if (MTarget is 'Trilobite')
@@ -121,7 +121,7 @@ extend class HDFollower
 					W = 'FW_ZM66'; UsedWeapons.Push(W);
 					W = 'FW_SMG'; UsedWeapons.Push(W);
 					W = 'FW_Hunter'; UsedWeapons.Push(W);
-					EngageTarget(UsedWeapons, MTarget);
+					AcquireTarget(UsedWeapons, MTarget);
 				}
 				else if (MTarget is 'HDMobBase' && Shields && Shields.Amount > 150)
 				{
@@ -134,7 +134,7 @@ extend class HDFollower
 					{
 						W = 'FW_Hunter'; UsedWeapons.Push(W);
 					}
-					EngageTarget(UsedWeapons, MTarget);
+					AcquireTarget(UsedWeapons, MTarget);
 					break;
 				}
 
@@ -146,7 +146,7 @@ extend class HDFollower
 					W = 'FW_ZM66'; UsedWeapons.Push(W);
 					W = 'FW_SMG'; UsedWeapons.Push(W);
 					W = 'FW_Hunter'; UsedWeapons.Push(W);
-					EngageTarget(UsedWeapons, MTarget, ETF_NOSWITCH);
+					AcquireTarget(UsedWeapons, MTarget, ATF_NOSWITCH);
 				}
 				else if ((!CheckTarget() || !SelWeapon) && !AlreadyTargeted)
 				{
@@ -155,12 +155,12 @@ extend class HDFollower
 					W = 'FW_Liberator'; UsedWeapons.Push(W);
 					W = 'FW_Boss'; UsedWeapons.Push(W);
 					W = 'FW_SMG'; UsedWeapons.Push(W);
-					EngageTarget(UsedWeapons, MTarget, ETF_NOSWITCH);
+					AcquireTarget(UsedWeapons, MTarget, ATF_NOSWITCH);
 				}
 				else if (SelWeapon) // [Ace] In case follower gets interrupted, re-engage old target.
 				{
 					UsedWeapons.Push(SelWeapon.GetClass());
-					EngageTarget(UsedWeapons, CTarget, ETF_NOSWITCH);
+					AcquireTarget(UsedWeapons, CTarget, ATF_NOSWITCH);
 				}
 			}
 			else if (!bFRIENDLY && PTarget && PTarget.Health > 0 && CheckSight(PTarget, SF_SEEPASTSHOOTABLELINES | SF_IGNOREVISIBILITY))
@@ -168,7 +168,7 @@ extend class HDFollower
 				W = 'FW_ZM66'; UsedWeapons.Push(W);
 				W = 'FW_SMG'; UsedWeapons.Push(W);
 				W = 'FW_Hunter'; UsedWeapons.Push(W);
-				EngageTarget(UsedWeapons, PTarget, ETF_NOSWITCH);
+				AcquireTarget(UsedWeapons, PTarget, ATF_NOSWITCH);
 			}
 		}
 	}
@@ -234,7 +234,8 @@ extend class HDFollower
 		return data.HitActor == a;
 	}
 
-	protected void EngageTarget(Array<class<FollowerWeapon> > wpns, Actor other, int flags = 0)
+	// [Ace] This only acquires the target. Actual aiming and engaging and all that jazz is done in AiThink().
+	protected void AcquireTarget(Array<class<FollowerWeapon> > wpns, Actor other, int flags = 0)
 	{
 		// [Ace] This is used so that FindWeapon() isn't copy-pasted numerous times in the targeting code.
 		Array<FollowerWeapon> ActualWeapons;
@@ -262,16 +263,15 @@ extend class HDFollower
 				if (other)
 				{
 					CTarget = other;
-					SetStateLabel('See');
 				}
 				break;
 			}
-			else if ((flags & ETF_NOSWITCH || ActualWeapons[i].GetFlags() & FollowerWeapon.FWF_NOSWITCH) && ActualWeapons[i].HasSpare())
+			else if ((flags & ATF_NOSWITCH || ActualWeapons[i].GetFlags() & FollowerWeapon.FWF_NOSWITCH) && ActualWeapons[i].HasSpare())
 			{
 				SelWeapon = ActualWeapons[i];
 				if (hdf_debug == 1)
 				{
-					Console.Printf("ETF_NOSWITCH is enabled. %s selected %s with %i rounds and %s spare ammo.", GetTag(), SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no");
+					Console.Printf("ATF_NOSWITCH is enabled. %s selected %s with %i rounds and %s spare ammo.", GetTag(), SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no");
 				}
 				TryReloadWeapon(SelWeapon, RLF_FORCE | RLF_SILENT | RLF_NOJUMP);
 				return;
@@ -288,7 +288,7 @@ extend class HDFollower
 					SelWeapon = ActualWeapons[i];
 					if (hdf_debug == 1)
 					{
-						Console.Printf("ETF_NOSWITCH is disabled. %s selected %s with %i rounds and %s spare ammo.", GetTag(), SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no");
+						Console.Printf("ATF_NOSWITCH is disabled. %s selected %s with %i rounds and %s spare ammo.", GetTag(), SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no");
 					}
 					TryReloadWeapon(SelWeapon, RLF_FORCE | RLF_SILENT | RLF_NOJUMP);
 					return;

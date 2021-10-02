@@ -65,14 +65,23 @@ extend class HDFollower
 		
 		if (Status != FStatus_InCombat)
 		{
+			if (!CheckTarget())
+			{
+				ClearWeapon();
+				ClearTarget();
+			}
+			else if (--ReactionTime <= 0)
+			{
+				ReactionTime = default.ReactionTime;
+				Status = FStatus_InCombat;
+				SetStateLabel('See');
+			}
+
 			if (Order == FOrder_HealSelf && !Moving && Status != FStatus_HealingSelf)
 			{
 				Status = FStatus_HealingSelf;
 				SetStateLabel('StapleOwnAss');
 			}
-
-			ClearWeapon();
-			ClearTarget();
 
 			if (Status >= FStatus_WaitingForArmor && Status <= FStatus_WaitingForWeapon)
 			{
@@ -210,6 +219,12 @@ extend class HDFollower
 			}
 		}
 
+		// [Ace] Enemy searching.
+		if (Weapons.Size() > 0 && HasUsableWeapons() && (Status != FStatus_InCombat || !SelWeapon) && (!bFRIENDLY || Order != FOrder_FollowIgnore && Order != FOrder_GoAndCover))
+		{
+			LookForEnemies();
+		}
+
 		// [Ace] Crouching. One day I will implement proper sprites for this. Today is not that day.
 		if (bFRIENDLY && Status <= FStatus_InCombat && Order < FOrder_Cover && PlayerIsCrouching())
 		{
@@ -222,11 +237,6 @@ extend class HDFollower
 
 		scale.y = default.scale.y * (1.0 - CrouchFactor);
 		A_SetSize(-1, default.Height * (1.0 - CrouchFactor));
-		
-		if (Weapons.Size() > 0 && HasUsableWeapons() && (Status != FStatus_InCombat || !SelWeapon) && (!bFRIENDLY || Order != FOrder_FollowIgnore && Order != FOrder_GoAndCover))
-		{
-			LookForEnemies();
-		}
 
 		// [Ace] Movement. Always travel to goals if there are any.
 		if (Status == FStatus_None && TGoal && (TGoal is next.GetClass() && Distance2D(TGoal) > (Order == FOrder_ComeAndHelp && (pNeedsMedic || pNeedsHelp) ? MedicRange : (MinFollowRangeStop / distDiv)) || TGoal is "TargetGoal" && Distance2D(TGoal) > 16) && Distance2D(TGoal) < MaxGoalRange)

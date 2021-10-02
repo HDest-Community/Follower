@@ -5,7 +5,6 @@ extend class HDFollower
 		See:
 			#### HH 2
 			{
-				Status = FStatus_InCombat;
 				AimTimer = 0;
 			}
 		Aiming:
