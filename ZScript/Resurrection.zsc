@@ -26,11 +26,12 @@ extend class HDFollower
 	// ACTIONS
 	// --------------------------------------------------
 
-	private void SpawnReviveParticles(color col)
+	private void SpawnReviveParticles(color col, double progressMult)
 	{
+		progressMult = max(-0.3, 1.0 - progressMult);
 		for (int i = 0; i < 3; ++i)
 		{
-			A_SpawnParticle(col, SPF_RELATIVE, random(15, 35), 4, random(0, 359), frandom(0, Radius), 0, 0, frandom(0.1, 1.0), 0, random(2, 4), 0, 0, -0.2);
+			A_SpawnParticle(col, SPF_RELATIVE | SPF_FULLBRIGHT, random(15, 30), frandom(3, 5), random(0, 359), Radius * 2 * progressMult, 0, Height / 2, frandom(1.0, 4.0) * progressMult, max(0.2, 2.0 * progressMult), 0, frandom(-0.15, -0.05) * progressMult, 0, 0);
 		}
 	}
 
@@ -38,8 +39,9 @@ extend class HDFollower
 	{
 		if (ResurrectType & RESF_BLUES && Blues > 0)
 		{
-			SpawnReviveParticles("2222FF");
-			if (++AbsorbedBlues >= 105 + GetRequiredSips() * 12 && level.time % 35 == 0)
+			int req = 105 + GetRequiredSips() * 12;
+			SpawnReviveParticles(0x2222FF, AbsorbedBlues / double(req));
+			if (++AbsorbedBlues >= req && level.time % 35 == 0)
 			{
 				if (!A_RaiseSelf())
 				{
@@ -58,18 +60,20 @@ extend class HDFollower
 		}
 		else if (ResurrectType & RESF_BLOOD && LinkedPlayer.woundcount > 0)
 		{
-			int RequiredBlood = GetRequiredBlood();
-			if (CanReach(MaxReviveDistance) == 0 && LinkedPlayer.woundcount > min(RequiredBlood, 40) && PlayerIsCrouching())
+			int req = GetRequiredBlood();
+			int realReq = min(105 + req * 8, 350);
+
+			if (CanReach(MaxReviveDistance) == 0 && LinkedPlayer.woundcount > min(req, 40) && PlayerIsCrouching())
 			{
 				AbsorbedBlood++;
-				SpawnReviveParticles("FF1111");
+				SpawnReviveParticles(0xFF1111, AbsorbedBlood / double(max(1.0, realReq)));
 			}
 			else
 			{
 				BloodReviveTicker++;
 			}
 
-			if (AbsorbedBlood >= min(105 + RequiredBlood * 8, 350) && level.time % 70 == 0)
+			if (AbsorbedBlood >= realReq && level.time % 70 == 0)
 			{
 				if (!A_RaiseSelf())
 				{
@@ -81,7 +85,7 @@ extend class HDFollower
 					{
 						SetStateLabel('Raise.Blood');
 					}
-					LinkedPlayer.AggravatedDamage += RequiredBlood;
+					LinkedPlayer.AggravatedDamage += req;
 					bFRIENDLY = true;
 					PrintMessage(GetResponse("REVIVE_BLOOD_SUCCESS"), "Revive/Blood/Success", PMType_Important);
 				}
@@ -99,9 +103,10 @@ extend class HDFollower
 			int count = CountProximity(cls, HDCONST_ONEMETRE * 2, CPXF_CLOSEST | CPXF_ANCESTOR);
 			if (count > 0)
 			{
-				SpawnReviveParticles("8844FF");
+				int req = 35 * 60 * 10;
+				SpawnReviveParticles(0xFFFF44, MerchantReviveTicker / double(req));
 				MerchantReviveTicker += count;
-				if (MerchantReviveTicker >= 35 * 60 * 10 && level.time % 140 == 0)
+				if (MerchantReviveTicker >= req && level.time % 140 == 0)
 				{
 					if (!A_RaiseSelf())
 					{
@@ -167,13 +172,13 @@ extend class HDFollower
 					return true;
 				}
 
-				int RequiredSips = GetRequiredSips();
-				if (Potion.Mags[Potion.Mags.Size() - 1] < RequiredSips)
+				int req = GetRequiredSips();
+				if (Potion.Mags[Potion.Mags.Size() - 1] < req)
 				{
-					ThinkMessage(LinkedPlayer, StringTable.Localize("$REVIVE_BLUES_NOTENOUGH_PLR1").." "..RequiredSips.."/12 "..StringTable.Localize("$REVIVE_BLUES_NOTENOUGH_PLR2"));
+					ThinkMessage(LinkedPlayer, StringTable.Localize("$REVIVE_BLUES_NOTENOUGH_PLR1").." "..req.."/12 "..StringTable.Localize("$REVIVE_BLUES_NOTENOUGH_PLR2"));
 					return false;
 				}
-				Potion.Mags[Potion.Mags.Size() - 1] -= RequiredSips;
+				Potion.Mags[Potion.Mags.Size() - 1] -= req;
 				if (Potion.Mags[Potion.Mags.Size() - 1] == 0)
 				{
 					Potion.TakeMag(false);
@@ -187,7 +192,7 @@ extend class HDFollower
 					a.vel=LinkedPlayer.vel;
 					a.A_ChangeVelocity(5, 3, 4, CVF_RELATIVE);
 				}
-				Blues = RequiredSips * 12;
+				Blues = req * 12;
 				break;
 			}
 
