@@ -41,7 +41,7 @@ extend class HDFollower
 		{
 			int req = 105 + GetRequiredSips() * 12;
 			SpawnReviveParticles(0x2222FF, AbsorbedBlues / double(req));
-			if (++AbsorbedBlues >= req && level.time % 35 == 0)
+			if (++AbsorbedBlues >= req && GetAge() % 35 == 0)
 			{
 				if (!A_RaiseSelf())
 				{
@@ -73,7 +73,7 @@ extend class HDFollower
 				BloodReviveTicker++;
 			}
 
-			if (AbsorbedBlood >= realReq && level.time % 70 == 0)
+			if (AbsorbedBlood >= realReq && GetAge() % 70 == 0)
 			{
 				if (!A_RaiseSelf())
 				{
@@ -106,7 +106,7 @@ extend class HDFollower
 				int req = 35 * 60 * 10;
 				SpawnReviveParticles(0xFFFF44, MerchantReviveTicker / double(req));
 				MerchantReviveTicker += count;
-				if (MerchantReviveTicker >= req && level.time % 140 == 0)
+				if (MerchantReviveTicker >= req && GetAge() % 140 == 0)
 				{
 					if (!A_RaiseSelf())
 					{

@@ -191,12 +191,12 @@ class HDFollower : HDHumanoid abstract
 
 		if (Health > 0)
 		{
-			if (level.time % 3 == 0)
+			if (GetAge() % 3 == 0)
 			{
 				AiThink();
 			}
 
-			if (level.time % 35 * 2 == 0)
+			if (GetAge() % 35 * 2 == 0)
 			{
 				if (Bloodloss > 0)
 				{
