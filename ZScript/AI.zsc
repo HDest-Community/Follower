@@ -185,6 +185,7 @@ extend class HDFollower
 					VacuumBrass();
 				}
 
+				// [Ace] Using potions.
 				if (Order <= FOrder_Cover && !Moving && CanHealSelf() && GetAmount('BluePotion') > 0 && GetAge() % 20 == 0)
 				{
 					let potion = FindLowestAmount('BluePotion');
@@ -211,15 +212,16 @@ extend class HDFollower
 					}
 				}
 
-				if (!Moving && DistanceToPlayer <= HDCONST_ONEMETRE / 2 + radius + LinkedPlayer.radius && GetPlayerMovementAngle() <= MaxMovementAngle)
+				// [Ace] Walking away if you get too close.
+				if (!Moving && DistanceToPlayer <= HDCONST_ONEMETRE / 2 + radius + LinkedPlayer.radius && GetPlayerMovementAngle() <= MaxMovementAngle && !(LinkedPlayer.player.ReadyWeapon is 'HDMedikitter') && !(LinkedPlayer.player.ReadyWeapon is 'SelfBandage'))
 				{
-					double angTo = AngleTo(LinkedPlayer);
-					TrySetGoal(Vec3Angle(HDCONST_ONEMETRE, angTo + 180), SGF_IGNOREVALID | SGF_MOVEAWAY);
+					TrySetGoal(Vec3Angle(HDCONST_ONEMETRE, AngleTo(LinkedPlayer) + 180), SGF_IGNOREVALID | SGF_MOVEAWAY);
 				}
 			}
 		}
 
 		// [Ace] Enemy searching.
+		// [03.10.21] Note to self: This is not in the first check for a reason. Stop trying to put it there.
 		if (Weapons.Size() > 0 && HasUsableWeapons() && (Status != FStatus_InCombat || !SelWeapon) && (!bFRIENDLY || Order != FOrder_FollowIgnore && Order != FOrder_GoAndCover))
 		{
 			LookForEnemies();
