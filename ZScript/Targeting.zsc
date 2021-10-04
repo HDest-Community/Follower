@@ -189,7 +189,7 @@ extend class HDFollower
 
 		bool FriendlyCheck = bFRIENDLY && !CTarget.bFRIENDLY && CTarget != LinkedPlayer;
 		bool HostileCheck = !bFRIENDLY && (CTarget == LinkedPlayer || CTarget.bFRIENDLY);
-		return (FriendlyCheck || HostileCHeck) && CTarget.Health > 0 && CheckSight(CTarget, SF_SEEPASTSHOOTABLELINES | SF_IGNOREVISIBILITY) && !TargetIsIncapped(CTarget) && CTarget.bSHOOTABLE;
+		return CanHitTarget(CTarget) && (FriendlyCheck || HostileCHeck) && CTarget.Health > 0 && CheckSight(CTarget, SF_SEEPASTSHOOTABLELINES | SF_IGNOREVISIBILITY) && !TargetIsIncapped(CTarget) && CTarget.bSHOOTABLE;
 	}
 
 	protected bool TargetIsIncapped(Actor other)
