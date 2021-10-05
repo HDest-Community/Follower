@@ -118,7 +118,7 @@ extend class HDFollower
 		PullYouUp:
 			#### J 1
 			{
-				if (!PNeedsHelp || Order != FOrder_ComeAndHelp)
+				if (!PNeedsHelp || DistanceToPlayer > HDCONST_ONEMETRE * 1.2 || Order != FOrder_ComeAndHelp)
 				{
 					StopHealing();
 					return;
