@@ -54,7 +54,8 @@ extend class HDFollower
 			#### CCCDDDEEEFFF 2;
 			Loop;
 		Idle:
-			#### A 35 TryActivateLine();
+			#### A 5;
+			#### A 30 TryActivateLine();
 			#### B 35;
 			Loop;
 
