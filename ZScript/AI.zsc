@@ -186,7 +186,7 @@ extend class HDFollower
 				}
 
 				// [Ace] Using potions.
-				if (Order <= FOrder_Cover && !Moving && CanHealSelf() && GetAmount('BluePotion') > 0 && GetAge() % 12 == 0)
+				if (Order <= FOrder_Cover && !Moving && CanHealSelf() && GetAmount('BluePotion') > 0 && GetAge() % 24 == 0)
 				{
 					let potion = FindLowestAmount('BluePotion');
 					potion.Amount--;
