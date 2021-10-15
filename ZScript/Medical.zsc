@@ -36,22 +36,10 @@ extend class HDFollower
 		}
 	}
 
-	protected void HealPlayer(int amt)
+	protected void PatchPlayerWounds(int amt)
 	{
-		int wound = max(LinkedPlayer.woundcount, 0);
-		int unstablewound = max(LinkedPlayer.unstablewoundcount, 0);
-		if (wound)
-		{
-			LinkedPlayer.woundcount = max(0, wound - amt);
-		}
-		else if (unstablewound)
-		{
-			LinkedPlayer.unstablewoundcount = max(0, unstablewound - amt);
-		}
-		else
-		{
-			amt = 0;
-		}
+		LinkedPlayer.woundcount = max(0, LinkedPlayer.woundcount - amt);
+		LinkedPlayer.unstablewoundcount = max(0, LinkedPlayer.unstablewoundcount - amt);
 		LinkedPlayer.oldwoundcount += amt;
 	}
 
@@ -196,7 +184,7 @@ extend class HDFollower
 			#### J 10
 			{
 				SuturesLeft--;
-				HealPlayer(1);
+				PatchPlayerWounds(1);
 			}
 			Goto StapleHumptyDumptyBackTogetherAgain;
 
