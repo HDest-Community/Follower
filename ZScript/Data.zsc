@@ -126,7 +126,7 @@ extend class HDFollower
 			FData.ArmorMega = Armor.Mega;
 		}
 
-		let Shields = FindInventory('HDMagicShield');
+		let Shields = FindInventory('HDMagicShield', true);
 		if (Shields)
 		{
 			FData.Shields = Shields.Amount;
