@@ -32,7 +32,7 @@ extend class HDFollower
 		for (int i = 0; i < 3; ++i)
 		{
 			A_SpawnParticle(col, SPF_RELATIVE | SPF_FULLBRIGHT, random(15, 30), frandom(3, 5), random(0, 359),
-				6 + Radius * 2 * progressMult, 0, random(0, Height),
+				6 + Radius * 2 * progressMult, 0, frandom(0, Height),
 				frandom(1.0, 4.0) * progressMult, max(0.2, 2.0 * progressMult), 0,
 				frandom(-0.15, -0.05) * progressMult, 0, 0);
 		}
