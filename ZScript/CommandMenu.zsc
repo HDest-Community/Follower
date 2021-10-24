@@ -1557,7 +1557,7 @@ extend class FollowerHandler
 			{
 				result = Selection[e.Player].SelFollowers[i].ChangeOrders(e.Args[0], size > 1 ? HDFollower.COF_MULTI : 0);
 			}
-			if (result || size > 1)
+			if (!(Modifiers[e.Player] & OpMod_Shift) && (result || size > 1))
 			{
 				CloseFollowerMenu(e.Player);
 			}
