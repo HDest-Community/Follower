@@ -13,7 +13,7 @@ extend class HDFollower
 		class<Actor> cls = clsStr;
 		if (cls)
 		{
-			nearMerchant =  CheckProximity(cls, HDCONST_ONEMETRE * 5, CPXF_CLOSEST | CPXF_ANCESTOR);
+			nearMerchant = CheckProximity(cls, HDCONST_ONEMETRE * 5, 1, CPXF_CLOSEST | CPXF_ANCESTOR);
 		}
 
 		if (OhanaMode.GetBool() && DistanceToPlayer > HDCONST_ONEMETRE * (CanSeePlayer ? 30 : 10) && (!nearMerchant || GetAge() % 3 == 0))
