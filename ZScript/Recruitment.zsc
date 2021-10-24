@@ -79,24 +79,25 @@ extend class FollowerHandler
 
 		HDFollower recruit = CreateFollower('RecruitedMarine', owningPlayer, GetUniqueIndex(10000), m.pos);
 
-		int Gender = 0;
+		int gender = 0;
 		string snd = m.SeeSound;
 		if (snd.IndexOf("operatorf") != -1)
 		{
-			Gender = 1;
+			gender = 1;
 		}
 		else if (snd.IndexOf("operatorn") != -1 || snd.IndexOf("operatorb") != -1)
 		{
-			Gender = 2;
+			gender = 2;
 		}
 		recruit.angle = m.angle;
-		recruit.Health = m.Health;
-		recruit.Gender = Gender;
+		recruit.Health = m.Health * 2; // [Ace] Followers have twice as much health. Make sure it scales appropriately.
+		recruit.gender = gender;
 		recruit.SeeSound = m.SeeSound;
 		recruit.PainSound = m.PainSound;
 		recruit.DeathSound = m.DeathSound;
-		recruit.SetTag(GetUniqueMarineName(Gender));
+		recruit.SetTag(GetUniqueMarineName(gender));
 		recruit.Translation = m.Translation;
+		recruit.voicepitch = m.voicepitch;
 
 		switch (m.wep)
 		{

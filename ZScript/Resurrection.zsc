@@ -203,7 +203,7 @@ extend class HDFollower
 					return false;
 				}
 
-				LinkedPlayer.woundcount += ((GetRequiredBlood() - LinkedPlayer.woundcount) + 3) * (LinkedPlayer.regenblues > 20 ? 2 : 1);
+				LinkedPlayer.woundcount += ((GetRequiredBlood() - LinkedPlayer.woundcount) + 3) * (LinkedPlayer.CountInv('HDBlues') > 20 ? 2 : 1);
 				break;
 			}
 		}

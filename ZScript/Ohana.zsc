@@ -7,7 +7,16 @@ extend class HDFollower
 	protected void CheckOhana()
 	{
 		if (!OhanaMode) { OhanaMode = CVar.GetCVar('hdf_ohana'); }
-		if (OhanaMode.GetBool() && (CanSeePlayer && DistanceToPlayer > 840 || !CanSeePlayer && DistanceToPlayer > 210))
+
+		bool nearMerchant = false;
+		Name clsStr = 'HDMerchant';
+		class<Actor> cls = clsStr;
+		if (cls)
+		{
+			nearMerchant =  CheckProximity(cls, HDCONST_ONEMETRE * 5, CPXF_CLOSEST | CPXF_ANCESTOR);
+		}
+
+		if (OhanaMode.GetBool() && DistanceToPlayer > HDCONST_ONEMETRE * (CanSeePlayer ? 30 : 10) && (!nearMerchant || GetAge() % 3 == 0))
 		{
 			OhanaTicker++;
 			if (OhanaTicker >= OhanaDeathTime && Health > 0)

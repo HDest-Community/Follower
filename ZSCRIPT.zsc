@@ -275,7 +275,7 @@ class HDFollower : HDHumanoid abstract
 		PainChance 192;
 		MaxStepHeight 80;
 		MaxDropOffHeight 192;
-		MaxTargetRange HDCONST_ONEMETRE * 60;
+		MaxTargetRange HDCONST_ONEMETRE * 80;
 		ReactionTime 4;
 		+ROLLCENTER
 		+ROLLSPRITE

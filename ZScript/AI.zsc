@@ -146,7 +146,7 @@ extend class HDFollower
 						LastKnownPos = next.Pos;
 					}
 
-					// [Ace] Go to goal if they're too far away.
+					// [Ace] Go to goal if it's too far away.
 					// !bSTANDSTILL means the follower will only chase goals if its current goal isn't forced.
 					double DistanceToNext = Distance3D(next);
 					if (bFRIENDLY && DistanceToNext > MinFollowRange / distDiv && DistanceToNext < MaxFollowRange && (!TGoal || TGoal && !TGoal.bSTANDSTILL))
@@ -213,9 +213,24 @@ extend class HDFollower
 				}
 
 				// [Ace] Walk away if you get too close.
-				if (!Moving && DistanceToPlayer <= HDCONST_ONEMETRE / 2 + radius + LinkedPlayer.radius && GetPlayerMovementAngle() <= MaxMovementAngle && LinkedPlayer.vel.xy.length() > 2 && !(LinkedPlayer.player.ReadyWeapon is 'HDMedikitter') && !(LinkedPlayer.player.ReadyWeapon is 'SelfBandage'))
+				if (!Moving && DistanceToPlayer <= HDCONST_ONEMETRE / 2 + radius + LinkedPlayer.radius && GetPlayerMovementAngle() <= MaxMovementAngle && LinkedPlayer.vel.xy.length() > 1.5 && !(LinkedPlayer.player.ReadyWeapon is 'HDMedikitter') && !(LinkedPlayer.player.ReadyWeapon is 'SelfBandage'))
 				{
 					TrySetGoal(Vec3Angle(HDCONST_ONEMETRE * 1.5, AngleTo(LinkedPlayer) + 180), SGF_IGNOREVALID | SGF_MOVEAWAY);
+				}
+
+				// [Ace] Mutually put out any fires.
+				for (int i = 0; i < Handler.Followers.Size(); ++i)
+				{
+					if (Handler.Followers[i] != self && self.Distance3D(Handler.Followers[i]) <= HDCONST_ONEMETRE)
+					{
+						A_GiveInventory('HDFireDouse', 3);
+						Handler.Followers[i].A_GiveInventory('HDFireDouse', 3);
+					}
+				}
+				if (DistanceToPlayer <= HDCONST_ONEMETRE)
+				{
+					A_GiveInventory('HDFireDouse', 3);
+					LinkedPlayer.A_GiveInventory('HDFireDouse', 3);
 				}
 			}
 		}
@@ -228,7 +243,7 @@ extend class HDFollower
 		}
 
 		// [Ace] Crouching. One day I will implement proper sprites for this. Today is not that day.
-		if (bFRIENDLY && Status <= FStatus_InCombat && Order < FOrder_Cover && PlayerIsCrouching())
+		if (bFRIENDLY && Status <= FStatus_InCombat && Order <= FOrder_Cover && PlayerIsCrouching() && CanSeePlayer && DistanceToPlayer < HDCONST_ONEMETRE * 30)
 		{
 			CrouchFactor = min(CrouchFactor + 0.20, 0.5);
 		}
@@ -240,8 +255,10 @@ extend class HDFollower
 		scale.y = default.scale.y * (1.0 - CrouchFactor);
 		A_SetSize(-1, default.Height * (1.0 - CrouchFactor));
 
+		double goalDist2 = TGoal ? Distance2D(TGoal) : 0;
+
 		// [Ace] Movement. Always travel to goals if there are any.
-		if (Status == FStatus_None && TGoal && (TGoal is next.GetClass() && Distance2D(TGoal) > (Order == FOrder_ComeAndHelp && (pNeedsMedic || pNeedsHelp) ? MedicRange : (MinFollowRangeStop / distDiv)) || TGoal is "TargetGoal" && Distance2D(TGoal) > 16) && Distance2D(TGoal) < MaxGoalRange)
+		if (Status == FStatus_None && TGoal && (TGoal is next.GetClass() && goalDist2 > (Order == FOrder_ComeAndHelp && (pNeedsMedic || pNeedsHelp) ? MedicRange : (MinFollowRangeStop / distDiv)) || TGoal is 'TargetGoal' && goalDist2 > 16) && goalDist2 < MaxGoalRange)
 		{
 			// [Ace] Don't slow down if player is bleeding out their ass or needs help getting up.
 			if (TGoal is "PlayerPawn" && Order == FOrder_ComeAndHelp && (pNeedsMedic || pNeedsHelp))
@@ -254,7 +271,7 @@ extend class HDFollower
 			}
 			else
 			{
-				if (Distance2D(TGoal) < HDCONST_ONEMETRE)
+				if (goalDist2 < HDCONST_ONEMETRE * 1.5)
 				{
 					MovementSpeed = default.MovementSpeed / 2;
 				}
@@ -265,7 +282,7 @@ extend class HDFollower
 					{
 						tics = 1;
 					}
-					MovementSpeed = min(default.MovementSpeed + Distance2D(TGoal) / (HDCONST_ONEMETRE - 2 * min(ffcount - 1, 6)), MaxMovementSpeed);
+					MovementSpeed = min(default.MovementSpeed + goalDist2 / (HDCONST_ONEMETRE - 2 * min(ffcount - 1, 6)), MaxMovementSpeed);
 				}
 			}
 
@@ -305,10 +322,10 @@ extend class HDFollower
 			bFLOORHUGGER = nearLadder;
 
 			// [Ace] There is a gap that can be crossed. If the player can do it, so can the follower.
-			bNODROPOFF = !((pos.z > floorz || abs(TGoal.floorz - floorz) < default.MaxDropOffHeight) && abs(TGoal.pos.z - pos.z) < default.MaxDropOffHeight);
+			bNODROPOFF = !(goalDist2 < HDCONST_ONEMETRE * 10 && (pos.z > floorz || abs(TGoal.floorz - floorz) < default.MaxDropOffHeight) && abs(TGoal.pos.z - pos.z) < default.MaxDropOffHeight);
 
 			// [Ace] Stop trying to reach goal shortly after losing LOS.
-			if (!CheckSight(TGoal, SF_SEEPASTSHOOTABLELINES | SF_IGNOREVISIBILITY) && ++NoSightTics == 35 * 6)
+			if (!CheckSight(TGoal, SF_SEEPASTSHOOTABLELINES | SF_IGNOREVISIBILITY) && ++NoSightTics == 50)
 			{
 				NoSightTics = 0;
 				ClearGoal();
@@ -322,7 +339,7 @@ extend class HDFollower
 		}
 		else // [Ace] Deceleration.
 		{
-			vel.xy *= 0.96;
+			vel.xy *= 0.95;
 
 			if (Order == FOrder_GoAndCover && vel.xy.length() < 0.65)
 			{
@@ -359,7 +376,7 @@ extend class HDFollower
 	// --------------------------------------------------
 	// INFORMATION
 	// --------------------------------------------------
-	
+
 	private Actor GetNextInChain()
 	{
 		int findex = Handler.Followers.Find(self);
@@ -428,9 +445,9 @@ extend class HDFollower
 	// CONSTANTS
 	// --------------------------------------------------
 
-	const MinFollowRangeStop = HDCONST_ONEMETRE * 2.3; // [Ace] If following the player, stop if closer than this distance.
-	const MinFollowRange = HDCONST_ONEMETRE * 3;
-	const MaxFollowRange = HDCONST_ONEMETRE * 20;
+	const MinFollowRangeStop = HDCONST_ONEMETRE * 2.8; // [Ace] If following the player, stop if closer than this distance.
+	const MinFollowRange = HDCONST_ONEMETRE * 3.6;
+	const MaxFollowRange = HDCONST_ONEMETRE * 25.0;
 	const MaxWaitRange = HDCONST_ONEMETRE * 12;
 	const MaxSearchRange = 24; // [Ace] This is for the LookFor* stuff.
 

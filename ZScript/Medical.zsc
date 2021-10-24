@@ -67,7 +67,7 @@ extend class HDFollower
 
 	clearscope bool CanApplyStim()
 	{
-		return LinkedPlayer && LinkedPlayer.stimcount < 4 && GetAmount('PortableStimpack') > 0 && LinkedPlayer.regenblues <= 2 && LinkedPlayer.Health < 30; // [Ace] Don't stim player unless it's necessary.
+		return LinkedPlayer && LinkedPlayer.stimcount < 4 && GetAmount('PortableStimpack') > 0 && LinkedPlayer.CountInv('HDBlues') <= 3 && LinkedPlayer.Health < 30; // [Ace] Don't stim player unless it's necessary.
 	}
 
 	clearscope bool CanHealSelf()
@@ -178,7 +178,7 @@ extend class HDFollower
 				}
 				LinkedPlayer.GiveBody(1);
 				LinkedPlayer.DamageMobj(invoker, null, 1, 'staples', DMG_FORCED);
-				LinkedPlayer.secondflesh++;
+				LinkedPlayer.A_GiveInventory('SecondFlesh', 1);
 			}
 		PatchUpEnd:
 			#### J 10
@@ -220,7 +220,7 @@ extend class HDFollower
 
 				A_StartSound("medikit/staple", CHAN_WEAPON);
 				A_StartSound("misc/smallslop", CHAN_BODY, CHANF_OVERLAP);
-				A_StartSound(PainSound, CHAN_VOICE, CHANF_NOSTOP);
+				A_Vocalize(PainSound, CHANF_NOSTOP);
 			}
 		PatchUpSelfEnd:
 			#### A 10

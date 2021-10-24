@@ -43,15 +43,15 @@ extend class HDFollower
 
 		if (SeeSound != "")
 		{
-			A_StartSound(SeeSound, CHAN_VOICE, CHANF_OVERLAP);
+			A_Vocalize(SeeSound, CHANF_OVERLAP);
 		}
 		else
 		{
 			// [Ace] This is called "see" to be consistent with SeeSound. It's for the idle comments and not the actual "see" sound.
-			string Response = GetResponse("SEE");
-			if (Response != "")
+			string response = GetResponse("SEE");
+			if (response != "")
 			{
-				ChatMessage(self, LinkedPlayer, Response);
+				ChatMessage(self, LinkedPlayer, response);
 			}
 		}
 		ResetCommentTimer();

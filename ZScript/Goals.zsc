@@ -43,6 +43,7 @@ extend class HDFollower
 				tg.bSTANDSTILL = true;
 			}
 			ClearGoal(); // [Ace] Nuke old goal.
+			tg.master = self;
 			TGoal = tg;
 			return true;
 		}
@@ -62,6 +63,32 @@ extend class HDFollower
 
 class TargetGoal : Actor
 {
+	override void Tick()
+	{
+		if (!master)
+		{
+			Destroy();
+			return;
+		}
+		
+		if ((master.Prev - master.pos).length() < 2)
+		{
+			if (++DestroyTicker == 25)
+			{
+				Destroy();
+				return;
+			}
+		}
+		else
+		{
+			DestroyTicker = 0;
+		}
+
+		Super.Tick();
+	}
+
+	private int DestroyTicker;
+
 	Default
 	{
 		Radius 12;

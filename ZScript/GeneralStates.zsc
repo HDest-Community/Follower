@@ -41,7 +41,7 @@ extend class HDFollower
 		OnDeath();
 		MaxStepHeight = 0; // [Ace] Prevents you from sombrero-ing the follower if you stand over them while they're incapped.
 		A_SetSize(-1, deathheight);
-		A_StartSound(PainSound, CHAN_VOICE);
+		A_Vocalize(PainSound);
 	}
 
 	States
@@ -65,7 +65,7 @@ extend class HDFollower
 			{
 				Status = FStatus_InactiveOrDead;
 				A_GiveInventory("HDFireDouse", 20);
-				A_StartSound(PainSound, CHAN_VOICE, CHANF_NOSTOP);
+				A_Vocalize(PainSound, CHANF_NOSTOP);
 			}
 			#### # 0
 			{
@@ -76,7 +76,7 @@ extend class HDFollower
 			#### # 6
 			{
 				Status = FStatus_InactiveOrDead; 
-				A_StartSound(PainSound, CHAN_VOICE, CHANF_NOSTOP);
+				A_Vocalize(PainSound, CHANF_NOSTOP);
 			}
 			#### # 0
 			{
@@ -86,7 +86,7 @@ extend class HDFollower
 
 		Falldown:
 			#### M 4 OnFalldown();
-			#### N 4 A_StartSound(DeathSound, CHAN_VOICE);
+			#### N 4 A_Vocalize(DeathSound);
 			#### O 4;
 			#### PQ 4;
 			#### Q 10 CheckIncap();
@@ -109,7 +109,7 @@ extend class HDFollower
 
 		Death:
 			#### M 9 OnDeath();
-			#### N 6 A_StartSound(DeathSound, CHAN_VOICE);
+			#### N 6 A_Vocalize(DeathSound);
 			#### O 5;
 			#### PQR 4;
 			Goto Dead;
