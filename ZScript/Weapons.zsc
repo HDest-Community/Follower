@@ -86,6 +86,7 @@ extend class HDFollower
 		}
 
 		A_Face(CTarget, 0, 0, flags: FAF_MIDDLE);
+		OldAim = (angle, pitch);
 
 		// [Ace] If you're incapped, follower can probably shoot over you. Otherwise it's not a good idea.
 		Actor BlockActor = AimBlocked();
@@ -100,6 +101,26 @@ extend class HDFollower
 			AimTimer = 0;
 			SetStateLabel('Aiming');
 		}
+	}
+
+	protected void LeadShot()
+	{
+		A_Face(CTarget, 0, 0, flags: FAF_MIDDLE);
+
+		// [Ace] Assume the average projectile travels at 500 m/s. Normally you'd want to use the actual speed, but things are a bit different here.
+		// Too lazy to add projectile info and whatnot. Maybe if this turns out to be too trash.
+		double ticsToTarget = Distance3D(CTarget) / (HDCONST_MPSTODUPT * 500.0);
+
+		vector2 newAim = (DeltaAngle(OldAim.x, angle), DeltaAngle(OldAim.y, pitch));
+		if (abs(newAim.x) > 45)
+		{
+			return;
+		}
+
+		newAim *= ticsToTarget;
+
+		angle = oldAim.x + newAim.x;
+		pitch = oldAim.y + newAim.y;
 	}
 
 	protected Actor AimBlocked()
@@ -244,6 +265,7 @@ extend class HDFollower
 
 	private int AimTimer;
 	private bool ContinueReloading;
+	private vector2 OldAim;
 }
 
 class FW_SMG : FollowerWeapon
