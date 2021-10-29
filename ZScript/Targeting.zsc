@@ -231,7 +231,7 @@ extend class HDFollower
 			Console.Printf("Failed to target %s. %s is blocking the line of fire.", a.GetClassName(), data.HitActor ? data.HitActor.GetClassName() : 'Nothing?????');
 		}
 
-		return data.HitActor == a;
+		return data.HitActor == a || data.HitActor is 'HDPlayerPawn' || data.HitActor is 'HDFollower';
 	}
 
 	// [Ace] This only acquires the target. Actual aiming and engaging and all that jazz is done in AiThink().
