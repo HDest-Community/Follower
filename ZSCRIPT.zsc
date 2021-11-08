@@ -293,6 +293,7 @@ class HDFollower : HDHumanoid abstract
 		+NOFEAR
 		+THRUSPECIES
 		+DONTTRANSLATE
+		-COUNTKILL
 		HDMobBase.DownedFrame 16;
 		HDMobBase.MaxBloodLoss 400;
 		Species 'HDFollower';

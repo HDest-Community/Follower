@@ -62,7 +62,7 @@ extend class FollowerHandler
 			}
 			players[owningPlayer].mo.A_Log("\c[White]Marine: \c[Green]"..msg.."\c-");
 			players[owningPlayer].mo.A_StartSound("misc/chat", 20, CHANF_LOCAL);
-			m.bFRIENDLY = true;
+			m.A_SetFriendly(true);
 		}
 		else
 		{
