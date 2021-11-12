@@ -330,6 +330,12 @@ class FW_Hunter : FollowerWeapon
 	{
 		Mag = wpn.WeaponStatus[HUNTS_TUBE];
 		ChamberedRound = wpn.WeaponStatus[HUNTS_CHAMBER];
+		if (wpn.WeaponStatus[SHOTS_SIDESADDLE] > 0)
+		{
+			HDPickup sh = HDPickup(Actor.Spawn('HDShellAmmo', Owner.pos));
+			sh.Amount = wpn.WeaponStatus[SHOTS_SIDESADDLE];
+			Owner.AddItem(sh, sh.Amount, flags: Owner.FIF_FORCE);
+		}
 	}
 }
 
