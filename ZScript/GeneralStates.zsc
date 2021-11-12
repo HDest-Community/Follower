@@ -51,7 +51,7 @@ extend class HDFollower
 			Goto Idle;
 
 		Moving:
-			#### CCCDDDEEEFFF 2;
+			#### CCDDEEFF 2;
 			Loop;
 		Idle:
 			#### A 5;

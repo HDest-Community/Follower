@@ -271,7 +271,7 @@ extend class HDFollower
 			}
 			else
 			{
-				if (goalDist2 < HDCONST_ONEMETRE * 1.5)
+				if (goalDist2 < MinFollowRangeStop)
 				{
 					MovementSpeed = default.MovementSpeed / 2;
 				}
