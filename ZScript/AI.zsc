@@ -149,13 +149,13 @@ extend class HDFollower
 					// [Ace] Go to goal if it's too far away.
 					// !bSTANDSTILL means the follower will only chase goals if its current goal isn't forced.
 					double DistanceToNext = Distance3D(next);
-					if (bFRIENDLY && DistanceToNext > MinFollowRange / distDiv && DistanceToNext < MaxFollowRange && (!TGoal || TGoal && !TGoal.bSTANDSTILL))
+					if (bFRIENDLY && DistanceToNext > MinFollowRange / distDiv && DistanceToNext < MaxFollowRange && (!TGoal || TGoal && !TGoal.bSTANDSTILL || Moving))
 					{
 						if (canSeeNext)
 						{
 							TGoal = next;
 						}
-						// [Ace] If following the player and the player is nearby but suddenly goes around a corner, try to go around the same corner.
+						// [Ace] If following the goal and the goal is nearby but suddenly goes around a corner, try to go around the same corner.
 						else if (LastKnownPos != (0, 0, 0) && (!TGoal || TGoal && TGoal.pos != LastKnownPos))
 						{
 							TrySetGoal(LastKnownPos, SGF_IGNOREVALID);
@@ -237,6 +237,7 @@ extend class HDFollower
 
 		// [Ace] Enemy searching.
 		// [03.10.21] Note to self: This is not in the first check for a reason. Stop trying to put it there.
+		// [13.11.21] Maybe next time put the reason in the comment you retard.
 		if (Weapons.Size() > 0 && HasUsableWeapons() && (Status != FStatus_InCombat || !SelWeapon) && (!bFRIENDLY || Order != FOrder_FollowIgnore && Order != FOrder_GoAndCover))
 		{
 			LookForEnemies();
@@ -273,7 +274,7 @@ extend class HDFollower
 			{
 				if (goalDist2 < MinFollowRangeStop)
 				{
-					MovementSpeed = default.MovementSpeed / 2;
+					MovementSpeed = max(0.5, MovementSpeed * 0.9);
 				}
 				else
 				{
@@ -287,22 +288,7 @@ extend class HDFollower
 			}
 
 			// [Ace] Same as the corner thing from above but does it if the follower is moving.
-			if (TGoal == next)
-			{
-				if (canSeeNext)
-				{
-					LastKnownPos = TGoal.Pos;
-					A_Face(TGoal, 0, 0);
-				}
-				else
-				{
-					TrySetGoal(LastKnownPos);
-				}
-			}
-			else
-			{
-				A_Face(TGoal, 0, 0);
-			}
+			A_Face(TGoal, 0, 0);
 
 			int sideVel = 0;
 			if (!(blockedSides & BSide_Left) && blockedSides & BSide_Right)
