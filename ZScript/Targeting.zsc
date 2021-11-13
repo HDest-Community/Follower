@@ -125,8 +125,11 @@ extend class HDFollower
 				}
 				else if (MTarget is 'HDMobBase' && Shields && Shields.Amount > 150)
 				{
-					W = 'FW_RocketLauncher'; UsedWeapons.Push(W);
-					W = 'FW_Liberator'; UsedWeapons.Push(W);
+					if (!AlreadyTargeted)
+					{
+						W = 'FW_RocketLauncher'; UsedWeapons.Push(W);
+						W = 'FW_Liberator'; UsedWeapons.Push(W);
+					}
 					W = 'FW_Boss'; UsedWeapons.Push(W);
 					W = 'FW_SMG'; UsedWeapons.Push(W);
 					W = 'FW_ZM66'; UsedWeapons.Push(W);
