@@ -8,6 +8,11 @@ extend class HDFollower
 	{
 		if (!OhanaMode) { OhanaMode = CVar.GetCVar('hdf_ohana'); }
 
+		if (level.MapName ~== "LOTSAGUN")
+		{
+			return;
+		}
+
 		bool nearMerchant = false;
 		Name clsStr = 'HDMerchant';
 		class<Actor> cls = clsStr;
