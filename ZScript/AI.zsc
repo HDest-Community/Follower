@@ -274,7 +274,7 @@ extend class HDFollower
 			{
 				if (goalDist2 < MinFollowRangeStop)
 				{
-					MovementSpeed = max(0.5, MovementSpeed * 0.9);
+					MovementSpeed = max(default.MovementSpeed * 0.25, MovementSpeed * 0.85);
 				}
 				else
 				{
