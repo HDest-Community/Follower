@@ -206,9 +206,9 @@ class FollowerBody : HDPickup abstract
 
 					int Distance = random(20, 48);
 					int RandAngle = invoker.FromIncap || level.time < 2 ? random(0, 359) : 0;
-					vector3 DropDest = Vec3Angle(Distance, angle + RandAngle);
-					Sector DropSec = level.PointInSector(DropDest.xy);
-					if (DropSec && pos.z - DropSec.floorplane.ZAtPoint(DropSec.centerspot) > GetDefaultByType(FData.FollowerClass).MaxStepHeight || !level.IsPointInLevel(DropDest))
+					vector3 dest = Vec3Angle(Distance, angle + RandAngle);
+					Sector sec = level.PointInSector(dest.xy);
+					if (sec && pos.z - sec.NextLowestFloorAt(dest.x, dest.y, dest.z) > GetDefaultByType(FData.FollowerClass).MaxStepHeight || !level.IsPointInLevel(dest))
 					{
 						if (invoker.FromIncap || level.time < 2)
 						{
