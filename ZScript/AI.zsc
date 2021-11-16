@@ -158,7 +158,7 @@ extend class HDFollower
 						// [Ace] If following the goal and the goal is nearby but suddenly goes around a corner, try to go around the same corner.
 						else if (LastKnownPos != (0, 0, 0) && (!TGoal || TGoal && TGoal.pos != LastKnownPos))
 						{
-							TrySetGoal(LastKnownPos, SGF_IGNOREVALID);
+							TrySetGoal(LastKnownPos, SGF_IGNOREVALID | SGF_LASTKNOWN);
 						}
 					}
 
@@ -262,7 +262,7 @@ extend class HDFollower
 		if (Status == FStatus_None && TGoal && (TGoal is next.GetClass() && goalDist2 > (Order == FOrder_ComeAndHelp && (pNeedsMedic || pNeedsHelp) ? MedicRange : (MinFollowRangeStop / distDiv)) || TGoal is 'TargetGoal' && goalDist2 > 16) && goalDist2 < MaxGoalRange)
 		{
 			// [Ace] Don't slow down if player is bleeding out their ass or needs help getting up.
-			if (TGoal is "PlayerPawn" && Order == FOrder_ComeAndHelp && (pNeedsMedic || pNeedsHelp))
+			if (TGoal is "PlayerPawn" && Order == FOrder_ComeAndHelp && (pNeedsMedic || pNeedsHelp) || TGoal.bMISSILEMORE)
 			{
 				if (tics == 2)
 				{

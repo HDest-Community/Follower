@@ -4,7 +4,8 @@ extend class HDFollower
 	{
 		SGF_IGNOREVALID = 1,
 		SGF_MULTI = 2,
-		SGF_MOVEAWAY = 4
+		SGF_MOVEAWAY = 4,
+		SGF_LASTKNOWN = 8
 	}
 
 	// --------------------------------------------------
@@ -41,6 +42,10 @@ extend class HDFollower
 			if (flags & SGF_MOVEAWAY)
 			{
 				tg.bSTANDSTILL = true;
+			}
+			if (flags & SGF_LASTKNOWN)
+			{
+				tg.bMISSILEMORE = true;
 			}
 			ClearGoal(); // [Ace] Nuke old goal.
 			tg.master = self;
