@@ -259,10 +259,11 @@ extend class HDFollower
 		double goalDist2 = TGoal ? Distance2D(TGoal) : 0;
 
 		// [Ace] Movement. Always travel to goals if there are any.
-		if (Status == FStatus_None && TGoal && (TGoal is next.GetClass() && goalDist2 > (Order == FOrder_ComeAndHelp && (pNeedsMedic || pNeedsHelp) ? MedicRange : (MinFollowRangeStop / distDiv)) || TGoal is 'TargetGoal' && goalDist2 > 16) && goalDist2 < MaxGoalRange)
+		bool dedicatedGoal = TGoal is 'TargetGoal';
+		if (Status == FStatus_None && TGoal && (TGoal is next.GetClass() && goalDist2 > (Order == FOrder_ComeAndHelp && (pNeedsMedic || pNeedsHelp) ? MedicRange : (MinFollowRangeStop / distDiv)) || dedicatedGoal && goalDist2 > 16) && goalDist2 < MaxGoalRange)
 		{
 			// [Ace] Don't slow down if player is bleeding out their ass or needs help getting up.
-			if (TGoal is "PlayerPawn" && Order == FOrder_ComeAndHelp && (pNeedsMedic || pNeedsHelp) || TGoal.bMISSILEMORE)
+			if (TGoal is "PlayerPawn" && Order == FOrder_ComeAndHelp && (pNeedsMedic || pNeedsHelp))
 			{
 				if (tics == 2)
 				{
@@ -272,7 +273,7 @@ extend class HDFollower
 			}
 			else
 			{
-				if (goalDist2 < MinFollowRangeStop)
+				if (goalDist2 < (dedicatedGoal ? GoalRangeStop : MinFollowRangeStop))
 				{
 					MovementSpeed = max(default.MovementSpeed * 0.25, MovementSpeed * 0.85);
 				}
@@ -431,6 +432,7 @@ extend class HDFollower
 	// CONSTANTS
 	// --------------------------------------------------
 
+	const GoalRangeStop = HDCONST_ONEMETRE * 0.8; // [Ace] Start decelerating if closer than this distance.
 	const MinFollowRangeStop = HDCONST_ONEMETRE * 2.8; // [Ace] If following the player, stop if closer than this distance.
 	const MinFollowRange = HDCONST_ONEMETRE * 3.6;
 	const MaxFollowRange = HDCONST_ONEMETRE * 25.0;
