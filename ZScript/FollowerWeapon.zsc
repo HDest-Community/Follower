@@ -107,7 +107,7 @@ class FollowerWeapon abstract
 		class<HDAmmo> AType, MType; int MaxMag;
 		[AType, MType, MaxMag] = GetAmmoType();
 
-		if (Mag == MaxMag)
+		if (Mag >= MaxMag)
 		{
 			return RResult_MagFull;
 		}
