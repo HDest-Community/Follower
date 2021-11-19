@@ -50,7 +50,7 @@ extend class HDFollower
 	// This function only makes follower wait for armor, unless you call it again, in which case they drop their current armor.
 	void TryUseArmor()
 	{
-		if (Status == FStatus_InactiveOrDead)
+		if (Status == FStatus_InCombat || Status == FStatus_InactiveOrDead)
 		{
 			return;
 		}

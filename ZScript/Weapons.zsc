@@ -184,7 +184,7 @@ extend class HDFollower
 
 	void TryUseWeapon()
 	{
-		if (Status == FStatus_InactiveOrDead || Weapons.Size() == 0)
+		if (Status == FStatus_InCombat || Status == FStatus_InactiveOrDead || Weapons.Size() == 0)
 		{
 			return;
 		}
