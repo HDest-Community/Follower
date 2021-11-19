@@ -41,7 +41,7 @@ extend class HDFollower
 				bool AlreadyTargeted = IsAttackedBySomeoneElse(MTarget);
 				let Shields = MTarget.FindInventory('HDMagicShield');
 
-				if (hdf_debug == 1)
+				if (hdf_debug & FDebug_Targeting)
 				{
 					Console.Printf("%s is attempting to target %s with %i bodydamage and %i shields.", GetTag(), MTarget.GetClassName(), HDMon ? HDMon.BodyDamage : -1, Shields ? Shields.Amount : 0);
 				}
@@ -229,7 +229,7 @@ extend class HDFollower
 		angle = OldAngle;
 		pitch = OldPitch;
 
-		if (data.HitActor != a && hdf_debug == 1)
+		if (data.HitActor != a && hdf_debug & FDebug_Aiming)
 		{
 			Console.Printf("Failed to target %s. %s is blocking the line of fire.", a.GetClassName(), data.HitActor ? data.HitActor.GetClassName() : 'Nothing?????');
 		}
@@ -259,9 +259,9 @@ extend class HDFollower
 			if (ActualWeapons[i].HasAmmo())
 			{
 				SelWeapon = ActualWeapons[i];
-				if (hdf_debug == 1)
+				if (hdf_debug & FDebug_Weapons)
 				{
-					Console.Printf("%s selected %s with %i rounds and %s spare ammo.", GetTag(), SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no");
+					Console.Printf("%s selected %s with %i rounds and %s spare ammo @ %s.", GetTag(), SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no", level.TimeFormatted());
 				}
 				if (other)
 				{
@@ -272,9 +272,9 @@ extend class HDFollower
 			else if ((flags & ATF_NOSWITCH || ActualWeapons[i].GetFlags() & FollowerWeapon.FWF_NOSWITCH) && ActualWeapons[i].HasSpare())
 			{
 				SelWeapon = ActualWeapons[i];
-				if (hdf_debug == 1)
+				if (hdf_debug & FDebug_Weapons)
 				{
-					Console.Printf("ATF_NOSWITCH is enabled. %s selected %s with %i rounds and %s spare ammo.", GetTag(), SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no");
+					Console.Printf("ATF_NOSWITCH is enabled. %s selected %s with %i rounds and %s spare ammo @ %s.", GetTag(), SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no", level.TimeFormatted());
 				}
 				TryReloadWeapon(SelWeapon, RLF_FORCE | RLF_SILENT | RLF_NOJUMP);
 				return;
@@ -289,9 +289,9 @@ extend class HDFollower
 				if (ActualWeapons[i].HasSpare())
 				{
 					SelWeapon = ActualWeapons[i];
-					if (hdf_debug == 1)
+					if (hdf_debug & FDebug_Weapons)
 					{
-						Console.Printf("ATF_NOSWITCH is disabled. %s selected %s with %i rounds and %s spare ammo.", GetTag(), SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no");
+						Console.Printf("ATF_NOSWITCH is disabled. %s selected %s with %i rounds and %s spare ammo @ %s.", GetTag(), SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no", level.TimeFormatted());
 					}
 					TryReloadWeapon(SelWeapon, RLF_FORCE | RLF_SILENT | RLF_NOJUMP);
 					return;

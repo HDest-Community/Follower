@@ -14,7 +14,7 @@ extend class HDFollower
 			{
 				if (AimTimer++ > AdjustForDistance(CTarget, SelWeapon))
 				{
-					if (hdf_debug == 1)
+					if (hdf_debug & FDebug_Targeting)
 					{
 						Console.Printf("%s is trying to fire %s at %s.", GetTag(), SelWeapon.GetName(), CTarget.GetClassName());
 					}

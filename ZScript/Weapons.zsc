@@ -80,7 +80,7 @@ extend class HDFollower
 			return;
 		}
 
-		if (hdf_debug == 1)
+		if (hdf_debug & FDebug_Aiming)
 		{
 			Console.Printf("%s is aiming at %s.", GetTag(), CTarget.GetClassName());
 		}
@@ -135,7 +135,7 @@ extend class HDFollower
 		Actor a = TraceData.HitActor;
 		if (a && bFRIENDLY && (a is "PlayerPawn" || a is 'HDFollower' && a.bFRIENDLY || !a.bISMONSTER && a.bSOLID))
 		{
-			if (hdf_debug == 2)
+			if (hdf_debug & FDebug_Aiming)
 			{
 				Console.Printf("%s's aim is being blocked by %s.", GetTag(), a.GetClassName());
 			}
@@ -152,19 +152,19 @@ extend class HDFollower
 			return false;
 		}
 
-		int ReloadResult = wpn.TryReload(FollowerWeapon.TRF_CHECK);
-		if (ReloadResult == FollowerWeapon.RResult_CanReload)
+		int result = wpn.TryReload(FollowerWeapon.TRF_CHECK);
+		if (result == FollowerWeapon.RResult_CanReload)
 		{
-			if (hdf_debug == 1)
+			if (hdf_debug & FDebug_Reloading)
 			{
-				Console.Printf("%s is trying to reload %s.", GetTag(), wpn.GetName());
+				Console.Printf("%s is trying to reload %s @ %s.", GetTag(), wpn.GetName(), level.TimeFormatted());
 			}
 			SelWeapon = wpn;
 			Status = FStatus_InCombat;
 			SetStateLabel(wpn.GetReloadState());
 			return true;
 		}
-		else if (ReloadResult == FollowerWeapon.RResult_NoAmmo)
+		else if (result == FollowerWeapon.RResult_NoAmmo)
 		{
 			// [Ace] Keep complaining if manual.
 			if (!(flags & RLF_SILENT) && (!wpn.HasWarnedLowAmmo || (flags & RLF_MANUAL)))

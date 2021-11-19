@@ -37,7 +37,7 @@ extend class HDFollower
 			canSeeNext = true;
 		}
 
-		if (hdf_debug == 3)
+		if (hdf_debug & FDebug_General)
 		{
 			Console.Printf("%s (index %i) has %s out.\nCurrent status is %i.\nFollower is targeting %s. Follower following %s.\n--------------------",
 				GetTag(),
@@ -47,7 +47,7 @@ extend class HDFollower
 				next is 'HDFollower' ? HDFollower(next).GetTag() : (next ? next.GetTag() : "nothing"));
 		}
 
-		if (hdf_debug == 4)
+		if (hdf_debug & FDebug_Health)
 		{
 			Console.Printf("%s has %i/%i health, %i body damage, %i bloodloss, and %i shield.\n--------------------",
 				GetTag(),

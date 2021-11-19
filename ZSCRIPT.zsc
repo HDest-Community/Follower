@@ -43,6 +43,16 @@ class HDFollower : HDHumanoid abstract
 		PMType_General
 	}
 
+	enum FollowerDebugLevel
+	{
+		FDebug_Weapons = 1,
+		FDebug_Reloading = 2,
+		FDebug_Aiming = 4,
+		FDebug_Targeting = 8,
+		FDebug_General = 16,
+		FDebug_Health = 32
+	}
+
 	// --------------------------------------------------
 	// ACTIONS
 	// --------------------------------------------------
@@ -158,6 +168,11 @@ class HDFollower : HDHumanoid abstract
 
 	override void Tick()
 	{
+		if (IsFrozen())
+		{
+			return;
+		}
+
 		Super.Tick();
 
 		// [Ace] It's possible for LinkedPlayer to become null if the attached player leaves the game. In that case, automatically assign it to the first non-null player.
