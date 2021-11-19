@@ -292,7 +292,7 @@ class HDFollower : HDHumanoid abstract
 		MaxStepHeight 80;
 		MaxDropOffHeight 192;
 		MaxTargetRange HDCONST_ONEMETRE * 80;
-		ReactionTime 4;
+		ReactionTime 3;
 		+ROLLCENTER
 		+ROLLSPRITE
 		+FRIENDLY

@@ -238,7 +238,7 @@ extend class HDFollower
 		// [Ace] Enemy searching.
 		// [03.10.21] Note to self: This is not in the first check for a reason. Stop trying to put it there.
 		// [13.11.21] Maybe next time put the reason in the comment you retard.
-		if (Weapons.Size() > 0 && HasUsableWeapons() && (Status != FStatus_InCombat || !SelWeapon) && (!bFRIENDLY || Order != FOrder_FollowIgnore && Order != FOrder_GoAndCover))
+		if (Weapons.Size() > 0 && HasUsableWeapons() && !CTarget && (Status != FStatus_InCombat || !SelWeapon) && (!bFRIENDLY || Order != FOrder_FollowIgnore && Order != FOrder_GoAndCover))
 		{
 			LookForEnemies();
 		}
