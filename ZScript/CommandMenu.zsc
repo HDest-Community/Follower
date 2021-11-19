@@ -1363,22 +1363,30 @@ extend class FollowerHandler
 			Array<string> split;
 			e.Name.Split(split, ":");
 
-			if (split.size() == 2)
+			if (split.Size() < 2)
 			{
-				let plr = players[e.Player].mo;
-				FLineTraceData data;
-				plr.LineTrace(plr.angle, HDCONST_ONEMETRE * 100, plr.pitch, TRF_SOLIDACTORS | TRF_THRUBLOCK, plr.height - 5, data: data);
-				if (data.HitActor is 'HDFollower')
-				{
-					data.HitActor.SetTag(split[1]);
-				}
+				return;
 			}
+
+			let plr = players[e.Player].mo;
+			FLineTraceData data;
+			plr.LineTrace(plr.angle, HDCONST_ONEMETRE * 100, plr.pitch, TRF_SOLIDACTORS | TRF_THRUBLOCK, plr.height - 5, data: data);
+			if (data.HitActor is 'HDFollower')
+			{
+				data.HitActor.SetTag(split[1]);
+			}
+			return;
 		}
 
 		if (e.Name.MakeLower().IndexOf("hdf_resetfollower") != -1)
 		{
 			Array<string> split;
 			e.Name.Split(split, ":");
+
+			if (split.Size() < 2)
+			{
+				return;
+			}
 
 			for (int i = 0; i < Followers.Size(); ++i)
 			{
@@ -1388,6 +1396,7 @@ extend class FollowerHandler
 					break;
 				}
 			}
+			return;
 		}
 
 		if (e.Name ~== "HDF_ConfirmRecruitment" && !e.IsManual)
