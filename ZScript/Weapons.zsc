@@ -105,6 +105,11 @@ extend class HDFollower
 
 	protected void LeadShot()
 	{
+		if (!CTarget)
+		{
+			return;
+		}
+		
 		A_Face(CTarget, 0, 0, flags: FAF_MIDDLE);
 
 		// [Ace] Assume the average projectile travels at 500 m/s. Normally you'd want to use the actual speed, but things are a bit different here.
