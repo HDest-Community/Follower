@@ -54,7 +54,7 @@ extend class HDFollower
 				A_DropInventory('PortableStimpack');
 			}
 			A_DropItem('SecondBlood');
-			Find('PortableMedikit').Destroy();
+			TakeInvItem(Find('PortableMedikit'), FIF_FORCE | FIF_REMOVE);
 			SuturesLeft = MaxSutures;
 			return true;
 		}
@@ -135,7 +135,7 @@ extend class HDFollower
 
 				if (CanApplyStim())
 				{
-					Find('PortableStimpack').Destroy();
+					TakeInvItem(Find('PortableStimpack'), true);
 					SetStateLabel('ApplyStim');
 					return;
 				}

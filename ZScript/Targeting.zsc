@@ -37,14 +37,8 @@ extend class HDFollower
 					continue;
 				}
 
-				HDMobBase HDMon = HDMobBase(MTarget);
-				bool AlreadyTargeted = IsAttackedBySomeoneElse(MTarget);
-				let Shields = MTarget.FindInventory('HDMagicShield');
-
-				if (hdf_debug & FDebug_Targeting)
-				{
-					Console.Printf("%s is attempting to target %s with %i bodydamage and %i shields.", GetTag(), MTarget.GetClassName(), HDMon ? HDMon.BodyDamage : -1, Shields ? Shields.Amount : 0);
-				}
+				bool alreadyTargeted = IsAttackedBySomeoneElse(MTarget);
+				let shields = MTarget.FindInventory('HDMagicShield');
 
 				if (MTarget is "HDMobBase" && HDMobBase(MTarget).BodyDamage > MTarget.SpawnHealth() * 1.2)
 				{
@@ -58,7 +52,7 @@ extend class HDFollower
 
 				if (MTarget.bBOSS && (CheckTarget() && !CTarget.bBOSS || !CheckTarget()))
 				{
-					if (!AlreadyTargeted)
+					if (!alreadyTargeted)
 					{
 						W = 'FW_Bronto'; UsedWeapons.Push(W);
 					}
@@ -70,7 +64,7 @@ extend class HDFollower
 					AcquireTarget(UsedWeapons, MTarget);
 					break;
 				}
-				else if (MTarget is 'Necromancer' && !AlreadyTargeted)
+				else if (MTarget is 'Necromancer' && !alreadyTargeted)
 				{
 					W = 'FW_ZM66'; UsedWeapons.Push(W);
 					W = 'FW_Hunter'; UsedWeapons.Push(W);
@@ -82,7 +76,7 @@ extend class HDFollower
 				}
 				else if (MTarget is 'PainLord' || MTarget is 'PainBringer')
 				{
-					if (!AlreadyTargeted)
+					if (!alreadyTargeted)
 					{
 						if (MTarget is 'PainLord')
 						{
@@ -92,7 +86,7 @@ extend class HDFollower
 					}
 					W = 'FW_Liberator'; UsedWeapons.Push(W);
 					W = 'FW_Boss'; UsedWeapons.Push(W);
-					if (Shields && Shields.Amount > 300)
+					if (shields && shields.Amount > 300)
 					{
 						W = 'FW_SMG'; UsedWeapons.Push(W);
 						W = 'FW_ZM66'; UsedWeapons.Push(W);
@@ -109,7 +103,7 @@ extend class HDFollower
 				}
 				else if (MTarget is 'Trilobite')
 				{
-					if (!AlreadyTargeted)
+					if (!alreadyTargeted)
 					{
 						if (MTarget.Health > MTarget.SpawnHealth() / 2)
 						{
@@ -123,9 +117,9 @@ extend class HDFollower
 					W = 'FW_Hunter'; UsedWeapons.Push(W);
 					AcquireTarget(UsedWeapons, MTarget);
 				}
-				else if (MTarget is 'HDMobBase' && Shields && Shields.Amount > 150)
+				else if (MTarget is 'HDMobBase' && shields && shields.Amount > 150)
 				{
-					if (!AlreadyTargeted)
+					if (!alreadyTargeted)
 					{
 						W = 'FW_RocketLauncher'; UsedWeapons.Push(W);
 						W = 'FW_Liberator'; UsedWeapons.Push(W);
@@ -133,7 +127,7 @@ extend class HDFollower
 					W = 'FW_Boss'; UsedWeapons.Push(W);
 					W = 'FW_SMG'; UsedWeapons.Push(W);
 					W = 'FW_ZM66'; UsedWeapons.Push(W);
-					if (Shields.Amount <= 300)
+					if (shields.Amount <= 300)
 					{
 						W = 'FW_Hunter'; UsedWeapons.Push(W);
 					}
@@ -142,7 +136,7 @@ extend class HDFollower
 				}
 
 				// [Ace] Intentionally don't break the loop in case one of the next monsters is a high priority one.
-				else if (MTarget.FindInventory('HDArmourWorn') && !AlreadyTargeted) // [Ace] Don't focus fire on trash.
+				else if (MTarget.FindInventory('HDArmourWorn') && !alreadyTargeted) // [Ace] Don't focus fire on trash.
 				{
 					W = 'FW_Liberator'; UsedWeapons.Push(W);
 					W = 'FW_Boss'; UsedWeapons.Push(W);	
@@ -151,7 +145,7 @@ extend class HDFollower
 					W = 'FW_Hunter'; UsedWeapons.Push(W);
 					AcquireTarget(UsedWeapons, MTarget, ATF_NOSWITCH);
 				}
-				else if ((!CheckTarget() || !SelWeapon) && !AlreadyTargeted)
+				else if ((!CheckTarget() || !SelWeapon) && !alreadyTargeted)
 				{
 					W = 'FW_Hunter'; UsedWeapons.Push(W);
 					W = 'FW_ZM66'; UsedWeapons.Push(W);
@@ -261,7 +255,7 @@ extend class HDFollower
 				SelWeapon = ActualWeapons[i];
 				if (hdf_debug & FDebug_Weapons)
 				{
-					Console.Printf("%s selected %s with %i rounds and %s spare ammo @ %s.", GetTag(), SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no", level.TimeFormatted());
+					Console.Printf("[%s] %s selected %s with %i rounds and %s spare ammo. Target is %s with %i bodydamage and %i shields.", level.TimeFormatted(), GetTag(), SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no", other.GetClassName(), HDMobBase(other) ? HDMobBase(other).BodyDamage : -1, other.CountInv('HDMagicShield'));
 				}
 				if (other)
 				{
@@ -274,7 +268,7 @@ extend class HDFollower
 				SelWeapon = ActualWeapons[i];
 				if (hdf_debug & FDebug_Weapons)
 				{
-					Console.Printf("ATF_NOSWITCH is enabled. %s selected %s with %i rounds and %s spare ammo @ %s.", GetTag(), SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no", level.TimeFormatted());
+					Console.Printf("[%s] ATF_NOSWITCH is enabled. %s selected %s with %i rounds and %s spare ammo. Target is %s with %i bodydamage and %i shields.", level.TimeFormatted(), GetTag(), SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no", other.GetClassName(), HDMobBase(other) ? HDMobBase(other).BodyDamage : -1, other.CountInv('HDMagicShield'));
 				}
 				TryReloadWeapon(SelWeapon, RLF_FORCE | RLF_SILENT | RLF_NOJUMP);
 				return;
@@ -291,7 +285,7 @@ extend class HDFollower
 					SelWeapon = ActualWeapons[i];
 					if (hdf_debug & FDebug_Weapons)
 					{
-						Console.Printf("ATF_NOSWITCH is disabled. %s selected %s with %i rounds and %s spare ammo @ %s.", GetTag(), SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no", level.TimeFormatted());
+						Console.Printf("[%s] ATF_NOSWITCH is disabled. %s selected %s with %i rounds and %s spare ammo. Target is %s with %i bodydamage and %i shields.", level.TimeFormatted(), GetTag(), SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no", other.GetClassName(), HDMobBase(other) ? HDMobBase(other).BodyDamage : -1, other.CountInv('HDMagicShield'));
 					}
 					TryReloadWeapon(SelWeapon, RLF_FORCE | RLF_SILENT | RLF_NOJUMP);
 					return;

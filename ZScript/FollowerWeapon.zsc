@@ -124,7 +124,7 @@ class FollowerWeapon abstract
 		{
 			InventorySlot wpnAmmo = Owner.FindHighestAmount(MType);
 			Mag = wpnAmmo.Amount;
-			wpnAmmo.Destroy();
+			Owner.TakeInvItem(wpnAmmo, HDFollower.FIF_FORCE | HDFollower.FIF_REMOVE);
 		}
 		else if (AType)
 		{
@@ -133,7 +133,7 @@ class FollowerWeapon abstract
 			wpnAmmo.Amount--;
 			if (wpnAmmo.Amount == 0)
 			{
-				wpnAmmo.Destroy();
+				Owner.TakeInvItem(wpnAmmo, HDFollower.FIF_FORCE | HDFollower.FIF_REMOVE);
 			}
 		}
 

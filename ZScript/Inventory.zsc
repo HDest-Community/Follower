@@ -16,7 +16,8 @@ extend class HDFollower
 	enum FollowerInventoryFlags
 	{
 		FIF_FORCE = 1,
-		FIF_REVERSEDIRECTION = 2
+		FIF_REVERSEDIRECTION = 2,
+		FIF_REMOVE = 4, // [Ace] TakeInvItem only.
 	}
 
 	// --------------------------------------------------
@@ -72,15 +73,19 @@ extend class HDFollower
 			Slots[index].ItemClass = item.GetClass();
 			Slots[index].Icon = TexMan.GetName(item.Icon);
 			Slots[index].Multipickup = item.bMULTIPICKUP;
-			int LeftInSlot = maxAmt - Slots[index].Amount;
-			int ToAdd = min(LeftInSlot, amt, item.Amount);
-			item.Amount -= ToAdd;
-			Slots[index].Amount += ToAdd;
-			amt -= ToAdd;
+			int leftInSlot = maxAmt - Slots[index].Amount;
+			int toAdd = min(leftInSlot, amt, item.Amount);
+			item.Amount -= toAdd;
+			Slots[index].Amount += toAdd;
+			amt -= toAdd;
 			if (item.Amount == 0)
 			{
 				item.Destroy();
 				break;
+			}
+			if (hdf_debug & FDebug_Inventory)
+			{
+				Console.Printf("[%s, %s], slot %i: added ITEM %s with an amount of %i.", level.TimeFormatted(), GetTag(), index, Slots[index].ItemClass.GetClassName(), Slots[index].Amount);
 			}
 		}
 
@@ -130,6 +135,10 @@ extend class HDFollower
 		{
 			mag.Destroy();
 		}
+		if (hdf_debug & FDebug_Inventory)
+		{
+			Console.Printf("[%s, %s], slot %i: added MAG %s with an amount of %i.", level.TimeFormatted(), GetTag(), index, Slots[index].ItemClass.GetClassName(), Slots[index].Amount);
+		}
 
 		return true;
 	}
@@ -146,19 +155,31 @@ extend class HDFollower
 		Super.ClearInventory();
 	}
 
-	void DropInvItem(InventorySlot slot, bool force = false)
+	void DropInvItem(InventorySlot slot, int flags = 0)
 	{
 		if (!slot || !CanInteractWith())
 		{
 			return;
 		}
 
-		if (!force && Health <= 0)
+		if (!(flags & FIF_FORCE) && Health <= 0)
 		{
 			switch (CanReach(MaxInventoryDistance))
 			{
 				case 1: ThinkMessage(LinkedPlayer, "$TOOFAR_PLR"); return;
 				case 2: ThinkMessage(LinkedPlayer, "$NOTFACING_PLR"); return;
+			}
+		}
+
+		if (hdf_debug & FDebug_Inventory)
+		{
+			for (int i = 0; i < SlotCount; ++i)
+			{
+				if (Slots[i] == slot)
+				{
+					Console.Printf("[%s, %s], slot %i: dropped %s with an amount of %i.", level.TimeFormatted(), GetTag(), i, slot.ItemClass.GetClassName(), slot.Amount);
+					break;
+				}
 			}
 		}
 
@@ -179,17 +200,38 @@ extend class HDFollower
 		slot.Destroy();
 	}
 
-	void TakeInvItem(InventorySlot slot)
+	void TakeInvItem(InventorySlot slot, int flags = 0)
 	{
 		if (!slot || !CanInteractWith())
 		{
 			return;
 		}
 
-		switch (CanReach(MaxInventoryDistance))
+		if (!(flags & FIF_FORCE))
 		{
-			case 1: ThinkMessage(LinkedPlayer, "$TOOFAR_PLR"); return;
-			case 2: ThinkMessage(LinkedPlayer, "$NOTFACING_PLR"); return;
+			switch (CanReach(MaxInventoryDistance))
+			{
+				case 1: ThinkMessage(LinkedPlayer, "$TOOFAR_PLR"); return;
+				case 2: ThinkMessage(LinkedPlayer, "$NOTFACING_PLR"); return;
+			}
+		}
+
+		if (hdf_debug & FDebug_Inventory)
+		{
+			for (int i = 0; i < SlotCount; ++i)
+			{
+				if (Slots[i] == slot)
+				{
+					Console.Printf("[%s, %s], slot %i: %s %s with an amount of %i.", level.TimeFormatted(), GetTag(), i, flags & FIF_REMOVE ? "removed" : "took", slot.ItemClass.GetClassName(), slot.Amount);
+					break;
+				}
+			}
+		}
+
+		if (flags & FIF_REMOVE)
+		{
+			slot.Destroy();
+			return;
 		}
 
 		if (slot.ItemClass is 'HDMagAmmo')
@@ -219,22 +261,30 @@ extend class HDFollower
 	// INFORMATION
 	// --------------------------------------------------
 
-	clearscope InventorySlot Find(class<HDPickup> cls)
+	clearscope InventorySlot Find(class<HDPickup> cls, int flags = 0)
 	{
 		InventorySlot slot = null;
-		for (int i = 0; i < SlotCount; ++i)
+		if (flags & FIF_REVERSEDIRECTION)
 		{
-			if (!Slots[i])
+			for (int i = SlotCount - 1; i >= 0; --i)
 			{
-				continue;
-			}
-
-			if (Slots[i].ItemClass == cls)
-			{
-				slot = Slots[i];
+				if (Slots[i] && Slots[i].ItemClass == cls)
+				{
+					return Slots[i];
+				}
 			}
 		}
-		return slot;
+		else
+		{
+			for (int i = 0; i < SlotCount; ++i)
+			{
+				if (Slots[i] && Slots[i].ItemClass == cls)
+				{
+					return Slots[i];
+				}
+			}
+		}
+		return null;
 	}
 
 	clearscope InventorySlot FindHighestAmount(class<HDPickup> cls)

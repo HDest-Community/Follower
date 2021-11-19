@@ -197,7 +197,7 @@ extend class HDFollower
 
 					if (potion.Amount == 0)
 					{
-						potion.Destroy();
+						TakeInvItem(potion, FIF_FORCE | FIF_REMOVE);
 						A_StartSound("potion/open", 6);
 						
 						Actor a = Spawn("SpentBottle", pos + (0, 0, height- 4), ALLOW_REPLACE);

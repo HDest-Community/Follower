@@ -14,7 +14,7 @@ extend class HDFollower
 			{
 				if (AimTimer++ > AdjustForDistance(CTarget, SelWeapon))
 				{
-					if (hdf_debug & FDebug_Targeting)
+					if (hdf_debug & FDebug_Aiming)
 					{
 						Console.Printf("%s is trying to fire %s at %s.", GetTag(), SelWeapon.GetName(), CTarget.GetClassName());
 					}
@@ -87,12 +87,11 @@ extend class HDFollower
 			#### H 1;
 			Goto See;
 		ReloadHunter:
-			#### H 8
+			#### H 0
 			{
 				bNOPAIN = true;
 			}
-		ReloadHunterLoop:
-			#### H 30 A_StartSound("weapons/pocket", 8);
+			#### H 25 A_StartSound("weapons/pocket", 8);
 			#### HHH 8
 			{
 				if (SelWeapon.TryReload() == FollowerWeapon.RResult_CanReload)
@@ -102,6 +101,7 @@ extend class HDFollower
 					{
 						ContinueReloading = true;
 						SetStateLabel('ChamberRoundHunter');
+						return;
 					}
 				}
 				else
@@ -109,12 +109,14 @@ extend class HDFollower
 					if (SelWeapon.ChamberedRound == FollowerWeapon.CRType_Chambered)
 					{
 						SetStateLabel('See');
+						bNOPAIN = false;
+						return;
 					}
 					else
 					{
 						SetStateLabel('ChamberRoundHunter');
+						return;
 					}
-					bNOPAIN = false;
 				}
 			}
 			Loop;
@@ -134,7 +136,7 @@ extend class HDFollower
 				if (ContinueReloading)
 				{
 					ContinueReloading = false;
-					SetStateLabel('ReloadHunterLoop');
+					SetStateLabel('ReloadHunter');
 					return;
 				}
 				bNOPAIN = false;

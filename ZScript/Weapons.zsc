@@ -157,7 +157,7 @@ extend class HDFollower
 		{
 			if (hdf_debug & FDebug_Reloading)
 			{
-				Console.Printf("%s is trying to reload %s @ %s.", GetTag(), wpn.GetName(), level.TimeFormatted());
+				Console.Printf("[%s] %s is trying to reload %s.", level.TimeFormatted(), GetTag(), wpn.GetName());
 			}
 			SelWeapon = wpn;
 			Status = FStatus_InCombat;
