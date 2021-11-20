@@ -1611,10 +1611,22 @@ extend class FollowerHandler
 				for (int i = 0; i < selSize; ++i)
 				{
 					let flw = Selection[consoleplayer].SelFollowers[i];
-					if (!flw.CanInteractWith(false) || flw.Weapons.Size() == 0)
+					int wSize = flw.Weapons.Size();
+					if (!flw.CanInteractWith(false) || wSize == 0)
 					{
 						continue;
 					}
+
+					if (selSize == 1)
+					{
+						int index = split[1].ToInt();
+						if (index > 0 && index <= wSize)
+						{
+							flw.TryReloadWeapon(flw.Weapons[index - 1], HDFollower.RLF_MANUAL);
+							continue;
+						}
+					}
+					
 					flw.TryReloadWeapon(flw.FindWeaponByName(split[1]), HDFollower.RLF_MANUAL);
 				}
 			}

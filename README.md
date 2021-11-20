@@ -43,8 +43,8 @@ Most of the navigation is on-screen, but there are a few things that aren't obvi
 The input field currently accepts the following commands (press enter to exit):
 - `#`: Any number with nothing else would select the weapon at that index.
 - `lsw`: lists all weapons. Type again to hide.
-- `rld/rel <weaponname>`: `<weaponname>` is the name of the weapon as displayed in the inventory. Partial names are supported, e.g. `rel hun` to reload the Hunter. Multiselect is supported.
-- `wpn/arm`: this will enter pickup mode. `<type>` can be either `wpn` or `arm` for weapons or armor, respectively.
+- `rld/rel <name>/<index>`: `<name>` is the name of the weapon as displayed in the inventory. Partial names are supported, e.g. `rel hun` to reload the Hunter. Multiselect is supported. If a single follower is selected, using the weapon's index is also supported.
+- `wpn/arm`: this will enter pickup mode.
 
 ##### Loadouts
 ---
