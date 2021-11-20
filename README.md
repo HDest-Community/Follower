@@ -12,7 +12,7 @@
 
 ### Weapons
 ---
-The followers have access to the following weapons:
+The followers can use the following weapons:
 - SMG
 - Hunter
 - ZM66
@@ -40,6 +40,13 @@ Most of the navigation is on-screen, but there are a few things that aren't obvi
 - When selecting amount for transfer, Shift + Left/Right arrow keys increases the amount by 20 instead of 2.
 - You can give followers weapons through the inventory management menu. This will enable them to use the weapons, assuming it's a valid weapon to begin with. Keep in mind that the weapons given to them will not be exactly the same as the ones they'll actually use. That is, giving your followers a factory chamber boss will automatically turn it into a custom chamber. This will not change. Too much trouble to account for all of the variations. You also can't take back weapons. Once you give them, they're gone forever.
 
+The input field currently accepts the following commands:
+- `#`: Any number with nothing else would select weapons.
+- `rld/rel <weaponname>`: `<weaponname>` is the name of the weapon as displayed in the inventory. Partial names are supported, e.g. `rel hun` to reload the Hunter. Multiselect is supported.
+- `wpn/arm`: this will enter pickup mode. `<type>` can be either `wpn` or `arm` for weapons or armor, respectively.
+
+Space enters input mode, Enter exits it.
+
 ##### Loadouts
 ---
 The follower options now support a string input like with the player loadouts, although it's recommended to edit those through the console because menu input is janky. The standard loadout codes apply. Only valid items can be given. If your follower doesn't have any weapons that utilize a battery, nothing will happen and no battery will be given to them. Numbers can be used. For armor, you can use a floating point value, e.g `0.5`. Items are comma-separated, just like player loadouts. Example of a valid loadout code: `smg, 930 5, stm 3, awg 0.5`
@@ -65,11 +72,11 @@ You can now recruit friendly/converted marines as followers. Does not work if th
 Marines basically function the exact same way as regular followers, and you can command them as such. A few exceptions exist:
 1. They are expendable, so you won't get any notification for leaving any behind when moving between maps. You can, however, carry them between maps to create an army. Of course, at some point it is going to become hell to manage.
 2. All marines are stored as a single inventory item in first-in-last-out order.
-3. Their index in the follower list is also not static. Marines are sorted in the order they were recruited/placed.
 
 ##### Miscellaneous
 ---
-- Followers can boost you up. Command them to stay, then look at them and hold jump. May not be successful if you are too encumbered. Might not work on the first try either.
+- If you go prone, you can pick up followers below you from farther away. Imagine they're grabbing onto your hand and you pull them up.
+- Followers will move out of the way if you're moving towards them sufficiently fast.
 
 ### Modding
 ---

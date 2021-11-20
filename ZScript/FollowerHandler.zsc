@@ -13,6 +13,7 @@ class FollowerHandler : EventHandler
 
 	private transient bool CanExitNow;
 	private transient int WarningResetTimer;
+	Array<class<FollowerWeapon> > AllWeapons;
 
 	override void WorldLoaded(WorldEvent e)
 	{
@@ -27,6 +28,14 @@ class FollowerHandler : EventHandler
 		if (!Arbitrator)
 		{
 			return;
+		}
+
+		for (int i = 0; i < AllClasses.Size(); ++i)
+		{
+			if (AllClasses[i] is 'FollowerWeapon' && !AllClasses[i].IsAbstract())
+			{
+				AllWeapons.Push((class<FollowerWeapon>)(AllClasses[i]));
+			}
 		}
 
 		Array<class<HDFollower> > FollowerClasses;

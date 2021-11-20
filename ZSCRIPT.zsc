@@ -13,7 +13,6 @@ version "4.6"
 #include "ZScript/Armor.zsc"
 #include "ZScript/Medical.zsc"
 #include "ZScript/Weapons.zsc"
-#include "ZScript/WeaponStates.zsc"
 #include "ZScript/AI.zsc"
 #include "ZScript/Goals.zsc"
 #include "ZScript/Orders.zsc"
@@ -49,9 +48,7 @@ class HDFollower : HDHumanoid abstract
 		FDebug_Reloading = 2,
 		FDebug_Aiming = 4,
 		FDebug_Targeting = 8,
-		FDebug_Inventory = 16,
-		FDebug_General = 32,
-		FDebug_Health = 64
+		FDebug_Inventory = 16
 	}
 
 	// --------------------------------------------------
@@ -140,6 +137,11 @@ class HDFollower : HDHumanoid abstract
 		return "??????";
 	}
 
+	clearscope string GetTimestamp()
+	{
+		return String.Format("%s:%02d", level.TimeFormatted(), level.time % 35);
+	}
+
 	clearscope bool IsDeadOrMissing()
 	{
 		bool FollowerDead = Health <= 0;
@@ -207,10 +209,7 @@ class HDFollower : HDHumanoid abstract
 
 		if (Health > 0)
 		{
-			if (GetAge() % 3 == 0)
-			{
-				AiThink();
-			}
+			AiThink();
 
 			if (GetAge() % 35 * 2 == 0)
 			{
@@ -292,7 +291,7 @@ class HDFollower : HDHumanoid abstract
 		MaxStepHeight 80;
 		MaxDropOffHeight 192;
 		MaxTargetRange HDCONST_ONEMETRE * 80;
-		ReactionTime 3;
+		ReactionTime 10;
 		+ROLLCENTER
 		+ROLLSPRITE
 		+FRIENDLY

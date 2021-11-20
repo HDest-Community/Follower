@@ -33,7 +33,6 @@ extend class FollowerHandler
 					fol.ChangeLinkedPlayer(HDPlayerPawn(plr));
 
 					// [Ace] These are here so that they are only called once when the follower is created.
-					fol.InitWeapons();
 					fol.GiveStartingItems();
 					return fol;
 				}
@@ -159,7 +158,7 @@ extend class HDFollower
 		ResetDamageCounters();
 		GiveBody(-100);
 
-		InitWeapons();
+		Weapons.Clear();
 		ClearInventory();
 		GiveStartingItems();
 

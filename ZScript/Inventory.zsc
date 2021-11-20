@@ -85,7 +85,7 @@ extend class HDFollower
 			}
 			if (hdf_debug & FDebug_Inventory)
 			{
-				Console.Printf("[%s, %s], slot %i: added ITEM %s with an amount of %i.", level.TimeFormatted(), GetTag(), index, Slots[index].ItemClass.GetClassName(), Slots[index].Amount);
+				Console.Printf("[%s, %s], slot %i: added ITEM %s with an amount of %i.", GetTimestamp(), GetTag(), index, Slots[index].ItemClass.GetClassName(), Slots[index].Amount);
 			}
 		}
 
@@ -137,7 +137,7 @@ extend class HDFollower
 		}
 		if (hdf_debug & FDebug_Inventory)
 		{
-			Console.Printf("[%s, %s], slot %i: added MAG %s with an amount of %i.", level.TimeFormatted(), GetTag(), index, Slots[index].ItemClass.GetClassName(), Slots[index].Amount);
+			Console.Printf("[%s, %s], slot %i: added MAG %s with an amount of %i.", GetTimestamp(), GetTag(), index, Slots[index].ItemClass.GetClassName(), Slots[index].Amount);
 		}
 
 		return true;
@@ -177,7 +177,7 @@ extend class HDFollower
 			{
 				if (Slots[i] == slot)
 				{
-					Console.Printf("[%s, %s], slot %i: dropped %s with an amount of %i.", level.TimeFormatted(), GetTag(), i, slot.ItemClass.GetClassName(), slot.Amount);
+					Console.Printf("[%s, %s], slot %i: dropped %s with an amount of %i.", GetTimestamp(), GetTag(), i, slot.ItemClass.GetClassName(), slot.Amount);
 					break;
 				}
 			}
@@ -222,7 +222,7 @@ extend class HDFollower
 			{
 				if (Slots[i] == slot)
 				{
-					Console.Printf("[%s, %s], slot %i: %s %s with an amount of %i.", level.TimeFormatted(), GetTag(), i, flags & FIF_REMOVE ? "removed" : "took", slot.ItemClass.GetClassName(), slot.Amount);
+					Console.Printf("[%s, %s], slot %i: %s %s with an amount of %i.", GetTimestamp(), GetTag(), i, flags & FIF_REMOVE ? "removed" : "took", slot.ItemClass.GetClassName(), slot.Amount);
 					break;
 				}
 			}

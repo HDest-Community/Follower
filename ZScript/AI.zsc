@@ -1,7 +1,6 @@
 enum FStatus
 {
 	FStatus_None,
-	FStatus_InCombat,
 	FStatus_HealingSelf,
 	FStatus_HealingPlayer,
 	FStatus_WaitingForArmor,
@@ -16,6 +15,7 @@ extend class HDFollower
 		BSide_Left = 1,
 		BSide_Right = 2
 	}
+
 	// --------------------------------------------------
 	// ACTIONS
 	// --------------------------------------------------
@@ -37,46 +37,21 @@ extend class HDFollower
 			canSeeNext = true;
 		}
 
-		if (hdf_debug & FDebug_General)
-		{
-			Console.Printf("%s (index %i) has %s out.\nCurrent status is %i.\nFollower is targeting %s. Follower following %s.\n--------------------",
-				GetTag(),
-				Index,
-				SelWeapon ? SelWeapon.GetName() : "no weapon",
-				Status, CTarget ? CTarget.GetTag() : "nothing",
-				next is 'HDFollower' ? HDFollower(next).GetTag() : (next ? next.GetTag() : "nothing"));
-		}
-
-		if (hdf_debug & FDebug_Health)
-		{
-			Console.Printf("%s has %i/%i health, %i body damage, %i bloodloss, and %i shield.\n--------------------",
-				GetTag(),
-				Health, default.Health,
-				BodyDamage,
-				Bloodloss,
-				GetAmount('HDMagicShield'));
-		}
-
+		// Console.Printf("%s (index %i) has %s out.\nCurrent status is %i.\nFollower is targeting %s. Follower following %s.\n--------------------",
+		// 	GetTag(),
+		// 	Index,
+		// 	SelWeapon ? SelWeapon.GetName() : "no weapon",
+		// 	Status, CTarget ? CTarget.GetTag() : "nothing",
+		// 	next is 'HDFollower' ? HDFollower(next).GetTag() : (next ? next.GetTag() : "nothing"));
+		
 		pNeedsHelp = PlayerIsIncapped(); // [Ace] You're just incapped.
 		pNeedsMedic = PlayerNeedsMedic(); // [Ace] You're bleeding and incapped.
 		int ffcount = Handler.FollowingFollowersCount();
 		int findex = Handler.Followers.Find(self);
 		double distDiv = next != LinkedPlayer ? 1.0 + 0.13 * (min(8, ffcount - 1)) : 1.0;
 		
-		if (Status != FStatus_InCombat)
+		if (!SelWeapon)
 		{
-			if (!CheckTarget())
-			{
-				ClearWeapon();
-				ClearTarget();
-			}
-			else if (ReactionTime-- <= 0)
-			{
-				ReactionTime = default.ReactionTime;
-				Status = FStatus_InCombat;
-				SetStateLabel('See');
-			}
-
 			if (Order == FOrder_HealSelf && !Moving && Status != FStatus_HealingSelf)
 			{
 				Status = FStatus_HealingSelf;
@@ -101,11 +76,17 @@ extend class HDFollower
 						case FStatus_WaitingForArmor: LookForArmor(); break;
 						case FStatus_WaitingForWeapon: LookForWeapon(); break;
 					}
-					A_Face(LinkedPlayer, 45);
+					A_Face(LinkedPlayer, 15);
 				}
 			}
-			else if (Status == FStatus_None)
+		}
+
+		if (Status == FStatus_None)
+		{
+			if (!SelWeapon || SelWeapon.Status < FollowerWeapon.WStatus_Firing)
 			{
+				bNOPAIN = false;
+
 				if (!Moving && !IsInIdleState())
 				{
 					SetStateLabel('Idle');
@@ -114,143 +95,182 @@ extend class HDFollower
 				{
 					SetStateLabel('Moving');
 				}
+			}
 
-				if (Order == FOrder_ComeAndHelp && bFRIENDLY && DistanceToPlayer < 512 && CanSeePlayer)
+			if (Order == FOrder_ComeAndHelp && bFRIENDLY && DistanceToPlayer < 512 && CanSeePlayer)
+			{
+				if (DistanceToPlayer < MedicRange && Status != FStatus_HealingPlayer) // [Ace] Start stapling if close enough. Minimum distance is 22. Don't go any lower or follower will be stuck walking towards you.
 				{
-					if (DistanceToPlayer < MedicRange && Status != FStatus_HealingPlayer) // [Ace] Start stapling if close enough. Minimum distance is 22. Don't go any lower or follower will be stuck walking towards you.
+					if (pNeedsMedic)
 					{
-						if (pNeedsMedic)
-						{
-							Status = FStatus_HealingPlayer;
-							SetStateLabel('StapleHumptyDumptyBackTogetherAgain');
-						}
-						else if (pNeedsHelp)
-						{
-							Status = FStatus_HealingPlayer;
-							SetStateLabel('PullYouUp');
-						}
-						else
-						{
-							Order = FOrder_Follow;
-						}
+						Status = FStatus_HealingPlayer;
+						SetStateLabel('StapleHumptyDumptyBackTogetherAgain');
+					}
+					else if (pNeedsHelp)
+					{
+						Status = FStatus_HealingPlayer;
+						SetStateLabel('PullYouUp');
 					}
 					else
 					{
-						TGoal = LinkedPlayer;
+						Order = FOrder_Follow;
 					}
 				}
-				else if (Order < FOrder_Cover)
+				else
+				{
+					TGoal = LinkedPlayer;
+				}
+			}
+			else if (Order < FOrder_Cover)
+			{
+				if (canSeeNext)
+				{
+					LastKnownPos = next.Pos;
+				}
+
+				// [Ace] Go to goal if it's too far away.
+				// !bSTANDSTILL means the follower will only chase goals if its current goal isn't forced.
+				double DistanceToNext = Distance3D(next);
+				if (bFRIENDLY && DistanceToNext > MinFollowRange / distDiv && DistanceToNext < MaxFollowRange && (!TGoal || TGoal && !TGoal.bSTANDSTILL))
 				{
 					if (canSeeNext)
 					{
-						LastKnownPos = next.Pos;
+						TGoal = next;
 					}
-
-					// [Ace] Go to goal if it's too far away.
-					// !bSTANDSTILL means the follower will only chase goals if its current goal isn't forced.
-					double DistanceToNext = Distance3D(next);
-					if (bFRIENDLY && DistanceToNext > MinFollowRange / distDiv && DistanceToNext < MaxFollowRange && (!TGoal || TGoal && !TGoal.bSTANDSTILL))
+					// [Ace] If following the goal and the goal is nearby but suddenly goes around a corner, try to go around the same corner.
+					else if (LastKnownPos != (0, 0, 0) && (!TGoal || TGoal && TGoal.pos != LastKnownPos))
 					{
-						if (canSeeNext)
-						{
-							TGoal = next;
-						}
-						// [Ace] If following the goal and the goal is nearby but suddenly goes around a corner, try to go around the same corner.
-						else if (LastKnownPos != (0, 0, 0) && (!TGoal || TGoal && TGoal.pos != LastKnownPos))
-						{
-							TrySetGoal(LastKnownPos, SGF_IGNOREVALID | SGF_LASTKNOWN);
-						}
+						TrySetGoal(LastKnownPos, SGF_IGNOREVALID | SGF_LASTKNOWN);
 					}
+				}
 
-					if (!Moving && IsSteppingOnSomeone())
+				if (!Moving && IsSteppingOnSomeone())
+				{
+					// [Ace] Spawn a new idle spot.
+					for (int i = 0; i < 100; ++i)
 					{
-						// [Ace] Spawn a new idle spot.
-						for (int i = 0; i < 100; ++i)
+						vector3 SpotPos = Vec3Angle(random(16, 96), random(0, 359));
+						if (TrySetGoal(SpotPos))
 						{
-							vector3 SpotPos = Vec3Angle(random(16, 96), random(0, 359));
-							if (TrySetGoal(SpotPos))
-							{
-								break;
-							}
+							break;
 						}
 					}
 				}
-				else if (Order == FOrder_Cover && DistanceToPlayer < HDCONST_ONEMETRE * 5)
+			}
+			else if (Order == FOrder_Cover && DistanceToPlayer < HDCONST_ONEMETRE * 5)
+			{
+				A_Face(LinkedPlayer, 15);
+			}
+
+			if (hdf_collectbrass)
+			{
+				VacuumBrass();
+			}
+
+			// [Ace] Using potions.
+			if (Order <= FOrder_Cover && !Moving && CanHealSelf() && GetAmount('BluePotion') > 0 && GetAge() % 24 == 0)
+			{
+				let potion = FindLowestAmount('BluePotion');
+				potion.Amount--;
+
+				int toHeal = default.Health / 4;
+				HealSelf(toHeal);
+				A_StartSound("potion/chug", 5);
+
+				if (potion.Amount == 0)
 				{
-					A_Face(LinkedPlayer, 45);
+					TakeInvItem(potion, FIF_FORCE | FIF_REMOVE);
+					A_StartSound("potion/open", 6);
+					
+					Actor a = Spawn("SpentBottle", pos + (0, 0, height- 4), ALLOW_REPLACE);
+					a.angle = angle + 2;
+					a.vel = vel;
+					a.A_ChangeVelocity(3, 1, 4, CVF_RELATIVE);
+					
+					a = Spawn("SpentCork", pos + (0, 0, height - 4) , ALLOW_REPLACE);
+					a.angle = angle + 3;
+					a.vel = vel;
+					a.A_ChangeVelocity(5, 3, 4, CVF_RELATIVE);
 				}
+			}
 
-				if (hdf_collectbrass)
-				{
-					VacuumBrass();
-				}
+			// [Ace] Walk away if you get too close.
+			if (!Moving && DistanceToPlayer <= HDCONST_ONEMETRE / 2 + radius + LinkedPlayer.radius && GetPlayerMovementAngle() <= MaxMovementAngle && LinkedPlayer.vel.xy.length() > 1.5 && !(LinkedPlayer.player.ReadyWeapon is 'HDMedikitter') && !(LinkedPlayer.player.ReadyWeapon is 'SelfBandage'))
+			{
+				TrySetGoal(Vec3Angle(HDCONST_ONEMETRE * 1.5, AngleTo(LinkedPlayer) + 180), SGF_IGNOREVALID | SGF_MOVEAWAY);
+			}
 
-				// [Ace] Using potions.
-				if (Order <= FOrder_Cover && !Moving && CanHealSelf() && GetAmount('BluePotion') > 0 && GetAge() % 24 == 0)
-				{
-					let potion = FindLowestAmount('BluePotion');
-					potion.Amount--;
-
-					int toHeal = default.Health / 4;
-					HealSelf(toHeal);
-					A_StartSound("potion/chug", 5);
-
-					if (potion.Amount == 0)
-					{
-						TakeInvItem(potion, FIF_FORCE | FIF_REMOVE);
-						A_StartSound("potion/open", 6);
-						
-						Actor a = Spawn("SpentBottle", pos + (0, 0, height- 4), ALLOW_REPLACE);
-						a.angle = angle + 2;
-						a.vel = vel;
-						a.A_ChangeVelocity(3, 1, 4, CVF_RELATIVE);
-						
-						a = Spawn("SpentCork", pos + (0, 0, height - 4) , ALLOW_REPLACE);
-						a.angle = angle + 3;
-						a.vel = vel;
-						a.A_ChangeVelocity(5, 3, 4, CVF_RELATIVE);
-					}
-				}
-
-				// [Ace] Walk away if you get too close.
-				if (!Moving && DistanceToPlayer <= HDCONST_ONEMETRE / 2 + radius + LinkedPlayer.radius && GetPlayerMovementAngle() <= MaxMovementAngle && LinkedPlayer.vel.xy.length() > 1.5 && !(LinkedPlayer.player.ReadyWeapon is 'HDMedikitter') && !(LinkedPlayer.player.ReadyWeapon is 'SelfBandage'))
-				{
-					TrySetGoal(Vec3Angle(HDCONST_ONEMETRE * 1.5, AngleTo(LinkedPlayer) + 180), SGF_IGNOREVALID | SGF_MOVEAWAY);
-				}
-
-				// [Ace] Mutually put out any fires.
-				for (int i = 0; i < Handler.Followers.Size(); ++i)
-				{
-					if (Handler.Followers[i] != self && self.Distance3D(Handler.Followers[i]) <= HDCONST_ONEMETRE)
-					{
-						A_GiveInventory('HDFireDouse', 3);
-						Handler.Followers[i].A_GiveInventory('HDFireDouse', 3);
-					}
-				}
-				if (DistanceToPlayer <= HDCONST_ONEMETRE)
+			// [Ace] Mutually put out any fires.
+			for (int i = 0; i < Handler.Followers.Size(); ++i)
+			{
+				if (Handler.Followers[i] != self && self.Distance3D(Handler.Followers[i]) <= HDCONST_ONEMETRE)
 				{
 					A_GiveInventory('HDFireDouse', 3);
-					LinkedPlayer.A_GiveInventory('HDFireDouse', 3);
+					Handler.Followers[i].A_GiveInventory('HDFireDouse', 3);
+				}
+			}
+			if (DistanceToPlayer <= HDCONST_ONEMETRE)
+			{
+				A_GiveInventory('HDFireDouse', 3);
+				LinkedPlayer.A_GiveInventory('HDFireDouse', 3);
+			}
+		}
+
+		// [Ace] Enemy searching and weapon handling.
+		if (Weapons.Size() > 0)
+		{
+			if (HasUsableWeapons() && (!SelWeapon || SelWeapon && SelWeapon.Status == FollowerWeapon.WStatus_Idle) && (!bFRIENDLY || Order != FOrder_FollowIgnore && Order != FOrder_GoAndCover))
+			{
+				AcquireTargets();
+			}
+
+			if (SelWeapon && SelWeapon.Status == FollowerWeapon.WStatus_Reloading)
+			{
+				if (SelWeapon.DoReloadSequence(WeaponTicker))
+				{
+					IdleWeapon();
+				}
+				else
+				{
+					WeaponTicker++;
+				}
+			}
+			else if (CheckTarget())
+			{
+				if (ReactionTime-- <= 0)
+				{
+					SelectBestWeapon(FTarget.Actor);
+					if (SelWeapon && SelWeapon.Status == FollowerWeapon.WStatus_Idle)
+					{
+						bNOPAIN = true;
+						SelWeapon.Status = FollowerWeapon.WStatus_Firing;
+						SetStateLabel('See');
+					}
+				}
+			}
+			else
+			{
+				ClearTarget();
+				ReactionTime = default.ReactionTime;
+				if (SelWeapon && SelWeapon.Status == FollowerWeapon.WStatus_Idle)
+				{
+					if (hdf_debug & FDebug_Weapons)
+					{
+						Console.Printf("[%s] %s's %s was nulled. Was idling.", GetTimestamp(), GetTag(), SelWeapon.GetName());
+					}
+					SelWeapon = null;
 				}
 			}
 		}
 
-		// [Ace] Enemy searching.
-		// [03.10.21] Note to self: This is not in the first check for a reason. Stop trying to put it there.
-		// [13.11.21] Maybe next time put the reason in the comment you retard.
-		if (Weapons.Size() > 0 && HasUsableWeapons() && !CTarget && (Status != FStatus_InCombat || !SelWeapon) && (!bFRIENDLY || Order != FOrder_FollowIgnore && Order != FOrder_GoAndCover))
-		{
-			LookForEnemies();
-		}
-
 		// [Ace] Crouching. One day I will implement proper sprites for this. Today is not that day.
-		if (bFRIENDLY && Status <= FStatus_InCombat && Order <= FOrder_Cover && PlayerIsCrouching() && CanSeePlayer && DistanceToPlayer < HDCONST_ONEMETRE * 30)
+		if (bFRIENDLY && Status == FStatus_None && Order <= FOrder_Cover && PlayerIsCrouching() && CanSeePlayer && DistanceToPlayer < HDCONST_ONEMETRE * 30)
 		{
-			CrouchFactor = min(CrouchFactor + 0.20, 0.5);
+			CrouchFactor = min(CrouchFactor + 0.14, 0.5);
 		}
 		else if (CrouchFactor > 0)
 		{
-			CrouchFactor = max(CrouchFactor - 0.17, 0);
+			CrouchFactor = max(CrouchFactor - 0.10, 0);
 		}
 
 		scale.y = default.scale.y * (1.0 - CrouchFactor);
@@ -260,7 +280,7 @@ extend class HDFollower
 
 		// [Ace] Movement. Always travel to goals if there are any.
 		bool dedicatedGoal = TGoal is 'TargetGoal';
-		if (Status == FStatus_None && TGoal && (TGoal is next.GetClass() && goalDist2 > (Order == FOrder_ComeAndHelp && (pNeedsMedic || pNeedsHelp) ? MedicRange : (MinFollowRangeStop / distDiv)) || dedicatedGoal && goalDist2 > 16) && goalDist2 < MaxGoalRange)
+		if (Status == FStatus_None && (!SelWeapon || SelWeapon.Status != FollowerWeapon.WStatus_Firing) && TGoal && (TGoal is next.GetClass() && goalDist2 > (Order == FOrder_ComeAndHelp && (pNeedsMedic || pNeedsHelp) ? MedicRange : (MinFollowRangeStop / distDiv)) || dedicatedGoal && goalDist2 > 16) && goalDist2 < MaxGoalRange)
 		{
 			// [Ace] Don't slow down if player is bleeding out their ass or needs help getting up.
 			if (TGoal is "PlayerPawn" && Order == FOrder_ComeAndHelp && (pNeedsMedic || pNeedsHelp))
@@ -326,7 +346,7 @@ extend class HDFollower
 		}
 		else // [Ace] Deceleration.
 		{
-			vel.xy *= 0.95;
+			vel.xy *= 0.98;
 
 			if (Order == FOrder_GoAndCover && vel.xy.length() < 0.65)
 			{
@@ -444,7 +464,7 @@ extend class HDFollower
 	// --------------------------------------------------
 
 	HDPlayerPawn LinkedPlayer;
-	protected Actor CTarget;
+	protected FollowerTarget FTarget;
 	private Actor TGoal;
 
 	private bool Moving;

@@ -7,12 +7,20 @@ class FollowerWeapon abstract
 		CRType_Chambered
 	}
 
-	enum RResult
+	enum ReloadResult
 	{
 		RResult_CanReload,
 		RResult_MagFull,
 		RResult_NoAmmo,
 		RResult_Invalid
+	}
+
+	enum FireSequenceResult
+	{
+		FSResult_None,
+		FSResult_Repeat,
+		FSResult_Restart,
+		FSResult_End
 	}
 
 	enum TryReloadFlags
@@ -25,37 +33,51 @@ class FollowerWeapon abstract
 		EMF_KEEP = 1
 	}
 
-	enum FollowerWeaponFlags
+	enum WStatus
 	{
-		FWF_NOSWITCH = 1
+		WStatus_Idle,
+		WStatus_Reloading,
+		WStatus_Firing
+	}
+
+	// [Ace] This isn't necessary, I just use it so I don't have to pull numbers out my ass all the time. It's also relative to other weapons.
+	enum WeaponPriority
+	{
+		WPriority_Nope = -1,
+		WPriority_Lowest = 0,
+		WPriority_VeryLow = 10,
+		WPriority_Low = 20,
+		WPriority_Medium = 30,
+		WPriority_High = 40,
+		WPriority_VeryHigh = 50,
+		WPriority_Highest = 60
 	}
 
 	// --------------------------------------------------
 	// STATIC
 	// --------------------------------------------------
 
-	static play void CreateAndAdd(class<FollowerWeapon> wpn, HDFollower flw, bool enabled = false)
+	static play FollowerWeapon CreateAndAdd(class<FollowerWeapon> wpn, HDFollower flw)
 	{
 		FollowerWeapon fw = FollowerWeapon(new(wpn));
 		fw.Owner = flw;
-		fw.Enabled = enabled;
-		
-		string reqStr = fw.GetRequiredWeapon();
-		if (reqStr == "")
-		{
-			fw.Enabled = true;
-		}
-		else
-		{
-			// [Ace] Don't add weapons from mods if the mods themselves aren't loaded.
-			class<HDWeapon> rw = reqStr;
-			if (!rw)
-			{
-				return;
-			}
-		}
-
 		flw.Weapons.Push(fw);
+		return fw;
+	}
+
+	static clearscope class<FollowerWeapon> ConvertToFollowerWeapon(class<HDWeapon> wpn, Array<class<FollowerWeapon> > allWeapons)
+	{
+		for (int i = 0; i < allWeapons.Size(); ++i)
+		{
+			let tempWpn = FollowerWeapon(new(allWeapons[i]));
+			if (tempWpn.GetRealWeapon() == wpn)
+			{
+				tempWpn.Destroy();
+				return allWeapons[i];
+			}
+			tempWpn.Destroy();
+		}
+		return null;
 	}
 
 	// --------------------------------------------------
@@ -65,13 +87,16 @@ class FollowerWeapon abstract
 	abstract string GetName() const;
 	abstract string GetIcon() const;
 	abstract class<HDAmmo>, class<HDMagAmmo>, int GetAmmoType() const;
-	abstract Name GetRequiredWeapon() const; // [Ace] Empty string means the weapon will be available from the get go.
-	abstract StateLabel GetFireState() const;
-	abstract StateLabel GetReloadState() const;
-	abstract play void FireWeapon();
+	abstract Name GetRealWeapon() const;
+	abstract int AssessPriority(Actor trgt, int shields, bool multitarget);
+	
+	// [Ace] When dealing with ticker rollback, remember that the next time the function gets called, the ticker would be what you set it to + 1.
+	// So if it starts at 0 and you want to reset the loop, set it internally to -1 to compensate.
+	abstract play FireSequenceResult DoFiringSequence(out int ticker);
+	abstract play bool DoReloadSequence(out int ticker);
 	abstract play void OnTransfer(HDWeapon wpn);
 
-	virtual play bool CheckWeaponCondition(HDFollower caller, Actor trgt) { return true; }
+	virtual play bool CheckWeaponCondition(Actor trgt) { return true; }
 	virtual play void EmptyWeapon()
 	{
 		class<HDAmmo> AType; class<HDMagAmmo> MType;
@@ -100,9 +125,8 @@ class FollowerWeapon abstract
 	}
 
 	virtual double GetAdjustmentMult() const { return 1.0; }
-	virtual int GetFlags() const { return 0; }
 	virtual string GetLocalizationTag() const { return GetName(); }
-	virtual play RResult TryReload(int flags = 0)
+	virtual play ReloadResult TryReload(int flags = 0)
 	{
 		class<HDAmmo> AType, MType; int MaxMag;
 		[AType, MType, MaxMag] = GetAmmoType();
@@ -196,4 +220,5 @@ class FollowerWeapon abstract
 	bool HasWarnedLowAmmo;
 	HDFollower Owner;
 	bool Enabled;
+	WStatus Status;
 }

@@ -101,24 +101,24 @@ extend class FollowerHandler
 
 		switch (m.wep)
 		{
-			case HDOperator.HDMW_SMG: Recruit.FindWeapon('FW_SMG').Enabled = true; break;
-			case HDOperator.HDMW_HUNTER: Recruit.FindWeapon('FW_Hunter').Enabled = true; break;
-			case HDOperator.HDMW_ZM66: Recruit.FindWeapon('FW_ZM66').Enabled = true; break;
-			case HDOperator.HDMW_ROCKET: Recruit.FindWeapon('FW_RocketLauncher').Enabled = true; break;
+			case HDOperator.HDMW_SMG: FollowerWeapon.CreateAndAdd('FW_SMG', recruit); break;
+			case HDOperator.HDMW_HUNTER: FollowerWeapon.CreateAndAdd('FW_Hunter', recruit); break;
+			case HDOperator.HDMW_ZM66: FollowerWeapon.CreateAndAdd('FW_ZM66', recruit); break;
+			case HDOperator.HDMW_ROCKET: FollowerWeapon.CreateAndAdd('FW_RocketLauncher', recruit); break;
 		}
 
 		let Armor = HDArmourWorn(m.FindInventory('HDArmourWorn'));
 		if (Armor)
 		{
-			let NewArmor = HDArmourWorn(Recruit.GiveInventoryType('HDArmourWorn'));
+			let NewArmor = HDArmourWorn(recruit.GiveInventoryType('HDArmourWorn'));
 			NewArmor.Durability = Armor.Durability;
 			NewArmor.Mega = Armor.Mega;
 		}
 
 		if (m.InStateSequence(m.CurState, m.FindState('Falldown')))
 		{
-			Recruit.Status = FStatus_InactiveOrDead;
-			Recruit.SetStateLabel('Standup');
+			recruit.Status = FStatus_InactiveOrDead;
+			recruit.SetStateLabel('Standup');
 		}
 
 		m.Destroy();

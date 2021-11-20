@@ -36,11 +36,15 @@ extend class HDFollower
 
 			if (cls is 'HDWeapon')
 			{
-				FollowerWeapon wpn = FindWeaponByRequirement((class<HDWeapon>)(cls));
-				if (wpn)
+				for (int j = 0; j < Handler.AllWeapons.Size(); ++j)
 				{
-					wpn.Enabled = true;
-					continue;
+					let tempWpn = FollowerWeapon(new(Handler.AllWeapons[j]));
+					class<HDWeapon> realWpn = tempWpn.GetRealWeapon();
+					if (realWpn && realWpn == cls)
+					{
+						FollowerWeapon.CreateAndAdd(tempWpn.GetClass(), self);
+						break;
+					}
 				}
 			}
 

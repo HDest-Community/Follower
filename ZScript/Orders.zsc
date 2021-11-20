@@ -22,7 +22,7 @@ extend class HDFollower
 	private void HaulAss()
 	{
 		ClearTarget();
-		ClearWeapon();
+		IdleWeapon(IWF_KEEPRELOADING);
 		SetStateLabel('Idle'); // [Ace] Surely putting this here can't backfire. Right? :uhh:
 		Status = FStatus_None;
 	}

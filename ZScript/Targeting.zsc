@@ -1,171 +1,77 @@
+struct FollowerTarget
+{
+	Actor Actor;
+	int Priority;
+}
+
 extend class HDFollower
 {
-	enum AcquireTargetFlags
-	{
-		ATF_NOSWITCH = 1 // [Ace] Don't switch to backup weapons. Instead, reload the top priority weapon, if available.
-	}
-
-	protected virtual void LookForEnemies()
+	private void AcquireTargets()
 	{
 		if (!TargetUncountable)
 		{
 			TargetUncountable = CVar.GetCVar('hdf_targetuncountable');
 		}
 
-		Array<class<FollowerWeapon> > UsedWeapons;
 		let TheEye = BlockThingsIterator.Create(self, MaxTargetRange);
+
 		while (TheEye.Next())
 		{
-			// [Ace] To reiterate,
-			// MTarget = MonsterTarget
-			// PTarget = PlayerTarget
-			// CTarget = CurrentTarget
-			// Remember the prefixes.
-
-			Actor MTarget = TheEye.thing;
+			Actor next = TheEye.thing;
 			HDPlayerPawn PTarget = HDPlayerPawn(TheEye.thing);
 
 			// [Ace] Weapons are listed in descending priority.
 			// If a weapon is missing from the list, the follower will never attack with that weapon.
 			class<FollowerWeapon> W; // [Ace] I won't even bother giving it a full name. This is how much I care at this point.
 
-			if (MTarget && (bFRIENDLY && !MTarget.bFRIENDLY || !bFRIENDLY && MTarget.bFRIENDLY) && MTarget.bISMONSTER && MTarget.bSHOOTABLE && MTarget != self && MTarget.Health > 0 && CheckSight(MTarget, SF_SEEPASTSHOOTABLELINES) && !TargetIsIncapped(MTarget))
+			if (next && (bFRIENDLY && !next.bFRIENDLY || !bFRIENDLY && next.bFRIENDLY) && next.bISMONSTER && next.bSHOOTABLE && next != self && next.Health > 0 && CheckSight(next, SF_SEEPASTSHOOTABLELINES) && !TargetIsIncapped(next))
 			{
 				// [Ace] Sometimes resurrected troops can have a ridiculous body damage and won't get attacked, but one single shot will blow them to pieces.
-				if (MTarget is "HERPBot" || MTarget is "DERPBot" || (!TargetUncountable.GetBool() && !MTarget.bCOUNTKILL))
+				if (next is 'HERPBot' || next is 'DERPBot' || (!TargetUncountable.GetBool() && !next.bCOUNTKILL))
 				{
 					continue;
 				}
 
-				bool alreadyTargeted = IsAttackedBySomeoneElse(MTarget);
-				let shields = MTarget.FindInventory('HDMagicShield');
-
-				if (MTarget is "HDMobBase" && HDMobBase(MTarget).BodyDamage > MTarget.SpawnHealth() * 1.2)
+				if (next is 'HDMobBase' && HDMobBase(next).BodyDamage > next.SpawnHealth() * 1.2 || !CanHitTarget(next))
 				{
 					continue;
 				}
 
-				if (!CanHitTarget(MTarget))
+				HDMobBase hdmob = HDMobBase(next);
+				bool alreadyTargeted = IsAttackedBySomeoneElse(next);
+				int shields = next.CountInv('HDMagicShield');
+
+				double noHealthFac = 1.0 - next.Health / double(next.SpawnHealth());
+				double noShieldFac = hdmob && hdmob.MaxShields > 0 ? 1.0 - shields / double(hdmob.MaxShields) : 0;
+
+				double priority = next.SpawnHealth() + next.Health * noHealthFac + (hdmob ? hdmob.MaxShields : 0) + shields * noShieldFac;
+				if (next.bBOSS)
 				{
-					continue;
+					priority *= 2;
+				}
+				else if (next is 'Necromancer')
+				{
+					priority *= 1.5;
+				}
+				else if (alreadyTargeted)
+				{
+					priority *= 0.2;
 				}
 
-				if (MTarget.bBOSS && (CheckTarget() && !CTarget.bBOSS || !CheckTarget()))
+				if (!FTarget.Actor || FTarget.Actor != next && FTarget.Priority < priority)
 				{
-					if (!alreadyTargeted)
+					if (hdf_debug & FDebug_Targeting)
 					{
-						W = 'FW_Bronto'; UsedWeapons.Push(W);
+						Console.Printf("[%s] %s acquired %s with %i priority. Target has %i/%i health, %i/%i shields, and %i bodydamage.", GetTimestamp(), GetTag(), next.GetClassName(), priority, next.Health, next.SpawnHealth(), shields, hdmob ? hdmob.MaxShields : -1, hdmob ? hdmob.bodydamage : -1);
 					}
-					W = 'FW_RocketLauncher'; UsedWeapons.Push(W);
-					W = 'FW_Liberator'; UsedWeapons.Push(W);
-					W = 'FW_Boss'; UsedWeapons.Push(W);
-					W = 'FW_SMG'; UsedWeapons.Push(W);
-					W = 'FW_ZM66'; UsedWeapons.Push(W);
-					AcquireTarget(UsedWeapons, MTarget);
-					break;
-				}
-				else if (MTarget is 'Necromancer' && !alreadyTargeted)
-				{
-					W = 'FW_ZM66'; UsedWeapons.Push(W);
-					W = 'FW_Hunter'; UsedWeapons.Push(W);
-					W = 'FW_SMG'; UsedWeapons.Push(W);
-					W = 'FW_Boss'; UsedWeapons.Push(W);
-					W = 'FW_Liberator'; UsedWeapons.Push(W);
-					AcquireTarget(UsedWeapons, MTarget);
-					break;
-				}
-				else if (MTarget is 'PainLord' || MTarget is 'PainBringer')
-				{
-					if (!alreadyTargeted)
-					{
-						if (MTarget is 'PainLord')
-						{
-							W = 'FW_Bronto'; UsedWeapons.Push(W);
-						}
-						W = 'FW_RocketLauncher'; UsedWeapons.Push(W);
-					}
-					W = 'FW_Liberator'; UsedWeapons.Push(W);
-					W = 'FW_Boss'; UsedWeapons.Push(W);
-					if (shields && shields.Amount > 300)
-					{
-						W = 'FW_SMG'; UsedWeapons.Push(W);
-						W = 'FW_ZM66'; UsedWeapons.Push(W);
-						W = 'FW_Hunter'; UsedWeapons.Push(W);
-					}
-					else
-					{
-						W = 'FW_ZM66'; UsedWeapons.Push(W);
-						W = 'FW_SMG'; UsedWeapons.Push(W);
-						W = 'FW_Hunter'; UsedWeapons.Push(W);
-					}
-					AcquireTarget(UsedWeapons, MTarget);
-					break;
-				}
-				else if (MTarget is 'Trilobite')
-				{
-					if (!alreadyTargeted)
-					{
-						if (MTarget.Health > MTarget.SpawnHealth() / 2)
-						{
-							W = 'FW_RocketLauncher'; UsedWeapons.Push(W);
-						}
-						W = 'FW_Liberator'; UsedWeapons.Push(W);
-						W = 'FW_Boss'; UsedWeapons.Push(W);	
-					}
-					W = 'FW_ZM66'; UsedWeapons.Push(W);
-					W = 'FW_SMG'; UsedWeapons.Push(W);
-					W = 'FW_Hunter'; UsedWeapons.Push(W);
-					AcquireTarget(UsedWeapons, MTarget);
-				}
-				else if (MTarget is 'HDMobBase' && shields && shields.Amount > 150)
-				{
-					if (!alreadyTargeted)
-					{
-						W = 'FW_RocketLauncher'; UsedWeapons.Push(W);
-						W = 'FW_Liberator'; UsedWeapons.Push(W);
-					}
-					W = 'FW_Boss'; UsedWeapons.Push(W);
-					W = 'FW_SMG'; UsedWeapons.Push(W);
-					W = 'FW_ZM66'; UsedWeapons.Push(W);
-					if (shields.Amount <= 300)
-					{
-						W = 'FW_Hunter'; UsedWeapons.Push(W);
-					}
-					AcquireTarget(UsedWeapons, MTarget);
-					break;
-				}
-
-				// [Ace] Intentionally don't break the loop in case one of the next monsters is a high priority one.
-				else if (MTarget.FindInventory('HDArmourWorn') && !alreadyTargeted) // [Ace] Don't focus fire on trash.
-				{
-					W = 'FW_Liberator'; UsedWeapons.Push(W);
-					W = 'FW_Boss'; UsedWeapons.Push(W);	
-					W = 'FW_ZM66'; UsedWeapons.Push(W);
-					W = 'FW_SMG'; UsedWeapons.Push(W);
-					W = 'FW_Hunter'; UsedWeapons.Push(W);
-					AcquireTarget(UsedWeapons, MTarget, ATF_NOSWITCH);
-				}
-				else if ((!CheckTarget() || !SelWeapon) && !alreadyTargeted)
-				{
-					W = 'FW_Hunter'; UsedWeapons.Push(W);
-					W = 'FW_ZM66'; UsedWeapons.Push(W);
-					W = 'FW_Liberator'; UsedWeapons.Push(W);
-					W = 'FW_Boss'; UsedWeapons.Push(W);
-					W = 'FW_SMG'; UsedWeapons.Push(W);
-					AcquireTarget(UsedWeapons, MTarget, ATF_NOSWITCH);
-				}
-				else if (SelWeapon) // [Ace] In case follower gets interrupted, re-engage old target.
-				{
-					UsedWeapons.Push(SelWeapon.GetClass());
-					AcquireTarget(UsedWeapons, CTarget, ATF_NOSWITCH);
+					FTarget.Actor = next;
+					FTarget.Priority = int(priority);
 				}
 			}
 			else if (!bFRIENDLY && PTarget && PTarget.Health > 0 && CheckSight(PTarget, SF_SEEPASTSHOOTABLELINES))
 			{
-				W = 'FW_ZM66'; UsedWeapons.Push(W);
-				W = 'FW_SMG'; UsedWeapons.Push(W);
-				W = 'FW_Hunter'; UsedWeapons.Push(W);
-				AcquireTarget(UsedWeapons, PTarget, ATF_NOSWITCH);
+				FTarget.Actor = PTarget;
+				FTarget.Priority = 10000;
 			}
 		}
 	}
@@ -179,14 +85,14 @@ extend class HDFollower
 		// - Target is dead;
 		// - Target is incapped;
 
-		if (!CTarget)
+		if (!FTarget.Actor)
 		{
 			return false;
 		}
 
-		bool FriendlyCheck = bFRIENDLY && !CTarget.bFRIENDLY && CTarget != LinkedPlayer;
-		bool HostileCheck = !bFRIENDLY && (CTarget == LinkedPlayer || CTarget.bFRIENDLY);
-		return CanHitTarget(CTarget) && (FriendlyCheck || HostileCHeck) && CTarget.Health > 0 && CheckSight(CTarget, SF_SEEPASTSHOOTABLELINES) && !TargetIsIncapped(CTarget) && CTarget.bSHOOTABLE;
+		bool FriendlyCheck = bFRIENDLY && !FTarget.Actor.bFRIENDLY && FTarget.Actor != LinkedPlayer;
+		bool HostileCheck = !bFRIENDLY && (FTarget.Actor == LinkedPlayer || FTarget.Actor.bFRIENDLY);
+		return CanHitTarget(FTarget.Actor) && (FriendlyCheck || HostileCHeck) && FTarget.Actor.Health > 0 && CheckSight(FTarget.Actor, SF_SEEPASTSHOOTABLELINES) && !TargetIsIncapped(FTarget.Actor) && FTarget.Actor.bSHOOTABLE;
 	}
 
 	protected bool TargetIsIncapped(Actor other)
@@ -196,14 +102,22 @@ extend class HDFollower
 
 	private void ClearTarget()
 	{
-		CTarget = null;
+		if (FTarget.Actor)
+		{
+			if (hdf_debug & FDebug_Targeting)
+			{
+				Console.Printf("[%s] %s's target %s was nulled.", GetTimestamp(), GetTag(), FTarget.Actor.GetClassName());
+			}
+			FTarget.Actor = null;
+			FTarget.Priority = 0;
+		}
 	}
 
 	private bool IsAttackedBySomeoneElse(Actor a)
 	{
 		for (int i = 0; i < Handler.Followers.Size(); ++i)
 		{
-			if (Handler.Followers[i] != self && Handler.Followers[i].CTarget == a && Handler.Followers[i].Status != FStatus_InactiveOrDead)
+			if (Handler.Followers[i] != self && Handler.Followers[i].FTarget.Actor == a && Handler.Followers[i].Status != FStatus_InactiveOrDead)
 			{
 				return true;
 			}
@@ -229,74 +143,6 @@ extend class HDFollower
 		}
 
 		return data.HitActor == a || data.HitActor is 'HDPlayerPawn' || data.HitActor is 'HDFollower';
-	}
-
-	// [Ace] This only acquires the target. Actual aiming and engaging and all that jazz is done in AiThink().
-	protected void AcquireTarget(Array<class<FollowerWeapon> > wpns, Actor other, int flags = 0)
-	{
-		if (!other || wpns.Size() == 0)
-		{
-			return;
-		}
-
-		// [Ace] This is used so that FindWeapon() isn't copy-pasted numerous times in the targeting code.
-		Array<FollowerWeapon> ActualWeapons;
-		for (int i = 0; i < wpns.Size(); ++i)
-		{
-			FollowerWeapon w = FindWeapon(wpns[i]);
-			if (w && w.Enabled && w.CheckWeaponCondition(self, other))
-			{
-				ActualWeapons.Push(w);
-			}
-		}
-
-		SelWeapon = null;
-		
-		// [Ace] First try to find the highest weapon in the priority list that has any ammo in it. If it doesn't and NOSWITCH is enabled, try to reload it.
-		for (int i = 0; i < ActualWeapons.Size(); ++i)
-		{
-			if (ActualWeapons[i].HasAmmo())
-			{
-				SelWeapon = ActualWeapons[i];
-				if (hdf_debug & FDebug_Weapons)
-				{
-					Console.Printf("[%s] %s selected %s with %i rounds and %s spare ammo. Target is %s with %i bodydamage and %i shields.", level.TimeFormatted(), GetTag(), SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no", other.GetClassName(), HDMobBase(other) ? HDMobBase(other).BodyDamage : -1, other.CountInv('HDMagicShield'));
-				}
-				if (other)
-				{
-					CTarget = other;
-				}
-				break;
-			}
-			else if ((flags & ATF_NOSWITCH || ActualWeapons[i].GetFlags() & FollowerWeapon.FWF_NOSWITCH) && ActualWeapons[i].HasSpare())
-			{
-				SelWeapon = ActualWeapons[i];
-				if (hdf_debug & FDebug_Weapons)
-				{
-					Console.Printf("[%s] ATF_NOSWITCH is enabled. %s selected %s with %i rounds and %s spare ammo. Target is %s with %i bodydamage and %i shields.", level.TimeFormatted(), GetTag(), SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no", other.GetClassName(), HDMobBase(other) ? HDMobBase(other).BodyDamage : -1, other.CountInv('HDMagicShield'));
-				}
-				TryReloadWeapon(SelWeapon, RLF_FORCE | RLF_SILENT | RLF_NOJUMP);
-				return;
-			}
-		}
-
-		// [Ace] Still nothing? Reload the highest weapon.
-		if (!SelWeapon)
-		{
-			for (int i = 0; i < ActualWeapons.Size(); ++i)
-			{
-				if (ActualWeapons[i].HasSpare())
-				{
-					SelWeapon = ActualWeapons[i];
-					if (hdf_debug & FDebug_Weapons)
-					{
-						Console.Printf("[%s] ATF_NOSWITCH is disabled. %s selected %s with %i rounds and %s spare ammo. Target is %s with %i bodydamage and %i shields.", level.TimeFormatted(), GetTag(), SelWeapon.GetName(), SelWeapon.Mag, SelWeapon.HasSpare() ? "some" : "no", other.GetClassName(), HDMobBase(other) ? HDMobBase(other).BodyDamage : -1, other.CountInv('HDMagicShield'));
-					}
-					TryReloadWeapon(SelWeapon, RLF_FORCE | RLF_SILENT | RLF_NOJUMP);
-					return;
-				}
-			}
-		}
 	}
 
 	protected transient CVar TargetUncountable;

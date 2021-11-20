@@ -30,7 +30,7 @@ extend class HDFollower
 	{
 		ClearGoal();
 		ClearTarget();
-		ClearWeapon();
+		IdleWeapon();
 		Status = FStatus_InactiveOrDead;
 		scale = default.scale;
 		CrouchFactor = 0;

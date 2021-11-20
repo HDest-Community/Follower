@@ -53,6 +53,9 @@ extend class FollowerHandler
 	private transient FollowerSelection Selection[MAXPLAYERS];
 	private transient int Modifiers[MAXPLAYERS];
 
+	private transient ui bool InInputMode[MAXPLAYERS];
+	private transient ui string InputString[MAXPLAYERS];
+
 	private transient ui UiDataHolder UiData[MAXPLAYERS];
 
 	private transient ui int ArrowKeysHeld[MAXPLAYERS];
@@ -391,19 +394,18 @@ extend class FollowerHandler
 					DrawRectangle(sb, pos, (160, RectangleHeight), MainFont, selSize.." followers", flags, Font.FindFontColor('FLW_NameBlue'));
 					pos.y += RectangleHeight + Spacing;
 
-					Array<string> Commands;
-					Commands.Push("Orders");
-					Commands.Push("Manage inventory");
-					Commands.Push("Misc commands");
+					DrawRectangle(sb, pos, (160, RectangleHeight), MainFont, "1) Orders", flags);
+					pos.y += RectangleHeight + Spacing;
+
+					DrawRectangle(sb, pos, (160, RectangleHeight), MainFont, InInputMode[consoleplayer] ? InputString[consoleplayer].."_" : "2) Input command", flags);
+					pos.y += RectangleHeight + Spacing;
+
+					DrawRectangle(sb, pos, (160, RectangleHeight), MainFont, "3) Misc commands", flags);
+					pos.y += RectangleHeight + Spacing;
+
 					if (Followers.Size() > 1)
 					{
-						Commands.Push("Back...");
-					}
-
-					for (int i = 0; i < Commands.Size(); ++i)
-					{
-						DrawRectangle(sb, pos, (160, RectangleHeight), MainFont, (i + 1)..") "..Commands[i], flags);
-						pos.y += RectangleHeight + Spacing;
+						DrawRectangle(sb, pos, (160, RectangleHeight), MainFont, "4) Back...", flags);
 					}
 				}
 				else if (lastFol.Health <= 0)
@@ -467,28 +469,13 @@ extend class FollowerHandler
 				}
 				else
 				{
-					int RectangleWidth = 160;
-					int Durability = 0;
-					bool Mega = false;
-					bool Waiting = lastFol.Status == FStatus_WaitingForArmor;
-					let Armor = HDArmourWorn(lastFol.FindInventory("HDArmourWorn"));
-					if (Armor)
-					{
-						Durability = Armor.Durability;
-						Mega = Armor.Mega;
-						if (!Waiting)
-						{
-							RectangleWidth += 40;
-						}
-					}
-
-					DrawRectangle(sb, pos, (RectangleWidth, RectangleHeight), MainFont, GetTruncatedText(lastFol.GetTag(), RectangleWidth > 160 ? 24 : 20), flags, Font.FindFontColor('FLW_NameBlue'));
+					DrawRectangle(sb, pos, (160, RectangleHeight), MainFont, GetTruncatedText(lastFol.GetTag(), 20), flags, Font.FindFontColor('FLW_NameBlue'));
 					pos.y += RectangleHeight + Spacing;
 
 					if (Followers.Size() == 1 && lastFol.CanInteractWith(false))
 					{
 						double Dist = lastFol.Distance3D(lastFol.LinkedPlayer) / HDCONST_ONEMETRE;
-						DrawRectangle(sb, pos, (RectangleWidth, RectangleHeight), MainFont, String.Format("%.2fm", Dist), flags, Font.CR_DARKGRAY);
+						DrawRectangle(sb, pos, (160, RectangleHeight), MainFont, String.Format("%.2fm", Dist), flags, Font.CR_DARKGRAY);
 						pos.y += RectangleHeight + Spacing;
 					}
 
@@ -496,7 +483,6 @@ extend class FollowerHandler
 					Commands.Push("Orders");
 					Commands.Push("Carry follower");
 					Commands.Push("Manage inventory");
-					Commands.Push((Waiting ? "Confirm/Cancel?" : "Use/drop armor"..(Durability > 0 ? (Mega ? "\c[Blue]" : "\c[DarkGreen]").." ("..Durability..")": "")).."\c-");
 					Commands.Push("Misc commands");
 					if (Followers.Size() > 1)
 					{
@@ -505,7 +491,7 @@ extend class FollowerHandler
 
 					for (int i = 0; i < Commands.Size(); ++i)
 					{
-						DrawRectangle(sb, pos, (RectangleWidth, RectangleHeight), MainFont, (i + 1)..") "..Commands[i], flags);
+						DrawRectangle(sb, pos, (160, RectangleHeight), MainFont, (i + 1)..") "..Commands[i], flags);
 						pos.y += RectangleHeight + Spacing;
 					}
 				}
@@ -557,28 +543,33 @@ extend class FollowerHandler
 				}
 
 				int w = InvColumns * SlotSize + (InvColumns - 1) + 2;
-				
+
 				if (selSize > 1)
 				{
 					DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, selSize.." followers", flags, Font.FindFontColor('FLW_NameBlue'));
 				}
 				else
 				{
-					pos.y -= 120;
+					pos.y -= 70;
+					let arm = HDArmourWorn(lastFol.FindInventory("HDArmourWorn"));
+					if (arm)
+					{
+						DrawArmorRectangle(sb, pos - (0, 40 + Spacing), (40, 40), flags, arm);	
+					}
 					DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, GetTruncatedText(lastFol.GetTag(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
 				}
 				pos.y += RectangleHeight + Spacing;
 
 				int wSize = lastFol.Weapons.Size();
-				if (wSize > 0)
-				{
-					SelWeaponIndex[consoleplayer] = min(SelWeaponIndex[consoleplayer], wSize - 1);
-					DrawWeaponRectangle(sb, pos, (w, RectangleHeight * 3), MainFont, flags, lastFol, lastFol.Weapons[SelWeaponIndex[consoleplayer]], selSize > 1 ? 1 : 0);
-					pos.y += RectangleHeight * 3 + Spacing;
-				}
-
 				if (selSize == 1)
 				{
+					if (wSize > 0)
+					{
+						SelWeaponIndex[consoleplayer] = min(SelWeaponIndex[consoleplayer], wSize - 1);
+						DrawWeaponRectangle(sb, pos, (w, RectangleHeight * 3), MainFont, flags, lastFol, lastFol.Weapons[SelWeaponIndex[consoleplayer]], selSize > 1 ? 1 : 0);
+						pos.y += RectangleHeight * 3 + Spacing;
+					}
+
 					int rows = int(ceil(HDFollower.SlotCount / double(InvColumns)));
 					int invh = rows * SlotSize + (rows - 1) + 2;
 					DrawFollowerInventory(sb, pos, (w, invh), MainFont, flags, lastFol);
@@ -590,34 +581,19 @@ extend class FollowerHandler
 					pos.y += invh;
 				}
 
-				DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, "0) Cancel/Back", flags);
+				DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, "1) Cancel/Back", flags);
 				pos.y += RectangleHeight + Spacing;
 
-				if (wSize > 0)
+				if (lastFol.CanInteractWith(false))
 				{
-					if (wSize > 1)
-					{
-						DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, String.Format("1-%i) Weapon 1-%i", wSize, wSize), flags);
-						pos.y += RectangleHeight + Spacing;
-					}
-
-					if (lastFol.CanInteractWith(false))
-					{
-						DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, "Spc) Reload", flags);
-						pos.y += RectangleHeight + Spacing;
-					}
+					DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, InInputMode[consoleplayer] ? InputString[consoleplayer].."_" : "2) Input command", flags);
+					pos.y += RectangleHeight + Spacing;
 				}
 
 				if (selSize == 1)
 				{
 					DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, "Bsp) Take", flags); pos.y += RectangleHeight + Spacing;
 					DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, "Ent) Select/Give", flags); pos.y += RectangleHeight + Spacing;
-
-					if (wSize > 0 && lastFol.CanInteractWith(false))
-					{
-						bool Waiting = lastFol.Status == FStatus_WaitingForWeapon;
-						DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, "P) "..(Waiting ? "Confirm/Cancel?" : "Pickup weapon"), flags); pos.y += RectangleHeight + Spacing;
-					}
 				}
 				break;
 			}
@@ -738,7 +714,7 @@ extend class FollowerHandler
 		// [Ace] flags2 values are as follows:
 		// 1 - multiselect
 
-		Color col = flags2 & 1 || wpn.Enabled ? Color(64, 128, 192, 255) : Color(128, 192, 64, 64);
+		Color col = Color(64, 128, 192, 255);
 		sb.Fill(col, pos.x, pos.y, size.x, size.y, flags);
 		sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 
@@ -864,6 +840,15 @@ extend class FollowerHandler
 		sb.DrawString(fnt, "Amount:"..amt, pos + (2, 2), flags, col);
 	}
 
+	private ui void DrawArmorRectangle(HDStatusBar sb, vector2 pos, vector2 size, int flags, HDArmourWorn arm)
+	{
+		sb.Fill(Color(64, 128, 192, 255), pos.x, pos.y, size.x, size.y, flags);
+		sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
+
+		sb.DrawImage(AceCore.GetIcon(arm), pos + size / 2, flags | sb.DI_ITEM_CENTER, box: size - (5, 5));
+		sb.DrawString(MainFont, (arm.Mega ? "\c[Blue]" : "\c[DarkGreen]")..arm.Durability, pos + size - (4, 10), flags | sb.DI_TEXT_ALIGN_RIGHT);
+	}
+
 	private ui void DrawRectangle(HDStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, string command, int flags, int col = Font.CR_WHITE)
 	{
 		sb.Fill(Color(64, 128, 192, 255), pos.x, pos.y, size.x, size.y, flags);
@@ -927,6 +912,35 @@ extend class FollowerHandler
 
 		if (FollowerMenuLevel[consoleplayer] > FMenu_Closed && e.Type == InputEvent.Type_KeyDown)
 		{
+			if (InInputMode[consoleplayer])
+			{
+				switch (e.KeyScan)
+				{
+					case InputEvent.Key_Enter:
+					{
+						InInputMode[consoleplayer] = false;
+						ret = true;
+						break;
+					}
+
+					// Delete last character.
+					case InputEvent.Key_Backspace:
+					{
+						InputString[consoleplayer].DeleteLastCharacter();
+						return true;
+					}
+
+					default:
+					{
+						if (InputString[consoleplayer].Length() < 17 && e.KeyChar >= 32 && e.KeyChar <= 126) // [Ace] Only valid characters.
+						{
+							InputString[consoleplayer] = InputString[consoleplayer]..String.Format("%c", e.KeyChar);
+						}
+						return true;
+					}
+				}
+			}
+
 			int NumKey = e.KeyChar - 48;
 			if (NumKey == 0)
 			{
@@ -1019,18 +1033,40 @@ extend class FollowerHandler
 
 					if (selSize > 1)
 					{
-						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Orders));
-						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Inventory));
-						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Miscellaneous));
-						if (Followers.Size() > 1)
+						if (e.KeyScan == InputEvent.Key_Enter && !InInputMode[consoleplayer] && ret)
 						{
-							Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Followers));
+							if (!InInputMode[consoleplayer] && ret)
+							{
+								ProcessInputString(InputString[consoleplayer], lastFol, selSize > 1);
+								return true;
+							}
 						}
-						
-						if (NumKey > 0 && NumKey - 1 < Commands.Size())
+						switch (NumKey)
 						{
-							FollowerCommand cmd = Commands[NumKey - 1];
-							SendNetworkEvent(cmd.EventName, cmd.Args[0], cmd.Args[1], cmd.Args[2]);
+							case 1:
+							{
+								SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Orders);
+								break;
+							}
+							case 2:
+							{
+								InInputMode[consoleplayer] = true;
+								ret = true;
+								break;
+							}
+							case 3:
+							{
+								SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Miscellaneous);
+								break;
+							}
+							case 4:
+							{
+								if (Followers.Size() > 1)
+								{
+									SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Followers);
+								}
+								break;
+							}
 						}
 					}
 					else if (lastFol.Health <= 0)
@@ -1066,7 +1102,6 @@ extend class FollowerHandler
 						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Orders));
 						Commands.Push(CreateCommand("HDF_CarryFollower"));
 						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Inventory));
-						Commands.Push(CreateCommand("HDF_TryArmor"));
 						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Miscellaneous));
 						if (Followers.Size() > 1)
 						{
@@ -1099,30 +1134,25 @@ extend class FollowerHandler
 				case FMenu_Inventory:
 				{
 					HDFollower lastFol = Selection[consoleplayer].GetLast();
-					if (NumKey > 0 && NumKey < 10)
-					{
-						SelWeaponIndex[consoleplayer] = min(NumKey - 1, lastFol.Weapons.Size() - 1);
-						ret = true;
-					}
-
 					int selSize = Selection[consoleplayer].SelFollowers.Size();
 
 					// [Ace] Navigation.
 					int maxSIndex = HDFollower.SlotCount - 1;
 					switch (e.KeyScan)
 					{
-						case InputEvent.Key_Space:
-						{
-							SendNetworkEvent("HDF_TryReloadWeapon", SelWeaponIndex[consoleplayer]);
-							ret = true;
-							break;
-						}
 						case InputEvent.Key_Enter:
 						{
+							if (!InInputMode[consoleplayer] && ret)
+							{
+								ProcessInputString(InputString[consoleplayer], lastFol, selSize > 1);
+								return true;
+							}
+
 							if (selSize > 1)
 							{
 								break;
 							}
+
 							if (SlotFocused[consoleplayer] == 0)
 							{
 								UpdateValidItems(lastFol);
@@ -1204,17 +1234,13 @@ extend class FollowerHandler
 						}
 					}
 
-					if (e.KeyChar == 80 || e.KeyChar == 112)
+					if (NumKey == 2)
 					{
-						if (selSize > 1)
-						{
-							break;
-						}
-						SendNetworkEvent("HDF_TryWeapon");
+						InInputMode[consoleplayer] = true;
 						ret = true;
+						break;
 					}
-
-					if (NumKey == 10)
+					if (NumKey == 1)
 					{
 						if (SlotFocused[consoleplayer] > 0)
 						{
@@ -1573,16 +1599,22 @@ extend class FollowerHandler
 			return;
 		}
 
-		if (e.Name ~== "HDF_TryReloadWeapon")
+		if (e.Name.MakeLower().IndexOf("hdf_tryreloadweapon") != -1)
 		{
-			for (int i = 0; i < Selection[consoleplayer].SelFollowers.Size(); ++i)
+			Array<string> split;
+			e.Name.Split(split, ":");
+			if (split.Size() > 1)
 			{
-				let flw = Selection[consoleplayer].SelFollowers[i];
-				if (!flw.CanInteractWith(false) || flw.Weapons.Size() == 0)
+				int selSize = Selection[consoleplayer].SelFollowers.Size();
+				for (int i = 0; i < selSize; ++i)
 				{
-					continue;
+					let flw = Selection[consoleplayer].SelFollowers[i];
+					if (!flw.CanInteractWith(false) || flw.Weapons.Size() == 0)
+					{
+						continue;
+					}
+					flw.TryReloadWeapon(flw.FindWeaponByName(split[1]), HDFollower.RLF_MANUAL);
 				}
-				flw.TryReloadWeapon(flw.Weapons[e.Args[0]], HDFollower.RLF_MANUAL);
 			}
 			return;
 		}
@@ -1622,7 +1654,7 @@ extend class FollowerHandler
 			for (int i = 0; i < Selection[consoleplayer].SelFollowers.Size(); ++i)
 			{
 				let flw = Selection[consoleplayer].SelFollowers[i];
-				if (!(flw.bDONTTRANSLATE))
+				if (flw.CanInteractWith() && !(flw.bDONTTRANSLATE))
 				{
 					flw.A_SetTranslation("FollowerTranslation"..e.Args[0]);
 				}
@@ -1636,6 +1668,44 @@ extend class FollowerHandler
 	// MISCELLANEOUS HELPER FUNCTIONS
 	//
 	// ----------------------------------------------------------------------
+
+	private ui void ProcessInputString(out string input, HDFollower selFol, bool multiselect)
+	{
+		Array<string> split;
+		input.Split(split, " ");
+		int splitSize = split.Size();
+		switch (splitSize)
+		{
+			case 1:
+			{
+				if (!multiselect)
+				{
+					if (split[0].ToInt() > 0)
+					{
+						SelWeaponIndex[consoleplayer] = min(split[0].ToInt() - 1, selFol.Weapons.Size() - 1);
+					}
+					if (split[0] ~== "wpn")
+					{
+						SendNetworkEvent("HDF_TryWeapon");
+					}
+					if (split[0] ~== "arm")
+					{
+						SendNetworkEvent("HDF_TryArmor");
+					}
+				}
+				break;
+			}
+			case 2:
+			{
+				if (split[0] ~== "rld" || split[0] ~== "rel")
+				{
+					SendNetworkEvent("HDF_TryReloadWeapon:"..split[1]);
+				}
+				break;
+			}
+		}
+		input = "";
+	}
 
 	// [Ace] The only reason this is used is to allow dynamic menus with a variable number of options. That's literally the only reason.
 	private ui FollowerCommand CreateCommand(string evName, int arg1 = 0, int arg2 = 0, int arg3 = 0, bool useUiHandler = false)
