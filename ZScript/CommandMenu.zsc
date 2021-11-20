@@ -19,6 +19,15 @@ struct UiDataHolder
 {
 	Array<HDPickup> ValidItems;
 	int RepeatTics[4];
+	int ArrowKeysHeld;
+	int SlotFocused;
+	int PSlotIndex;
+	int PSlotSubIndex;
+	int TransferAmount;
+	int SelWeaponIndex;
+	int FSlotIndex;
+	bool Confirmation;
+	bool DisplayWeapons;
 }
 
 extend class FollowerHandler
@@ -57,15 +66,6 @@ extend class FollowerHandler
 	private transient ui string InputString[MAXPLAYERS];
 
 	private transient ui UiDataHolder UiData[MAXPLAYERS];
-
-	private transient ui int ArrowKeysHeld[MAXPLAYERS];
-	private transient ui int SlotFocused[MAXPLAYERS];
-	private transient ui int PSlotIndex[MAXPLAYERS];
-	private transient ui int PSlotSubIndex[MAXPLAYERS];
-	private transient ui int TransferAmount[MAXPLAYERS];
-	private transient ui int SelWeaponIndex[MAXPLAYERS];
-	private transient ui int FSlotIndex[MAXPLAYERS];
-	private transient ui bool Confirmation[MAXPLAYERS];
 
 	private transient ui CVar Scale[MAXPLAYERS];
 
@@ -130,77 +130,77 @@ extend class FollowerHandler
 
 				HDFollower lastFol = Selection[consoleplayer].GetLast();
 				int maxSIndex = HDFollower.SlotCount - 1;
-				if (ArrowKeysHeld[consoleplayer] & HOLD_LEFT && UiData[consoleplayer].RepeatTics[0] % 3 == 0)
+				if (UiData[consoleplayer].ArrowKeysHeld & HOLD_LEFT && UiData[consoleplayer].RepeatTics[0] % 3 == 0)
 				{
-					if (SlotFocused[consoleplayer] == 0 && FSlotIndex[consoleplayer] % InvColumns > 0)
+					if (UiData[consoleplayer].SlotFocused == 0 && UiData[consoleplayer].FSlotIndex % InvColumns > 0)
 					{
-						FSlotIndex[consoleplayer] = max(FSlotIndex[consoleplayer] - 1, 0);
+						UiData[consoleplayer].FSlotIndex = max(UiData[consoleplayer].FSlotIndex - 1, 0);
 					}
-					else if (SlotFocused[consoleplayer] == 1)
+					else if (UiData[consoleplayer].SlotFocused == 1)
 					{
-						if (--PSlotSubIndex[consoleplayer] < 0)
+						if (--UiData[consoleplayer].PSlotSubIndex < 0)
 						{
-							PSlotSubIndex[consoleplayer] = maxSIndex;
+							UiData[consoleplayer].PSlotSubIndex = maxSIndex;
 						}
 					}
-					else if (SlotFocused[consoleplayer] == 2)
+					else if (UiData[consoleplayer].SlotFocused == 2)
 					{
 						int amt = Modifiers[consoleplayer] & OpMod_Shift ? 20 : 2;
-						TransferAmount[consoleplayer] = clamp(TransferAmount[consoleplayer] - amt, 0, 1000);
+						UiData[consoleplayer].TransferAmount = clamp(UiData[consoleplayer].TransferAmount - amt, 0, 1000);
 					}
 				}
-				if (ArrowKeysHeld[consoleplayer] & HOLD_RIGHT && UiData[consoleplayer].RepeatTics[1] % 3 == 0)
+				if (UiData[consoleplayer].ArrowKeysHeld & HOLD_RIGHT && UiData[consoleplayer].RepeatTics[1] % 3 == 0)
 				{
-					if (SlotFocused[consoleplayer] == 0 && FSlotIndex[consoleplayer] % InvColumns < InvColumns - 1)
+					if (UiData[consoleplayer].SlotFocused == 0 && UiData[consoleplayer].FSlotIndex % InvColumns < InvColumns - 1)
 					{
-						FSlotIndex[consoleplayer] = min(FSlotIndex[consoleplayer] + 1, maxSIndex);
+						UiData[consoleplayer].FSlotIndex = min(UiData[consoleplayer].FSlotIndex + 1, maxSIndex);
 					}
-					else if (SlotFocused[consoleplayer] == 1)
+					else if (UiData[consoleplayer].SlotFocused == 1)
 					{
-						if (++PSlotSubIndex[consoleplayer] > maxSIndex)
+						if (++UiData[consoleplayer].PSlotSubIndex > maxSIndex)
 						{
-							PSlotSubIndex[consoleplayer] = 0;
+							UiData[consoleplayer].PSlotSubIndex = 0;
 						}
 					}
-					else if (SlotFocused[consoleplayer] == 2)
+					else if (UiData[consoleplayer].SlotFocused == 2)
 					{
 						int amt = Modifiers[consoleplayer] & OpMod_Shift ? 20 : 2;
-						TransferAmount[consoleplayer] = clamp(TransferAmount[consoleplayer] + amt, 0, 1000);
+						UiData[consoleplayer].TransferAmount = clamp(UiData[consoleplayer].TransferAmount + amt, 0, 1000);
 					}
 				}
-				if (ArrowKeysHeld[consoleplayer] & HOLD_UP && UiData[consoleplayer].RepeatTics[2] % 3 == 0)
+				if (UiData[consoleplayer].ArrowKeysHeld & HOLD_UP && UiData[consoleplayer].RepeatTics[2] % 3 == 0)
 				{
-					if (SlotFocused[consoleplayer] == 0)
+					if (UiData[consoleplayer].SlotFocused == 0)
 					{
-						if (FSlotIndex[consoleplayer] > InvColumns - 1)
+						if (UiData[consoleplayer].FSlotIndex > InvColumns - 1)
 						{
-							FSlotIndex[consoleplayer] = max(FSlotIndex[consoleplayer] - InvColumns, 0);
+							UiData[consoleplayer].FSlotIndex = max(UiData[consoleplayer].FSlotIndex - InvColumns, 0);
 						}
 					}
-					else if (SlotFocused[consoleplayer] == 1)
+					else if (UiData[consoleplayer].SlotFocused == 1)
 					{
 						UpdateValidItems(lastFol);
-						if (--PSlotIndex[consoleplayer] < 0)
+						if (--UiData[consoleplayer].PSlotIndex < 0)
 						{
-							PSlotIndex[consoleplayer] = UiData[consoleplayer].ValidItems.Size() - 1;
+							UiData[consoleplayer].PSlotIndex = UiData[consoleplayer].ValidItems.Size() - 1;
 						}
 					}
 				}
-				if (ArrowKeysHeld[consoleplayer] & HOLD_DOWN && UiData[consoleplayer].RepeatTics[3] % 3 == 0)
+				if (UiData[consoleplayer].ArrowKeysHeld & HOLD_DOWN && UiData[consoleplayer].RepeatTics[3] % 3 == 0)
 				{
-					if (SlotFocused[consoleplayer] == 0)
+					if (UiData[consoleplayer].SlotFocused == 0)
 					{
-						if (FSlotIndex[consoleplayer] < maxSIndex - (InvColumns - 1))
+						if (UiData[consoleplayer].FSlotIndex < maxSIndex - (InvColumns - 1))
 						{
-							FSlotIndex[consoleplayer] = min(FSlotIndex[consoleplayer] + InvColumns, maxSIndex);
+							UiData[consoleplayer].FSlotIndex = min(UiData[consoleplayer].FSlotIndex + InvColumns, maxSIndex);
 						}
 					}
-					else if (SlotFocused[consoleplayer] == 1)
+					else if (UiData[consoleplayer].SlotFocused == 1)
 					{
 						UpdateValidItems(lastFol);
-						if (++PSlotIndex[consoleplayer] == UiData[consoleplayer].ValidItems.Size())
+						if (++UiData[consoleplayer].PSlotIndex == UiData[consoleplayer].ValidItems.Size())
 						{
-							PSlotIndex[consoleplayer] = 0;
+							UiData[consoleplayer].PSlotIndex = 0;
 						}
 					}
 				}
@@ -214,19 +214,19 @@ extend class FollowerHandler
 			case FMenu_ColorPicker:
 			{
 				int maxIndex = TColors.Size() - 1;
-				if (ArrowKeysHeld[consoleplayer] & HOLD_LEFT && SelectedColorIndex[consoleplayer] % PickerColumns > 0 && UiData[consoleplayer].RepeatTics[0] % 3 == 0)
+				if (UiData[consoleplayer].ArrowKeysHeld & HOLD_LEFT && SelectedColorIndex[consoleplayer] % PickerColumns > 0 && UiData[consoleplayer].RepeatTics[0] % 3 == 0)
 				{
 					SelectedColorIndex[consoleplayer] = max(SelectedColorIndex[consoleplayer] - 1, 0);
 				}
-				if (ArrowKeysHeld[consoleplayer] & HOLD_RIGHT && SelectedColorIndex[consoleplayer] % PickerColumns < PickerColumns - 1 && UiData[consoleplayer].RepeatTics[1] % 3 == 0)
+				if (UiData[consoleplayer].ArrowKeysHeld & HOLD_RIGHT && SelectedColorIndex[consoleplayer] % PickerColumns < PickerColumns - 1 && UiData[consoleplayer].RepeatTics[1] % 3 == 0)
 				{
 					SelectedColorIndex[consoleplayer] = min(SelectedColorIndex[consoleplayer] + 1, maxIndex);
 				}
-				if (ArrowKeysHeld[consoleplayer] & HOLD_UP && SelectedColorIndex[consoleplayer] > PickerColumns - 1 && UiData[consoleplayer].RepeatTics[2] % 3 == 0)
+				if (UiData[consoleplayer].ArrowKeysHeld & HOLD_UP && SelectedColorIndex[consoleplayer] > PickerColumns - 1 && UiData[consoleplayer].RepeatTics[2] % 3 == 0)
 				{
 					SelectedColorIndex[consoleplayer] = max(SelectedColorIndex[consoleplayer] - PickerColumns, 0);
 				}
-				if (ArrowKeysHeld[consoleplayer] & HOLD_DOWN && UiData[consoleplayer].RepeatTics[3] % 3 == 0)
+				if (UiData[consoleplayer].ArrowKeysHeld & HOLD_DOWN && UiData[consoleplayer].RepeatTics[3] % 3 == 0)
 				{
 					SelectedColorIndex[consoleplayer] = min(SelectedColorIndex[consoleplayer] + PickerColumns, maxIndex);
 				}
@@ -234,54 +234,55 @@ extend class FollowerHandler
 			}
 		}
 
-		UiData[consoleplayer].RepeatTics[0] = ArrowKeysHeld[consoleplayer] & HOLD_LEFT ? UiData[consoleplayer].RepeatTics[0] + 1 : 0;
-		UiData[consoleplayer].RepeatTics[1] = ArrowKeysHeld[consoleplayer] & HOLD_RIGHT ? UiData[consoleplayer].RepeatTics[1] + 1 : 0;
-		UiData[consoleplayer].RepeatTics[2] = ArrowKeysHeld[consoleplayer] & HOLD_UP ? UiData[consoleplayer].RepeatTics[2] + 1 : 0;
-		UiData[consoleplayer].RepeatTics[3] = ArrowKeysHeld[consoleplayer] & HOLD_DOWN ? UiData[consoleplayer].RepeatTics[3] + 1 : 0;
+		UiData[consoleplayer].RepeatTics[0] = UiData[consoleplayer].ArrowKeysHeld & HOLD_LEFT ? UiData[consoleplayer].RepeatTics[0] + 1 : 0;
+		UiData[consoleplayer].RepeatTics[1] = UiData[consoleplayer].ArrowKeysHeld & HOLD_RIGHT ? UiData[consoleplayer].RepeatTics[1] + 1 : 0;
+		UiData[consoleplayer].RepeatTics[2] = UiData[consoleplayer].ArrowKeysHeld & HOLD_UP ? UiData[consoleplayer].RepeatTics[2] + 1 : 0;
+		UiData[consoleplayer].RepeatTics[3] = UiData[consoleplayer].ArrowKeysHeld & HOLD_DOWN ? UiData[consoleplayer].RepeatTics[3] + 1 : 0;
 
 		if (FollowerMenuLevel[consoleplayer] != FMenu_Inventory)
 		{
-			SlotFocused[consoleplayer] = 0;
-			FSlotIndex[consoleplayer] = 0;
-			PSlotIndex[consoleplayer] = 0;
-			PSlotSubIndex[consoleplayer] = 0;
+			UiData[consoleplayer].SlotFocused = 0;
+			UiData[consoleplayer].FSlotIndex = 0;
+			UiData[consoleplayer].PSlotIndex = 0;
+			UiData[consoleplayer].PSlotSubIndex = 0;
+			UiData[consoleplayer].DisplayWeapons = false;
 		}
 
-		if (Confirmation[consoleplayer])
+		if (UiData[consoleplayer].Confirmation)
 		{
 			if (FollowerMenuLevel[consoleplayer] == FMenu_Closed)
 			{
-				Confirmation[consoleplayer] = false;
+				UiData[consoleplayer].Confirmation = false;
 			}
 			else
 			{
 				HDFollower lastFol = Selection[consoleplayer].GetLast();
 				if (lastFol.Health > 0 && FollowerMenuLevel[consoleplayer] != FMenu_Miscellaneous || lastFol.Health <= 0 && FollowerMenuLevel[consoleplayer] != FMenu_Main)
 				{
-					Confirmation[consoleplayer] = false;
+					UiData[consoleplayer].Confirmation = false;
 				}
 			}
 		}
 
-		if (SlotFocused[consoleplayer] < 2)
+		if (UiData[consoleplayer].SlotFocused < 2)
 		{
-			TransferAmount[consoleplayer] = 0;
+			UiData[consoleplayer].TransferAmount = 0;
 		}
 
-		if (SlotFocused[consoleplayer] < 1)
+		if (UiData[consoleplayer].SlotFocused < 1)
 		{
-			PSlotSubIndex[consoleplayer] = 0;
+			UiData[consoleplayer].PSlotSubIndex = 0;
 		}
 
 		int size = UiData[consoleplayer].ValidItems.Size();
-		PSlotIndex[consoleplayer] = clamp(PSlotIndex[consoleplayer], 0, size - 1);
-		if (size > 0 && !UiData[consoleplayer].ValidItems[PSlotIndex[consoleplayer]])
+		UiData[consoleplayer].PSlotIndex = clamp(UiData[consoleplayer].PSlotIndex, 0, size - 1);
+		if (size > 0 && !UiData[consoleplayer].ValidItems[UiData[consoleplayer].PSlotIndex])
 		{
-			UiData[consoleplayer].ValidItems.Delete(PSlotIndex[consoleplayer]);
-			if (SlotFocused[consoleplayer] == 2)
+			UiData[consoleplayer].ValidItems.Delete(UiData[consoleplayer].PSlotIndex);
+			if (UiData[consoleplayer].SlotFocused == 2)
 			{
-				SlotFocused[consoleplayer] = 1;
-				TransferAmount[consoleplayer] = 0;
+				UiData[consoleplayer].SlotFocused = 1;
+				UiData[consoleplayer].TransferAmount = 0;
 			}
 		}
 	}
@@ -454,7 +455,7 @@ extend class FollowerHandler
 					Commands.Push("Manage inventory");
 					if (lastFol.bCANDISMISS)
 					{
-						Commands.Push("\c[FLW_BloodRed]"..(Confirmation[consoleplayer] ? "Confirm?" : "Dismiss").."\c-");
+						Commands.Push("\c[FLW_BloodRed]"..(UiData[consoleplayer].Confirmation ? "Confirm?" : "Dismiss").."\c-");
 					}
 					if (Followers.Size() > 1)
 					{
@@ -543,43 +544,45 @@ extend class FollowerHandler
 				}
 
 				int w = InvColumns * SlotSize + (InvColumns - 1) + 2;
+				int wHeight = RectangleHeight * 3;
 
-				if (selSize > 1)
-				{
-					DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, selSize.." followers", flags, Font.FindFontColor('FLW_NameBlue'));
-				}
-				else
-				{
-					pos.y -= 70;
-					let arm = HDArmourWorn(lastFol.FindInventory("HDArmourWorn"));
-					if (arm)
-					{
-						DrawArmorRectangle(sb, pos - (0, 40 + Spacing), (40, 40), flags, arm);	
-					}
-					DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, GetTruncatedText(lastFol.GetTag(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
-				}
-				pos.y += RectangleHeight + Spacing;
+				pos.y -= 70;
 
 				int wSize = lastFol.Weapons.Size();
-				if (selSize == 1)
+				if (wSize > 0 && UiData[consoleplayer].DisplayWeapons)
 				{
-					if (wSize > 0)
+					for (int i = 0; i < lastFol.Weapons.Size(); ++i)
 					{
-						SelWeaponIndex[consoleplayer] = min(SelWeaponIndex[consoleplayer], wSize - 1);
-						DrawWeaponRectangle(sb, pos, (w, RectangleHeight * 3), MainFont, flags, lastFol, lastFol.Weapons[SelWeaponIndex[consoleplayer]], selSize > 1 ? 1 : 0);
-						pos.y += RectangleHeight * 3 + Spacing;
+						DrawWeaponRectangle(sb, pos + (0, (wHeight + Spacing) * i), (w, wHeight), MainFont, flags, lastFol, lastFol.Weapons[i]);
 					}
-
-					int rows = int(ceil(HDFollower.SlotCount / double(InvColumns)));
-					int invh = rows * SlotSize + (rows - 1) + 2;
-					DrawFollowerInventory(sb, pos, (w, invh), MainFont, flags, lastFol);
-
-					if (SlotFocused[consoleplayer] > 0)
-					{
-						DrawPlayerInventory(sb, pos + (w + 1, 0), (w, invh), MainFont, flags);
-					}
-					pos.y += invh;
+					pos.x += w + Spacing;
 				}
+
+				let arm = HDArmourWorn(lastFol.FindInventory("HDArmourWorn"));
+				if (arm)
+				{
+					DrawArmorRectangle(sb, pos - (0, 40 + Spacing), (40, 40), flags, arm);	
+				}
+
+				DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, GetTruncatedText(lastFol.GetTag(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
+				pos.y += RectangleHeight + Spacing;
+
+				if (wSize > 0)
+				{
+					UiData[consoleplayer].SelWeaponIndex = min(UiData[consoleplayer].SelWeaponIndex, wSize - 1);
+					DrawWeaponRectangle(sb, pos, (w, wHeight), MainFont, flags, lastFol, lastFol.Weapons[UiData[consoleplayer].SelWeaponIndex], selSize > 1 ? 1 : 0);
+					pos.y += wHeight + Spacing;
+				}
+
+				int rows = int(ceil(HDFollower.SlotCount / double(InvColumns)));
+				int invh = rows * SlotSize + (rows - 1) + 2;
+				DrawFollowerInventory(sb, pos, (w, invh), MainFont, flags, lastFol);
+
+				if (UiData[consoleplayer].SlotFocused > 0)
+				{
+					DrawPlayerInventory(sb, pos + (w + 1, 0), (w, invh), MainFont, flags);
+				}
+				pos.y += invh;
 
 				DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, "1) Cancel/Back", flags);
 				pos.y += RectangleHeight + Spacing;
@@ -590,11 +593,8 @@ extend class FollowerHandler
 					pos.y += RectangleHeight + Spacing;
 				}
 
-				if (selSize == 1)
-				{
-					DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, "Bsp) Take", flags); pos.y += RectangleHeight + Spacing;
-					DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, "Ent) Select/Give", flags); pos.y += RectangleHeight + Spacing;
-				}
+				DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, "Bsp) Take", flags); pos.y += RectangleHeight + Spacing;
+				DrawRectangle(sb, pos, (w, RectangleHeight), MainFont, "Ent) Select/Give", flags); pos.y += RectangleHeight + Spacing;
 				break;
 			}
 
@@ -627,7 +627,7 @@ extend class FollowerHandler
 				}
 				if (selSize == 1 && lastFol.bCANDISMISS)
 				{
-					Commands.Push("\c[FLW_BloodRed]"..(Confirmation[consoleplayer] ? "Confirm?" : "Dismiss").."\c-");
+					Commands.Push("\c[FLW_BloodRed]"..(UiData[consoleplayer].Confirmation ? "Confirm?" : "Dismiss").."\c-");
 				}
 				Commands.Push("Back...");
 
@@ -720,6 +720,8 @@ extend class FollowerHandler
 
 		sb.DrawString(fnt, wpn.GetName(), pos + (2, 2), flags, Font.FindFontColor('FLW_WeaponBlue'));
 
+		sb.DrawString(fnt, sb.FormatNumber(flw.Weapons.Find(wpn) + 1, 1, 3), pos + (size.x - 4, 2), flags | sb.DI_TEXT_ALIGN_RIGHT, Font.CR_GOLD);
+
 		// [Ace] Icon.
 		sb.DrawImage(wpn.GetIcon(), pos + (4, 12), flags | sb.DI_ITEM_LEFT_TOP, 1.0, (size.x / 2, 17));
 
@@ -757,7 +759,7 @@ extend class FollowerHandler
 			vector2 realPos = (SlotSize * (i % InvColumns) + (i % InvColumns), SlotSize * (i / InvColumns) + (i / InvColumns));
 
 			Color col;
-			switch (FSlotIndex[consoleplayer] == i ? (SlotFocused[consoleplayer] > 0 ? 2 : 1) : 0)
+			switch (UiData[consoleplayer].FSlotIndex == i ? (UiData[consoleplayer].SlotFocused > 0 ? 2 : 1) : 0)
 			{
 				case 0: col = Color(64, 128, 192, 255); break;
 				case 1: col = Color(128, 255, 255, 128); break;
@@ -789,7 +791,7 @@ extend class FollowerHandler
 			vector2 realPos = (SlotSize * (i % InvColumns) + (i % InvColumns), SlotSize * (i / InvColumns) + (i / InvColumns));
 
 			Color col;
-			switch (PSlotSubIndex[consoleplayer] == i ? (SlotFocused[consoleplayer] > 1 ? 2 : 1) : 0)
+			switch (UiData[consoleplayer].PSlotSubIndex == i ? (UiData[consoleplayer].SlotFocused > 1 ? 2 : 1) : 0)
 			{
 				case 0: col = Color(64, 128, 192, 255); break;
 				case 1: col = Color(128, 255, 255, 128); break;
@@ -800,7 +802,7 @@ extend class FollowerHandler
 		}
 
 		int vSize = UiData[consoleplayer].ValidItems.Size();
-		HDPickup item = vSize > 0 && PSlotIndex[consoleplayer] < vSize ? UiData[consoleplayer].ValidItems[PSlotIndex[consoleplayer]] : null;
+		HDPickup item = vSize > 0 && UiData[consoleplayer].PSlotIndex < vSize ? UiData[consoleplayer].ValidItems[UiData[consoleplayer].PSlotIndex] : null;
 		if (!item)
 		{
 			return;
@@ -824,10 +826,10 @@ extend class FollowerHandler
 			}
 		}
 
-		if (SlotFocused[consoleplayer] == 2)
+		if (UiData[consoleplayer].SlotFocused == 2)
 		{
 			int RectangleHeight = MainFont.mFont.GetHeight() + 4;
-			DrawAmountRectangle(sb, pos + (0, size.y + 1), (size.x, RectangleHeight), fnt, TransferAmount[consoleplayer], 1000, flags, Font.CR_CREAM);
+			DrawAmountRectangle(sb, pos + (0, size.y + 1), (size.x, RectangleHeight), fnt, UiData[consoleplayer].TransferAmount, 1000, flags, Font.CR_CREAM);
 		}
 	}
 
@@ -889,20 +891,20 @@ extend class FollowerHandler
 		{
 			switch (e.KeyScan)
 			{
-				case InputEvent.Key_LeftArrow: ArrowKeysHeld[consoleplayer] |= HOLD_LEFT; break;
-				case InputEvent.Key_RightArrow: ArrowKeysHeld[consoleplayer] |= HOLD_RIGHT; break;
-				case InputEvent.Key_UpArrow: ArrowKeysHeld[consoleplayer] |= HOLD_UP; break;
-				case InputEvent.Key_DownArrow: ArrowKeysHeld[consoleplayer] |= HOLD_DOWN; break;
+				case InputEvent.Key_LeftArrow: UiData[consoleplayer].ArrowKeysHeld |= HOLD_LEFT; break;
+				case InputEvent.Key_RightArrow: UiData[consoleplayer].ArrowKeysHeld |= HOLD_RIGHT; break;
+				case InputEvent.Key_UpArrow: UiData[consoleplayer].ArrowKeysHeld |= HOLD_UP; break;
+				case InputEvent.Key_DownArrow: UiData[consoleplayer].ArrowKeysHeld |= HOLD_DOWN; break;
 			}
 		}
 		else if (e.Type == InputEvent.Type_KeyUp)
 		{
 			switch (e.KeyScan)
 			{
-				case InputEvent.Key_LeftArrow: ArrowKeysHeld[consoleplayer] &= ~HOLD_LEFT; break;
-				case InputEvent.Key_RightArrow: ArrowKeysHeld[consoleplayer] &= ~HOLD_RIGHT; break;
-				case InputEvent.Key_UpArrow: ArrowKeysHeld[consoleplayer] &= ~HOLD_UP; break;
-				case InputEvent.Key_DownArrow: ArrowKeysHeld[consoleplayer] &= ~HOLD_DOWN; break;
+				case InputEvent.Key_LeftArrow: UiData[consoleplayer].ArrowKeysHeld &= ~HOLD_LEFT; break;
+				case InputEvent.Key_RightArrow: UiData[consoleplayer].ArrowKeysHeld &= ~HOLD_RIGHT; break;
+				case InputEvent.Key_UpArrow: UiData[consoleplayer].ArrowKeysHeld &= ~HOLD_UP; break;
+				case InputEvent.Key_DownArrow: UiData[consoleplayer].ArrowKeysHeld &= ~HOLD_DOWN; break;
 			}
 		}
 		
@@ -1083,7 +1085,7 @@ extend class FollowerHandler
 						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Inventory));
 						if (lastFol.bCANDISMISS)
 						{
-							if (Confirmation[consoleplayer])
+							if (UiData[consoleplayer].Confirmation)
 							{
 								Commands.Push(CreateCommand("HDF_DismissFollower"));
 							}
@@ -1153,67 +1155,67 @@ extend class FollowerHandler
 								break;
 							}
 
-							if (SlotFocused[consoleplayer] == 0)
+							if (UiData[consoleplayer].SlotFocused == 0)
 							{
 								UpdateValidItems(lastFol);
-								SlotFocused[consoleplayer]++;
+								UiData[consoleplayer].SlotFocused++;
 								for (int i = 0; i < UiData[consoleplayer].ValidItems.Size(); ++i)
 								{
 									class<HDAmmo> AType, MType; int MaxMag;
-									[AType, MType, MaxMag] = lastFol.Weapons[SelWeaponIndex[consoleplayer]].GetAmmoType();
+									[AType, MType, MaxMag] = lastFol.Weapons[UiData[consoleplayer].SelWeaponIndex].GetAmmoType();
 
-									InventorySlot selSlot = lastFol.Slots[FSlotIndex[consoleplayer]];
+									InventorySlot selSlot = lastFol.Slots[UiData[consoleplayer].FSlotIndex];
 									class<HDPickup> itemcls = UiData[consoleplayer].ValidItems[i].GetClass();
 									if (SelSlot && SelSlot.ItemClass == itemcls || !SelSlot && itemcls == (MType ? MType : AType))
 									{
-										PSlotIndex[consoleplayer] = i;
+										UiData[consoleplayer].PSlotIndex = i;
 										break;
 									}
 								}
 							}
-							else if (SlotFocused[consoleplayer] == 1)
+							else if (UiData[consoleplayer].SlotFocused == 1)
 							{
 								int size = UiData[consoleplayer].ValidItems.Size();
-								if (size > 0 && PSlotIndex[consoleplayer] < size)
+								if (size > 0 && UiData[consoleplayer].PSlotIndex < size)
 								{
-									HDPickup item = UiData[consoleplayer].ValidItems[PSlotIndex[consoleplayer]];
-									if (IsValidIndex(item, PSlotSubIndex[consoleplayer]))
+									HDPickup item = UiData[consoleplayer].ValidItems[UiData[consoleplayer].PSlotIndex];
+									if (IsValidIndex(item, UiData[consoleplayer].PSlotSubIndex))
 									{
 										if (item is 'HDMagAmmo' || !item.bMULTIPICKUP)
 										{
 											if (item is 'HDMagAmmo')
 											{
-												SendNetworkEvent('hdf_transfermag:'..item.GetClassName(), PSlotSubIndex[consoleplayer], FSlotIndex[consoleplayer]);
+												SendNetworkEvent('hdf_transfermag:'..item.GetClassName(), UiData[consoleplayer].PSlotSubIndex, UiData[consoleplayer].FSlotIndex);
 											}
 											else
 											{
-												SendNetworkEvent('hdf_transferitem:'..item.GetClassName(), 1, FSlotIndex[consoleplayer]);
+												SendNetworkEvent('hdf_transferitem:'..item.GetClassName(), 1, UiData[consoleplayer].FSlotIndex);
 											}
 										}
 										else
 										{
-											SlotFocused[consoleplayer]++;
+											UiData[consoleplayer].SlotFocused++;
 										}
 									}
 									UpdateValidItems(lastFol);
 								}
 								else
 								{
-									SlotFocused[consoleplayer]--;
+									UiData[consoleplayer].SlotFocused--;
 								}
 							}
-							else if (SlotFocused[consoleplayer] == 2)
+							else if (UiData[consoleplayer].SlotFocused == 2)
 							{
 								int size = UiData[consoleplayer].ValidItems.Size();
-								if (size > 0 && PSlotIndex[consoleplayer] < size)
+								if (size > 0 && UiData[consoleplayer].PSlotIndex < size)
 								{
-									HDPickup item = UiData[consoleplayer].ValidItems[PSlotIndex[consoleplayer]];
-									SendNetworkEvent('hdf_transferitem:'..item.GetClassName(), TransferAmount[consoleplayer], FSlotIndex[consoleplayer]);
-									SlotFocused[consoleplayer] = 0;
+									HDPickup item = UiData[consoleplayer].ValidItems[UiData[consoleplayer].PSlotIndex];
+									SendNetworkEvent('hdf_transferitem:'..item.GetClassName(), UiData[consoleplayer].TransferAmount, UiData[consoleplayer].FSlotIndex);
+									UiData[consoleplayer].SlotFocused = 0;
 								}
 								else
 								{
-									SlotFocused[consoleplayer] = 0;
+									UiData[consoleplayer].SlotFocused = 0;
 								}
 							}
 							ret = true;
@@ -1225,9 +1227,9 @@ extend class FollowerHandler
 							{
 								break;
 							}
-							if (lastFol.Slots[FSlotIndex[consoleplayer]] && SlotFocused[consoleplayer] < 2)
+							if (lastFol.Slots[UiData[consoleplayer].FSlotIndex] && UiData[consoleplayer].SlotFocused < 2)
 							{
-								SendNetworkEvent("HDF_TakeInvItem", FSlotIndex[consoleplayer]);
+								SendNetworkEvent("HDF_TakeInvItem", UiData[consoleplayer].FSlotIndex);
 								ret = true;
 							}
 							break;
@@ -1242,9 +1244,9 @@ extend class FollowerHandler
 					}
 					if (NumKey == 1)
 					{
-						if (SlotFocused[consoleplayer] > 0)
+						if (UiData[consoleplayer].SlotFocused > 0)
 						{
-							SlotFocused[consoleplayer]--;
+							UiData[consoleplayer].SlotFocused--;
 						}
 						else
 						{
@@ -1270,7 +1272,7 @@ extend class FollowerHandler
 					}
 					if (selSize == 1 && lastFol.bCANDISMISS)
 					{
-						if (Confirmation[consoleplayer])
+						if (UiData[consoleplayer].Confirmation)
 						{
 							Commands.Push(CreateCommand("HDF_DismissFollower"));
 						}
@@ -1351,7 +1353,7 @@ extend class FollowerHandler
 	{
 		if (cmd.EventName ~== "HDF_ToggleConfirmation")
 		{
-			Confirmation[consoleplayer] = cmd.Args[0];
+			UiData[consoleplayer].Confirmation = cmd.Args[0];
 			return;
 		}
 	}
@@ -1682,7 +1684,7 @@ extend class FollowerHandler
 				{
 					if (split[0].ToInt() > 0)
 					{
-						SelWeaponIndex[consoleplayer] = min(split[0].ToInt() - 1, selFol.Weapons.Size() - 1);
+						UiData[consoleplayer].SelWeaponIndex = min(split[0].ToInt() - 1, selFol.Weapons.Size() - 1);
 					}
 					if (split[0] ~== "wpn")
 					{
@@ -1691,6 +1693,10 @@ extend class FollowerHandler
 					if (split[0] ~== "arm")
 					{
 						SendNetworkEvent("HDF_TryArmor");
+					}
+					if (split[0] ~== "lsw")
+					{
+						UiData[consoleplayer].DisplayWeapons = !UiData[consoleplayer].DisplayWeapons;
 					}
 				}
 				break;
