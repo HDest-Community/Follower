@@ -92,7 +92,7 @@ class FollowerWeapon abstract
 	
 	// [Ace] When dealing with ticker rollback, remember that the next time the function gets called, the ticker would be what you set it to + 1.
 	// So if it starts at 0 and you want to reset the loop, set it internally to -1 to compensate.
-	abstract play FireSequenceResult DoFiringSequence(out int ticker);
+	abstract play FireSequenceResult DoFiringSequence(out int ticker, Actor trgt);
 	abstract play bool DoReloadSequence(out int ticker);
 	abstract play void OnTransfer(HDWeapon wpn);
 

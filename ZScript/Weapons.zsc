@@ -380,7 +380,7 @@ extend class HDFollower
 			#### H 1
 			{
 				LeadShot();
-				FireResult = SelWeapon.DoFiringSequence(WeaponTicker);
+				FireResult = SelWeapon.DoFiringSequence(WeaponTicker, FTarget.Actor);
 				WeaponTicker++;
 			}
 			#### H 0
