@@ -1,0 +1,236 @@
+class FW_Boss : FollowerWeapon
+{
+	override string GetName() { return "Boss Rifle"; }
+	override string GetIcon() { return "BORFA0"; }
+	override class<HDAmmo>, class<HDMagAmmo>, int GetAmmoType() { return 'SevenMilAmmo', 'HD7mClip', 10; }
+	override Name GetRealWeapon() { return 'BossRifle'; }
+	override string GetLocalizationTag() { return "Boss"; }
+	override double GetAdjustmentMult() { return 0.40; }
+
+	override FireSequenceResult DoFiringSequence(out int ticker, Actor trgt)
+	{
+		if (MustChamber)
+		{
+			switch (ticker)
+			{
+				case 0:
+				{
+					Owner.A_StartSound("weapons/boltback", 8);
+					break;
+				}
+				case 6:
+				{
+					if (ChamberedRound == CRType_Spent)
+					{
+						Owner.A_SpawnItemEx("HDSpent7mm", cos(Owner.pitch) * 8, 1, Owner.height - 7 - sin(Owner.pitch) * 8, cos(Owner.pitch) * cos(Owner.angle - 80) * 6 + Owner.vel.x, cos(Owner.pitch) * sin(Owner.angle - 80) * 6 + Owner.vel.y, -sin(Owner.pitch) * 6 + Owner.vel.z, 0, SXF_ABSOLUTEMOMENTUM | SXF_NOCHECKPOSITION | SXF_TRANSFERPITCH);
+						ChamberedRound = CRType_Empty;
+					}
+					Owner.A_StartSound("weapons/boltfwd", 8);
+					if (!TryChamberRound())
+					{
+						MustChamber = false;
+						return FSResult_End;
+					}
+					break;
+				}
+				case 12:
+				{
+					MustChamber = false;
+					ticker = -1;
+					break;
+				}
+			}
+			return FSResult_Repeat;
+		}
+		else
+		{
+			switch (ticker)
+			{
+				case 0:
+				{
+					if (ChamberedRound < CRType_Chambered)
+					{
+						MustChamber = true;
+						ticker = -1;
+						break;
+					}
+					Owner.frame++;
+					Owner.A_StartSound("weapons/bigrifle2", CHAN_WEAPON);
+					HDBulletActor.FireBullet(Owner, "HDB_776", Owner.GetShotHeight(), speedfactor: 0.99);
+					Owner.A_AlertMonsters(flags: AMF_TARGETEMITTER);
+					ChamberedRound = CRType_Spent;
+					break;
+				}
+				case 2:
+				{
+					MustChamber = true;
+					ticker = -1;
+					break;
+				}
+			}
+		}
+		return FSResult_None;
+	}
+	override bool DoReloadSequence(out int ticker)
+	{
+		if (!MustChamber)
+		{
+			switch (ticker)
+			{
+				case 8:
+				{
+					Owner.A_StartSound("weapons/rifleclick2", 8, CHANF_OVERLAP, 0.9, pitch: 0.95);
+					break;
+				}
+				case 10:
+				{
+					Owner.A_StartSound("weapons/rifleload", 8, CHANF_OVERLAP);
+					break;
+				}
+				case 14:
+				{
+					Owner.A_StartSound("weapons/pocket", 8);
+					break;
+				}
+				case 29:
+				{
+					Owner.A_StartSound("weapons/rifleclick2", 8);
+					break;
+				}
+				case 40:
+				case 43:
+				case 46:
+				{
+					Owner.A_StartSound("weapons/rifleclick2", 8, pitch: 1.01);
+					break;
+				}
+				case 49:
+				case 51:
+				case 53:
+				{
+					Owner.A_StartSound("weapons/rifleclick2", 8, CHANF_OVERLAP, pitch: 1.02);
+					break;
+				}
+				case 55:
+				case 56:
+				case 57:
+				{
+					Owner.A_StartSound("weapons/rifleclick2", 8, CHANF_OVERLAP, pitch: 1.02);
+					break;
+				}
+				case 59:
+				{
+					Owner.A_StartSound("weapons/rifleclick");
+					if (TryReload(TRF_CHECK) == RResult_CanReload)
+					{
+						// [Ace] Technically there is no mag. It magically creates a clip out of thin air before taking the real one.
+						// For the purpose of the reload, this does not matter as it's instanteneous.
+						// Is there a better way to do it? Probably. Is it worth it? Probably not.
+						EjectMag();
+						TryReload();
+					}
+					break;
+				}
+				case 65:
+				{
+					if (ChamberedRound < CRType_Chambered)
+					{
+						ticker = -1;
+						MustChamber = true;
+					}
+					else
+					{
+						return true;
+					}
+					break;
+				}
+			}
+		}
+		else
+		{
+			switch (ticker)
+			{
+				case 0:
+				{
+					Owner.A_StartSound("weapons/boltback", 8);
+					break;
+				}
+				case 5:
+				{
+					if (ChamberedRound == CRType_Spent)
+					{
+						Owner.A_SpawnItemEx("HDSpent7mm", cos(Owner.pitch) * 8, 1, Owner.height - 7 - sin(Owner.pitch) * 8, cos(Owner.pitch) * cos(Owner.angle - 80) * 6 + Owner.vel.x, cos(Owner.pitch) * sin(Owner.angle - 80) * 6 + Owner.vel.y, -sin(Owner.pitch) * 6 + Owner.vel.z, 0, SXF_ABSOLUTEMOMENTUM | SXF_NOCHECKPOSITION | SXF_TRANSFERPITCH);
+						ChamberedRound = CRType_Empty;
+					}
+					Owner.A_StartSound("weapons/boltfwd", 8);
+					if (!TryChamberRound())
+					{
+						MustChamber = false;
+						return true;
+					}
+					break;
+				}
+				case 12:
+				{
+					MustChamber = false;
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	override int AssessPriority(Actor trgt, int shields, bool multitarget)
+	{
+		if (trgt is 'PlayerPawn')
+		{
+			return WPriority_Nope;
+		}
+		if (trgt.bBOSS || trgt is 'PainLord')
+		{
+			return WPriority_Medium;
+		}
+		if (trgt is 'Necromancer' && !multitarget)
+		{
+			return WPriority_VeryHigh;
+		}
+		if (trgt is 'PainBringer' || shields > 300)
+		{
+			return WPriority_High;
+		}
+		if (trgt.FindInventory('HDArmourWorn'))
+		{
+			return WPriority_VeryHigh;
+		}
+		return WPriority_Medium;
+	}
+
+	override ReloadResult TryReload(int flags)
+	{
+		return Mag > 0 ? RResult_MagFull : Super.TryReload(flags);
+	}
+
+	override void EmptyWeapon()
+	{
+		class<HDAmmo> AType = GetAmmoType();
+
+		if (ChamberedRound == CRType_Chambered)
+		{
+			ChamberedRound = FollowerWeapon.CRType_Empty;
+			Owner.A_SpawnItemEx(AType, random(0, 16), 0, 0, frandom(1.0, 2.0), 0, frandom(2.0, 5.0), 0, SXF_NOCHECKPOSITION);
+		}
+
+		for (int i = 0; i < Mag; ++i)
+		{
+			Owner.A_SpawnItemEx(AType, random(0, 16), 0, 0, frandom(1.0, 2.0), 0, frandom(2.0, 5.0), 0, SXF_NOCHECKPOSITION);
+		}
+		Mag = 0;
+	}
+
+	override void OnTransfer(HDWeapon wpn)
+	{
+		Mag = wpn.WeaponStatus[BOSSS_MAG];
+		ChamberedRound = wpn.WeaponStatus[BOSSS_CHAMBER];
+	}
+
+	private bool MustChamber;
+}

@@ -1,0 +1,166 @@
+class FW_Hunter : FollowerWeapon
+{
+	override string GetName() { return "Hunter"; }
+	override string GetIcon() { return "HUNTA0"; }
+	override class<HDAmmo>, class<HDMagAmmo>, int GetAmmoType() { return 'HDShellAmmo', null, 7; }
+	override Name GetRealWeapon() { return 'Hunter'; }
+	override double GetAdjustmentMult() { return 0.85; }
+
+	override FireSequenceResult DoFiringSequence(out int ticker, Actor trgt)
+	{
+		switch (ticker)
+		{
+			case 0:
+			{
+				Owner.frame++;
+				double ShotPower = HDShotgun.GetShotPower();
+				double Spread = 6 * ShotPower;
+				double SpeedFactor = 1.02857 * ShotPower;
+				double ShotHeight = Owner.GetShotHeight();
+
+				HDBulletActor.FireBullet(Owner, "HDB_wad", ShotHeight);
+				let p = HDBulletActor.FireBullet(Owner, "HDB_00", ShotHeight, spread: Spread, speedfactor: SpeedFactor, amount: 10);
+				DistantNoise.Make(p, "world/shotgunfar");
+				Owner.A_StartSound("weapons/hunter", CHAN_WEAPON);
+				Owner.A_SpawnItemEx("HDSpentShell", cos(Owner.pitch) * 8, 0, Owner.height - 7 - sin(Owner.pitch) * 8, Owner.vel.x + cos(Owner.pitch) * cos(Owner.angle - random(86, 90)) * 5, Owner.vel.y + cos(Owner.pitch) * sin(Owner.angle - random(86, 90)) * 5, Owner.vel.z + sin(Owner.pitch) * random(4, 6), 0, SXF_ABSOLUTEMOMENTUM | SXF_NOCHECKPOSITION | SXF_TRANSFERPITCH);
+				ChamberedRound = CRType_Empty;
+				if (!TryChamberRound())
+				{
+					return FSResult_End;
+				}
+				break;
+			}
+			case 4:
+			{
+				ticker = -1;
+				break;
+			}
+		}
+		return FSResult_None;
+	}
+	override bool DoReloadSequence(out int ticker)
+	{
+		if (ticker == 0)
+		{
+			Owner.A_StartSound("weapons/pocket", 8);
+		}
+
+		if (ticker >= 25)
+		{
+			if (!MustChamber)
+			{
+				switch (ticker)
+				{
+					case 32:
+					case 40:
+					case 48:
+					{
+						if (TryReload() == RResult_CanReload)
+						{
+							Owner.A_StartSound("weapons/huntreload", 8);
+						}
+						else
+						{
+							if (ChamberedRound == CRType_Chambered)
+							{
+								MustChamber = false;
+								return true;
+							}
+							else
+							{
+								ticker = 24;
+								MustChamber = true;
+								break;
+							}
+						}
+						break;
+					}
+					case 49:
+					{
+						if (ChamberedRound < CRType_Chambered)
+						{
+							ticker = 24;
+							ContinueReloading = true;
+							MustChamber = true;
+							break;
+						}
+						ticker = -1;
+						break;
+					}
+				}
+			}
+			else
+			{
+				switch (ticker)
+				{
+					case 30:
+					{
+						Owner.A_StartSound("weapons/huntrackdown", 8);
+						break;
+					}
+					case 36:
+					{
+						TryChamberRound();
+						Owner.A_StartSound("weapons/huntrackup", 8);
+						break;
+					}
+					case 46:
+					{
+						if (ContinueReloading)
+						{
+							ticker = 24;
+							MustChamber = false;
+						}
+						break;
+					}
+				}
+				if (ContinueReloading && ticker == 46)
+				{
+					ticker = 24;
+					MustChamber = false;
+				}
+			}
+		}
+		return false;
+	}
+	override int AssessPriority(Actor trgt, int shields, bool multitarget)
+	{
+		if (trgt is 'PlayerPawn')
+		{
+			return WPriority_Medium;
+		}
+		if (trgt.bBOSS || trgt is 'PainLord')
+		{
+			return WPriority_Lowest;
+		}
+		if (trgt is 'Necromancer' && !multitarget)
+		{
+			return WPriority_High;
+		}
+		if (trgt is 'PainBringer' || shields > 300)
+		{
+			return WPriority_Low;
+		}
+		if (trgt.FindInventory('HDArmourWorn'))
+		{
+			return WPriority_Medium;
+		}
+		return WPriority_VeryHigh;
+	}
+
+
+	override void OnTransfer(HDWeapon wpn)
+	{
+		Mag = wpn.WeaponStatus[HUNTS_TUBE];
+		ChamberedRound = wpn.WeaponStatus[HUNTS_CHAMBER];
+		if (wpn.WeaponStatus[SHOTS_SIDESADDLE] > 0)
+		{
+			HDPickup sh = HDPickup(Actor.Spawn('HDShellAmmo', Owner.pos));
+			sh.Amount = wpn.WeaponStatus[SHOTS_SIDESADDLE];
+			Owner.AddItem(sh, sh.Amount, flags: Owner.FIF_FORCE);
+		}
+	}
+
+	private bool MustChamber;
+	private bool ContinueReloading;
+}

@@ -1,0 +1,98 @@
+class FW_Bronto : FollowerWeapon
+{
+	override string GetName() { return "Brontornis"; }
+	override string GetIcon() { return "BLSTA0"; }
+	override class<HDAmmo>, class<HDMagAmmo>, int GetAmmoType() { return 'BrontornisRound', null, 1; }
+	override Name GetRealWeapon() { return 'Brontornis'; }
+	override string GetLocalizationTag() { return "Bronto"; }
+
+	override FireSequenceResult DoFiringSequence(out int ticker, Actor trgt)
+	{
+		switch (ticker)
+		{
+			case 0:
+			{
+				Owner.frame++;
+				Owner.A_StartSound("weapons/bronto", CHAN_WEAPON);
+				Owner.A_StartSound("weapons/bronto", CHAN_WEAPON, CHANF_OVERLAP);
+				Owner.A_StartSound("weapons/bronto2", CHAN_WEAPON, CHANF_OVERLAP);
+				HDBulletActor.FireBullet(Owner, "HDB_Bronto", Owner.GetShotHeight());
+				Owner.A_AlertMonsters(flags: AMF_TARGETEMITTER);
+				Owner.A_Recoil(6);
+				ChamberedRound = CRType_Spent;
+				break;
+			}
+			case 10:
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	override bool DoReloadSequence(out int ticker)
+	{
+		switch (ticker)
+		{
+			case 8:
+			{
+				Owner.A_StartSound("weapons/brontunload", 8);
+				if (ChamberedRound == FollowerWeapon.CRType_Spent)
+				{
+					Owner.A_SpawnItemEx("TerrorCasing", cos(Owner.pitch) * 4, 0, Owner.height - 10 - sin(Owner.pitch) * 4, Owner.vel.x, Owner.vel.y, Owner.vel.z - frandom(-1, 1), frandom(-1, 1), SXF_ABSOLUTEMOMENTUM | SXF_NOCHECKPOSITION | SXF_TRANSFERPITCH | SXF_TRANSFERTRANSLATION);
+					ChamberedRound = FollowerWeapon.CRType_Empty;
+				}
+				break;
+			}
+			case 13:
+			{
+				Owner.A_StartSound("weapons/brontoload", 9);
+				break;
+			}
+			case 25:
+			{
+				Owner.A_StartSound("weapons/pocket", 10);
+				break;
+			}
+			case 37:
+			{
+				Owner.A_StartSound("weapons/brontoload", 10);
+				TryReload();
+				TryChamberRound();
+				break;
+			}
+			case 47:
+			{
+				Owner.A_StartSound("weapons/brontunload", 11);
+				break;
+			}
+			case 57:
+			{
+				Owner.A_StartSound("weapons/brontoclose", 8);
+				break;
+			}
+			case 62:
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	override int AssessPriority(Actor trgt, int shields, bool multitarget)
+	{
+		if (trgt.bBOSS || trgt is 'PainLord')
+		{
+			return WPriority_Highest;
+		}
+		return WPriority_Nope;
+	}
+
+	override ReloadResult TryReload(int flags)
+	{
+		return ChamberedRound == CRType_Chambered ? RResult_MagFull : Super.TryReload(flags);
+	}
+
+	override void OnTransfer(HDWeapon wpn)
+	{
+		ChamberedRound = wpn.WeaponStatus[BRONS_CHAMBER];
+	}
+}

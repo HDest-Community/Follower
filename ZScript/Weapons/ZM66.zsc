@@ -1,0 +1,115 @@
+class FW_ZM66 : FollowerWeapon
+{
+	override string GetName() { return "ZM66"; }
+	override string GetIcon() { return "RIFLA0"; }
+	override class<HDAmmo>, class<HDMagAmmo>, int GetAmmoType() { return 'FourMilAmmo', 'HD4mMag', 50; }
+	override Name GetRealWeapon() { return 'ZM66AssaultRifle'; }
+	override double GetAdjustmentMult() { return 0.75; }
+
+	override FireSequenceResult DoFiringSequence(out int ticker, Actor trgt)
+	{
+		switch (ticker)
+		{
+			case 0:
+			case 1:
+			case 2:
+			{
+				Owner.frame++;
+				Owner.A_StartSound("weapons/rifle", CHAN_WEAPON);
+				HDBulletActor.FireBullet(Owner, "HDB_426", Owner.GetShotHeight());
+				Owner.A_AlertMonsters(flags: AMF_TARGETEMITTER);
+				ChamberedRound = CRType_Empty;
+				if (!TryChamberRound())
+				{
+					return FSResult_End;
+				}
+				return FSResult_Repeat;
+			}
+			case 12:
+			{
+				ticker = -1;
+				break;
+			}
+		}
+		return FSResult_None;
+	}
+	override bool DoReloadSequence(out int ticker)
+	{
+		switch (ticker)
+		{
+			case 8:
+			{
+				Owner.A_StartSound("weapons/rifleclick2");
+				break;
+			}
+			case 14:
+			{
+				Owner.A_StartSound("weapons/rifleload");
+				EjectMag(0);
+				break;
+			}
+			case 17:
+			{
+				Owner.A_StartSound("weapons/pocket", 8);
+				break;
+			}
+			case 52:
+			{
+				TryReload();
+				Owner.A_StartSound("weapons/rifleload", 9);
+				break;
+			}
+			case 62:
+			{
+				if (!TryChamberRound())
+				{
+					return true;
+				}
+				else
+				{
+					Owner.A_StartSound("weapons/rifleclick", 8);
+				}
+				break;
+			}
+			case 64:
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	override int AssessPriority(Actor trgt, int shields, bool multitarget)
+	{
+		if (trgt is 'PlayerPawn')
+		{
+			return WPriority_High;
+		}
+		if (trgt.bBOSS || trgt is 'PainLord')
+		{
+			return WPriority_VeryLow;
+		}
+		if (trgt is 'Necromancer' && !multitarget)
+		{
+			return WPriority_VeryHigh;
+		}
+		if (trgt is 'PainBringer' || shields > 300)
+		{
+			return WPriority_Low;
+		}
+		if (trgt.FindInventory('HDArmourWorn'))
+		{
+			return WPriority_High;
+		}
+		return WPriority_High;
+	}
+
+	override void OnTransfer(HDWeapon wpn)
+	{
+		Mag = wpn.WeaponStatus[ZM66S_MAG];
+		ChamberedRound = wpn.WeaponStatus[ZM66S_FLAGS] & ZM66F_CHAMBER ? 2 : 0;
+		if (wpn.WeaponStatus[0] & ZM66F_GRENADELOADED)
+		{
+			Owner.A_DropItem('HDRocketAmmo', 1);
+		}
+	}
+}

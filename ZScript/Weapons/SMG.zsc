@@ -1,0 +1,89 @@
+class FW_SMG : FollowerWeapon
+{
+	override string GetName() { return "SMG"; }
+	override string GetIcon() { return "SMGNA0"; }
+	override class<HDAmmo>, class<HDMagAmmo>, int GetAmmoType() { return 'HDPistolAmmo', 'HD9mMag30', 30; }
+	override Name GetRealWeapon() { return 'HDSMG'; }
+
+	override FireSequenceResult DoFiringSequence(out int ticker, Actor trgt)
+	{
+		Owner.tics++;
+		Owner.frame++; // [Ace] Muzzle flash frame.
+		Owner.A_StartSound("weapons/smg", CHAN_WEAPON);
+		HDBulletActor.FireBullet(Owner, "HDB_9", Owner.GetShotHeight(), speedfactor: 1.1);
+		HDWeapon.EjectCasing(Owner, 'HDSpent9mm', 11, -frandom(79, 81), frandom(7, 7.5));
+		ChamberedRound = CRType_Empty;
+		if (!TryChamberRound())
+		{
+			return FSResult_End;
+		}
+		return FSResult_None;
+	}
+	override bool DoReloadSequence(out int ticker)
+	{
+		switch (ticker)
+		{
+			case 4:
+			{
+				Owner.A_StartSound("weapons/rifleclick2");
+				break;
+			}
+			case 8:
+			{
+				Owner.A_StartSound("weapons/pocket", 8);
+				Owner.A_StartSound("weapons/rifleload");
+				EjectMag();
+				break;
+			}
+			case 34:
+			{
+				TryReload();
+				Owner.A_StartSound("weapons/rifleload", 9);
+				break;
+			}
+			case 44:
+			{
+				if (!TryChamberRound())
+				{
+					return true;
+				}
+				else
+				{
+					Owner.A_StartSound("weapons/rifleclick2", 8);
+				}
+				break;
+			}
+			case 46:
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	override int AssessPriority(Actor trgt, int shields, bool multitarget)
+	{
+		if (trgt is 'PlayerPawn')
+		{
+			return WPriority_Low;
+		}
+		if (trgt.bBOSS || trgt is 'PainLord')
+		{
+			return WPriority_Low;
+		}
+		if (trgt is 'Necromancer' && !multitarget)
+		{
+			return WPriority_Low;
+		}
+		if (trgt is 'PainBringer' || shields > 300)
+		{
+			return WPriority_Medium;
+		}
+		return WPriority_Lowest;
+	}
+
+	override void OnTransfer(HDWeapon wpn)
+	{
+		Mag = wpn.WeaponStatus[SMGS_MAG];
+		ChamberedRound = wpn.WeaponStatus[SMGS_CHAMBER];
+	}
+}

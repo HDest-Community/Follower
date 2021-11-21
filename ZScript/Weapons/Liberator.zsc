@@ -1,0 +1,114 @@
+class FW_Liberator : FollowerWeapon
+{
+	override string GetName() { return "Liberator"; }
+	override string GetIcon() { return "BRLLA0"; }
+	override class<HDAmmo>, class<HDMagAmmo>, int GetAmmoType() { return 'SevenMilAmmo', 'HD7mMag', 30; }
+	override Name GetRealWeapon() { return 'LiberatorRifle'; }
+	override double GetAdjustmentMult() { return 0.70; }
+
+	override FireSequenceResult DoFiringSequence(out int ticker, Actor trgt)
+	{
+		switch (ticker)
+		{
+			case 0:
+			{
+				Owner.frame++;
+				Owner.A_StartSound("weapons/bigrifle", CHAN_WEAPON);
+				HDBulletActor.FireBullet(Owner, "HDB_776", Owner.GetShotHeight());
+				Owner.A_AlertMonsters(flags: AMF_TARGETEMITTER);
+				Owner.A_SpawnItemEx("HDSpent7mm", cos(Owner.pitch) * 12, 0, Owner.height - 8 - sin(Owner.pitch) * 12, cos(Owner.pitch) * 3, 0.2 * randompick(-1, 1), -sin(Owner.pitch) * 3, 0, SXF_NOCHECKPOSITION | SXF_TRANSFERPITCH);
+				ChamberedRound = CRType_Empty;
+				if (!TryChamberRound())
+				{
+					return FSResult_End;
+				}
+				break;
+			}
+			case 2:
+			{
+				ticker = -1;
+				break;
+			}
+		}
+		return FSResult_None;
+	}
+	override bool DoReloadSequence(out int ticker)
+	{
+		switch (ticker)
+		{
+			case 10:
+			{
+				Owner.A_StartSound("weapons/rifleclick2");
+				break;
+			}
+			case 25:
+			{
+				Owner.A_StartSound("weapons/rifleload");
+				EjectMag();
+				break;
+			}
+			case 33:
+			{
+				Owner.A_StartSound("weapons/pocket", 8);
+				break;
+			}
+			case 68:
+			{
+				TryReload();
+				Owner.A_StartSound("weapons/rifleload", 9);
+				break;
+			}
+			case 76:
+			{
+				if (!TryChamberRound())
+				{
+					return true;
+				}
+				else
+				{
+					Owner.A_StartSound("weapons/rifleclick2", 8);
+				}
+				break;
+			}
+			case 78:
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	override int AssessPriority(Actor trgt, int shields, bool multitarget)
+	{
+		if (trgt is 'PlayerPawn')
+		{
+			return WPriority_Nope;
+		}
+		if (trgt.bBOSS || trgt is 'PainLord')
+		{
+			return WPriority_High;
+		}
+		if (trgt is 'Necromancer' && !multitarget)
+		{
+			return WPriority_Low;
+		}
+		if (trgt is 'PainBringer' || shields > 300)
+		{
+			return WPriority_High;
+		}
+		if (trgt.FindInventory('HDArmourWorn'))
+		{
+			return WPriority_VeryHigh;
+		}
+		return WPriority_Medium;
+	}
+
+	override void OnTransfer(HDWeapon wpn)
+	{
+		Mag = wpn.WeaponStatus[LIBS_MAG];
+		ChamberedRound = wpn.WeaponStatus[LIBS_CHAMBER];
+		if (wpn.WeaponStatus[LIBS_FLAGS] & LIBF_GRENADELOADED)
+		{
+			Owner.A_DropItem('HDRocketAmmo', 1);
+		}
+	}
+}
