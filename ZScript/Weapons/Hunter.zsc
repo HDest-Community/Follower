@@ -30,7 +30,7 @@ class FW_Hunter : FollowerWeapon
 				}
 				break;
 			}
-			case 4:
+			case 6:
 			{
 				ticker = -1;
 				break;
