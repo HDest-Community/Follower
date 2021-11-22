@@ -79,7 +79,7 @@ class FW_Bronto : FollowerWeapon
 	}
 	override int AssessPriority(Actor trgt, int shields, bool multitarget)
 	{
-		if (trgt.bBOSS || trgt is 'PainLord')
+		if ((trgt.bBOSS || trgt is 'PainLord') && !multitarget)
 		{
 			return WPriority_Highest;
 		}
