@@ -145,6 +145,10 @@ class FW_Hunter : FollowerWeapon
 		{
 			return WPriority_Medium;
 		}
+		if (trgt.SpawnHealth() < 150 && multitarget)
+		{
+			return WPriority_Nope;
+		}
 		return WPriority_VeryHigh;
 	}
 

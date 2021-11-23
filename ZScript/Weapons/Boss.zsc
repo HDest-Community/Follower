@@ -197,9 +197,13 @@ class FW_Boss : FollowerWeapon
 		{
 			return WPriority_High;
 		}
-		if (trgt.FindInventory('HDArmourWorn'))
+		if (trgt.FindInventory('HDArmourWorn') && !multitarget)
 		{
 			return WPriority_VeryHigh;
+		}
+		if (trgt.SpawnHealth() < 150 && multitarget)
+		{
+			return WPriority_Nope;
 		}
 		return WPriority_Medium;
 	}

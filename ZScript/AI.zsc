@@ -232,6 +232,7 @@ extend class HDFollower
 				}
 				else
 				{
+					ClearTarget();
 					WeaponTicker++;
 				}
 			}
@@ -245,6 +246,10 @@ extend class HDFollower
 						bNOPAIN = true;
 						SelWeapon.Status = FollowerWeapon.WStatus_Firing;
 						SetStateLabel('See');
+					}
+					else if (!SelWeapon)
+					{
+						ClearTarget();
 					}
 				}
 			}

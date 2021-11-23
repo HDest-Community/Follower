@@ -100,6 +100,10 @@ class FW_ZM66 : FollowerWeapon
 		{
 			return WPriority_High;
 		}
+		if (trgt.SpawnHealth() < 150 && multitarget)
+		{
+			return WPriority_Nope;
+		}
 		return WPriority_High;
 	}
 

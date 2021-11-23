@@ -99,6 +99,10 @@ class FW_Liberator : FollowerWeapon
 		{
 			return WPriority_VeryHigh;
 		}
+		if (multitarget)
+		{
+			return WPriority_Nope;
+		}
 		return WPriority_Medium;
 	}
 
