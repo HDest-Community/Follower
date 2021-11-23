@@ -91,11 +91,11 @@ class FW_Liberator : FollowerWeapon
 		{
 			return WPriority_Low;
 		}
-		if (trgt is 'PainBringer' || shields > 300)
+		if ((trgt is 'PainBringer' || shields > 300) && !multitarget)
 		{
 			return WPriority_High;
 		}
-		if (trgt.FindInventory('HDArmourWorn'))
+		if (trgt.FindInventory('HDArmourWorn') && !multitarget)
 		{
 			return WPriority_VeryHigh;
 		}
