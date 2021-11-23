@@ -83,17 +83,13 @@ class FW_Liberator : FollowerWeapon
 		{
 			return WPriority_Nope;
 		}
-		if (trgt.bBOSS || trgt is 'PainLord')
+		if (trgt.bBOSS || trgt is 'PainLord' || trgt is 'PainBringer' || shields > 300 && !multitarget)
 		{
 			return WPriority_High;
 		}
 		if (trgt is 'Necromancer' && !multitarget)
 		{
 			return WPriority_Low;
-		}
-		if ((trgt is 'PainBringer' || shields > 300) && !multitarget)
-		{
-			return WPriority_High;
 		}
 		if (trgt.FindInventory('HDArmourWorn') && !multitarget)
 		{

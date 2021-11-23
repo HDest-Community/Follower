@@ -232,24 +232,24 @@ extend class HDFollower
 				}
 				else
 				{
-					ClearTarget();
+					ClearTarget(); // [Ace] Allow others to target the enemy if currently reloading.
 					WeaponTicker++;
 				}
 			}
 			else if (CheckTarget())
 			{
-				if (ReactionTime-- <= 0)
+				if ((!SelWeapon || SelWeapon.Status == FollowerWeapon.WStatus_Idle) && ReactionTime-- <= 0)
 				{
 					SelectBestWeapon(FTarget.Actor);
-					if (SelWeapon && SelWeapon.Status == FollowerWeapon.WStatus_Idle)
+					if (SelWeapon)
 					{
 						bNOPAIN = true;
 						SelWeapon.Status = FollowerWeapon.WStatus_Firing;
 						SetStateLabel('See');
 					}
-					else if (!SelWeapon)
+					else
 					{
-						ClearTarget();
+						ClearTarget(); // [Ace] Allow others to target the enemy if suddenly out of weapons.
 					}
 				}
 			}

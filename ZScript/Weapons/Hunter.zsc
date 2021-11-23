@@ -152,7 +152,6 @@ class FW_Hunter : FollowerWeapon
 		return WPriority_VeryHigh;
 	}
 
-
 	override void OnTransfer(HDWeapon wpn)
 	{
 		Mag = wpn.WeaponStatus[HUNTS_TUBE];
