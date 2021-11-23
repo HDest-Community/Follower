@@ -556,12 +556,13 @@ extend class FollowerHandler
 				}
 
 				let arm = HDArmourWorn(lastFol.FindInventory("HDArmourWorn"));
-				if (arm && UiData[consoleplayer].SlotFocused == 0)
+				bool showArmor = arm && UiData[consoleplayer].SlotFocused == 0
+				if (showArmor)
 				{
 					DrawArmorRectangle(sb, pos + (w + Spacing, rectHeight + Spacing), (wHeight, wHeight), flags, arm);	
 				}
 
-				DrawRectangle(sb, pos, (w + (arm ? wHeight + Spacing : 0), rectHeight), MainFont, GetTruncatedText(lastFol.GetTag(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
+				DrawRectangle(sb, pos, (w + (showArmor ? wHeight + Spacing : 0), rectHeight), MainFont, GetTruncatedText(lastFol.GetTag(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
 				pos.y += rectHeight + Spacing;
 
 				if (wSize == 1)
