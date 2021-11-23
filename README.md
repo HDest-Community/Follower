@@ -41,8 +41,6 @@ Most of the navigation is on-screen, but there are a few things that aren't obvi
 - You can give followers weapons through the inventory management menu. This will enable them to use the weapons, assuming it's a valid weapon to begin with. Keep in mind that the weapons given to them will not be exactly the same as the ones they'll actually use. That is, giving your followers a factory chamber boss will automatically turn it into a custom chamber. This will not change. Too much trouble to account for all of the variations. You also can't take back weapons. Once you give them, they're gone forever.
 
 The input field currently accepts the following commands (press enter to exit):
-- `#`: Any number with nothing else would select the weapon at that index.
-- `lsw`: lists all weapons. Type again to hide.
 - `rld/rel <name>/<index>`: `<name>` is the name of the weapon as displayed in the inventory. Partial names are supported, e.g. `rel hun` to reload the Hunter. Multiselect is supported. If a single follower is selected, using the weapon's index is also supported.
 - `wpn/arm`: this will enter pickup mode.
 

@@ -24,10 +24,8 @@ struct UiDataHolder
 	int PSlotIndex;
 	int PSlotSubIndex;
 	int TransferAmount;
-	int SelWeaponIndex;
 	int FSlotIndex;
 	bool Confirmation;
-	bool DisplayWeapons;
 }
 
 extend class FollowerHandler
@@ -245,7 +243,6 @@ extend class FollowerHandler
 			UiData[consoleplayer].FSlotIndex = 0;
 			UiData[consoleplayer].PSlotIndex = 0;
 			UiData[consoleplayer].PSlotSubIndex = 0;
-			UiData[consoleplayer].DisplayWeapons = false;
 		}
 
 		if (UiData[consoleplayer].Confirmation)
@@ -549,7 +546,7 @@ extend class FollowerHandler
 				pos.y -= 70;
 
 				int wSize = lastFol.Weapons.Size();
-				if (wSize > 0 && UiData[consoleplayer].DisplayWeapons)
+				if (wSize > 1)
 				{
 					for (int i = 0; i < wSize; ++i)
 					{
@@ -559,7 +556,7 @@ extend class FollowerHandler
 				}
 
 				let arm = HDArmourWorn(lastFol.FindInventory("HDArmourWorn"));
-				if (arm)
+				if (arm && UiData[consoleplayer].SlotFocused == 0)
 				{
 					DrawArmorRectangle(sb, pos + (w + Spacing, rectHeight + Spacing), (wHeight, wHeight), flags, arm);	
 				}
@@ -567,10 +564,9 @@ extend class FollowerHandler
 				DrawRectangle(sb, pos, (w + (arm ? wHeight + Spacing : 0), rectHeight), MainFont, GetTruncatedText(lastFol.GetTag(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
 				pos.y += rectHeight + Spacing;
 
-				if (wSize > 0)
+				if (wSize == 1)
 				{
-					UiData[consoleplayer].SelWeaponIndex = min(UiData[consoleplayer].SelWeaponIndex, wSize - 1);
-					DrawWeaponRectangle(sb, pos, (w, wHeight), MainFont, flags, lastFol, lastFol.Weapons[UiData[consoleplayer].SelWeaponIndex], selSize > 1 ? 1 : 0);
+					DrawWeaponRectangle(sb, pos, (w, wHeight), MainFont, flags, lastFol, lastFol.Weapons[0], selSize > 1 ? 1 : 0);
 					pos.y += wHeight + Spacing;
 				}
 
@@ -1162,7 +1158,7 @@ extend class FollowerHandler
 								for (int i = 0; i < UiData[consoleplayer].ValidItems.Size(); ++i)
 								{
 									class<HDAmmo> AType, MType; int MaxMag;
-									[AType, MType, MaxMag] = lastFol.Weapons[UiData[consoleplayer].SelWeaponIndex].GetAmmoType();
+									[AType, MType, MaxMag] = lastFol.Weapons[0].GetAmmoType();
 
 									InventorySlot selSlot = lastFol.Slots[UiData[consoleplayer].FSlotIndex];
 									class<HDPickup> itemcls = UiData[consoleplayer].ValidItems[i].GetClass();
@@ -1694,10 +1690,6 @@ extend class FollowerHandler
 			{
 				if (!multiselect)
 				{
-					if (split[0].ToInt() > 0)
-					{
-						UiData[consoleplayer].SelWeaponIndex = min(split[0].ToInt() - 1, selFol.Weapons.Size() - 1);
-					}
 					if (split[0] ~== "wpn")
 					{
 						SendNetworkEvent("HDF_TryWeapon");
@@ -1705,10 +1697,6 @@ extend class FollowerHandler
 					if (split[0] ~== "arm")
 					{
 						SendNetworkEvent("HDF_TryArmor");
-					}
-					if (split[0] ~== "lsw")
-					{
-						UiData[consoleplayer].DisplayWeapons = !UiData[consoleplayer].DisplayWeapons;
 					}
 				}
 				break;
