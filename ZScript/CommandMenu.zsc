@@ -556,7 +556,7 @@ extend class FollowerHandler
 				}
 
 				let arm = HDArmourWorn(lastFol.FindInventory("HDArmourWorn"));
-				bool showArmor = arm && UiData[consoleplayer].SlotFocused == 0
+				bool showArmor = arm && UiData[consoleplayer].SlotFocused == 0;
 				if (showArmor)
 				{
 					DrawArmorRectangle(sb, pos + (w + Spacing, rectHeight + Spacing), (wHeight, wHeight), flags, arm);	
