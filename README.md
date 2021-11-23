@@ -43,6 +43,7 @@ Most of the navigation is on-screen, but there are a few things that aren't obvi
 The input field currently accepts the following commands (press enter to exit):
 - `rld/rel <name>/<index>`: `<name>` is the name of the weapon as displayed in the inventory. Partial names are supported, e.g. `rel hun` to reload the Hunter. Multiselect is supported. If a single follower is selected, using the weapon's index is also supported.
 - `wpn/arm`: this will enter pickup mode.
+- `rmv <name>/<index>`: Empty the weapon and remove it from the list. This will not drop it!
 
 ##### Loadouts
 ---

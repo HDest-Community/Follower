@@ -1629,6 +1629,48 @@ extend class FollowerHandler
 			return;
 		}
 
+		if (e.Name.MakeLower().IndexOf("hdf_removeweapon") != -1)
+		{
+			Array<string> split;
+			e.Name.Split(split, ":");
+			if (split.Size() > 1)
+			{
+				int selSize = Selection[consoleplayer].SelFollowers.Size();
+				for (int i = 0; i < selSize; ++i)
+				{
+					let flw = Selection[consoleplayer].SelFollowers[i];
+					int wSize = flw.Weapons.Size();
+					if (!flw.CanInteractWith(false) || wSize == 0)
+					{
+						continue;
+					}
+
+					if (selSize == 1)
+					{
+						int index = split[1].ToInt();
+						if (index > 0 && index <= wSize)
+						{
+							flw.Weapons[index - 1].EmptyWeapon();
+							flw.Weapons[index - 1].Destroy();
+							flw.Weapons.Delete(index - 1);
+							continue;
+						}
+					}
+
+					let wpn = flw.FindWeaponByName(split[1]);
+					if (!wpn)
+					{
+						continue;
+					}
+					int index = flw.Weapons.Find(wpn);
+					wpn.EmptyWeapon();
+					wpn.Destroy();
+					flw.Weapons.Delete(index);
+				}
+			}
+			return;
+		}
+
 		if (e.Name.MakeLower().IndexOf("hdf_transfermag") != -1)
 		{
 			Array<string> split;
@@ -1693,10 +1735,12 @@ extend class FollowerHandler
 					if (split[0] ~== "wpn")
 					{
 						SendNetworkEvent("HDF_TryWeapon");
+						break;
 					}
 					if (split[0] ~== "arm")
 					{
 						SendNetworkEvent("HDF_TryArmor");
+						break;
 					}
 				}
 				break;
@@ -1706,6 +1750,12 @@ extend class FollowerHandler
 				if (split[0] ~== "rld" || split[0] ~== "rel")
 				{
 					SendNetworkEvent("HDF_TryReloadWeapon:"..split[1]);
+					break;
+				}
+				if (split[0] ~== "rmv")
+				{
+					SendNetworkEvent("HDF_RemoveWeapon:"..split[1]);
+					break;
 				}
 				break;
 			}
