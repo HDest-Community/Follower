@@ -395,6 +395,11 @@ extend class HDFollower
 		for (int i = findex - 1; i >= 0; --i)
 		{
 			HDFollower flw = Handler.Followers[i];
+			if (!flw)
+			{
+				Console.Printf("Somehow flw is null and how this would ever happen is a mystery.");
+				return LinkedPlayer;
+			}
 			if (flw.Status != FStatus_InactiveOrDead && flw.bFRIENDLY && (flw.Order == FOrder_Follow || flw.Order == FOrder_FollowIgnore) && flw.LinkedPlayer == LinkedPlayer && Distance3D(flw) < MaxFollowRange)
 			{
 				return Handler.Followers[i];
