@@ -42,7 +42,7 @@ class FW_Hunter : FollowerWeapon
 	{
 		if (ticker == 0)
 		{
-			Owner.A_StartSound("weapons/pocket", 8);
+			Owner.A_StartSound("weapons/pocket", 7);
 		}
 
 		if (ticker >= 25)
@@ -95,7 +95,7 @@ class FW_Hunter : FollowerWeapon
 				{
 					case 30:
 					{
-						Owner.A_StartSound("weapons/huntrackdown", 8);
+						Owner.A_StartSound("weapons/huntrackdown", 7);
 						break;
 					}
 					case 36:

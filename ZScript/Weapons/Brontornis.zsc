@@ -55,14 +55,14 @@ class FW_Bronto : FollowerWeapon
 			}
 			case 37:
 			{
-				Owner.A_StartSound("weapons/brontoload", 10);
+				Owner.A_StartSound("weapons/brontoload", 9);
 				TryReload();
 				TryChamberRound();
 				break;
 			}
 			case 47:
 			{
-				Owner.A_StartSound("weapons/brontunload", 11);
+				Owner.A_StartSound("weapons/brontunload", 10);
 				break;
 			}
 			case 57:

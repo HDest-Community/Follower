@@ -15,7 +15,7 @@ class FW_Boss : FollowerWeapon
 			{
 				case 0:
 				{
-					Owner.A_StartSound("weapons/boltback", 8);
+					Owner.A_StartSound("weapons/boltback", 7);
 					break;
 				}
 				case 6:
@@ -79,17 +79,17 @@ class FW_Boss : FollowerWeapon
 			{
 				case 8:
 				{
-					Owner.A_StartSound("weapons/rifleclick2", 8, CHANF_OVERLAP, 0.9, pitch: 0.95);
+					Owner.A_StartSound("weapons/rifleclick2", 5, CHANF_OVERLAP, 0.9, pitch: 0.95);
 					break;
 				}
 				case 10:
 				{
-					Owner.A_StartSound("weapons/rifleload", 8, CHANF_OVERLAP);
+					Owner.A_StartSound("weapons/rifleload", 6, CHANF_OVERLAP);
 					break;
 				}
 				case 14:
 				{
-					Owner.A_StartSound("weapons/pocket", 8);
+					Owner.A_StartSound("weapons/pocket", 7);
 					break;
 				}
 				case 29:
@@ -101,7 +101,7 @@ class FW_Boss : FollowerWeapon
 				case 43:
 				case 46:
 				{
-					Owner.A_StartSound("weapons/rifleclick2", 8, pitch: 1.01);
+					Owner.A_StartSound("weapons/rifleclick2", 8, CHANF_OVERLAP, pitch: 1.01);
 					break;
 				}
 				case 49:

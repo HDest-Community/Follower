@@ -38,12 +38,12 @@ class FW_RocketLauncher : FollowerWeapon
 		{
 			case 8:
 			{
-				Owner.A_StartSound("weapons/rockopen", 7);
+				Owner.A_StartSound("weapons/rockopen", 6);
 				break;
 			}
 			case 12:
 			{
-				Owner.A_StartSound("weapons/rockopen2", 8, CHANF_OVERLAP);
+				Owner.A_StartSound("weapons/rockopen2", 7, CHANF_OVERLAP);
 				break;
 			}
 			case 26:
@@ -55,7 +55,7 @@ class FW_RocketLauncher : FollowerWeapon
 			{
 				if (TryReload() == RResult_CanReload)
 				{
-					Owner.A_StartSound("weapons/rockreload", 8);
+					Owner.A_StartSound("weapons/rockreload", 7);
 					TryChamberRound();
 				}
 				else
