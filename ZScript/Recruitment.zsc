@@ -101,10 +101,17 @@ extend class FollowerHandler
 
 		switch (m.wep)
 		{
-			case HDOperator.HDMW_SMG: FollowerWeapon.CreateAndAdd('FW_SMG', recruit); break;
-			case HDOperator.HDMW_HUNTER: FollowerWeapon.CreateAndAdd('FW_Hunter', recruit); break;
-			case HDOperator.HDMW_ZM66: FollowerWeapon.CreateAndAdd('FW_ZM66', recruit); break;
-			case HDOperator.HDMW_ROCKET: FollowerWeapon.CreateAndAdd('FW_RocketLauncher', recruit); break;
+			case HDOperator.HDMW_SMG:
+			case -HDOperator.HDMW_SMG: FollowerWeapon.CreateAndAdd('FW_SMG', recruit); break;
+
+			case HDOperator.HDMW_HUNTER:
+			case -HDOperator.HDMW_HUNTER: FollowerWeapon.CreateAndAdd('FW_Hunter', recruit); break;
+
+			case HDOperator.HDMW_ZM66:
+			case -HDOperator.HDMW_ZM66: FollowerWeapon.CreateAndAdd('FW_ZM66', recruit); break;
+
+			case HDOperator.HDMW_ROCKET:
+			case -HDOperator.HDMW_ROCKET: FollowerWeapon.CreateAndAdd('FW_RocketLauncher', recruit); break;
 		}
 
 		let Armor = HDArmourWorn(m.FindInventory('HDArmourWorn'));
