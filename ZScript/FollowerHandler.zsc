@@ -204,6 +204,11 @@ class FollowerHandler : EventHandler
 		int Total = 0;
 		for (int i = 0; i < Followers.Size(); ++i)
 		{
+			if (!Followers[i])
+			{
+				Followers.Delete(i--);
+				continue;
+			}
 			if (Followers[i].Health > 0 && (Followers[i].Order == HDFollower.FOrder_Follow || Followers[i].Order == HDFollower.FOrder_FollowIgnore))
 			{
 				Total++;

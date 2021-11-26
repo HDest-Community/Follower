@@ -397,8 +397,8 @@ extend class HDFollower
 			HDFollower flw = Handler.Followers[i];
 			if (!flw)
 			{
-				Console.Printf("Somehow flw is null and how this would ever happen is a mystery.");
-				return LinkedPlayer;
+				Handler.Followers.Delete(i);
+				continue;
 			}
 			if (flw.Status != FStatus_InactiveOrDead && flw.bFRIENDLY && (flw.Order == FOrder_Follow || flw.Order == FOrder_FollowIgnore) && flw.LinkedPlayer == LinkedPlayer && Distance3D(flw) < MaxFollowRange)
 			{
