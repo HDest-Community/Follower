@@ -26,6 +26,9 @@ struct UiDataHolder
 	int TransferAmount;
 	int FSlotIndex;
 	bool Confirmation;
+	CVar Scale;
+	CVar UiColorCVar;
+	Color UiColor;
 }
 
 extend class FollowerHandler
@@ -65,7 +68,7 @@ extend class FollowerHandler
 
 	private transient ui UiDataHolder UiData[MAXPLAYERS];
 
-	private transient ui CVar Scale[MAXPLAYERS];
+	
 
 	private transient ui int SelectedColorIndex[MAXPLAYERS];
 
@@ -83,11 +86,17 @@ extend class FollowerHandler
 		int OriginalWidth = StatusBar.HorizontalResolution;
 		int OriginalHeight = StatusBar.VerticalResolution;
 
-		if (!Scale[consoleplayer])
+		if (!UiData[consoleplayer].UiColorCVar)
 		{
-			Scale[consoleplayer] = CVar.GetCVar('hdf_uiscale', players[consoleplayer]);
+			UiData[consoleplayer].UiColorCVar = CVar.GetCVar('hdf_uicolor', players[consoleplayer]);
 		}
-		double uiScale = Scale[consoleplayer].GetFloat();
+		UiData[consoleplayer].UiColor = 0x40000000 | UiData[consoleplayer].UiColorCVar.GetInt();
+
+		if (!UiData[consoleplayer].Scale)
+		{
+			UiData[consoleplayer].Scale = CVar.GetCVar('hdf_uiscale', players[consoleplayer]);
+		}
+		double uiScale = UiData[consoleplayer].Scale.GetFloat();
 		StatusBar.BeginHUD(1.0, true);
 		StatusBar.SetSize(StatusBar.RelTop, int(640 / uiScale), int(480 / uiScale));
 
@@ -663,7 +672,7 @@ extend class FollowerHandler
 				}
 				pos.y += rectHeight + Spacing;
 
-				sb.Fill(Color(64, 128, 192, 255), pos.x, pos.y, w, h, flags);
+				sb.Fill(UiData[consoleplayer].UiColor, pos.x, pos.y, w, h, flags);
 				for (int i = 0; i < tSize; ++i)
 				{
 					if (SelectedColorIndex[consoleplayer] == i)
@@ -691,7 +700,7 @@ extend class FollowerHandler
 	private ui void DrawFollowerRectangle(HDStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, int index, HDFollower flw, bool valid, int flags)
 	{
 		bool selected = Selection[consoleplayer].SelFollowers.Find(flw) != Selection[consoleplayer].SelFollowers.Size();
-		Color c = valid ? (selected ? Color(96, 96, 255, 96) : Color(64, 128, 192, 255)) : Color(64, 255, 16, 16);
+		Color c = valid ? (selected ? Color(128, 96, 255, 96) : UiData[consoleplayer].UiColor) : Color(128, 255, 16, 16);
 		sb.Fill(c, pos.x, pos.y, size.x, size.y, flags);
 		sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 
@@ -711,8 +720,7 @@ extend class FollowerHandler
 		// [Ace] flags2 values are as follows:
 		// 1 - multiselect
 
-		Color col = Color(64, 128, 192, 255);
-		sb.Fill(col, pos.x, pos.y, size.x, size.y, flags);
+		sb.Fill(UiData[consoleplayer].UiColor, pos.x, pos.y, size.x, size.y, flags);
 		sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 
 		sb.DrawString(fnt, wpn.GetName(), pos + (2, 2), flags, Font.FindFontColor('FLW_WeaponBlue'));
@@ -738,7 +746,7 @@ extend class FollowerHandler
 			sb.DrawString(fnt, ChamberString..sb.FormatNumber(flw.GetAmount(MType ? MType : AType), 1, 4), pos + (size.x - 4, size.y - 15), flags | sb.DI_TEXT_ALIGN_RIGHT, Font.CR_WHITE);
 
 			// [Ace] Magazine bar.
-			sb.Fill(col, pos.x + 1, pos.y + (size.y - 4), size.x - 2, 1, flags);
+			sb.Fill(UiData[consoleplayer].UiColor, pos.x + 1, pos.y + (size.y - 4), size.x - 2, 1, flags);
 			sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + (size.y - 3), size.x - 2, 2, flags);
 			int mag = MaxMag == 1 ? int(wpn.ChamberedRound == wpn.CRType_Chambered) : wpn.Mag;
 			double amPercent = clamp(mag / double(MaxMag), 0, 1.0);
@@ -748,7 +756,7 @@ extend class FollowerHandler
 
 	private ui void DrawFollowerInventory(HDStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, int flags, HDFollower flw)
 	{
-		sb.Fill(Color(64, 128, 192, 255), pos.x, pos.y, size.x, size.y, flags);
+		sb.Fill(UiData[consoleplayer].UiColor, pos.x, pos.y, size.x, size.y, flags);
 		sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 
 		for (int i = 0; i < HDFollower.SlotCount; ++i)
@@ -758,7 +766,7 @@ extend class FollowerHandler
 			Color col;
 			switch (UiData[consoleplayer].FSlotIndex == i ? (UiData[consoleplayer].SlotFocused > 0 ? 2 : 1) : 0)
 			{
-				case 0: col = Color(64, 128, 192, 255); break;
+				case 0: col = UiData[consoleplayer].UiColor; break;
 				case 1: col = Color(128, 255, 255, 128); break;
 				case 2: col = Color(96, 96, 255, 96); break;
 			}
@@ -780,7 +788,7 @@ extend class FollowerHandler
 	// [Ace] Contrary to what the function is called, it only draws the *valid* items.
 	private ui void DrawPlayerInventory(HDStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, int flags)
 	{
-		sb.Fill(Color(64, 128, 192, 255), pos.x, pos.y, size.x, size.y, flags);
+		sb.Fill(UiData[consoleplayer].UiColor, pos.x, pos.y, size.x, size.y, flags);
 		sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 
 		for (int i = 0; i < HDFollower.SlotCount; ++i)
@@ -790,7 +798,7 @@ extend class FollowerHandler
 			Color col;
 			switch (UiData[consoleplayer].PSlotSubIndex == i ? (UiData[consoleplayer].SlotFocused > 1 ? 2 : 1) : 0)
 			{
-				case 0: col = Color(64, 128, 192, 255); break;
+				case 0: col = UiData[consoleplayer].UiColor; break;
 				case 1: col = Color(128, 255, 255, 128); break;
 				case 2: col = Color(96, 96, 255, 96); break;
 			}
@@ -832,7 +840,7 @@ extend class FollowerHandler
 
 	private ui void DrawAmountRectangle(HDStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, int amt, int maxAmt, int flags, int col = Font.CR_WHITE)
 	{
-		sb.Fill(Color(64, 128, 192, 255), pos.x, pos.y, size.x, size.y, flags);
+		sb.Fill(UiData[consoleplayer].UiColor, pos.x, pos.y, size.x, size.y, flags);
 		sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 		double percent = amt / double(maxAmt);
 		sb.Fill(Color(32, 255, 255, 128), pos.x + 1, pos.y + 1, (size.x - 2) * percent, size.y - 2, flags);
@@ -841,7 +849,7 @@ extend class FollowerHandler
 
 	private ui void DrawArmorRectangle(HDStatusBar sb, vector2 pos, vector2 size, int flags, HDArmourWorn arm)
 	{
-		sb.Fill(Color(64, 128, 192, 255), pos.x, pos.y, size.x, size.y, flags);
+		sb.Fill(UiData[consoleplayer].UiColor, pos.x, pos.y, size.x, size.y, flags);
 		sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 
 		sb.DrawImage(AceCore.GetIcon(arm), pos + size / 2, flags | sb.DI_ITEM_CENTER, box: size - (5, 5));
@@ -850,7 +858,7 @@ extend class FollowerHandler
 
 	private ui void DrawRectangle(HDStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, string command, int flags, int col = Font.CR_WHITE)
 	{
-		sb.Fill(Color(64, 128, 192, 255), pos.x, pos.y, size.x, size.y, flags);
+		sb.Fill(UiData[consoleplayer].UiColor, pos.x, pos.y, size.x, size.y, flags);
 		sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 		if (command != "")
 		{
