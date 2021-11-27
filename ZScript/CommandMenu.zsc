@@ -1802,19 +1802,19 @@ extend class FollowerHandler
 	{
 		if (percent >= 0.75)
 		{
-			return Color(128, 0, 255, 0);
+			return Color(192, 0, 224, 0);
 		}	
 		else if (percent >= 0.50)
 		{
-			return Color(128, 255, 255, 0);
+			return Color(192, 255, 255, 0);
 		}
 		else if (percent >= 0.25)
 		{
-			return Color(128, 255, 128, 0);
+			return Color(192, 255, 128, 0);
 		}
 		else
 		{
-			return Color(128, 255, 0, 0);
+			return Color(192, 255, 0, 0);
 		}
 	}
 
