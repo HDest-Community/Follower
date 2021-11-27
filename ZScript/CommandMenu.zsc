@@ -26,6 +26,7 @@ struct UiDataHolder
 	int TransferAmount;
 	int FSlotIndex;
 	bool Confirmation;
+	int SelectedColorIndex;
 	CVar Scale;
 	CVar UiColorCVar;
 	Color UiColor;
@@ -68,9 +69,8 @@ extend class FollowerHandler
 
 	private transient ui UiDataHolder UiData[MAXPLAYERS];
 
-	
-
-	private transient ui int SelectedColorIndex[MAXPLAYERS];
+	// [Ace] This is the foreground used to make the dark squares.
+	const DarkAlpha = 128;
 
 	const FollowersPerPage = 8;
 	const InvColumns = 6;
@@ -90,7 +90,7 @@ extend class FollowerHandler
 		{
 			UiData[consoleplayer].UiColorCVar = CVar.GetCVar('hdf_uicolor', players[consoleplayer]);
 		}
-		UiData[consoleplayer].UiColor = 0x40000000 | UiData[consoleplayer].UiColorCVar.GetInt();
+		UiData[consoleplayer].UiColor = 0x80000000 | UiData[consoleplayer].UiColorCVar.GetInt();
 
 		if (!UiData[consoleplayer].Scale)
 		{
@@ -221,21 +221,21 @@ extend class FollowerHandler
 			case FMenu_ColorPicker:
 			{
 				int maxIndex = TColors.Size() - 1;
-				if (UiData[consoleplayer].ArrowKeysHeld & HOLD_LEFT && SelectedColorIndex[consoleplayer] % PickerColumns > 0 && UiData[consoleplayer].RepeatTics[0] % 3 == 0)
+				if (UiData[consoleplayer].ArrowKeysHeld & HOLD_LEFT && UiData[consoleplayer].SelectedColorIndex % PickerColumns > 0 && UiData[consoleplayer].RepeatTics[0] % 3 == 0)
 				{
-					SelectedColorIndex[consoleplayer] = max(SelectedColorIndex[consoleplayer] - 1, 0);
+					UiData[consoleplayer].SelectedColorIndex = max(UiData[consoleplayer].SelectedColorIndex - 1, 0);
 				}
-				if (UiData[consoleplayer].ArrowKeysHeld & HOLD_RIGHT && SelectedColorIndex[consoleplayer] % PickerColumns < PickerColumns - 1 && UiData[consoleplayer].RepeatTics[1] % 3 == 0)
+				if (UiData[consoleplayer].ArrowKeysHeld & HOLD_RIGHT && UiData[consoleplayer].SelectedColorIndex % PickerColumns < PickerColumns - 1 && UiData[consoleplayer].RepeatTics[1] % 3 == 0)
 				{
-					SelectedColorIndex[consoleplayer] = min(SelectedColorIndex[consoleplayer] + 1, maxIndex);
+					UiData[consoleplayer].SelectedColorIndex = min(UiData[consoleplayer].SelectedColorIndex + 1, maxIndex);
 				}
-				if (UiData[consoleplayer].ArrowKeysHeld & HOLD_UP && SelectedColorIndex[consoleplayer] > PickerColumns - 1 && UiData[consoleplayer].RepeatTics[2] % 3 == 0)
+				if (UiData[consoleplayer].ArrowKeysHeld & HOLD_UP && UiData[consoleplayer].SelectedColorIndex > PickerColumns - 1 && UiData[consoleplayer].RepeatTics[2] % 3 == 0)
 				{
-					SelectedColorIndex[consoleplayer] = max(SelectedColorIndex[consoleplayer] - PickerColumns, 0);
+					UiData[consoleplayer].SelectedColorIndex = max(UiData[consoleplayer].SelectedColorIndex - PickerColumns, 0);
 				}
 				if (UiData[consoleplayer].ArrowKeysHeld & HOLD_DOWN && UiData[consoleplayer].RepeatTics[3] % 3 == 0)
 				{
-					SelectedColorIndex[consoleplayer] = min(SelectedColorIndex[consoleplayer] + PickerColumns, maxIndex);
+					UiData[consoleplayer].SelectedColorIndex = min(UiData[consoleplayer].SelectedColorIndex + PickerColumns, maxIndex);
 				}
 				break;
 			}
@@ -675,7 +675,7 @@ extend class FollowerHandler
 				sb.Fill(UiData[consoleplayer].UiColor, pos.x, pos.y, w, h, flags);
 				for (int i = 0; i < tSize; ++i)
 				{
-					if (SelectedColorIndex[consoleplayer] == i)
+					if (UiData[consoleplayer].SelectedColorIndex == i)
 					{
 						Color selCol = Color(255, int(TColors[i].r * 1.5), int(TColors[i].g * 1.5), int(TColors[i].b * 1.5));
 						sb.Fill(selCol, pos.x + (ColSquareSize + 1) * (i % PickerColumns), pos.y + (ColSquareSize + 1) * (i / PickerColumns), ColSquareSize + 2, ColSquareSize + 2, flags);
@@ -700,9 +700,9 @@ extend class FollowerHandler
 	private ui void DrawFollowerRectangle(HDStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, int index, HDFollower flw, bool valid, int flags)
 	{
 		bool selected = Selection[consoleplayer].SelFollowers.Find(flw) != Selection[consoleplayer].SelFollowers.Size();
-		Color c = valid ? (selected ? Color(128, 96, 255, 96) : UiData[consoleplayer].UiColor) : Color(128, 255, 16, 16);
+		Color c = valid ? (selected ? Color(192, 96, 255, 96) : UiData[consoleplayer].UiColor) : Color(192, 255, 16, 16);
 		sb.Fill(c, pos.x, pos.y, size.x, size.y, flags);
-		sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
+		sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 
 		pos += (2, 2);
 		int FontHeight = fnt.mFont.GetHeight();
@@ -721,7 +721,7 @@ extend class FollowerHandler
 		// 1 - multiselect
 
 		sb.Fill(UiData[consoleplayer].UiColor, pos.x, pos.y, size.x, size.y, flags);
-		sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
+		sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 
 		sb.DrawString(fnt, wpn.GetName(), pos + (2, 2), flags, Font.FindFontColor('FLW_WeaponBlue'));
 
@@ -747,7 +747,7 @@ extend class FollowerHandler
 
 			// [Ace] Magazine bar.
 			sb.Fill(UiData[consoleplayer].UiColor, pos.x + 1, pos.y + (size.y - 4), size.x - 2, 1, flags);
-			sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + (size.y - 3), size.x - 2, 2, flags);
+			sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 1, pos.y + (size.y - 3), size.x - 2, 2, flags);
 			int mag = MaxMag == 1 ? int(wpn.ChamberedRound == wpn.CRType_Chambered) : wpn.Mag;
 			double amPercent = clamp(mag / double(MaxMag), 0, 1.0);
 			sb.Fill(GetPercentColor(amPercent), pos.x + 1, pos.y + (size.y - 3), (size.x - 2) * AmPercent, 2, flags);
@@ -757,7 +757,7 @@ extend class FollowerHandler
 	private ui void DrawFollowerInventory(HDStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, int flags, HDFollower flw)
 	{
 		sb.Fill(UiData[consoleplayer].UiColor, pos.x, pos.y, size.x, size.y, flags);
-		sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
+		sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 
 		for (int i = 0; i < HDFollower.SlotCount; ++i)
 		{
@@ -767,11 +767,11 @@ extend class FollowerHandler
 			switch (UiData[consoleplayer].FSlotIndex == i ? (UiData[consoleplayer].SlotFocused > 0 ? 2 : 1) : 0)
 			{
 				case 0: col = UiData[consoleplayer].UiColor; break;
-				case 1: col = Color(128, 255, 255, 128); break;
-				case 2: col = Color(96, 96, 255, 96); break;
+				case 1: col = Color(192, 255, 255, 128); break;
+				case 2: col = Color(192, 96, 255, 96); break;
 			}
 			sb.Fill(col, pos.x + 1 + realPos.x, pos.y + 1 + realPos.y, SlotSize, SlotSize, flags);
-			sb.Fill(Color(128, 0, 0, 0), pos.x + 2 + realPos.x, pos.y + 2 + realPos.y, SlotSize - 2, SlotSize - 2, flags);
+			sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 2 + realPos.x, pos.y + 2 + realPos.y, SlotSize - 2, SlotSize - 2, flags);
 
 			let item = flw.Slots[i];
 			if (item)
@@ -789,7 +789,7 @@ extend class FollowerHandler
 	private ui void DrawPlayerInventory(HDStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, int flags)
 	{
 		sb.Fill(UiData[consoleplayer].UiColor, pos.x, pos.y, size.x, size.y, flags);
-		sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
+		sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 
 		for (int i = 0; i < HDFollower.SlotCount; ++i)
 		{
@@ -799,11 +799,11 @@ extend class FollowerHandler
 			switch (UiData[consoleplayer].PSlotSubIndex == i ? (UiData[consoleplayer].SlotFocused > 1 ? 2 : 1) : 0)
 			{
 				case 0: col = UiData[consoleplayer].UiColor; break;
-				case 1: col = Color(128, 255, 255, 128); break;
-				case 2: col = Color(96, 96, 255, 96); break;
+				case 1: col = Color(192, 255, 255, 128); break;
+				case 2: col = Color(192, 96, 255, 96); break;
 			}
 			sb.Fill(col, pos.x + 1 + RealPos.x, pos.y + 1 + RealPos.y, SlotSize, SlotSize, flags);
-			sb.Fill(Color(128, 0, 0, 0), pos.x + 2 + RealPos.x, pos.y + 2 + RealPos.y, SlotSize - 2, SlotSize - 2, flags);
+			sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 2 + RealPos.x, pos.y + 2 + RealPos.y, SlotSize - 2, SlotSize - 2, flags);
 		}
 
 		int vSize = UiData[consoleplayer].ValidItems.Size();
@@ -841,16 +841,16 @@ extend class FollowerHandler
 	private ui void DrawAmountRectangle(HDStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, int amt, int maxAmt, int flags, int col = Font.CR_WHITE)
 	{
 		sb.Fill(UiData[consoleplayer].UiColor, pos.x, pos.y, size.x, size.y, flags);
-		sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
+		sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 		double percent = amt / double(maxAmt);
-		sb.Fill(Color(32, 255, 255, 128), pos.x + 1, pos.y + 1, (size.x - 2) * percent, size.y - 2, flags);
+		sb.Fill(Color(DarkAlpha, 255, 255, 128), pos.x + 1, pos.y + 1, (size.x - 2) * percent, size.y - 2, flags);
 		sb.DrawString(fnt, "Amount:"..amt, pos + (2, 2), flags, col);
 	}
 
 	private ui void DrawArmorRectangle(HDStatusBar sb, vector2 pos, vector2 size, int flags, HDArmourWorn arm)
 	{
 		sb.Fill(UiData[consoleplayer].UiColor, pos.x, pos.y, size.x, size.y, flags);
-		sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
+		sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 
 		sb.DrawImage(AceCore.GetIcon(arm), pos + size / 2, flags | sb.DI_ITEM_CENTER, box: size - (5, 5));
 		sb.DrawString(MainFont, (arm.Mega ? "\c[Blue]" : "\c[DarkGreen]")..arm.Durability, pos + size - (4, 10), flags | sb.DI_TEXT_ALIGN_RIGHT);
@@ -859,7 +859,7 @@ extend class FollowerHandler
 	private ui void DrawRectangle(HDStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, string command, int flags, int col = Font.CR_WHITE)
 	{
 		sb.Fill(UiData[consoleplayer].UiColor, pos.x, pos.y, size.x, size.y, flags);
-		sb.Fill(Color(128, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
+		sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 		if (command != "")
 		{
 			sb.DrawString(fnt, command, (pos.x + 2, pos.y + (size.y - fnt.mFont.GetHeight()) / 2), flags, col); 
@@ -1298,7 +1298,7 @@ extend class FollowerHandler
 				{
 					if (e.KeyScan == InputEvent.Key_Enter)
 					{
-						SendNetworkEvent("HDF_ChangeColor", SelectedColorIndex[consoleplayer]);
+						SendNetworkEvent("HDF_ChangeColor", UiData[consoleplayer].SelectedColorIndex);
 						ret = true;
 					}
 					if (NumKey == 10)
