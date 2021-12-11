@@ -37,12 +37,15 @@ extend class HDFollower
 			canSeeNext = true;
 		}
 
-		// Console.Printf("%s (index %i) has %s out.\nCurrent status is %i.\nFollower is targeting %s. Follower following %s.\n--------------------",
-		// 	GetTag(),
-		// 	Index,
-		// 	SelWeapon ? SelWeapon.GetName() : "no weapon",
-		// 	Status, CTarget ? CTarget.GetTag() : "nothing",
-		// 	next is 'HDFollower' ? HDFollower(next).GetTag() : (next ? next.GetTag() : "nothing"));
+		if (hdf_debug & FDebug_Status)
+		{
+			Console.Printf("%s (index %i) has %s out.\nCurrent status is %i.\nFollower is targeting %s. Follower following %s.\n--------------------",
+				GetTag(),
+				Index,
+				SelWeapon ? SelWeapon.GetName() : "no weapon",
+				Status, FTarget.Actor ? FTarget.Actor.GetTag() : "nothing",
+				next is 'HDFollower' ? HDFollower(next).GetTag() : (next ? next.GetTag() : "nothing"));
+		}
 		
 		pNeedsHelp = PlayerIsIncapped(); // [Ace] You're just incapped.
 		pNeedsMedic = PlayerNeedsMedic(); // [Ace] You're bleeding and incapped.

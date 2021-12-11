@@ -48,7 +48,8 @@ class HDFollower : HDHumanoid abstract
 		FDebug_Reloading = 2,
 		FDebug_Aiming = 4,
 		FDebug_Targeting = 8,
-		FDebug_Inventory = 16
+		FDebug_Inventory = 16,
+		FDebug_Status = 32
 	}
 
 	// --------------------------------------------------
