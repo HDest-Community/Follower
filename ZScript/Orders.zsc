@@ -24,7 +24,6 @@ extend class HDFollower
 		ClearTarget();
 		IdleWeapon(IWF_KEEPRELOADING);
 		SetStateLabel('Idle'); // [Ace] Surely putting this here can't backfire. Right? :uhh:
-		Status = FStatus_None;
 	}
 
 	bool ChangeOrders(FOrder newOrder, int flags = 0)
@@ -34,10 +33,7 @@ extend class HDFollower
 			return false;
 		}
 		
-		if (Status >= FStatus_WaitingForArmor && Status <= FStatus_WaitingForWeapon)
-		{
-			Status = FStatus_None;
-		}
+		Status = FStatus_None;
 
 		int index = Order == newOrder ? 1 : 2; // [Ace] 1 - already on it, 2 - new order.
 		switch (newOrder)
