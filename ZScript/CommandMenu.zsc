@@ -15,7 +15,7 @@ struct FollowerSelection
 	}
 }
 
-struct UiDataHolder
+struct FollowerUiData
 {
 	Array<HDPickup> ValidItems;
 	int RepeatTics[4];
@@ -67,7 +67,7 @@ extend class FollowerHandler
 	private transient ui bool InInputMode[MAXPLAYERS];
 	private transient ui string InputString[MAXPLAYERS];
 
-	private transient ui UiDataHolder UiData[MAXPLAYERS];
+	private transient ui FollowerUiData UiData[MAXPLAYERS];
 
 	// [Ace] This is the foreground used to make the dark squares.
 	const DarkAlpha = 128;
