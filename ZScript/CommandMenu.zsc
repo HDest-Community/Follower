@@ -1241,7 +1241,7 @@ extend class FollowerHandler
 						}
 					}
 
-					if (NumKey == 2)
+					if (NumKey == 2 && lastFol.CanInteractWith(false))
 					{
 						InInputMode[consoleplayer] = true;
 						ret = true;
