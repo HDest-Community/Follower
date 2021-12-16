@@ -106,36 +106,22 @@ class FollowerHandler : EventHandler
 		// [Ace] This only prints the warning. Tokens are given when you actually exit the level.
 		if (e.Thing is "PlayerPawn" && (e.ActivatedLine.special == 74 || e.ActivatedLine.special == 243 || e.ActivatedLine.special == 244) && !CanExitNow)
 		{
-			Array<HDFollower> MissingFollowers;
+			Array<HDFollower> missingFollowers;
+			Array<string> missingNames;
 			for (int i = 0; i < Followers.Size(); ++i)
 			{
 				// [Ace] Ignore expendable followers.
 				if (Followers[i].IsDeadOrMissing() && Followers[i].MissingClass)
 				{
-					MissingFollowers.Push(Followers[i]);
+					missingFollowers.Push(Followers[i]);
+					missingNames.Push(Followers[i].GetTag());
 				}
 			}
 			
-			int MSize = MissingFollowers.Size();
+			int MSize = missingFollowers.Size();
 			if (MSize > 0)
 			{
-				// [Ace] Gotta have that proper grammar.
-				string FNames = "";
-				for (int i = 0; i < MSize; ++i)
-				{
-					FNames = FNames..MissingFollowers[i].GetTag();
-
-					if (i + 2 == MSize)
-					{
-						FNames = FNames..(MSize > 2 ? "," : "").." and ";
-					}
-					else if (i + 2 < MSize)
-					{
-						FNames = FNames..", ";
-					}
-				}
-
-				e.Thing.A_Print("\c[White]You shouldn't leave "..FNames.." behind.\c-\n\n\c[White]Activate the exit again within two seconds to exit the level and leave "..(MSize > 1 ? "them" : MissingFollowers[0].GetPronoun(false)).." to the monsters.\c-", 4);
+				e.Thing.A_Print("\c[White]You shouldn't leave "..AceCore.MakeOxfordComma(missingNames).." behind.\c-\n\n\c[White]Activate the exit again within two seconds to exit the level and leave "..(MSize > 1 ? "them" : missingFollowers[0].GetPronoun(false)).." to the monsters.\c-", 4);
 				e.ShouldActivate = false;
 				CanExitNow = true;
 				WarningResetTimer = 70;
