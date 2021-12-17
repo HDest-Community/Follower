@@ -75,6 +75,7 @@ Marines basically function the exact same way as regular followers, and you can 
 ---
 - If you go prone, you can pick up followers below you from farther away. Imagine they're grabbing onto your hand and you pull them up.
 - Followers will move out of the way if you're moving towards them sufficiently fast.
+- Holding Shift while giving orders will not close the menu.
 
 ### Modding
 ---

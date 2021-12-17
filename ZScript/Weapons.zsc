@@ -357,6 +357,7 @@ extend class HDFollower
 		See:
 			#### H 2
 			{
+				Status = FStatus_None;
 				AimTimer = 0;
 			}
 		Aiming:

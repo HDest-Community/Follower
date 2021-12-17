@@ -39,11 +39,12 @@ extend class HDFollower
 
 		if (hdf_debug & FDebug_Status)
 		{
-			Console.Printf("%s (index %i) has %s out.\nCurrent status is %i.\nFollower is targeting %s. Follower following %s.\n--------------------",
+			Console.Printf("%s (index %i) has %s out.\nCurrent status is %i. Current order is %i. Follower is %smoving.\nFollower is targeting %s. Follower following %s.\n--------------------",
 				GetTag(),
 				Index,
 				SelWeapon ? SelWeapon.GetName() : "no weapon",
-				Status, FTarget.Actor ? FTarget.Actor.GetTag() : "nothing",
+				Status, Order, !Moving ? "not " : "",
+				FTarget.Actor ? FTarget.Actor.GetTag() : "nothing",
 				next is 'HDFollower' ? HDFollower(next).GetTag() : (next ? next.GetTag() : "nothing"));
 		}
 		

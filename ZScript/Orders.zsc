@@ -41,20 +41,20 @@ extend class HDFollower
 			case FOrder_Follow:
 			{
 				PrintMessage(GetResponse("ORDER_FOLLOW"..index), "Order/Follow"..index, PMType_General);
-				Order = FOrder_Follow;
+				Order = newOrder;
 				return true;
 			}
 			case FOrder_FollowIgnore:
 			{
 				PrintMessage(GetResponse("ORDER_FOLLOWIGNORE"..index), "Order/FollowIgnore"..index, PMType_General);
 				HaulAss();
-				Order = FOrder_FollowIgnore;
+				Order = newOrder;
 				return true;
 			}
 			case FOrder_Cover:
 			{
 				PrintMessage(GetResponse("ORDER_COVER"..index), "Order/Cover"..index, PMType_General);
-				Order = FOrder_Cover;
+				Order = newOrder;
 				ClearGoal();
 				return true;
 			}
@@ -66,7 +66,7 @@ extend class HDFollower
 				{
 					// [Ace] Drop whatever they're doing and haul ass to their destination.
 					HaulAss();
-					Order = FOrder_GoAndCover;
+					Order = newOrder;
 					ActivateAsPlayer = true;
 					PrintMessage(GetResponse("ORDER_GOANDCOVER2"), "Order/GoAndCover2", PMType_General);
 					return true;
@@ -87,11 +87,11 @@ extend class HDFollower
 				PrintMessage(GetResponse("ORDER_HELP"..index), "Order/Help"..index, PMType_Important);
 				HaulAss();
 
-				if (PrevOrder != FOrder_ComeAndHelp)
+				if (Order != newOrder)
 				{
 					PrevOrder = Order;
 				}
-				Order = FOrder_ComeAndHelp;
+				Order = newOrder;
 				return true;
 			}
 			case FOrder_HealSelf:
@@ -109,11 +109,11 @@ extend class HDFollower
 
 				PrintMessage(GetResponse("ORDER_HEAL"..index), "Order/Heal"..index, PMType_Important);
 
-				if (PrevOrder != FOrder_HealSelf)
+				if (Order != newOrder)
 				{
 					PrevOrder = Order;
 				}
-				Order = FOrder_HealSelf;
+				Order = newOrder;
 				return true;
 			}
 		}
