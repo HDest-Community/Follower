@@ -390,6 +390,6 @@ extend class HDFollower
 
 	const SlotCount = 30;
 	const MaxInventoryDistance = HDCONST_ONEMETRE * 1.25;
-	const MaxLooseAmmoAmount = 50;
+	const MaxLooseAmmoAmount = 30;
 	InventorySlot Slots[SlotCount];
 }
