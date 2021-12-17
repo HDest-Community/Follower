@@ -549,7 +549,7 @@ extend class FollowerHandler
 					return;
 				}
 
-				int w = InvColumns * SlotSize + (InvColumns - 1) + 2;
+				int w = InvColumns * SlotSize + (InvColumns - 1);
 				int wHeight = rectHeight * 3;
 
 				pos.y -= 70;
@@ -571,7 +571,7 @@ extend class FollowerHandler
 					DrawArmorRectangle(sb, pos + (w + Spacing, rectHeight + Spacing), (wHeight, wHeight), flags, arm);	
 				}
 
-				DrawRectangle(sb, pos, (w + (showArmor ? wHeight + Spacing : 0), rectHeight), MainFont, GetTruncatedText(lastFol.GetTag(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
+				DrawRectangle(sb, pos, (w + (showArmor ? wHeight + Spacing : (UiData[consoleplayer].SlotFocused > 0 ? w + Spacing : 0)), rectHeight), MainFont, GetTruncatedText(lastFol.GetTag(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
 				pos.y += rectHeight + Spacing;
 
 				if (wSize == 1)
@@ -581,12 +581,12 @@ extend class FollowerHandler
 				}
 
 				int rows = int(ceil(HDFollower.SlotCount / double(InvColumns)));
-				int invh = rows * SlotSize + (rows - 1) + 2;
+				int invh = rows * SlotSize + rows;
 				DrawFollowerInventory(sb, pos, (w, invh), MainFont, flags, lastFol);
 
 				if (UiData[consoleplayer].SlotFocused > 0)
 				{
-					DrawPlayerInventory(sb, pos + (w + 1, 0), (w, invh), MainFont, flags);
+					DrawPlayerInventory(sb, pos + (w + Spacing, 0), (w, invh), MainFont, flags);
 				}
 				pos.y += invh;
 
@@ -756,9 +756,6 @@ extend class FollowerHandler
 
 	private ui void DrawFollowerInventory(HDStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, int flags, HDFollower flw)
 	{
-		sb.Fill(UiData[consoleplayer].UiColor, pos.x, pos.y, size.x, size.y, flags);
-		sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
-
 		for (int i = 0; i < HDFollower.SlotCount; ++i)
 		{
 			vector2 realPos = (SlotSize * (i % InvColumns) + (i % InvColumns), SlotSize * (i / InvColumns) + (i / InvColumns));
@@ -770,16 +767,16 @@ extend class FollowerHandler
 				case 1: col = Color(192, 255, 255, 128); break;
 				case 2: col = Color(192, 96, 255, 96); break;
 			}
-			sb.Fill(col, pos.x + 1 + realPos.x, pos.y + 1 + realPos.y, SlotSize, SlotSize, flags);
-			sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 2 + realPos.x, pos.y + 2 + realPos.y, SlotSize - 2, SlotSize - 2, flags);
+			sb.Fill(col, pos.x + realPos.x, pos.y + realPos.y, SlotSize, SlotSize, flags);
+			sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 1 + realPos.x, pos.y + 1 + realPos.y, SlotSize - 2, SlotSize - 2, flags);
 
 			let item = flw.Slots[i];
 			if (item)
 			{
-				sb.DrawImage(item.Icon, pos + (1, 1) + (SlotSize, SlotSize) / 2 + realPos, flags | sb.DI_ITEM_CENTER, 1.0, (SlotSize, SlotSize) - (6, 6), (3.0, 3.0));
+				sb.DrawImage(item.Icon, pos + (SlotSize, SlotSize) / 2 + realPos, flags | sb.DI_ITEM_CENTER, 1.0, (SlotSize, SlotSize) - (6, 6), (3.0, 3.0));
 				if (InventorySlot.IsRealMag(item.ItemClass) || item.Amount > int(!item.Multipickup))
 				{
-					sb.DrawString(sb.mAmountFont, sb.FormatNumber(item.Amount, 1, 4), pos + (3, SlotSize - 8) + realPos, flags, Font.CR_GOLD);
+					sb.DrawString(sb.mAmountFont, sb.FormatNumber(item.Amount, 1, 4), pos + (1, SlotSize - 8) + realPos, flags, Font.CR_GOLD);
 				}
 			}
 		}
@@ -788,9 +785,6 @@ extend class FollowerHandler
 	// [Ace] Contrary to what the function is called, it only draws the *valid* items.
 	private ui void DrawPlayerInventory(HDStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, int flags)
 	{
-		sb.Fill(UiData[consoleplayer].UiColor, pos.x, pos.y, size.x, size.y, flags);
-		sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
-
 		for (int i = 0; i < HDFollower.SlotCount; ++i)
 		{
 			vector2 realPos = (SlotSize * (i % InvColumns) + (i % InvColumns), SlotSize * (i / InvColumns) + (i / InvColumns));
@@ -802,8 +796,8 @@ extend class FollowerHandler
 				case 1: col = Color(192, 255, 255, 128); break;
 				case 2: col = Color(192, 96, 255, 96); break;
 			}
-			sb.Fill(col, pos.x + 1 + RealPos.x, pos.y + 1 + RealPos.y, SlotSize, SlotSize, flags);
-			sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 2 + RealPos.x, pos.y + 2 + RealPos.y, SlotSize - 2, SlotSize - 2, flags);
+			sb.Fill(col, pos.x + RealPos.x, pos.y + RealPos.y, SlotSize, SlotSize, flags);
+			sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 1 + RealPos.x, pos.y + 1 + RealPos.y, SlotSize - 2, SlotSize - 2, flags);
 		}
 
 		int vSize = UiData[consoleplayer].ValidItems.Size();
@@ -824,17 +818,17 @@ extend class FollowerHandler
 				amt = mag.Mags[i];
 			}
 			string icon = AceCore.GetIcon(item, amt);
-			sb.DrawImage(icon, pos + (1, 1) + (SlotSize, SlotSize) / 2 + RealPos, flags | sb.DI_ITEM_CENTER, 1.0, (SlotSize, SlotSize) - (6, 6), (3.0, 3.0));
+			sb.DrawImage(icon, pos + (SlotSize, SlotSize) / 2 + RealPos, flags | sb.DI_ITEM_CENTER, 1.0, (SlotSize, SlotSize) - (6, 6), (3.0, 3.0));
 			if (InventorySlot.IsRealMag(item.GetClass()) || item.bMULTIPICKUP && item.Amount > 0)
 			{
-				sb.DrawString(sb.mAmountFont, sb.FormatNumber(amt, 1, 4), pos + (3, SlotSize - 8) + realPos, flags, Font.CR_GOLD);
+				sb.DrawString(sb.mAmountFont, sb.FormatNumber(amt, 1, 4), pos + (2, SlotSize - 8) + realPos, flags, Font.CR_GOLD);
 			}
 		}
 
 		if (UiData[consoleplayer].SlotFocused == 2)
 		{
 			int rectHeight = MainFont.mFont.GetHeight() + 4;
-			DrawAmountRectangle(sb, pos + (0, size.y + 1), (size.x, rectHeight), fnt, UiData[consoleplayer].TransferAmount, 1000, flags, Font.CR_CREAM);
+			DrawAmountRectangle(sb, pos + (0, size.y), (size.x, rectHeight), fnt, UiData[consoleplayer].TransferAmount, 1000, flags, Font.CR_CREAM);
 		}
 	}
 
