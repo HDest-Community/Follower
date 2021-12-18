@@ -199,7 +199,7 @@ extend class HDFollower
 			}
 
 			// [Ace] Walk away if you get too close.
-			if (!Moving && DistanceToPlayer <= HDCONST_ONEMETRE / 2 + radius + LinkedPlayer.radius && GetPlayerMovementAngle() <= MaxMovementAngle && LinkedPlayer.vel.xy.length() > 1.5 && !(LinkedPlayer.player.ReadyWeapon is 'HDMedikitter') && !(LinkedPlayer.player.ReadyWeapon is 'SelfBandage'))
+			if ((!Moving || TGoal && TGoal.bSTANDSTILL) && DistanceToPlayer <= HDCONST_ONEMETRE / 2 + radius + LinkedPlayer.radius && GetPlayerMovementAngle() <= MaxMovementAngle && LinkedPlayer.player.cmd.buttons & BT_SPEED)
 			{
 				TrySetGoal(Vec3Angle(HDCONST_ONEMETRE * 1.5, AngleTo(LinkedPlayer) + 180), SGF_IGNOREVALID | SGF_MOVEAWAY);
 			}
