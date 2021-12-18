@@ -11,7 +11,8 @@ extend class HDFollower
 		{
 			HDSpent7mm upk = HDSpent7mm(it.thing);
 			SevenMilBrass pkp = SevenMilBrass(it.thing);
-			if (!upk && !pkp || it.thing.pos ~== (0, 0, 0) || it.thing.vel.length() > 0.2 || Distance3D(it.thing) > 192)
+
+			if (!upk && !pkp || it.thing.pos ~== (0, 0, 0) || it.thing.vel.length() > 0.2 || Distance3D(it.thing) > 192 || upk is 'HDLoose7mm')
 			{
 				continue;
 			}
