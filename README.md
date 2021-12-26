@@ -1,16 +1,9 @@
-## SUPER IMPORTANT
----
-The last commit this mod will work fine on is [8b4bd64c91](https://codeberg.org/mc776/hideousdestructor/src/commit/8b4bd64c914083c26d22a06ebc0e019cb6c4fd19).
-After that commit, the mod will still run (hopefully for a while), but a full 7mm mag will have an amount of 3030, leading to exploits. Same with 7mm clips. That is because of the new recast 7mm rounds Matt added.
-
-I will not be fixing this. It's not that I can't, it's that I won't. I am not hardcoding fixes anymore. I am not going to constantly patch my mods because of other people's incompetence. If the mod breaks at some point in the future, too bad. I'm done keeping up with Matt's shitty programming practices. If you randomly use a variable for things it's not supposed to be used for, causing all kinds of problems with other code that assumes the variable does what it says on the tin until it suddenly doesn't, you fucking suck.
-
 ### Important
 ---
 - This mod requires [AceCoreLib](https://gitlab.com/accensi/hd-addons/acecorelib).
 - The mod needs at least GZDoom 4.6.0 to run. LZDoom does not currently have a compiled version that supports it. However, the mod will work with the next stable version of LZDoom. It will also work if you compile LZDoom yourself.
 
-**NOTE: *Freylis' sprites are not for public use. Please do not use them anywhere. Thank you.***
+**NOTE: *Freylis's sprites are not for public use. Please do not use them anywhere. Thank you.***
 
 ### Quickstart
 ---
