@@ -87,11 +87,6 @@ class FollowerHandler : EventHandler
 
 	override void WorldUnloaded(WorldEvent e)
 	{
-		if (e.IsSaveGame)
-		{
-			return;
-		}
-
 		while (Followers.Size() > 0)
 		{
 			HDFollower flw = Followers[0];

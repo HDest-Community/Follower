@@ -145,8 +145,13 @@ class HDFollower : HDHumanoid abstract
 
 	clearscope bool IsDeadOrMissing()
 	{
+		if (!LinkedPlayer)
+		{
+			return true;
+		}
+
 		bool FollowerDead = Health <= 0;
-		bool TooFar = self.Distance2D(LinkedPlayer) > HDCONST_ONEMETRE * 15;
+		bool TooFar = Distance2D(LinkedPlayer) > HDCONST_ONEMETRE * 15;
 
 		return TooFar || FollowerDead;
 	}
