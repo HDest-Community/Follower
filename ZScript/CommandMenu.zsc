@@ -1543,8 +1543,12 @@ extend class FollowerHandler
 			return;
 		}
 
+		// [Ace] Do not allow the commands below to be used from the console.
+		// It used to be that you could, but with the advent of multiple followers, shortcuts are, unfortunately, no longer possible.
+		// Not without overengineering the code by passing the follower index or name to it, which gets reaaaally complicated
+		// if multiple followers share the same name, which can totally be done with HDF_RenameFollower. So yeah. Ain't happening.
 		HDFollower lastFol = Selection[e.Player].GetLast();
-		if (!lastFol || !lastFol.CanInteractWith())
+		if (!lastFol || !lastFol.CanInteractWith() || e.IsManual)
 		{
 			return;
 		}
@@ -1604,8 +1608,7 @@ extend class FollowerHandler
 
 		if (cmd.IndexOf("hdf_tryreloadweapon") != -1)
 		{
-			string commandString = e.Name.Mid(cmd.IndexOf(":") + 2);
-			Console.Printf(commandString);
+			string commandString = cmd.Mid(cmd.IndexOf(":") + 1);
 			Array<string> split;
 			commandString.Split(split, " ");
 			if (split.Size() > 0)
@@ -1640,6 +1643,34 @@ extend class FollowerHandler
 				}
 			}
 			return;
+		}
+
+		if (cmd.IndexOf('hdf_swapweapon') != -1)
+		{
+			if (lastFol.Weapons.Size() < 2) // [Ace] Swap what exactly?
+			{
+				return;
+			}
+			string commandString = cmd.Mid(cmd.IndexOf(":") + 1);
+			Array<string> split;
+			commandString.Split(split, " ");
+
+			if (split.Size() != 2)
+			{
+				return;
+			}
+
+			int wep1 = split[0].ToInt();
+			int wep2 = split[1].ToInt();
+
+			if (wep1 == 0 || wep2 == 0 || wep1 == wep2 || max(wep1, wep2) > lastFol.Weapons.Size())
+			{
+				return;
+			}
+
+			let temp = lastFol.Weapons[wep1 - 1];
+			lastFol.Weapons[wep1 - 1] = lastFol.Weapons[wep2 - 1];
+			lastFol.Weapons[wep2 - 1] = temp;
 		}
 
 		if (cmd.IndexOf("hdf_removeweapon") != -1)
@@ -1744,21 +1775,29 @@ extend class FollowerHandler
 			{
 				case 'wpn': SendNetworkEvent("HDF_TryWeapon"); break;
 				case 'arm': SendNetworkEvent("HDF_TryArmor"); break;
+				case 'swp':
+				{
+					// [Ace] 4 for mid because the format is "cmd arg1 arg2 arg3", so instead of passing the whitespace as well, omit it.
+					// And if the character is not a whitepsace, u dun goofed.
+					if (input.Length() > 3)
+					{
+						SendNetworkEvent("HDF_SwapWeapon:"..input.Mid(4));
+					}
+					break;
+				}
 			}
 		}
 
-		if (input.Length() <= 3)
+		if (input.Length() > 3)
 		{
-			input = "";
-			return;
+			switch (cmd)
+			{
+				case 'rld':
+				case 'rel': SendNetworkEvent("HDF_TryReloadWeapon:"..input.Mid(4)); break;
+				case 'rmv': SendNetworkEvent("HDF_RemoveWeapon:"..input.Mid(4)); break;
+			}
 		}
 
-		switch (cmd)
-		{
-			case 'rld':
-			case 'rel': SendNetworkEvent("HDF_TryReloadWeapon:"..input.Mid(3)); break;
-			case 'rmv': SendNetworkEvent("HDF_RemoveWeapon:"..input.Mid(3)); break;
-		}
 		input = "";
 	}
 

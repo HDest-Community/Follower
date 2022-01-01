@@ -44,6 +44,7 @@ The input field currently accepts the following commands (press enter to exit):
 - `rld/rel <name>/<index> [d/drop]`: `<name>` is the name of the weapon as displayed in the inventory. Partial names are supported, e.g. `rel hun` to reload the Hunter. Multiselect is supported. If a single follower is selected, using the weapon's index is also supported. `d` (or `drop`) is an option that, if provided, will forcefully drop the magazine instead of storing it. ZM66 mags will still be dropped regardless of this option.
 - `wpn/arm`: this will enter pickup mode.
 - `rmv <name>/<index>`: Empty the weapon and remove it from the list. This will not drop it!
+- `swp <index1> <index2>`: Swap the weapons in those indices.
 
 ##### Loadouts
 ---
