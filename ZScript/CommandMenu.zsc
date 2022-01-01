@@ -1365,7 +1365,9 @@ extend class FollowerHandler
 
 	override void NetworkProcess(ConsoleEvent e)
 	{
-		if (e.Name ~== "HDF_SetModifiers")
+		string cmd = e.Name.MakeLower();
+
+		if (cmd ~== "HDF_SetModifiers")
 		{
 			switch (e.Args[0])
 			{
@@ -1375,7 +1377,7 @@ extend class FollowerHandler
 			return;
 		}
 
-		if (e.Name ~== "HDF_SetFollowerPage")
+		if (cmd ~== "HDF_SetFollowerPage")
 		{
 			switch (e.Args[0])
 			{
@@ -1385,7 +1387,7 @@ extend class FollowerHandler
 			return;
 		}
 
-		if (e.Name.MakeLower().IndexOf("hdf_rename") != -1)
+		if (cmd.IndexOf("hdf_rename") != -1)
 		{
 			Array<string> split;
 			e.Name.Split(split, ":");
@@ -1405,7 +1407,7 @@ extend class FollowerHandler
 			return;
 		}
 
-		if (e.Name.MakeLower().IndexOf("hdf_resetfollower") != -1)
+		if (cmd.IndexOf("hdf_resetfollower") != -1)
 		{
 			Array<string> split;
 			e.Name.Split(split, ":");
@@ -1426,14 +1428,14 @@ extend class FollowerHandler
 			return;
 		}
 
-		if (e.Name ~== "HDF_ConfirmRecruitment" && !e.IsManual)
+		if (cmd ~== "HDF_ConfirmRecruitment" && !e.IsManual)
 		{
 			CloseFollowerMenu(e.Player);
 			RecruitMarine(SelMarine[e.Player], e.Player);
 			return;
 		}
 
-		if (e.Name ~== "HDF_OpenMenu")
+		if (cmd ~== "HDF_OpenMenu")
 		{
 			let plr = HDPlayerPawn(players[e.Player].mo);
 
@@ -1479,7 +1481,7 @@ extend class FollowerHandler
 		}
 
 		// [Ace] Always allow to open the follower menu to the first page or close it.
-		if (e.Name ~== "HDF_SetFollowerMenu")
+		if (cmd ~== "HDF_SetFollowerMenu")
 		{
 			if (e.Args[0] == FMenu_Closed)
 			{
@@ -1497,7 +1499,7 @@ extend class FollowerHandler
 		}
 
 		// [Ace] This is an obvious cheat, so don't use it unless you absolutely HAVE to.
-		if (e.Name.MakeLower().IndexOf("hdf_warptoplayer") != -1)
+		if (cmd.IndexOf("hdf_warptoplayer") != -1)
 		{
 			Array<string> split;
 			e.Name.Split(split, ":");
@@ -1513,13 +1515,13 @@ extend class FollowerHandler
 			return;
 		}
 
-		if (e.Name ~== "HDF_ApplySelection")
+		if (cmd ~== "HDF_ApplySelection")
 		{
 			ApplySelection(e.Player);
 			return;
 		}
 
-		if (e.Name ~== "HDF_ToggleSelection")
+		if (cmd ~== "HDF_ToggleSelection")
 		{
 			// [Ace] Select only that follower.
 			if (e.Args[1])
@@ -1530,7 +1532,7 @@ extend class FollowerHandler
 			return;
 		}
 
-		if (e.Name ~== "HDF_ManipulateSelection")
+		if (cmd ~== "HDF_ManipulateSelection")
 		{
 			switch (e.Args[0])
 			{
@@ -1547,7 +1549,7 @@ extend class FollowerHandler
 			return;
 		}
 
-		if (e.Name ~== "HDF_DismissFollower")
+		if (cmd ~== "HDF_DismissFollower")
 		{
 			lastFol.Dismiss();
 			CloseFollowerMenu(e.Player);
@@ -1555,7 +1557,7 @@ extend class FollowerHandler
 		}
 
 		// [Ace] These commands cannot be used if alive and hostile.
-		if (e.Name ~== "HDF_CarryFollower")
+		if (cmd ~== "HDF_CarryFollower")
 		{
 			if (lastFol.PackFollower())
 			{
@@ -1564,7 +1566,7 @@ extend class FollowerHandler
 			return;
 		}
 
-		if (e.Name ~== "HDF_TryRevive")
+		if (cmd ~== "HDF_TryRevive")
 		{
 			if (lastFol.TryRevive(e.Args[0]))
 			{
@@ -1573,19 +1575,19 @@ extend class FollowerHandler
 			return;
 		}
 
-		if (e.Name ~== "HDF_TryArmor")
+		if (cmd ~== "HDF_TryArmor")
 		{
 			lastFol.TryUseArmor();
 			return;
 		}
 
-		if (e.Name ~== "HDF_TryWeapon")
+		if (cmd ~== "HDF_TryWeapon")
 		{
 			lastFol.TryUseWeapon();
 			return;
 		}
 
-		if (e.Name ~== "HDF_ChangeOrders")
+		if (cmd ~== "HDF_ChangeOrders")
 		{
 			int size = Selection[e.Player].SelFollowers.Size();
 			bool result = false;
@@ -1600,11 +1602,13 @@ extend class FollowerHandler
 			return;
 		}
 
-		if (e.Name.MakeLower().IndexOf("hdf_tryreloadweapon") != -1)
+		if (cmd.IndexOf("hdf_tryreloadweapon") != -1)
 		{
+			string commandString = e.Name.Mid(cmd.IndexOf(":") + 2);
+			Console.Printf(commandString);
 			Array<string> split;
-			e.Name.Split(split, ":");
-			if (split.Size() > 1)
+			commandString.Split(split, " ");
+			if (split.Size() > 0)
 			{
 				int selSize = Selection[consoleplayer].SelFollowers.Size();
 				for (int i = 0; i < selSize; ++i)
@@ -1616,23 +1620,29 @@ extend class FollowerHandler
 						continue;
 					}
 
+					int relFlags = 0;
+					if (split.Size() > 1 && (split[1] ~== "drop" || split[1] ~== "d"))
+					{
+						relFlags |= HDFollower.RLF_DROPMAG;
+					}
+
 					if (selSize == 1)
 					{
-						int index = split[1].ToInt();
+						int index = split[0].ToInt();
 						if (index > 0 && index <= wSize)
 						{
-							flw.TryReloadWeapon(flw.Weapons[index - 1], HDFollower.RLF_MANUAL);
+							flw.TryReloadWeapon(flw.Weapons[index - 1], HDFollower.RLF_MANUAL | relFlags);
 							continue;
 						}
 					}
 					
-					flw.TryReloadWeapon(flw.FindWeaponByName(split[1]), HDFollower.RLF_MANUAL);
+					flw.TryReloadWeapon(flw.FindWeaponByName(split[0]), HDFollower.RLF_MANUAL | relFlags);
 				}
 			}
 			return;
 		}
 
-		if (e.Name.MakeLower().IndexOf("hdf_removeweapon") != -1)
+		if (cmd.IndexOf("hdf_removeweapon") != -1)
 		{
 			Array<string> split;
 			e.Name.Split(split, ":");
@@ -1674,7 +1684,7 @@ extend class FollowerHandler
 			return;
 		}
 
-		if (e.Name.MakeLower().IndexOf("hdf_transfermag") != -1)
+		if (cmd.IndexOf("hdf_transfermag") != -1)
 		{
 			Array<string> split;
 			e.Name.Split(split, ":");
@@ -1686,7 +1696,7 @@ extend class FollowerHandler
 			return;
 		}
 
-		if (e.Name.MakeLower().IndexOf("hdf_transferitem") != -1)
+		if (cmd.IndexOf("hdf_transferitem") != -1)
 		{
 			Array<string> split;
 			e.Name.Split(split, ":");
@@ -1698,13 +1708,13 @@ extend class FollowerHandler
 			return;
 		}
 
-		if (e.Name ~== "HDF_TakeInvItem")
+		if (cmd ~== "HDF_TakeInvItem")
 		{
 			lastFol.TakeInvItem(lastFol.Slots[e.Args[0]]);
 			return;
 		}
 
-		if (e.Name ~== "HDF_ChangeColor")
+		if (cmd ~== "HDF_ChangeColor")
 		{
 			for (int i = 0; i < Selection[consoleplayer].SelFollowers.Size(); ++i)
 			{
@@ -1726,42 +1736,28 @@ extend class FollowerHandler
 
 	private ui void ProcessInputString(out string input, HDFollower selFol, bool multiselect)
 	{
-		Array<string> split;
-		input.Split(split, " ");
-		int splitSize = split.Size();
-		switch (splitSize)
+		Name cmd = input.Left(3);
+
+		if (!multiselect)
 		{
-			case 1:
+			switch (cmd)
 			{
-				if (!multiselect)
-				{
-					if (split[0] ~== "wpn")
-					{
-						SendNetworkEvent("HDF_TryWeapon");
-						break;
-					}
-					if (split[0] ~== "arm")
-					{
-						SendNetworkEvent("HDF_TryArmor");
-						break;
-					}
-				}
-				break;
+				case 'wpn': SendNetworkEvent("HDF_TryWeapon"); break;
+				case 'arm': SendNetworkEvent("HDF_TryArmor"); break;
 			}
-			case 2:
-			{
-				if (split[0] ~== "rld" || split[0] ~== "rel")
-				{
-					SendNetworkEvent("HDF_TryReloadWeapon:"..split[1]);
-					break;
-				}
-				if (split[0] ~== "rmv")
-				{
-					SendNetworkEvent("HDF_RemoveWeapon:"..split[1]);
-					break;
-				}
-				break;
-			}
+		}
+
+		if (input.Length() <= 3)
+		{
+			input = "";
+			return;
+		}
+
+		switch (cmd)
+		{
+			case 'rld':
+			case 'rel': SendNetworkEvent("HDF_TryReloadWeapon:"..input.Mid(3)); break;
+			case 'rmv': SendNetworkEvent("HDF_RemoveWeapon:"..input.Mid(3)); break;
 		}
 		input = "";
 	}

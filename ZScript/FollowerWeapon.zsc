@@ -33,6 +33,11 @@ class FollowerWeapon abstract
 		EMF_KEEP = 1
 	}
 
+	enum FollowerWeaponFlags
+	{
+		FWF_DROPMAG = 1
+	}
+
 	enum WStatus
 	{
 		WStatus_Idle,
@@ -175,7 +180,7 @@ class FollowerWeapon abstract
 		if (MType && Mag > -1)
 		{
 			HDMagAmmo m = HDMagAmmo(HDMagAmmo.SpawnMag(Owner, MType, Mag));
-			if (flags & EMF_KEEP)
+			if (flags & EMF_KEEP && !(WeaponFlags & FWF_DROPMAG))
 			{
 				Owner.AddMag(m, flags: HDFollower.FIF_FORCE);
 			}
@@ -221,4 +226,5 @@ class FollowerWeapon abstract
 	HDFollower Owner;
 	bool Enabled;
 	WStatus Status;
+	int WeaponFlags;
 }

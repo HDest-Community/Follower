@@ -13,7 +13,8 @@ extend class HDFollower
 		RLF_FORCE	= 1 << 0,
 		RLF_MANUAL	= 1 << 1,
 		RLF_SILENT	= 1 << 2,
-		RLF_NOJUMP	= 1 << 3
+		RLF_NOJUMP	= 1 << 3,
+		RLF_DROPMAG = 1 << 4
 	}
 
 	enum IdleWeaponFlags
@@ -55,6 +56,7 @@ extend class HDFollower
 			}
 			WeaponTicker = 0;
 			SelWeapon.Status = FollowerWeapon.WStatus_Idle;
+			SelWeapon.WeaponFlags = 0; // [Ace] Clear any temporary flags.
 		}
 	}
 
@@ -175,6 +177,10 @@ extend class HDFollower
 			}
 			SelWeapon = wpn;
 			SelWeapon.Status = FollowerWeapon.WStatus_Reloading;
+			if (flags & RLF_DROPMAG)
+			{
+				SelWeapon.WeaponFlags |= FollowerWeapon.FWF_DROPMAG;
+			}
 			return true;
 		}
 		else if (result == FollowerWeapon.RResult_NoAmmo)
