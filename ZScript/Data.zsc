@@ -14,7 +14,6 @@ class FollowerData play
 	bool IsBleeding;
 	int BleedPoints;
 	int BleedRate;
-	bool HitVital;
 	Actor Source;
 
 	int BodyDamage;
@@ -102,7 +101,6 @@ extend class HDFollower
 				FData.IsBleeding = true;
 				FData.BleedPoints = BleedThinker.BleedPoints;
 				FData.BleedRate = BleedThinker.BleedRate;
-				FData.HitVital = BleedThinker.HitVital;
 				FData.Source = BleedThinker.Source;
 			}
 		}
@@ -275,7 +273,7 @@ class FollowerBody : HDPickup abstract
 
 						if (FData.IsBleeding)
 						{
-							HDBleedingWound.Inflict(Follower, FData.BleedPoints, FData.BleedRate, FData.HitVital, FData.Source);
+							HDBleedingWound.Inflict(Follower, FData.BleedPoints, FData.BleedRate, false, FData.Source);
 						}
 
 						if (FData.Incapped)
