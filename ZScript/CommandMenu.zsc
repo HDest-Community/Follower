@@ -481,8 +481,8 @@ extend class FollowerHandler
 
 					if (Followers.Size() == 1 && lastFol.CanInteractWith(false))
 					{
-						double Dist = lastFol.Distance3D(lastFol.LinkedPlayer) / HDCONST_ONEMETRE;
-						DrawRectangle(sb, pos, (160, rectHeight), MainFont, String.Format("%.2fm", Dist), flags, Font.CR_DARKGRAY);
+						double dist = lastFol.Distance3D(lastFol.LinkedPlayer) / HDCONST_ONEMETRE;
+						DrawRectangle(sb, pos, (160, rectHeight), MainFont, String.Format("%.2fm", dist), flags, Font.CR_DARKGRAY);
 						pos.y += rectHeight + Spacing;
 					}
 
@@ -710,8 +710,13 @@ extend class FollowerHandler
 
 		if (valid)
 		{
-			double Dist = flw.Distance3D(flw.LinkedPlayer) / HDCONST_ONEMETRE;
-			sb.DrawString(fnt, String.Format("%.2fm", Dist), pos, flags, Font.CR_DARKGRAY); pos.y += FontHeight + 1;
+			double dist = flw.Distance3D(flw.LinkedPlayer) / HDCONST_ONEMETRE;
+			sb.DrawString(fnt, String.Format("%.2fm", dist), pos, flags, Font.CR_DARKGRAY);
+		}
+
+		if (flw.Squad > 0)
+		{
+			sb.DrawString(fnt, sb.FormatNumber(flw.Squad, 1, 1), pos + (size.x - 6, 0), flags | sb.DI_TEXT_ALIGN_RIGHT, Font.CR_GOLD);
 		}
 	}
 
@@ -975,23 +980,44 @@ extend class FollowerHandler
 					else if (Modifiers[consoleplayer] & OpMod_Ctrl)
 					{
 						int Page = Modifiers[consoleplayer] & OpMod_Alt ? FollowerPage[consoleplayer] : -1;
-						switch (e.KeyChar)
+						if (NumKey >= 1 && NumKey <= 10)
 						{
-							// [Ace] A - Select (A)ll, (I)nvert, (D)eselect.
-							case 65: case 97:
+							if (Modifiers[consoleplayer] & OpMod_Ctrl)
 							{
-								SendNetworkEvent("HDF_ManipulateSelection", 0, Page);
-								break;
+								if (Modifiers[consoleplayer] & OpMod_Alt)
+								{
+									SendNetworkEvent("HDF_AssignSquad", NumKey);
+								}
+								else if (NumKey < 10)
+								{
+									SendNetworkEvent("HDF_ManipulateSelection", 3, NumKey);
+									if (!(Modifiers[consoleplayer] & OpMod_Shift))
+									{
+										SendNetworkEvent("HDF_ApplySelection");
+									}
+								}
 							}
-							case 73: case 105:
+						}
+						else
+						{
+							switch (e.KeyChar)
 							{
-								SendNetworkEvent("HDF_ManipulateSelection", 1, Page);
-								break;
-							}
-							case 68: case 100:
-							{
-								SendNetworkEvent("HDF_ManipulateSelection", 2, Page);
-								break;
+								// [Ace] A - Select (A)ll, (I)nvert, (D)eselect.
+								case 65: case 97:
+								{
+									SendNetworkEvent("HDF_ManipulateSelection", 0, Page);
+									break;
+								}
+								case 73: case 105:
+								{
+									SendNetworkEvent("HDF_ManipulateSelection", 1, Page);
+									break;
+								}
+								case 68: case 100:
+								{
+									SendNetworkEvent("HDF_ManipulateSelection", 2, Page);
+									break;
+								}
 							}
 						}
 						ret = true;
@@ -1539,9 +1565,38 @@ extend class FollowerHandler
 		{
 			switch (e.Args[0])
 			{
-				case 0: SelectAll(e.Player, e.Args[1], false); break;
-				case 1: SelectAll(e.Player, e.Args[1], true); break;
-				case 2: DeselectAll(e.Player, e.Args[1]); break;
+				case 0:
+				{
+					SelectAll(e.Player, e.Args[1], false);
+					return;
+				}
+				case 1:
+				{
+					SelectAll(e.Player, e.Args[1], true);
+					return;
+				}
+				case 2:
+				{
+					DeselectAll(e.Player, e.Args[1]);
+					return;
+				}
+				case 3:
+				{
+					SelectSquad(e.Player, e.Args[1]);
+					return;
+				}
+			}
+		}
+
+		if (cmd ~== "HDF_AssignSquad")
+		{
+			for (int i = 0; i < Selection[e.Player].SelFollowers.Size(); ++i)
+			{
+				let flw = Selection[e.Player].SelFollowers[i];
+				if (flw)
+				{
+					flw.Squad = e.Args[0] == 10 ? 0 : e.Args[0];
+				}
 			}
 			return;
 		}
@@ -1915,7 +1970,7 @@ extend class FollowerHandler
 	private void ApplySelection(int plrNum)
 	{
 		int size = Selection[plrNum].SelFollowers.Size();
-		if (size == 0 || Modifiers[plrNum] != 0)
+		if (size == 0)
 		{
 			return;
 		}
@@ -1961,6 +2016,17 @@ extend class FollowerHandler
 		else
 		{
 			for (int i = 0; i < Followers.Size(); ++i)
+			{
+				ToggleSelection(plrNum, Followers[i]);
+			}
+		}
+	}
+
+	private void SelectSquad(int plrNum, int squad)
+	{
+		for (int i = 0; i < Followers.Size(); ++i)
+		{
+			if (Followers[i].Squad == squad)
 			{
 				ToggleSelection(plrNum, Followers[i]);
 			}

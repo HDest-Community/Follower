@@ -2,6 +2,7 @@ class FollowerData play
 {
 	class<HDFollower> FollowerClass;
 	uint Index;
+	uint Squad;
 
 	string Tag;
 	int Gender;
@@ -69,6 +70,7 @@ extend class HDFollower
 
 		FData.FollowerClass = GetClass();
 		FData.Index = Index;
+		FData.Squad = Squad;
 
 		FData.Tag = GetTag();
 		FData.Gender = Gender;
@@ -233,6 +235,7 @@ class FollowerBody : HDPickup abstract
 
 						Follower.ChangeLinkedPlayer(HDPlayerPawn(self));
 
+						Follower.Squad = FData.Squad;
 						Follower.SetTag(FData.Tag);
 						Follower.Gender = FData.Gender;
 						Follower.SeeSound = FData.Sounds[0];

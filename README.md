@@ -27,11 +27,13 @@ For the most part the mechanics are fairly simple and straightforward. Documente
 
 ##### Multiselecting
 ---
-- `Shift` allows you to select multiple followers. Acts as a modifier and works either with the number keys or with Quick Access;
+- `Shift` makes selection additive. Acts as a modifier and works either with the number keys or with Quick Access. Works with groups as well;
 - `Ctrl + A` select all;
 - `Ctrl + D` deselects all;
-- `Ctrl + I` inverts the selection.
-- `Ctrl + Alt` modifies the selection to only affect the current page.
+- `Ctrl + I` inverts the selection;
+- `Ctrl + Alt` modifies the selection to only affect the current page;
+- `Ctrl + Alt + 0-9` assigns the selection to a squad. 0 means no squad;
+- `Ctrl + 1-9` selects the squad;
 - `Enter` applies the selection.
 
 ##### Inventory management

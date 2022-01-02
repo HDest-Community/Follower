@@ -277,6 +277,7 @@ class HDFollower : HDHumanoid abstract
 	meta int ResurrectType;
 	property ResurrectType: ResurrectType;
 
+	uint Squad;
 	uint Index;
 	int Gender;
 	meta class<FollowerBody> DataClass;
