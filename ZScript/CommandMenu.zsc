@@ -706,17 +706,19 @@ extend class FollowerHandler
 
 		pos += (2, 2);
 		int FontHeight = fnt.mFont.GetHeight();
-		sb.DrawString(fnt, index..") "..GetTruncatedText(flw.GetTag(), 20), pos, flags, Font.FindFontColor('FLW_NameBlue')); pos.y += FontHeight + 1;
+		sb.DrawString(fnt, index..") "..GetTruncatedText(flw.GetTag(), 20), pos, flags, Font.FindFontColor('FLW_NameBlue'));
+		pos.y += FontHeight + 2;
+
+		if (flw.Squad > 0)
+		{
+			sb.DrawString(fnt, StringTable.Localize("$FOLLOWER_SQUAD_"..flw.Squad), pos, flags, Font.CR_GOLD);
+			pos.x += size.x - 6;
+		}
 
 		if (valid)
 		{
 			double dist = flw.Distance3D(flw.LinkedPlayer) / HDCONST_ONEMETRE;
-			sb.DrawString(fnt, String.Format("%.2fm", dist), pos, flags, Font.CR_DARKGRAY);
-		}
-
-		if (flw.Squad > 0)
-		{
-			sb.DrawString(fnt, StringTable.Localize("$FOLLOWER_SQUAD_"..flw.Squad), pos + (size.x - 6, 0), flags | sb.DI_TEXT_ALIGN_RIGHT, Font.CR_GOLD);
+			sb.DrawString(fnt, String.Format("%.2fm", dist), pos, flags | (flw.Squad > 0 ? sb.DI_TEXT_ALIGN_RIGHT : 0), Font.CR_DARKGRAY);
 		}
 	}
 
