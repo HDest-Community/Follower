@@ -362,13 +362,13 @@ extend class FollowerHandler
 					LastIndex++;
 					bool Valid = Followers[i].CanInteractWith(false);
 					int FollowerBlockSize = Valid ? rectHeight * 2 - 2 : rectHeight;
-					DrawFollowerRectangle(sb, pos, (150, FollowerBlockSize), MainFont, LastIndex, Followers[i], Valid, flags);
+					DrawFollowerRectangle(sb, pos, (190, FollowerBlockSize), MainFont, LastIndex, Followers[i], Valid, flags);
 					pos.y += FollowerBlockSize + Spacing;
 				}
 				if (FSize > FollowersPerPage * (FollowerPage[consoleplayer] + 1))
 				{
 					LastIndex++;
-					DrawRectangle(sb, pos, (150, rectHeight), MainFont, LastIndex..") Next...", flags);
+					DrawRectangle(sb, pos, (190, rectHeight), MainFont, LastIndex..") Next...", flags);
 					pos.y += rectHeight + Spacing;
 				}
 				if (FollowerPage[consoleplayer] > 0)
@@ -378,7 +378,7 @@ extend class FollowerHandler
 					{
 						LastIndex = 0;
 					}
-					DrawRectangle(sb, pos, (150, rectHeight), MainFont, LastIndex..") Back...", flags);
+					DrawRectangle(sb, pos, (190, rectHeight), MainFont, LastIndex..") Back...", flags);
 					pos.y += rectHeight + Spacing;
 				}
 				break;
@@ -476,7 +476,7 @@ extend class FollowerHandler
 				}
 				else
 				{
-					DrawRectangle(sb, pos, (160, rectHeight), MainFont, GetTruncatedText(lastFol.GetTag(), 20), flags, Font.FindFontColor('FLW_NameBlue'));
+					DrawRectangle(sb, pos, (160, rectHeight), MainFont, GetTruncatedText(lastFol.GetTag(), 19), flags, Font.FindFontColor('FLW_NameBlue'));
 					pos.y += rectHeight + Spacing;
 
 					if (Followers.Size() == 1 && lastFol.CanInteractWith(false))
@@ -706,7 +706,7 @@ extend class FollowerHandler
 
 		pos += (2, 2);
 		int FontHeight = fnt.mFont.GetHeight();
-		sb.DrawString(fnt, index..") "..GetTruncatedText(flw.GetTag(), 15), pos, flags, Font.FindFontColor('FLW_NameBlue')); pos.y += FontHeight + 1;
+		sb.DrawString(fnt, index..") "..GetTruncatedText(flw.GetTag(), 20), pos, flags, Font.FindFontColor('FLW_NameBlue')); pos.y += FontHeight + 1;
 
 		if (valid)
 		{
@@ -716,7 +716,7 @@ extend class FollowerHandler
 
 		if (flw.Squad > 0)
 		{
-			sb.DrawString(fnt, sb.FormatNumber(flw.Squad, 1, 1), pos + (size.x - 6, 0), flags | sb.DI_TEXT_ALIGN_RIGHT, Font.CR_GOLD);
+			sb.DrawString(fnt, StringTable.Localize("$FOLLOWER_SQUAD_"..flw.Squad), pos + (size.x - 6, 0), flags | sb.DI_TEXT_ALIGN_RIGHT, Font.CR_GOLD);
 		}
 	}
 

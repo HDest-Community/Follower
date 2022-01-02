@@ -10,3 +10,15 @@ REVIVE_BLUES_ALREADYWORKING_PLR = "The potion seems to already be hard at work."
 REVIVE_BLUES_NONE_PLR = "I don't have any potions on me.";
 REVIVE_BLUES_NOTENOUGH_PLR1 = "Looks I'll need at least";
 REVIVE_BLUES_NOTENOUGH_PLR2 = "of a potion to make this work.\nBetter sort my potions before doing that.";
+
+
+// [Ace] Make sure these are no longer than 15 characters.
+FOLLOWER_SQUAD_1 = "Reaper Squad";
+FOLLOWER_SQUAD_2 = "Void Squad";
+FOLLOWER_SQUAD_3 = "Death Squad";
+FOLLOWER_SQUAD_4 = "Black Death";
+FOLLOWER_SQUAD_5 = "Delta Force";
+FOLLOWER_SQUAD_6 = "Gamma Force";
+FOLLOWER_SQUAD_7 = "Dagger Force";
+FOLLOWER_SQUAD_8 = "Task Force 141";
+FOLLOWER_SQUAD_9 = "A Team";
