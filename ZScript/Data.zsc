@@ -31,6 +31,7 @@ class FollowerData play
 	int ArmorDurability;
 	bool ArmorMega;
 
+	class<HDMagicShield> ShieldClass;
 	int Shields;
 	int MaxShields;
 	int ShieldStrength;
@@ -127,6 +128,7 @@ extend class HDFollower
 		let Shields = FindInventory('HDMagicShield', true);
 		if (Shields)
 		{
+			FData.ShieldClass = (class<HDMagicShield>)(Shields.GetClass());
 			FData.Shields = Shields.Amount;
 			FData.MaxShields = Shields.MaxAmount;
 			FData.ShieldStrength = Shields.Stamina;
@@ -145,6 +147,7 @@ extend class HDFollower
 	int NewStunned;
 	int NewBodyDamage;
 
+	class<HDMagicShield> ShieldClass;
 	int Shields;
 	int ShieldStrength;
 	bool RegenerateShields;
@@ -246,6 +249,7 @@ class FollowerBody : HDPickup abstract
 						Follower.NewStunned = FData.Stunned;
 						Follower.NewBodyDamage = FData.BodyDamage;
 
+						Follower.ShieldClass = FData.ShieldClass;
 						Follower.Shields = FData.Shields;
 						Follower.MaxShields = FData.MaxShields;
 						Follower.ShieldStrength = FData.ShieldStrength;

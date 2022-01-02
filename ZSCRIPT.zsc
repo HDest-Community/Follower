@@ -253,12 +253,12 @@ class HDFollower : HDHumanoid abstract
 		// [Ace] Same as above. For some reason HDMagicShield gets nuked if given while unpacking the follower.
 		if (Shields > 0)
 		{
-			let ShieldInv = GiveInventoryType('HDMagicShield');
-			ShieldInv.Amount = Shields;
-			ShieldInv.MaxAmount = MaxShields;
-			ShieldInv.Stamina = ShieldStrength;
-			ShieldInv.bQUICKTORETALIATE = RegenerateShields;
-			ShieldInv.bSTANDSTILL = NoShieldsDegeneration;
+			let shld = GiveInventoryType(ShieldClass);
+			shld.Amount = Shields;
+			shld.MaxAmount = MaxShields;
+			shld.Stamina = ShieldStrength;
+			shld.bQUICKTORETALIATE = RegenerateShields;
+			shld.bSTANDSTILL = NoShieldsDegeneration;
 		}
 	}
 
