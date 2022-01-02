@@ -1611,9 +1611,21 @@ extend class FollowerHandler
 			string commandString = cmd.Mid(cmd.IndexOf(":") + 1);
 			Array<string> split;
 			commandString.Split(split, " ");
+			
+			int selSize = Selection[consoleplayer].SelFollowers.Size();
+			
+			bool dropMag = split.Size() > 0 && (split[0] ~== "drop" || split[0] ~== "d");
+			if ((commandString == "" || dropMag) && selSize == 1 && lastFol.Weapons.Size() == 1 && lastFol.CanInteractWith(false))
+			{
+				int relFlags = 0;
+				if (dropMag)
+				{
+					relFlags |= HDFollower.RLF_DROPMAG;
+				}
+				lastFol.TryReloadWeapon(lastFol.Weapons[0], HDFollower.RLF_MANUAL | relFlags);
+			}
 			if (split.Size() > 0)
 			{
-				int selSize = Selection[consoleplayer].SelFollowers.Size();
 				for (int i = 0; i < selSize; ++i)
 				{
 					let flw = Selection[consoleplayer].SelFollowers[i];
@@ -1788,13 +1800,21 @@ extend class FollowerHandler
 			}
 		}
 
-		if (input.Length() > 3)
+		switch (cmd)
 		{
-			switch (cmd)
+			case 'rld':
+			case 'rel':
 			{
-				case 'rld':
-				case 'rel': SendNetworkEvent("HDF_TryReloadWeapon:"..input.Mid(4)); break;
-				case 'rmv': SendNetworkEvent("HDF_RemoveWeapon:"..input.Mid(4)); break;
+				SendNetworkEvent("HDF_TryReloadWeapon:"..input.Mid(4));
+				break;
+			}
+			case 'rmv':
+			{
+				if (input.Length() > 3)
+				{
+					SendNetworkEvent("HDF_RemoveWeapon:"..input.Mid(4));
+				}
+				break;
 			}
 		}
 
