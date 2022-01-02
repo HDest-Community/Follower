@@ -50,7 +50,7 @@ extend class HDFollower
 
 		if (!force)
 		{
-			switch (CanReach(PlayerIsProne() && LinkedPlayer.pos.z > pos.z + height / 2 ? height + HDCONST_ONEMETRE : radius + HDCONST_ONEMETRE))
+			switch (CanReach(PlayerIsProne() && max(0, LinkedPlayer.pos.z - pos.z) > 0 ? height + HDCONST_ONEMETRE * 1.4 : radius + HDCONST_ONEMETRE * 0.75))
 			{
 				case 1: ThinkMessage(LinkedPlayer, "$TOOFAR_PLR"); return false;
 				case 2: ThinkMessage(LinkedPlayer, "$NOTFACING_PLR"); return false;

@@ -273,7 +273,7 @@ extend class HDFollower
 		}
 
 		// [Ace] Crouching. One day I will implement proper sprites for this. Today is not that day.
-		if (bFRIENDLY && Status == FStatus_None && Order <= FOrder_Cover && PlayerIsCrouching() && CanSeePlayer && DistanceToPlayer < HDCONST_ONEMETRE * 30)
+		if (bFRIENDLY && Status == FStatus_None && Order <= FOrder_Cover && PlayerIsCrouching() && !PlayerIsProne() && CanSeePlayer && DistanceToPlayer < HDCONST_ONEMETRE * 30)
 		{
 			CrouchFactor = min(CrouchFactor + 0.14, 0.5);
 		}
