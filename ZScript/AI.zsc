@@ -48,11 +48,11 @@ extend class HDFollower
 				next is 'HDFollower' ? HDFollower(next).GetTag() : (next ? next.GetTag() : "nothing"));
 		}
 		
-		pNeedsHelp = PlayerIsIncapped(); // [Ace] You're just incapped.
-		pNeedsMedic = PlayerNeedsMedic(); // [Ace] You're bleeding and incapped.
+		PNeedsHelp = PlayerIsIncapped(); // [Ace] You're just incapped.
+		PNeedsMedic = PlayerNeedsMedic(); // [Ace] You're bleeding and incapped.
 		int ffcount = Handler.FollowingFollowersCount();
 		int findex = Handler.Followers.Find(self);
-		double distDiv = next != LinkedPlayer ? 1.0 + 0.13 * (min(8, ffcount - 1)) : 1.0;
+		double distDiv = next != LinkedPlayer ? 1.0 + 0.26 * (min(4, ffcount - 1)) : 1.0;
 		
 		if (!SelWeapon)
 		{
@@ -105,12 +105,12 @@ extend class HDFollower
 			{
 				if (DistanceToPlayer < MedicRange && Status != FStatus_HealingPlayer) // [Ace] Start stapling if close enough. Minimum distance is 22. Don't go any lower or follower will be stuck walking towards you.
 				{
-					if (pNeedsMedic)
+					if (PNeedsMedic)
 					{
 						Status = FStatus_HealingPlayer;
 						SetStateLabel('StapleHumptyDumptyBackTogetherAgain');
 					}
-					else if (pNeedsHelp)
+					else if (PNeedsHelp)
 					{
 						Status = FStatus_HealingPlayer;
 						SetStateLabel('PullYouUp');
@@ -289,10 +289,10 @@ extend class HDFollower
 
 		// [Ace] Movement. Always travel to goals if there are any.
 		bool dedicatedGoal = TGoal is 'TargetGoal';
-		if (Status == FStatus_None && (!SelWeapon || SelWeapon.Status != FollowerWeapon.WStatus_Firing) && TGoal && (TGoal is next.GetClass() && goalDist2 > (Order == FOrder_ComeAndHelp && (pNeedsMedic || pNeedsHelp) ? MedicRange : (MinFollowRangeStop / distDiv)) || dedicatedGoal && goalDist2 > 16) && goalDist2 < MaxGoalRange)
+		if (Status == FStatus_None && (!SelWeapon || SelWeapon.Status != FollowerWeapon.WStatus_Firing) && TGoal && (TGoal is next.GetClass() && goalDist2 > (Order == FOrder_ComeAndHelp && (PNeedsMedic || PNeedsHelp) ? MedicRange : (MinFollowRangeStop / distDiv)) || dedicatedGoal && goalDist2 > 16) && goalDist2 < MaxGoalRange)
 		{
 			// [Ace] Don't slow down if player is bleeding out their ass or needs help getting up.
-			if (TGoal is "PlayerPawn" && Order == FOrder_ComeAndHelp && (pNeedsMedic || pNeedsHelp))
+			if (TGoal is "PlayerPawn" && Order == FOrder_ComeAndHelp && (PNeedsMedic || PNeedsHelp))
 			{
 				if (tics == 2)
 				{
@@ -302,7 +302,7 @@ extend class HDFollower
 			}
 			else
 			{
-				if (goalDist2 < (dedicatedGoal ? GoalRangeStop : MinFollowRangeStop))
+				if (goalDist2 < (dedicatedGoal ? GoalRangeStop : MinFollowRangeStop / (distDiv - (distDiv - 1.0) * 0.5)))
 				{
 					MovementSpeed = max(default.MovementSpeed * 0.25, MovementSpeed * 0.85);
 				}
@@ -494,7 +494,7 @@ extend class HDFollower
 
 	private bool CanSeePlayer;
 	private double DistanceToPlayer;
-	private bool pNeedsHelp;
-	private bool pNeedsMedic;
+	private bool PNeedsHelp;
+	private bool PNeedsMedic;
 	private double CrouchFactor;
 }
