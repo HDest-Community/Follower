@@ -257,8 +257,8 @@ class HDFollower : HDHumanoid abstract
 			ShieldInv.Amount = Shields;
 			ShieldInv.MaxAmount = MaxShields;
 			ShieldInv.Stamina = ShieldStrength;
-			ShieldInv.bQUICKTORETALIATE = NoShieldsDegeneration;
-			ShieldInv.bSTANDSTILL = RegenerateShields;
+			ShieldInv.bQUICKTORETALIATE = RegenerateShields;
+			ShieldInv.bSTANDSTILL = NoShieldsDegeneration;
 		}
 	}
 
