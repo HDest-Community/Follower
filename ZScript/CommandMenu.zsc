@@ -360,10 +360,10 @@ extend class FollowerHandler
 				for (int i = FollowersPerPage * FollowerPage[consoleplayer]; i < min(FollowersPerPage * (FollowerPage[consoleplayer] + 1), FSize); ++i)
 				{
 					LastIndex++;
-					bool Valid = Followers[i].CanInteractWith(false);
-					int FollowerBlockSize = Valid ? rectHeight * 2 - 2 : rectHeight;
-					DrawFollowerRectangle(sb, pos, (190, FollowerBlockSize), MainFont, LastIndex, Followers[i], Valid, flags);
-					pos.y += FollowerBlockSize + Spacing;
+					bool valid = Followers[i].CanInteractWith(false);
+					int blockSize = valid || Followers[i].Squad > 0 ? rectHeight * 2 - 2 : rectHeight;
+					DrawFollowerRectangle(sb, pos, (190, blockSize), MainFont, LastIndex, Followers[i], valid, flags);
+					pos.y += blockSize + Spacing;
 				}
 				if (FSize > FollowersPerPage * (FollowerPage[consoleplayer] + 1))
 				{
