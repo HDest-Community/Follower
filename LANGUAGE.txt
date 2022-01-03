@@ -14,7 +14,7 @@ REVIVE_BLUES_NOTENOUGH_PLR2 = "of a potion to make this work.\nBetter sort my po
 
 // [Ace] Make sure these are no longer than 15 characters.
 FOLLOWER_SQUAD_1 = "Reaper Team";
-FOLLOWER_SQUAD_2 = "Void Team";
+FOLLOWER_SQUAD_2 = "Raptor Team";
 FOLLOWER_SQUAD_3 = "Death Squad";
 FOLLOWER_SQUAD_4 = "Black Death";
 FOLLOWER_SQUAD_5 = "Delta Force";
