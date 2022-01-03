@@ -23,7 +23,7 @@ class FW_RocketLauncher : FollowerWeapon
 
 			Owner.A_StartSound("weapons/rockignite", CHAN_AUTO);
 			Owner.A_StartSound("weapons/rockboom", CHAN_AUTO);
-			Owner.A_AlertMonsters(flags: AMF_TARGETEMITTER);
+			Owner.A_AlertMonsters();
 			ChamberedRound = CRType_Empty;
 			if (!TryChamberRound())
 			{

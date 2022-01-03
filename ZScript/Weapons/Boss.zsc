@@ -55,7 +55,7 @@ class FW_Boss : FollowerWeapon
 					Owner.frame++;
 					Owner.A_StartSound("weapons/bigrifle2", CHAN_WEAPON);
 					HDBulletActor.FireBullet(Owner, "HDB_776", Owner.GetShotHeight(), speedfactor: 0.99);
-					Owner.A_AlertMonsters(flags: AMF_TARGETEMITTER);
+					Owner.A_AlertMonsters();
 					ChamberedRound = CRType_Spent;
 					MustChamber = true;
 					ticker = -1;

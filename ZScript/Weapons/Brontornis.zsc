@@ -17,7 +17,7 @@ class FW_Bronto : FollowerWeapon
 				Owner.A_StartSound("weapons/bronto", CHAN_WEAPON, CHANF_OVERLAP);
 				Owner.A_StartSound("weapons/bronto2", CHAN_WEAPON, CHANF_OVERLAP);
 				HDBulletActor.FireBullet(Owner, "HDB_Bronto", Owner.GetShotHeight());
-				Owner.A_AlertMonsters(flags: AMF_TARGETEMITTER);
+				Owner.A_AlertMonsters();
 				Owner.A_Recoil(6);
 				ChamberedRound = CRType_Spent;
 				break;

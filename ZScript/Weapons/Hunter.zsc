@@ -23,7 +23,7 @@ class FW_Hunter : FollowerWeapon
 				DistantNoise.Make(p, "world/shotgunfar");
 				Owner.A_StartSound("weapons/hunter", CHAN_WEAPON);
 				Owner.A_SpawnItemEx("HDSpentShell", cos(Owner.pitch) * 8, 0, Owner.height - 7 - sin(Owner.pitch) * 8, Owner.vel.x + cos(Owner.pitch) * cos(Owner.angle - random(86, 90)) * 5, Owner.vel.y + cos(Owner.pitch) * sin(Owner.angle - random(86, 90)) * 5, Owner.vel.z + sin(Owner.pitch) * random(4, 6), 0, SXF_ABSOLUTEMOMENTUM | SXF_NOCHECKPOSITION | SXF_TRANSFERPITCH);
-				Owner.A_AlertMonsters(flags: AMF_TARGETEMITTER);
+				Owner.A_AlertMonsters();
 				ChamberedRound = CRType_Empty;
 				if (!TryChamberRound())
 				{
