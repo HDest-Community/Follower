@@ -1397,6 +1397,13 @@ extend class FollowerHandler
 	override void NetworkProcess(ConsoleEvent e)
 	{
 		string cmd = e.Name.MakeLower();
+		int startIndex = e.Name.IndexOf(":"); // [Ace] We want the args to have their original casing.
+		string rawArgs = startIndex != -1 ? e.Name.Mid(startIndex + 1) : "";
+		Array<string> args;
+		if (rawArgs != "")
+		{
+			rawArgs.Split(args, " ");
+		}
 
 		if (cmd ~== "HDF_SetModifiers")
 		{
@@ -1420,10 +1427,7 @@ extend class FollowerHandler
 
 		if (cmd.IndexOf("hdf_rename") != -1)
 		{
-			Array<string> split;
-			e.Name.Split(split, ":");
-
-			if (split.Size() < 2)
+			if (args.Size() == 0)
 			{
 				return;
 			}
@@ -1433,24 +1437,21 @@ extend class FollowerHandler
 			plr.LineTrace(plr.angle, HDCONST_ONEMETRE * 100, plr.pitch, TRF_SOLIDACTORS | TRF_THRUBLOCK, plr.height - 5, data: data);
 			if (data.HitActor is 'HDFollower')
 			{
-				data.HitActor.SetTag(split[1]);
+				data.HitActor.SetTag(args[0]);
 			}
 			return;
 		}
 
 		if (cmd.IndexOf("hdf_resetfollower") != -1)
 		{
-			Array<string> split;
-			e.Name.Split(split, ":");
-
-			if (split.Size() < 2)
+			if (args.Size() == 0)
 			{
 				return;
 			}
 
 			for (int i = 0; i < Followers.Size(); ++i)
 			{
-				if (Followers[i].GetTag() ~== split[1])
+				if (Followers[i].GetTag() ~== args[0])
 				{
 					Followers[i].Reset();
 					break;
@@ -1532,12 +1533,14 @@ extend class FollowerHandler
 		// [Ace] This is an obvious cheat, so don't use it unless you absolutely HAVE to.
 		if (cmd.IndexOf("hdf_warptoplayer") != -1)
 		{
-			Array<string> split;
-			e.Name.Split(split, ":");
+			if (args.Size() == 0)
+			{
+				return;
+			}
 
 			for (int i = 0; i < Followers.Size(); ++i)
 			{
-				if (Followers[i].GetTag() ~== split[1])
+				if (Followers[i].GetTag() ~== args[0])
 				{
 					Followers[i].WarpToPlayer();
 					break;
@@ -1641,15 +1644,12 @@ extend class FollowerHandler
 
 		if (cmd.IndexOf("hdf_armorcommand") != -1)
 		{
-			string cmdArgs = cmd.Mid(cmd.IndexOf(":") + 1);
-			if (cmdArgs == "")
-			{
-				lastFol.TryUseArmor();
-			}
-			else if (cmdArgs ~== "d")
+			if (HasOption("d", args))
 			{
 				lastFol.DropArmor();
+				return;
 			}
+			lastFol.TryUseArmor();
 			return;
 		}
 
@@ -1682,14 +1682,11 @@ extend class FollowerHandler
 
 		if (cmd.IndexOf("hdf_tryreloadweapon") != -1)
 		{
-			string cmdArgs = cmd.Mid(cmd.IndexOf(":") + 1);
-			Array<string> split;
-			cmdArgs.Split(split, " ");
-			
 			int selSize = Selection[consoleplayer].SelFollowers.Size();
 			
-			bool dropMag = split.Size() > 0 && split[0] ~== "d";
-			if ((cmdArgs == "" || dropMag) && selSize == 1 && lastFol.Weapons.Size() == 1 && lastFol.CanInteractWith(false))
+			int argSize = args.Size();
+			bool dropMag = HasOption("d", args);
+			if ((argSize == 0 || dropMag) && selSize == 1 && lastFol.Weapons.Size() == 1 && lastFol.CanInteractWith(false))
 			{
 				int relFlags = 0;
 				if (dropMag)
@@ -1698,7 +1695,7 @@ extend class FollowerHandler
 				}
 				lastFol.TryReloadWeapon(lastFol.Weapons[0], HDFollower.RLF_MANUAL | relFlags);
 			}
-			if (split.Size() > 0)
+			if (argSize > 0)
 			{
 				for (int i = 0; i < selSize; ++i)
 				{
@@ -1710,14 +1707,14 @@ extend class FollowerHandler
 					}
 
 					int relFlags = 0;
-					if (split.Size() > 1 && split[1] ~== "d")
+					if (dropMag)
 					{
 						relFlags |= HDFollower.RLF_DROPMAG;
 					}
 
 					if (selSize == 1)
 					{
-						int index = split[0].ToInt();
+						int index = args[0].ToInt();
 						if (index > 0 && index <= wSize)
 						{
 							flw.TryReloadWeapon(flw.Weapons[index - 1], HDFollower.RLF_MANUAL | relFlags);
@@ -1725,7 +1722,7 @@ extend class FollowerHandler
 						}
 					}
 					
-					flw.TryReloadWeapon(flw.FindWeaponByName(split[0]), HDFollower.RLF_MANUAL | relFlags);
+					flw.TryReloadWeapon(flw.FindWeaponByName(args[0]), HDFollower.RLF_MANUAL | relFlags);
 				}
 			}
 			return;
@@ -1733,21 +1730,12 @@ extend class FollowerHandler
 
 		if (cmd.IndexOf('hdf_swapweapon') != -1)
 		{
-			if (lastFol.Weapons.Size() < 2) // [Ace] Swap what exactly?
+			if (lastFol.Weapons.Size() < 2 || args.Size() < 2) // [Ace] Swap what exactly?
 			{
 				return;
 			}
-			string commandString = cmd.Mid(cmd.IndexOf(":") + 1);
-			Array<string> split;
-			commandString.Split(split, " ");
-
-			if (split.Size() != 2)
-			{
-				return;
-			}
-
-			int wep1 = split[0].ToInt();
-			int wep2 = split[1].ToInt();
+			int wep1 = args[0].ToInt();
+			int wep2 = args[1].ToInt();
 
 			if (wep1 == 0 || wep2 == 0 || wep1 == wep2 || max(wep1, wep2) > lastFol.Weapons.Size())
 			{
@@ -1761,9 +1749,7 @@ extend class FollowerHandler
 
 		if (cmd.IndexOf("hdf_removeweapon") != -1)
 		{
-			Array<string> split;
-			e.Name.Split(split, ":");
-			if (split.Size() > 1)
+			if (args.Size() > 0)
 			{
 				int selSize = Selection[consoleplayer].SelFollowers.Size();
 				for (int i = 0; i < selSize; ++i)
@@ -1777,7 +1763,7 @@ extend class FollowerHandler
 
 					if (selSize == 1)
 					{
-						int index = split[1].ToInt();
+						int index = args[0].ToInt();
 						if (index > 0 && index <= wSize)
 						{
 							flw.Weapons[index - 1].EmptyWeapon();
@@ -1787,7 +1773,7 @@ extend class FollowerHandler
 						}
 					}
 
-					let wpn = flw.FindWeaponByName(split[1]);
+					let wpn = flw.FindWeaponByName(args[0]);
 					if (!wpn)
 					{
 						continue;
@@ -1803,9 +1789,7 @@ extend class FollowerHandler
 
 		if (cmd.IndexOf("hdf_transfermag") != -1)
 		{
-			Array<string> split;
-			e.Name.Split(split, ":");
-			HDMagAmmo item = HDMagAmmo(players[e.Player].mo.FindInventory(split[1]));
+			HDMagAmmo item = HDMagAmmo(players[e.Player].mo.FindInventory(args[0]));
 			if (item)
 			{
 				lastFol.AddMag(item, e.Args[0], e.Args[1]);
@@ -1815,9 +1799,7 @@ extend class FollowerHandler
 
 		if (cmd.IndexOf("hdf_transferitem") != -1)
 		{
-			Array<string> split;
-			e.Name.Split(split, ":");
-			HDPickup item = HDPickup(players[e.Player].mo.FindInventory(split[1]));
+			HDPickup item = HDPickup(players[e.Player].mo.FindInventory(args[0]));
 			if (item)
 			{
 				lastFol.AddItem(item, e.Args[0], item.bMULTIPICKUP ? HDFollower.MaxLooseAmmoAmount : 1, e.Args[1]);
@@ -1854,6 +1836,7 @@ extend class FollowerHandler
 	private ui void ProcessInputString(out string input, HDFollower selFol, bool multiselect)
 	{
 		Name cmd = input.Left(3);
+		string args = input.Mid(4);
 
 		if (!multiselect)
 		{
@@ -1862,7 +1845,7 @@ extend class FollowerHandler
 				case 'wpn': SendNetworkEvent("HDF_TryWeapon"); break;
 				case 'arm':
 				{
-					SendNetworkEvent("HDF_ArmorCommand:"..input.Mid(4));
+					SendNetworkEvent("HDF_ArmorCommand:"..args);
 					break;
 				}
 				case 'swp':
@@ -1871,7 +1854,7 @@ extend class FollowerHandler
 					// And if the character is not a whitepsace, u dun goofed.
 					if (input.Length() > 3)
 					{
-						SendNetworkEvent("HDF_SwapWeapon:"..input.Mid(4));
+						SendNetworkEvent("HDF_SwapWeapon:"..args);
 					}
 					break;
 				}
@@ -1883,20 +1866,32 @@ extend class FollowerHandler
 			case 'rld':
 			case 'rel':
 			{
-				SendNetworkEvent("HDF_TryReloadWeapon:"..input.Mid(4));
+				SendNetworkEvent("HDF_TryReloadWeapon:"..args);
 				break;
 			}
 			case 'rmv':
 			{
 				if (input.Length() > 3)
 				{
-					SendNetworkEvent("HDF_RemoveWeapon:"..input.Mid(4));
+					SendNetworkEvent("HDF_RemoveWeapon:"..args);
 				}
 				break;
 			}
 		}
 
 		input = "";
+	}
+
+	private bool HasOption(string opt, out Array<string> args)
+	{
+		for (int i = 0; i < args.Size(); ++i)
+		{
+			if (args[i] ~== opt)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	// [Ace] The only reason this is used is to allow dynamic menus with a variable number of options. That's literally the only reason.
