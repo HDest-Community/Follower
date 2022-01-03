@@ -108,10 +108,6 @@ NARI_ARMORGIVE_INIT_1 = "Oh, you have something for me? I'll wait for you to dro
 NARI_ARMORGIVE_INIT_2 = "Sure, just drop it here.";
 NARI_ARMORGIVE_INIT_3 = "Gimme gimme!";
 
-NARI_ARMORGIVE_MAYBEDROP_1 = "Unless you want me to take off my armor?";
-NARI_ARMORGIVE_MAYBEDROP_2 = "Or should I take off my armor?";
-NARI_ARMORGIVE_MAYBEDROP_3 = "Or do you want my armor?";
-
 NARI_ARMORGIVE_CANCEL_1 = "I see you've changed your mind.";
 NARI_ARMORGIVE_CANCEL_2 = "Alright then.";
 NARI_ARMORGIVE_CANCEL_3 = "Suit yourself.";

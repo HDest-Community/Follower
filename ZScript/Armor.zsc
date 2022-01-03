@@ -58,25 +58,24 @@ extend class HDFollower
 		let wornArmor = FindInventory("HDArmourWorn");
 		if (Status == FStatus_WaitingForArmor)
 		{
-			if (wornArmor)
-			{
-				A_DropInventory(wornArmor.GetClass());
-				PrintMessage(GetResponse("ARMORGIVE_STRIP"), "ArmorGive/Strip", PMType_General);
-				Status = FStatus_None;
-				return;
-			}
-			else
-			{
-				PrintMessage(GetResponse("ARMORGIVE_CANCEL"), "ArmorGive/Cancel", PMType_Important);
-				Status = FStatus_None;
-				return;
-			}
+			PrintMessage(GetResponse("ARMORGIVE_CANCEL"), "ArmorGive/Cancel", PMType_Important);
+			Status = FStatus_None;
+			return;
 		}
 
 		Status = FStatus_WaitingForArmor;
-		
-		string Message = GetResponse("ARMORGIVE_INIT")..(FindInventory("HDArmourWorn") ? " "..GetResponse("ARMORGIVE_MAYBEDROP") : "");
-		string VoiceLine = FindInventory("HDArmourWorn") ? "ArmorGive/Init2" : "ArmorGive/Init1";
-		PrintMessage(Message, VoiceLine, PMType_Important);
+		PrintMessage(GetResponse("ARMORGIVE_INIT"), "ArmorGive/Init1", PMType_Important);
+	}
+
+	void DropArmor()
+	{
+		let wornArmor = FindInventory("HDArmourWorn");
+		if (wornArmor && Status != FStatus_InactiveOrDead)
+		{
+			A_DropInventory(wornArmor.GetClass());
+			PrintMessage(GetResponse("ARMORGIVE_STRIP"), "ArmorGive/Strip", PMType_General);
+			Status = FStatus_None;
+			return;
+		}
 	}
 }

@@ -92,10 +92,6 @@ MARINE_ARMORGIVE_INIT_1 = "Armor, commander? Wouldn't say no to that.";
 MARINE_ARMORGIVE_INIT_2 = "Just drop it right here, commander.";
 MARINE_ARMORGIVE_INIT_3 = "Would be appreciated, commander.";
 
-MARINE_ARMORGIVE_MAYBEDROP_1 = "Or should I take mine off?";
-MARINE_ARMORGIVE_MAYBEDROP_2 = "Oh, do you mean you'd like my armor?";
-MARINE_ARMORGIVE_MAYBEDROP_3 = "Or I can give you mine if you want.";
-
 MARINE_ARMORGIVE_CANCEL_1 = "Understood, commander.";
 MARINE_ARMORGIVE_CANCEL_2 = "No worries, commander.";
 MARINE_ARMORGIVE_CANCEL_3 = "Acknowledged.";

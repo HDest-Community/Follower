@@ -1639,9 +1639,23 @@ extend class FollowerHandler
 			return;
 		}
 
-		if (cmd ~== "HDF_TryArmor")
+		if (cmd.IndexOf("hdf_armorcommand") != -1)
 		{
-			lastFol.TryUseArmor();
+			string cmdArgs = cmd.Mid(cmd.IndexOf(":") + 1);
+			if (cmdArgs == "")
+			{
+				lastFol.TryUseArmor();
+			}
+			else if (cmdArgs ~== "d")
+			{
+				lastFol.DropArmor();
+			}
+			return;
+		}
+
+		if (cmd ~== "HDF_DropArmor")
+		{
+			lastFol.DropArmor();
 			return;
 		}
 
@@ -1668,14 +1682,14 @@ extend class FollowerHandler
 
 		if (cmd.IndexOf("hdf_tryreloadweapon") != -1)
 		{
-			string commandString = cmd.Mid(cmd.IndexOf(":") + 1);
+			string cmdArgs = cmd.Mid(cmd.IndexOf(":") + 1);
 			Array<string> split;
-			commandString.Split(split, " ");
+			cmdArgs.Split(split, " ");
 			
 			int selSize = Selection[consoleplayer].SelFollowers.Size();
 			
-			bool dropMag = split.Size() > 0 && (split[0] ~== "drop" || split[0] ~== "d");
-			if ((commandString == "" || dropMag) && selSize == 1 && lastFol.Weapons.Size() == 1 && lastFol.CanInteractWith(false))
+			bool dropMag = split.Size() > 0 && split[0] ~== "d";
+			if ((cmdArgs == "" || dropMag) && selSize == 1 && lastFol.Weapons.Size() == 1 && lastFol.CanInteractWith(false))
 			{
 				int relFlags = 0;
 				if (dropMag)
@@ -1696,7 +1710,7 @@ extend class FollowerHandler
 					}
 
 					int relFlags = 0;
-					if (split.Size() > 1 && (split[1] ~== "drop" || split[1] ~== "d"))
+					if (split.Size() > 1 && split[1] ~== "d")
 					{
 						relFlags |= HDFollower.RLF_DROPMAG;
 					}
@@ -1846,7 +1860,11 @@ extend class FollowerHandler
 			switch (cmd)
 			{
 				case 'wpn': SendNetworkEvent("HDF_TryWeapon"); break;
-				case 'arm': SendNetworkEvent("HDF_TryArmor"); break;
+				case 'arm':
+				{
+					SendNetworkEvent("HDF_ArmorCommand:"..input.Mid(4));
+					break;
+				}
 				case 'swp':
 				{
 					// [Ace] 4 for mid because the format is "cmd arg1 arg2 arg3", so instead of passing the whitespace as well, omit it.

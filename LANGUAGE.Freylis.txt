@@ -113,10 +113,6 @@ FREYLIS_ARMORGIVE_INIT_1 = "Free armor? Don't mind if I do.";
 FREYLIS_ARMORGIVE_INIT_2 = "Just put it over here.";
 FREYLIS_ARMORGIVE_INIT_3 = "Would really be appreciated.";
 
-FREYLIS_ARMORGIVE_MAYBEDROP_1 = "Oh, or did you mean I should take mine off?";
-FREYLIS_ARMORGIVE_MAYBEDROP_2 = "Unless I'm supposed to give you mine?";
-FREYLIS_ARMORGIVE_MAYBEDROP_3 = "Then again, I have a feeling you want my armor.";
-
 FREYLIS_ARMORGIVE_CANCEL_1 = "Cool, but let me know when you actually want to give me something.";
 FREYLIS_ARMORGIVE_CANCEL_2 = "Ha-ha, very funny.";
 FREYLIS_ARMORGIVE_CANCEL_3 = "Fine, but don't expect me to not get killed.";

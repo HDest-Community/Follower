@@ -184,10 +184,6 @@ DAINA_ARMORGIVE_INIT_1 = "Oh, you have something for me? I'll wait for you to dr
 DAINA_ARMORGIVE_INIT_2 = "Sure, just drop it here.";
 DAINA_ARMORGIVE_INIT_3 = "Gimme gimme!";
 
-DAINA_ARMORGIVE_MAYBEDROP_1 = "Unless you want me to take off my armor?";
-DAINA_ARMORGIVE_MAYBEDROP_2 = "Or should I take off my armor?";
-DAINA_ARMORGIVE_MAYBEDROP_3 = "Or do you want my armor?";
-
 DAINA_ARMORGIVE_CANCEL_1 = "I see you've changed your mind.";
 DAINA_ARMORGIVE_CANCEL_2 = "Alright then.";
 DAINA_ARMORGIVE_CANCEL_3 = "Suit yourself.";
