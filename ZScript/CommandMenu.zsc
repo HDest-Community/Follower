@@ -30,6 +30,8 @@ struct FollowerUiData
 	CVar Scale;
 	CVar UiColorCVar;
 	Color UiColor;
+	Array<string> LastCommands;
+	int LastCommandShift;
 }
 
 extend class FollowerHandler
@@ -130,7 +132,7 @@ extend class FollowerHandler
 			case FMenu_Inventory:
 			{
 				int size = Selection[consoleplayer].SelFollowers.Size();
-				if (size > 1)
+				if (size > 1 || InInputMode[consoleplayer])
 				{
 					break;
 				}
@@ -252,6 +254,7 @@ extend class FollowerHandler
 			UiData[consoleplayer].FSlotIndex = 0;
 			UiData[consoleplayer].PSlotIndex = 0;
 			UiData[consoleplayer].PSlotSubIndex = 0;
+			UiData[consoleplayer].LastCommandShift = 0;
 		}
 
 		if (UiData[consoleplayer].Confirmation)
@@ -878,7 +881,7 @@ extend class FollowerHandler
 
 	override bool InputProcess(InputEvent e)
 	{
-		// [Ace] This exists so that your input isn't arbitrarily intercepted when it shouldn't be. Returning directly won't fly.
+		// [Ace] This exists so that your input isn't arbitrarily intercepted when it shouldn't be. Returning directly won't always fly.
 		bool ret = false;
 
 		bool IsShift = e.KeyScan == InputEvent.Key_LShift || e.KeyScan == InputEvent.Key_RShift;
@@ -927,6 +930,29 @@ extend class FollowerHandler
 			{
 				switch (e.KeyScan)
 				{
+					case InputEvent.Key_UpArrow:
+					{
+						int size = UiData[consoleplayer].LastCommands.Size();
+						if (size > 0)
+						{
+							if (UiData[consoleplayer].LastCommandShift < size)
+							{
+								UiData[consoleplayer].LastCommandShift++;
+							}
+							InputString[consoleplayer] = UiData[consoleplayer].LastCommands[size - UiData[consoleplayer].LastCommandShift];
+						}
+						return true;
+					}
+					case InputEvent.Key_DownArrow:
+					{
+						int size = UiData[consoleplayer].LastCommands.Size();
+						if (size > 0 && UiData[consoleplayer].LastCommandShift > 0)
+						{
+							UiData[consoleplayer].LastCommandShift--;
+							InputString[consoleplayer] = UiData[consoleplayer].LastCommandShift == 0 ? "" : UiData[consoleplayer].LastCommands[size - UiData[consoleplayer].LastCommandShift];
+						}
+						return true;
+					}
 					case InputEvent.Key_Enter:
 					{
 						InInputMode[consoleplayer] = false;
@@ -1896,7 +1922,12 @@ extend class FollowerHandler
 			}
 		}
 
-		input = "";
+		if (input != "")
+		{
+			UiData[consoleplayer].LastCommands.Push(input);
+			UiData[consoleplayer].LastCommandShift = 0;
+			input = "";
+		}
 	}
 
 	private bool HasOption(string opt, out Array<string> args)
