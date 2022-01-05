@@ -1069,7 +1069,7 @@ extend class FollowerHandler
 						{
 							if (!InInputMode[consoleplayer] && ret)
 							{
-								ProcessInputString(InputString[consoleplayer], lastFol, selSize > 1);
+								ProcessInputString(InputString[consoleplayer], selSize > 1);
 								return true;
 							}
 						}
@@ -1176,7 +1176,7 @@ extend class FollowerHandler
 						{
 							if (!InInputMode[consoleplayer] && ret)
 							{
-								ProcessInputString(InputString[consoleplayer], lastFol, selSize > 1);
+								ProcessInputString(InputString[consoleplayer], selSize > 1);
 								return true;
 							}
 
@@ -1396,6 +1396,7 @@ extend class FollowerHandler
 
 	override void NetworkProcess(ConsoleEvent e)
 	{
+		let plr = HDPlayerPawn(players[e.Player].mo);
 		string cmd = e.Name.MakeLower();
 		int startIndex = e.Name.IndexOf(":"); // [Ace] We want the args to have their original casing.
 		string rawArgs = startIndex != -1 ? e.Name.Mid(startIndex + 1) : "";
@@ -1432,7 +1433,6 @@ extend class FollowerHandler
 				return;
 			}
 
-			let plr = players[e.Player].mo;
 			FLineTraceData data;
 			plr.LineTrace(plr.angle, HDCONST_ONEMETRE * 100, plr.pitch, TRF_SOLIDACTORS | TRF_THRUBLOCK, plr.height - 5, data: data);
 			if (data.HitActor is 'HDFollower')
@@ -1469,8 +1469,6 @@ extend class FollowerHandler
 
 		if (cmd ~== "HDF_OpenMenu")
 		{
-			let plr = HDPlayerPawn(players[e.Player].mo);
-
 			FLineTraceData TraceData;
 			plr.LineTrace(plr.angle, HDCONST_ONEMETRE * 20, plr.pitch, TRF_NOSKY, plr.Height - HDCONST_CROWNTOSHOULDER, data: TraceData);
 			Actor ATarget = TraceData.HitActor;
@@ -1603,6 +1601,25 @@ extend class FollowerHandler
 					flw.Squad = e.Args[0] == 10 ? 0 : e.Args[0];
 				}
 			}
+			return;
+		}
+
+		if (cmd ~== "HDF_InputCommands")
+		{
+			string fullText = "\c[Sapphire]===== Input Commands =====";
+			string commandsList[] =
+			{
+				"\c[Fire]rld/rel \c[Green]<name>/<index> \c[Brick][d]\n\c[DarkGray]Supports multiselect: \c[Green]Yes\n\c[DarkGray]Description: \c[Green]name\c[White] is the name of the weapon as displayed in the inventory. Partial names are supported, e.g. \c[Gold]rel hun\c[White] to reload the Hunter. If a single follower is selected, using the weapon's \c[Green]index\c[White] is also supported. If the follower has only one weapon, \c[Green]name\c[White] and \c[Green]index\c[White] can be omitted. \c[Brick]d\c[White] is an option that, if provided, will forcefully drop the magazine instead of storing it. ZM66 mags will still be dropped regardless of this option.\n",
+				"\c[Fire]wpn\n\c[DarkGray]Supports multiselect: \c[Red]No\n\c[DarkGray]Description: \c[White]Enter weapon pickup mode. Type again to cancel.\n",
+				"\c[Fire]arm \c[Brick][d]\n\c[DarkGray]Supports multiselect: \c[Red]No\n\c[DarkGray]Description: \c[White]Enter armor pickup mode. Type again to cancel. Alternatively, if \c[Brick]d\c[White] is specified, drop worn armor instead.\n",
+				"\c[Fire]rmv \c[Green]<name>/<index>\n\c[DarkGray]Supports multiselect: \c[Red]No\n\c[DarkGray]Description: \c[White]Empty the weapon and remove it from the list. This will not drop it!\n",
+				"\c[Fire]swp \c[Green]<index1> <index2>\n\c[DarkGray]Supports multiselect: \c[Red]No\n\c[DarkGray]Description: \c[White]Swap the weapons in those indices.\n"
+			};
+			for (int i = 0; i < commandsList.Size(); ++i)
+			{
+				fullText = fullText.."\n"..commandsList[i];
+			}
+			plr.A_Log(fullText, true);
 			return;
 		}
 
@@ -1833,7 +1850,7 @@ extend class FollowerHandler
 	//
 	// ----------------------------------------------------------------------
 
-	private ui void ProcessInputString(out string input, HDFollower selFol, bool multiselect)
+	private ui void ProcessInputString(out string input, bool multiselect)
 	{
 		Name cmd = input.Left(3);
 		string args = input.Mid(4);
