@@ -1925,7 +1925,8 @@ extend class FollowerHandler
 			}
 		}
 
-		if (input != "")
+		int cSize = UiData[consoleplayer].LastCommands.Size();
+		if (input != "" && (cSize == 0 || input != UiData[consoleplayer].LastCommands[cSize - 1]))
 		{
 			UiData[consoleplayer].LastCommands.Push(input);
 		}
