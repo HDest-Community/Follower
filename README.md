@@ -42,7 +42,7 @@ Most of the navigation is on-screen, but there are a few things that aren't obvi
 - When selecting amount for transfer, Shift + Left/Right arrow keys increases the amount by 20 instead of 2.
 - You can give followers weapons through the inventory management menu. This will enable them to use the weapons, assuming it's a valid weapon to begin with. Keep in mind that the weapons given to them will not be exactly the same as the ones they'll actually use. That is, giving your followers a factory chamber boss will automatically turn it into a custom chamber. This will not change. Too much trouble to account for all of the variations. You also can't take back weapons. Once you give them, they're gone forever.
 
-To see all of the available input field commands, type "HDF_InputCommands" in the console:
+To see all of the available input field commands, type "HDF_InputCommands" in the console. To terminate input without applying, use Ctrl + C.
 
 ##### Loadouts
 ---

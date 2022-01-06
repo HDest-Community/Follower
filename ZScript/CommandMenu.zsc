@@ -188,7 +188,7 @@ extend class FollowerHandler
 					}
 					else if (UiData[consoleplayer].SlotFocused == 1)
 					{
-						UpdateValidItems(lastFol);
+						UpdateValidItems(consoleplayer, lastFol);
 						if (--UiData[consoleplayer].PSlotIndex < 0)
 						{
 							UiData[consoleplayer].PSlotIndex = UiData[consoleplayer].ValidItems.Size() - 1;
@@ -206,7 +206,7 @@ extend class FollowerHandler
 					}
 					else if (UiData[consoleplayer].SlotFocused == 1)
 					{
-						UpdateValidItems(lastFol);
+						UpdateValidItems(consoleplayer, lastFol);
 						if (++UiData[consoleplayer].PSlotIndex == UiData[consoleplayer].ValidItems.Size())
 						{
 							UiData[consoleplayer].PSlotIndex = 0;
@@ -254,7 +254,6 @@ extend class FollowerHandler
 			UiData[consoleplayer].FSlotIndex = 0;
 			UiData[consoleplayer].PSlotIndex = 0;
 			UiData[consoleplayer].PSlotSubIndex = 0;
-			UiData[consoleplayer].LastCommandShift = 0;
 		}
 
 		if (UiData[consoleplayer].Confirmation)
@@ -928,6 +927,12 @@ extend class FollowerHandler
 		{
 			if (InInputMode[consoleplayer])
 			{
+				// [Ace] 'C' or 'c'. From what I tested, uppercase isn't even used, but let's check for it just in case.
+				if (Modifiers[consoleplayer] & OpMod_Ctrl && (e.KeyChar == 67 || e.KeyChar == 99))
+				{
+					InInputMode[consoleplayer] = false;
+					return true;
+				}
 				switch (e.KeyScan)
 				{
 					case InputEvent.Key_UpArrow:
@@ -1108,9 +1113,8 @@ extend class FollowerHandler
 							}
 							case 2:
 							{
-								InInputMode[consoleplayer] = true;
-								ret = true;
-								break;
+								EnterInputMode(consoleplayer);
+								return true;
 							}
 							case 3:
 							{
@@ -1213,7 +1217,7 @@ extend class FollowerHandler
 
 							if (UiData[consoleplayer].SlotFocused == 0)
 							{
-								UpdateValidItems(lastFol);
+								UpdateValidItems(consoleplayer, lastFol);
 								UiData[consoleplayer].SlotFocused++;
 								for (int i = 0; i < UiData[consoleplayer].ValidItems.Size(); ++i)
 								{
@@ -1253,7 +1257,7 @@ extend class FollowerHandler
 											UiData[consoleplayer].SlotFocused++;
 										}
 									}
-									UpdateValidItems(lastFol);
+									UpdateValidItems(consoleplayer, lastFol);
 								}
 								else
 								{
@@ -1294,9 +1298,8 @@ extend class FollowerHandler
 
 					if (NumKey == 2 && lastFol.CanInteractWith(false))
 					{
-						InInputMode[consoleplayer] = true;
-						ret = true;
-						break;
+						EnterInputMode(consoleplayer);
+						return true;
 					}
 					if (NumKey == 1)
 					{
@@ -1876,7 +1879,7 @@ extend class FollowerHandler
 	//
 	// ----------------------------------------------------------------------
 
-	private ui void ProcessInputString(out string input, bool multiselect)
+	private ui void ProcessInputString(string input, bool multiselect)
 	{
 		Name cmd = input.Left(3);
 		string args = input.Mid(4);
@@ -1925,8 +1928,6 @@ extend class FollowerHandler
 		if (input != "")
 		{
 			UiData[consoleplayer].LastCommands.Push(input);
-			UiData[consoleplayer].LastCommandShift = 0;
-			input = "";
 		}
 	}
 
@@ -1954,16 +1955,16 @@ extend class FollowerHandler
 		return Command;
 	}
 
-	private ui void UpdateValidItems(HDFollower flw)
+	private ui void UpdateValidItems(int plrNum, HDFollower flw)
 	{
-		UiData[consoleplayer].ValidItems.Clear();
-		Actor plr = players[consoleplayer].mo;
+		UiData[plrNum].ValidItems.Clear();
+		Actor plr = players[plrNum].mo;
 		for (Inventory Next = plr.Inv; Next; Next = Next.Inv)
 		{
 			HDPickup item = HDPickup(Next);
 			if (item && flw.IsValidItem(item.GetClass()))
 			{
-				UiData[consoleplayer].ValidItems.Push(item);
+				UiData[plrNum].ValidItems.Push(item);
 			}
 		}
 	}
@@ -2022,6 +2023,13 @@ extend class FollowerHandler
 		{
 			return pkp.Amount > 0 && index < pkp.Amount;
 		}
+	}
+
+	private ui void EnterInputMode(int plrNum)
+	{
+		UiData[plrNum].LastCommandShift = 0;
+		InputString[plrNum] = "";
+		InInputMode[plrNum] = true;
 	}
 
 	private void CloseFollowerMenu(int plrNum)
