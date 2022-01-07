@@ -13,6 +13,14 @@ extend class HDFollower
 			TargetUncountable = CVar.GetCVar('hdf_targetuncountable');
 		}
 
+		if (!MaxRange)
+		{
+			MaxRange = CVar.GetCVar('hdf_maxrange');
+		}
+
+		double limit = HDCONST_ONEMETRE * MaxRange.GetInt();
+		MaxTargetRange = limit > 0 ? min(limit, default.MaxTargetRange) : default.MaxTargetRange;
+
 		let TheEye = BlockThingsIterator.Create(self, MaxTargetRange);
 
 		while (TheEye.Next())
@@ -146,4 +154,5 @@ extend class HDFollower
 	}
 
 	protected transient CVar TargetUncountable;
+	protected transient CVar MaxRange;
 }

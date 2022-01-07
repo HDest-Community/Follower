@@ -12,6 +12,7 @@ user int hdf_printlevel_chat = 3;
 user int hdf_printlevel_voice = 3;
 
 server bool hdf_targetuncountable = true;
+server int hdf_maxrange = 0;
 
 user bool hdf_droponstart = true;
 user bool hdf_quickaccess = true;
