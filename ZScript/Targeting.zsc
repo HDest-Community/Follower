@@ -16,7 +16,7 @@ extend class HDFollower
 		if (++TargetRefreshTicker >= 35)
 		{
 			TargetList.Clear();
-			TargetRefreshTicker = random(-5, 5);
+			TargetRefreshTicker = random[follrand](-5, 5);
 
 			double limit = HDCONST_ONEMETRE * MaxRange.GetInt();
 			MaxTargetRange = limit > 0 ? min(limit, default.MaxTargetRange) : default.MaxTargetRange;
