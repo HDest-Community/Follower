@@ -8,56 +8,60 @@ extend class HDFollower
 {
 	private void AcquireTargets()
 	{
-		if (!TargetUncountable)
-		{
-			TargetUncountable = CVar.GetCVar('hdf_targetuncountable');
-		}
-
 		if (!MaxRange)
 		{
 			MaxRange = CVar.GetCVar('hdf_maxrange');
 		}
 
-		double limit = HDCONST_ONEMETRE * MaxRange.GetInt();
-		MaxTargetRange = limit > 0 ? min(limit, default.MaxTargetRange) : default.MaxTargetRange;
-
-		let TheEye = BlockThingsIterator.Create(self, MaxTargetRange);
-
-		while (TheEye.Next())
+		if (++TargetRefreshTicker >= 35)
 		{
-			Actor next = TheEye.thing;
-			HDPlayerPawn PTarget = HDPlayerPawn(TheEye.thing);
+			TargetList.Clear();
+			TargetRefreshTicker = random(-5, 5);
 
-			// [Ace] Weapons are listed in descending priority.
-			// If a weapon is missing from the list, the follower will never attack with that weapon.
-			class<FollowerWeapon> W; // [Ace] I won't even bother giving it a full name. This is how much I care at this point.
+			double limit = HDCONST_ONEMETRE * MaxRange.GetInt();
+			MaxTargetRange = limit > 0 ? min(limit, default.MaxTargetRange) : default.MaxTargetRange;
 
-			if (next && (bFRIENDLY && !next.bFRIENDLY || !bFRIENDLY && next.bFRIENDLY) && next.bISMONSTER && next.bSHOOTABLE && next != self && next.Health > 0 && CheckSight(next, SF_SEEPASTSHOOTABLELINES) && !TargetIsIncapped(next))
+			let TheEye = BlockThingsIterator.Create(self, MaxTargetRange);
+			while (TheEye.Next())
 			{
-				// [Ace] Sometimes resurrected troops can have a ridiculous body damage and won't get attacked, but one single shot will blow them to pieces.
-				if (next is 'HERPBot' || next is 'DERPBot' || (!TargetUncountable.GetBool() && !next.bCOUNTKILL))
+				Actor next = TheEye.thing;
+				if (CheckTarget(next))
 				{
-					continue;
+					TargetList.Push(next);
 				}
+			}
+		}
 
-				if (next is 'HDMobBase' && HDMobBase(next).BodyDamage > next.SpawnHealth() * 1.2 || !CanHitTarget(next))
-				{
-					continue;
-				}
+		int size = TargetList.Size();
+		for (int i = 0; i < size; ++i)
+		{
+			Actor t = TargetList[i];
+			if (!t || !CheckTarget(t))
+			{
+				continue;
+			}
 
-				HDMobBase hdmob = HDMobBase(next);
-				bool alreadyTargeted = IsAttackedBySomeoneElse(next);
-				int shields = next.CountInv('HDMagicShield');
+			HDPlayerPawn pTarget = HDPlayerPawn(t);
+			if (pTarget)
+			{
+				FTarget.Actor = pTarget;
+				FTarget.Priority = 10000;
+			}
+			else
+			{
+				HDMobBase hdmob = HDMobBase(t);
+				bool alreadyTargeted = IsAttackedBySomeoneElse(t);
+				int shields = t.CountInv('HDMagicShield');
 
-				double noHealthFac = 1.0 - next.Health / double(next.SpawnHealth());
+				double noHealthFac = 1.0 - t.Health / double(t.SpawnHealth());
 				double noShieldFac = hdmob && hdmob.MaxShields > 0 ? 1.0 - shields / double(hdmob.MaxShields) : 0;
 
-				double priority = next.SpawnHealth() + next.Health * noHealthFac + (hdmob ? hdmob.MaxShields : 0) + shields * noShieldFac;
-				if (next.bBOSS)
+				double priority = t.SpawnHealth() + t.Health * noHealthFac + (hdmob ? hdmob.MaxShields : 0) + shields * noShieldFac;
+				if (t.bBOSS)
 				{
 					priority *= 2;
 				}
-				else if (next is 'Necromancer')
+				else if (t is 'Necromancer')
 				{
 					priority *= 1.5;
 				}
@@ -66,25 +70,20 @@ extend class HDFollower
 					priority *= 0.2;
 				}
 
-				if (!FTarget.Actor || FTarget.Actor != next && FTarget.Priority < priority)
+				if (!FTarget.Actor || FTarget.Actor != t && FTarget.Priority < priority)
 				{
 					if (hdf_debug & FDebug_Targeting)
 					{
-						Console.Printf("[%s] %s acquired %s with %i priority. Target has %i/%i health, %i/%i shields, and %i bodydamage.", GetTimestamp(), GetTag(), next.GetClassName(), priority, next.Health, next.SpawnHealth(), shields, hdmob ? hdmob.MaxShields : -1, hdmob ? hdmob.bodydamage : -1);
+						Console.Printf("[%s] %s acquired %s with %i priority. Target has %i/%i health, %i/%i shields, and %i bodydamage.", GetTimestamp(), GetTag(), t.GetClassName(), priority, t.Health, t.SpawnHealth(), shields, hdmob ? hdmob.MaxShields : -1, hdmob ? hdmob.bodydamage : -1);
 					}
-					FTarget.Actor = next;
+					FTarget.Actor = t;
 					FTarget.Priority = int(priority);
 				}
-			}
-			else if (!bFRIENDLY && PTarget && PTarget.Health > 0 && CheckSight(PTarget, SF_SEEPASTSHOOTABLELINES))
-			{
-				FTarget.Actor = PTarget;
-				FTarget.Priority = 10000;
 			}
 		}
 	}
 
-	protected virtual bool CheckTarget()
+	protected virtual bool CheckTarget(Actor other = null)
 	{
 		// [Ace] Don't target if:
 		// - Follower is friendly and target is friendly or player;
@@ -92,15 +91,34 @@ extend class HDFollower
 		// - Follower has no sight of target;
 		// - Target is dead;
 		// - Target is incapped;
+		// - Target is too fucked up;
+		// - Target is a bot.
 
-		if (!FTarget.Actor)
+		if (!TargetUncountable)
+		{
+			TargetUncountable = CVar.GetCVar('hdf_targetuncountable');
+		}
+
+		if (!other)
+		{
+			other = FTarget.Actor;
+		}
+		if (!other)
 		{
 			return false;
 		}
 
-		bool FriendlyCheck = bFRIENDLY && !FTarget.Actor.bFRIENDLY && FTarget.Actor != LinkedPlayer;
-		bool HostileCheck = !bFRIENDLY && (FTarget.Actor == LinkedPlayer || FTarget.Actor.bFRIENDLY);
-		return CanHitTarget(FTarget.Actor) && (FriendlyCheck || HostileCHeck) && FTarget.Actor.Health > 0 && CheckSight(FTarget.Actor, SF_SEEPASTSHOOTABLELINES) && !TargetIsIncapped(FTarget.Actor) && FTarget.Actor.bSHOOTABLE;
+		if (!other.bISMONSTER && !other.player || other.Health <= 0 || !other.bSHOOTABLE)
+		{
+			return false;
+		}
+
+		bool FriendlyCheck = bFRIENDLY && !other.bFRIENDLY && other != LinkedPlayer;
+		bool HostileCheck = !bFRIENDLY && (other == LinkedPlayer || other.bFRIENDLY);
+		bool bodyDamageCheck = !(other is 'HDMobBase') || HDMobBase(other).BodyDamage <= other.SpawnHealth() * 1.2;
+		bool botCheck = !(other is 'HERPBot' || other is 'DERPBot');
+		bool countableCheck = other.bCOUNTKILL || TargetUncountable.GetBool();
+		return botCheck && countableCheck && bodyDamageCheck && CanHitTarget(other) && (FriendlyCheck || HostileCHeck) && CheckSight(other, SF_SEEPASTSHOOTABLELINES) && !TargetIsIncapped(other);
 	}
 
 	protected bool TargetIsIncapped(Actor other)
@@ -153,6 +171,8 @@ extend class HDFollower
 		return data.HitActor == a || data.HitActor is 'HDPlayerPawn' || data.HitActor is 'HDFollower';
 	}
 
-	protected transient CVar TargetUncountable;
-	protected transient CVar MaxRange;
+	private int TargetRefreshTicker;
+	private Array<Actor> TargetList;
+	private transient CVar TargetUncountable;
+	private transient CVar MaxRange;
 }
