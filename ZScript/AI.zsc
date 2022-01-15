@@ -260,7 +260,6 @@ extend class HDFollower
 			else
 			{
 				ClearTarget();
-				IdleWeapon();
 				ReactionTime = default.ReactionTime;
 				if (SelWeapon && SelWeapon.Status == FollowerWeapon.WStatus_Idle)
 				{
@@ -270,6 +269,7 @@ extend class HDFollower
 					}
 					SelWeapon = null;
 				}
+				IdleWeapon();
 			}
 		}
 
