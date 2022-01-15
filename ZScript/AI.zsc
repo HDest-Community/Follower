@@ -117,6 +117,7 @@ extend class HDFollower
 					}
 					else
 					{
+						Status = FStatus_None;
 						Order = FOrder_Follow;
 					}
 				}
