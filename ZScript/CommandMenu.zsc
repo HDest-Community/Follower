@@ -27,9 +27,6 @@ struct FollowerUiData
 	int FSlotIndex;
 	bool Confirmation;
 	int SelectedColorIndex;
-	CVar Scale;
-	CVar UiColorCVar;
-	Color UiColor;
 	Array<string> LastCommands;
 	int LastCommandShift;
 }
@@ -69,6 +66,9 @@ extend class FollowerHandler
 	private transient ui bool InInputMode[MAXPLAYERS];
 	private transient ui string InputString[MAXPLAYERS];
 
+	private transient ui CVar Scale;
+	private transient ui CVar UiColorCVar;
+
 	private transient ui FollowerUiData UiData[MAXPLAYERS];
 
 	// [Ace] This is the foreground used to make the dark squares.
@@ -83,28 +83,35 @@ extend class FollowerHandler
 	
 	override void RenderOverlay(RenderEvent e)
 	{
-		MainFont = HUDFont.Create("CONFONT");
+		if (!MainFont)
+		{
+			MainFont = HUDFont.Create("CONFONT");
+		}
 
 		int OriginalWidth = StatusBar.HorizontalResolution;
 		int OriginalHeight = StatusBar.VerticalResolution;
 
-		if (!UiData[consoleplayer].UiColorCVar)
+		if (!UiColorCVar)
 		{
-			UiData[consoleplayer].UiColorCVar = CVar.GetCVar('hdf_uicolor', players[consoleplayer]);
+			UiColorCVar = CVar.GetCVar('hdf_uicolor', players[consoleplayer]);
 		}
-		UiData[consoleplayer].UiColor = 0x80000000 | UiData[consoleplayer].UiColorCVar.GetInt();
+		if (!Scale)
+		{
+			Scale = CVar.GetCVar('hdf_uiscale', players[consoleplayer]);
+		}
 
-		if (!UiData[consoleplayer].Scale)
-		{
-			UiData[consoleplayer].Scale = CVar.GetCVar('hdf_uiscale', players[consoleplayer]);
-		}
-		double uiScale = UiData[consoleplayer].Scale.GetFloat();
+		double uiScale = Scale.GetFloat();
 		StatusBar.BeginHUD(1.0, true);
 		StatusBar.SetSize(StatusBar.RelTop, int(640 / uiScale), int(480 / uiScale));
 
 		if (FollowerMenuLevel[consoleplayer] > FMenu_Closed && !AutomapActive && GameState == GS_LEVEL)
 		{
-			DrawCommandMenu(HDStatusBar(StatusBar), (0, 40), StatusBar.DI_SCREEN_LEFT | StatusBar.DI_SCREEN_VCENTER | StatusBar.DI_TEXT_ALIGN_LEFT);
+			int uiCol = UiColorCVar.GetInt();
+			if (uiCol == 0)
+			{
+				uiCol = players[consoleplayer].GetDisplayColor();
+			}
+			DrawCommandMenu(HDStatusBar(StatusBar), (0, 40), StatusBar.DI_SCREEN_LEFT | StatusBar.DI_SCREEN_VCENTER | StatusBar.DI_TEXT_ALIGN_LEFT, 0x80000000 | uiCol, MainFont);
 		}
 
 		// --------------- PRETEND WE WERE NEVER HERE ---------------
@@ -301,10 +308,10 @@ extend class FollowerHandler
 	//
 	// ----------------------------------------------------------------------
 
-	private ui void DrawCommandMenu(HDStatusBar sb, vector2 pos, int flags)
+	private ui void DrawCommandMenu(HDStatusBar sb, vector2 pos, int flags, Color col, HUDFont fnt)
 	{
 		vector2 OriginalPos = pos;
-		int rectHeight = MainFont.mFont.GetHeight() + 4;
+		int rectHeight = fnt.mFont.GetHeight() + 4;
 
 		// [Ace] This is still valid even when multiple followers are selected.
 		// [24.09.2021] Note to self: before you freak out again that "THE INVENTORY MENUS ARE BUGGED", keep in mind that dead and hostile followers are always
@@ -328,12 +335,12 @@ extend class FollowerHandler
 				Commands.Push("Cancel");
 
 				string n = (SelMarine[consoleplayer].bFRIENDLY ? "Friendly " : "Hostile ").."marine";
-				DrawRectangle(sb, pos, (140, rectHeight), MainFont, GetTruncatedText(n, 16), flags, Font.FindFontColor('FLW_NameBlue'));
+				DrawRectangle(sb, pos, (140, rectHeight), col, fnt, GetTruncatedText(n, 16), flags, Font.FindFontColor('FLW_NameBlue'));
 				pos.y += rectHeight + Spacing;
 
 				for (int i = 0; i < Commands.Size(); ++i)
 				{
-					DrawRectangle(sb, pos, (140, rectHeight), MainFont, (i + 1)..") "..Commands[i], flags);
+					DrawRectangle(sb, pos, (140, rectHeight), col, fnt, (i + 1)..") "..Commands[i], flags);
 					pos.y += rectHeight + Spacing;
 				}
 				break;
@@ -364,13 +371,13 @@ extend class FollowerHandler
 					LastIndex++;
 					bool valid = Followers[i].CanInteractWith(false);
 					int blockSize = valid || Followers[i].Squad > 0 ? rectHeight * 2 - 2 : rectHeight;
-					DrawFollowerRectangle(sb, pos, (190, blockSize), MainFont, LastIndex, Followers[i], valid, flags);
+					DrawFollowerRectangle(sb, pos, (190, blockSize), col, fnt, LastIndex, Followers[i], valid, flags);
 					pos.y += blockSize + Spacing;
 				}
 				if (FSize > FollowersPerPage * (FollowerPage[consoleplayer] + 1))
 				{
 					LastIndex++;
-					DrawRectangle(sb, pos, (190, rectHeight), MainFont, LastIndex..") Next...", flags);
+					DrawRectangle(sb, pos, (190, rectHeight), col, fnt, LastIndex..") Next...", flags);
 					pos.y += rectHeight + Spacing;
 				}
 				if (FollowerPage[consoleplayer] > 0)
@@ -380,7 +387,7 @@ extend class FollowerHandler
 					{
 						LastIndex = 0;
 					}
-					DrawRectangle(sb, pos, (190, rectHeight), MainFont, LastIndex..") Back...", flags);
+					DrawRectangle(sb, pos, (190, rectHeight), col, fnt, LastIndex..") Back...", flags);
 					pos.y += rectHeight + Spacing;
 				}
 				break;
@@ -400,26 +407,26 @@ extend class FollowerHandler
 
 				if (selSize > 1)
 				{
-					DrawRectangle(sb, pos, (160, rectHeight), MainFont, selSize.." followers", flags, Font.FindFontColor('FLW_NameBlue'));
+					DrawRectangle(sb, pos, (160, rectHeight), col, fnt, selSize.." followers", flags, Font.FindFontColor('FLW_NameBlue'));
 					pos.y += rectHeight + Spacing;
 
-					DrawRectangle(sb, pos, (160, rectHeight), MainFont, "1) Orders", flags);
+					DrawRectangle(sb, pos, (160, rectHeight), col, fnt, "1) Orders", flags);
 					pos.y += rectHeight + Spacing;
 
-					DrawRectangle(sb, pos, (160, rectHeight), MainFont, InInputMode[consoleplayer] ? InputString[consoleplayer].."_" : "2) Input command", flags);
+					DrawRectangle(sb, pos, (160, rectHeight), col, fnt, InInputMode[consoleplayer] ? InputString[consoleplayer].."_" : "2) Input command", flags);
 					pos.y += rectHeight + Spacing;
 
-					DrawRectangle(sb, pos, (160, rectHeight), MainFont, "3) Misc commands", flags);
+					DrawRectangle(sb, pos, (160, rectHeight), col, fnt, "3) Misc commands", flags);
 					pos.y += rectHeight + Spacing;
 
 					if (Followers.Size() > 1)
 					{
-						DrawRectangle(sb, pos, (160, rectHeight), MainFont, "4) Back...", flags);
+						DrawRectangle(sb, pos, (160, rectHeight), col, fnt, "4) Back...", flags);
 					}
 				}
 				else if (lastFol.Health <= 0)
 				{
-					DrawRectangle(sb, pos, (260, rectHeight), MainFont, GetTruncatedText(lastFol.GetTag(), 27), flags, Font.FindFontColor('FLW_NameBlue'));
+					DrawRectangle(sb, pos, (260, rectHeight), col, fnt, GetTruncatedText(lastFol.GetTag(), 27), flags, Font.FindFontColor('FLW_NameBlue'));
 					pos.y += rectHeight + Spacing;
 
 					int RequiredSips = lastFol.GetRequiredSips();
@@ -472,19 +479,19 @@ extend class FollowerHandler
 
 					for (int i = 0; i < Commands.Size(); ++i)
 					{
-						DrawRectangle(sb, pos, (260, rectHeight), MainFont, (i + 1)..") "..Commands[i], flags);
+						DrawRectangle(sb, pos, (260, rectHeight), col, fnt, (i + 1)..") "..Commands[i], flags);
 						pos.y += rectHeight + Spacing;
 					}
 				}
 				else
 				{
-					DrawRectangle(sb, pos, (160, rectHeight), MainFont, GetTruncatedText(lastFol.GetTag(), 19), flags, Font.FindFontColor('FLW_NameBlue'));
+					DrawRectangle(sb, pos, (160, rectHeight), col, fnt, GetTruncatedText(lastFol.GetTag(), 19), flags, Font.FindFontColor('FLW_NameBlue'));
 					pos.y += rectHeight + Spacing;
 
 					if (Followers.Size() == 1 && lastFol.CanInteractWith(false))
 					{
 						double dist = lastFol.Distance3D(lastFol.LinkedPlayer) / HDCONST_ONEMETRE;
-						DrawRectangle(sb, pos, (160, rectHeight), MainFont, String.Format("%.2fm", dist), flags, Font.CR_DARKGRAY);
+						DrawRectangle(sb, pos, (160, rectHeight), col, fnt, String.Format("%.2fm", dist), flags, Font.CR_DARKGRAY);
 						pos.y += rectHeight + Spacing;
 					}
 
@@ -500,7 +507,7 @@ extend class FollowerHandler
 
 					for (int i = 0; i < Commands.Size(); ++i)
 					{
-						DrawRectangle(sb, pos, (160, rectHeight), MainFont, (i + 1)..") "..Commands[i], flags);
+						DrawRectangle(sb, pos, (160, rectHeight), col, fnt, (i + 1)..") "..Commands[i], flags);
 						pos.y += rectHeight + Spacing;
 					}
 				}
@@ -522,20 +529,20 @@ extend class FollowerHandler
 
 				if (selSize > 1)
 				{
-					DrawRectangle(sb, pos, (240, rectHeight), MainFont, selSize.." followers", flags, Font.FindFontColor('FLW_NameBlue'));
+					DrawRectangle(sb, pos, (240, rectHeight), col, fnt, selSize.." followers", flags, Font.FindFontColor('FLW_NameBlue'));
 				}
 				else
 				{
-					DrawRectangle(sb, pos, (240, rectHeight), MainFont, GetTruncatedText(lastFol.GetTag(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
+					DrawRectangle(sb, pos, (240, rectHeight), col, fnt, GetTruncatedText(lastFol.GetTag(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
 				}
 				pos.y += rectHeight + Spacing;
 
 				for (int i = 0; i < Orders.Size(); ++i)
 				{
-					DrawRectangle(sb, pos, (240, rectHeight), MainFont, (i + 1)..") "..(selSize == 1 && lastFol.Order == i ? "\c[Green]" : "")..Orders[i].."\c-", flags);
+					DrawRectangle(sb, pos, (240, rectHeight), col, fnt, (i + 1)..") "..(selSize == 1 && lastFol.Order == i ? "\c[Green]" : "")..Orders[i].."\c-", flags);
 					pos.y += rectHeight + Spacing;
 				}
-				DrawRectangle(sb, pos, (240, rectHeight), MainFont, (Orders.Size() + 1)..") Back...", flags);
+				DrawRectangle(sb, pos, (240, rectHeight), col, fnt, (Orders.Size() + 1)..") Back...", flags);
 				break;
 			}
 
@@ -561,7 +568,7 @@ extend class FollowerHandler
 				{
 					for (int i = 0; i < wSize; ++i)
 					{
-						DrawWeaponRectangle(sb, pos + (0, (wHeight + Spacing) * i) - (0, wSize > 7 ? (wHeight + Spacing) * (wSize - 7) : 0), (w, wHeight), MainFont, flags, lastFol, lastFol.Weapons[i]);
+						DrawWeaponRectangle(sb, pos + (0, (wHeight + Spacing) * i) - (0, wSize > 7 ? (wHeight + Spacing) * (wSize - 7) : 0), (w, wHeight), col, fnt, flags, lastFol, lastFol.Weapons[i]);
 					}
 					pos.x += w + Spacing;
 				}
@@ -570,39 +577,39 @@ extend class FollowerHandler
 				bool showArmor = arm && (wSize < 2 || UiData[consoleplayer].SlotFocused == 0);
 				if (showArmor)
 				{
-					DrawArmorRectangle(sb, pos + (w + Spacing, rectHeight + Spacing), (wHeight, wHeight), flags, arm);	
+					DrawArmorRectangle(sb, pos + (w + Spacing, rectHeight + Spacing), (wHeight, wHeight), col, fnt, flags, arm);	
 				}
 
-				DrawRectangle(sb, pos, (w + (showArmor ? wHeight + Spacing : (UiData[consoleplayer].SlotFocused > 0 ? w + Spacing : 0)), rectHeight), MainFont, GetTruncatedText(lastFol.GetTag(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
+				DrawRectangle(sb, pos, (w + (showArmor ? wHeight + Spacing : (UiData[consoleplayer].SlotFocused > 0 ? w + Spacing : 0)), rectHeight), col, fnt, GetTruncatedText(lastFol.GetTag(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
 				pos.y += rectHeight + Spacing;
 
 				if (wSize == 1)
 				{
-					DrawWeaponRectangle(sb, pos, (w, wHeight), MainFont, flags, lastFol, lastFol.Weapons[0], selSize > 1 ? 1 : 0);
+					DrawWeaponRectangle(sb, pos, (w, wHeight), col, fnt, flags, lastFol, lastFol.Weapons[0], selSize > 1 ? 1 : 0);
 					pos.y += wHeight + Spacing;
 				}
 
 				int rows = int(ceil(HDFollower.SlotCount / double(InvColumns)));
 				int invh = rows * SlotSize + rows;
-				DrawFollowerInventory(sb, pos, (w, invh), MainFont, flags, lastFol);
+				DrawFollowerInventory(sb, pos, (w, invh), col, fnt, flags, lastFol);
 
 				if (UiData[consoleplayer].SlotFocused > 0)
 				{
-					DrawPlayerInventory(sb, pos + (w + Spacing, 0), (w, invh), MainFont, flags);
+					DrawPlayerInventory(sb, pos + (w + Spacing, 0), (w, invh), col, fnt, flags);
 				}
 				pos.y += invh;
 
-				DrawRectangle(sb, pos, (w, rectHeight), MainFont, "1) Cancel/Back", flags);
+				DrawRectangle(sb, pos, (w, rectHeight), col, fnt, "1) Cancel/Back", flags);
 				pos.y += rectHeight + Spacing;
 
 				if (lastFol.CanInteractWith(false))
 				{
-					DrawRectangle(sb, pos, (w, rectHeight), MainFont, InInputMode[consoleplayer] ? InputString[consoleplayer].."_" : "2) Input command", flags);
+					DrawRectangle(sb, pos, (w, rectHeight), col, fnt, InInputMode[consoleplayer] ? InputString[consoleplayer].."_" : "2) Input command", flags);
 					pos.y += rectHeight + Spacing;
 				}
 
-				DrawRectangle(sb, pos, (w, rectHeight), MainFont, "Bsp) Take", flags); pos.y += rectHeight + Spacing;
-				DrawRectangle(sb, pos, (w, rectHeight), MainFont, "Ent) Select/Give", flags); pos.y += rectHeight + Spacing;
+				DrawRectangle(sb, pos, (w, rectHeight), col, fnt, "Bsp) Take", flags); pos.y += rectHeight + Spacing;
+				DrawRectangle(sb, pos, (w, rectHeight), col, fnt, "Ent) Select/Give", flags); pos.y += rectHeight + Spacing;
 				break;
 			}
 
@@ -620,11 +627,11 @@ extend class FollowerHandler
 
 				if (selSize > 1)
 				{
-					DrawRectangle(sb, pos, (200, rectHeight), MainFont, selSize.." followers", flags, Font.FindFontColor('FLW_NameBlue'));
+					DrawRectangle(sb, pos, (200, rectHeight), col, fnt, selSize.." followers", flags, Font.FindFontColor('FLW_NameBlue'));
 				}
 				else
 				{
-					DrawRectangle(sb, pos, (200, rectHeight), MainFont, GetTruncatedText(lastFol.GetTag(), 24), flags, Font.FindFontColor('FLW_NameBlue'));
+					DrawRectangle(sb, pos, (200, rectHeight), col, fnt, GetTruncatedText(lastFol.GetTag(), 24), flags, Font.FindFontColor('FLW_NameBlue'));
 				}
 				pos.y += rectHeight + Spacing;
 
@@ -641,7 +648,7 @@ extend class FollowerHandler
 
 				for (int i = 0; i < Commands.Size(); ++i)
 				{
-					DrawRectangle(sb, pos, (200, rectHeight), MainFont, (i + 1)..") "..Commands[i], flags);
+					DrawRectangle(sb, pos, (200, rectHeight), col, fnt, (i + 1)..") "..Commands[i], flags);
 					pos.y += rectHeight + Spacing;
 				}
 				break;
@@ -666,15 +673,15 @@ extend class FollowerHandler
 
 				if (selSize > 1)
 				{
-					DrawRectangle(sb, pos, (w, rectHeight), MainFont, selSize.." followers", flags, Font.FindFontColor('FLW_NameBlue'));
+					DrawRectangle(sb, pos, (w, rectHeight), col, fnt, selSize.." followers", flags, Font.FindFontColor('FLW_NameBlue'));
 				}
 				else
 				{
-					DrawRectangle(sb, pos, (w, rectHeight), MainFont, GetTruncatedText(lastFol.GetTag(), int(ceil(w / 8))), flags, Font.FindFontColor('FLW_NameBlue'));
+					DrawRectangle(sb, pos, (w, rectHeight), col, fnt, GetTruncatedText(lastFol.GetTag(), int(ceil(w / 8))), flags, Font.FindFontColor('FLW_NameBlue'));
 				}
 				pos.y += rectHeight + Spacing;
 
-				sb.Fill(UiData[consoleplayer].UiColor, pos.x, pos.y, w, h, flags);
+				sb.Fill(col, pos.x, pos.y, w, h, flags);
 				for (int i = 0; i < tSize; ++i)
 				{
 					if (UiData[consoleplayer].SelectedColorIndex == i)
@@ -685,7 +692,7 @@ extend class FollowerHandler
 					sb.Fill(TColors[i], pos.x + 1 + (ColSquareSize + 1) * (i % PickerColumns), pos.y + 1 + (ColSquareSize + 1) * (i / PickerColumns), ColSquareSize, ColSquareSize, flags);
 				}
 
-				DrawRectangle(sb, pos + (0, h + 1), (w, rectHeight), MainFont, "0) Back", flags);
+				DrawRectangle(sb, pos + (0, h + 1), (w, rectHeight), col, fnt, "0) Back", flags);
 				pos.y += rectHeight + Spacing;
 				break;
 			}
@@ -699,10 +706,10 @@ extend class FollowerHandler
 	//
 	// ----------------------------------------------------------------------
 
-	private ui void DrawFollowerRectangle(HDStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, int index, HDFollower flw, bool valid, int flags)
+	private ui void DrawFollowerRectangle(HDStatusBar sb, vector2 pos, vector2 size, Color col, HUDFont fnt, int index, HDFollower flw, bool valid, int flags)
 	{
 		bool selected = Selection[consoleplayer].SelFollowers.Find(flw) != Selection[consoleplayer].SelFollowers.Size();
-		Color c = valid ? (selected ? Color(192, 96, 255, 96) : UiData[consoleplayer].UiColor) : Color(192, 255, 16, 16);
+		Color c = valid ? (selected ? Color(192, 96, 255, 96) : col) : Color(192, 255, 16, 16);
 		sb.Fill(c, pos.x, pos.y, size.x, size.y, flags);
 		sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 
@@ -724,12 +731,12 @@ extend class FollowerHandler
 		}
 	}
 
-	private ui void DrawWeaponRectangle(HDStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, int flags, HDFollower flw, FollowerWeapon wpn, int flags2 = 0)
+	private ui void DrawWeaponRectangle(HDStatusBar sb, vector2 pos, vector2 size, Color col, HUDFont fnt, int flags, HDFollower flw, FollowerWeapon wpn, int flags2 = 0)
 	{
 		// [Ace] flags2 values are as follows:
 		// 1 - multiselect
 
-		sb.Fill(UiData[consoleplayer].UiColor, pos.x, pos.y, size.x, size.y, flags);
+		sb.Fill(col, pos.x, pos.y, size.x, size.y, flags);
 		sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 
 		sb.DrawString(fnt, wpn.GetName(), pos + (2, 2), flags, Font.FindFontColor('FLW_WeaponBlue'));
@@ -758,7 +765,7 @@ extend class FollowerHandler
 			sb.DrawString(fnt, ChamberString..sb.FormatNumber(flw.GetAmount(MType ? MType : AType), 1, 4), pos + (size.x - 4, size.y - 15), flags | sb.DI_TEXT_ALIGN_RIGHT, Font.CR_WHITE);
 
 			// [Ace] Magazine bar.
-			sb.Fill(UiData[consoleplayer].UiColor, pos.x + 1, pos.y + (size.y - 4), size.x - 2, 1, flags);
+			sb.Fill(col, pos.x + 1, pos.y + (size.y - 4), size.x - 2, 1, flags);
 			sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 1, pos.y + (size.y - 3), size.x - 2, 2, flags);
 			int mag = MaxMag == 1 ? int(wpn.ChamberedRound == wpn.CRType_Chambered) : wpn.Mag;
 			double amPercent = clamp(mag / double(MaxMag), 0, 1.0);
@@ -766,16 +773,14 @@ extend class FollowerHandler
 		}
 	}
 
-	private ui void DrawFollowerInventory(HDStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, int flags, HDFollower flw)
+	private ui void DrawFollowerInventory(HDStatusBar sb, vector2 pos, vector2 size, Color col, HUDFont fnt, int flags, HDFollower flw)
 	{
 		for (int i = 0; i < HDFollower.SlotCount; ++i)
 		{
 			vector2 realPos = (SlotSize * (i % InvColumns) + (i % InvColumns), SlotSize * (i / InvColumns) + (i / InvColumns));
 
-			Color col;
 			switch (UiData[consoleplayer].FSlotIndex == i ? (UiData[consoleplayer].SlotFocused > 0 ? 2 : 1) : 0)
 			{
-				case 0: col = UiData[consoleplayer].UiColor; break;
 				case 1: col = Color(192, 255, 255, 128); break;
 				case 2: col = Color(192, 96, 255, 96); break;
 			}
@@ -795,7 +800,7 @@ extend class FollowerHandler
 	}
 
 	// [Ace] Contrary to what the function is called, it only draws the *valid* items.
-	private ui void DrawPlayerInventory(HDStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, int flags)
+	private ui void DrawPlayerInventory(HDStatusBar sb, vector2 pos, vector2 size, Color col, HUDFont fnt, int flags)
 	{
 		for (int i = 0; i < HDFollower.SlotCount; ++i)
 		{
@@ -804,7 +809,7 @@ extend class FollowerHandler
 			Color col;
 			switch (UiData[consoleplayer].PSlotSubIndex == i ? (UiData[consoleplayer].SlotFocused > 1 ? 2 : 1) : 0)
 			{
-				case 0: col = UiData[consoleplayer].UiColor; break;
+				case 0: col = col; break;
 				case 1: col = Color(192, 255, 255, 128); break;
 				case 2: col = Color(192, 96, 255, 96); break;
 			}
@@ -840,35 +845,35 @@ extend class FollowerHandler
 		if (UiData[consoleplayer].SlotFocused == 2)
 		{
 			int rectHeight = MainFont.mFont.GetHeight() + 4;
-			DrawAmountRectangle(sb, pos + (0, size.y), (size.x, rectHeight), fnt, UiData[consoleplayer].TransferAmount, 1000, flags, Font.CR_CREAM);
+			DrawAmountRectangle(sb, pos + (0, size.y), (size.x, rectHeight), col, fnt, UiData[consoleplayer].TransferAmount, 1000, flags, Font.CR_CREAM);
 		}
 	}
 
-	private ui void DrawAmountRectangle(HDStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, int amt, int maxAmt, int flags, int col = Font.CR_WHITE)
+	private ui void DrawAmountRectangle(HDStatusBar sb, vector2 pos, vector2 size, Color col, HUDFont fnt, int amt, int maxAmt, int flags, int textCol = Font.CR_WHITE)
 	{
-		sb.Fill(UiData[consoleplayer].UiColor, pos.x, pos.y, size.x, size.y, flags);
+		sb.Fill(col, pos.x, pos.y, size.x, size.y, flags);
 		sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 		double percent = amt / double(maxAmt);
 		sb.Fill(Color(DarkAlpha, 255, 255, 128), pos.x + 1, pos.y + 1, (size.x - 2) * percent, size.y - 2, flags);
-		sb.DrawString(fnt, "Amount:"..amt, pos + (2, 2), flags, col);
+		sb.DrawString(fnt, "Amount:"..amt, pos + (2, 2), flags, textCol);
 	}
 
-	private ui void DrawArmorRectangle(HDStatusBar sb, vector2 pos, vector2 size, int flags, HDArmourWorn arm)
+	private ui void DrawArmorRectangle(HDStatusBar sb, vector2 pos, vector2 size, Color col, HUDFont fnt, int flags, HDArmourWorn arm)
 	{
-		sb.Fill(UiData[consoleplayer].UiColor, pos.x, pos.y, size.x, size.y, flags);
+		sb.Fill(col, pos.x, pos.y, size.x, size.y, flags);
 		sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 
 		sb.DrawImage(AceCore.GetIcon(arm), pos + size / 2, flags | sb.DI_ITEM_CENTER, box: size - (5, 5));
-		sb.DrawString(MainFont, (arm.Mega ? "\c[Blue]" : "\c[DarkGreen]")..arm.Durability, pos + size - (4, 10), flags | sb.DI_TEXT_ALIGN_RIGHT);
+		sb.DrawString(fnt, (arm.Mega ? "\c[Blue]" : "\c[DarkGreen]")..arm.Durability, pos + size - (4, 10), flags | sb.DI_TEXT_ALIGN_RIGHT);
 	}
 
-	private ui void DrawRectangle(HDStatusBar sb, vector2 pos, vector2 size, HUDFont fnt, string command, int flags, int col = Font.CR_WHITE)
+	private ui void DrawRectangle(HDStatusBar sb, vector2 pos, vector2 size, Color col, HUDFont fnt, string command, int flags, int textCol = Font.CR_WHITE)
 	{
-		sb.Fill(UiData[consoleplayer].UiColor, pos.x, pos.y, size.x, size.y, flags);
+		sb.Fill(col, pos.x, pos.y, size.x, size.y, flags);
 		sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 		if (command != "")
 		{
-			sb.DrawString(fnt, command, (pos.x + 2, pos.y + (size.y - fnt.mFont.GetHeight()) / 2), flags, col); 
+			sb.DrawString(fnt, command, (pos.x + 2, pos.y + (size.y - fnt.mFont.GetHeight()) / 2), flags, textCol); 
 		}
 	}
 
