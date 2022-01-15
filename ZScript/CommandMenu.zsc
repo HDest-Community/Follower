@@ -779,12 +779,13 @@ extend class FollowerHandler
 		{
 			vector2 realPos = (SlotSize * (i % InvColumns) + (i % InvColumns), SlotSize * (i / InvColumns) + (i / InvColumns));
 
+			Color realCol = col;
 			switch (UiData[consoleplayer].FSlotIndex == i ? (UiData[consoleplayer].SlotFocused > 0 ? 2 : 1) : 0)
 			{
-				case 1: col = Color(192, 255, 255, 128); break;
-				case 2: col = Color(192, 96, 255, 96); break;
+				case 1: realCol = Color(192, 255, 255, 128); break;
+				case 2: realCol = Color(192, 96, 255, 96); break;
 			}
-			sb.Fill(col, pos.x + realPos.x, pos.y + realPos.y, SlotSize, SlotSize, flags);
+			sb.Fill(realCol, pos.x + realPos.x, pos.y + realPos.y, SlotSize, SlotSize, flags);
 			sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 1 + realPos.x, pos.y + 1 + realPos.y, SlotSize - 2, SlotSize - 2, flags);
 
 			let item = flw.Slots[i];
@@ -806,14 +807,13 @@ extend class FollowerHandler
 		{
 			vector2 realPos = (SlotSize * (i % InvColumns) + (i % InvColumns), SlotSize * (i / InvColumns) + (i / InvColumns));
 
-			Color col;
+			Color realCol = col;
 			switch (UiData[consoleplayer].PSlotSubIndex == i ? (UiData[consoleplayer].SlotFocused > 1 ? 2 : 1) : 0)
 			{
-				case 0: col = col; break;
-				case 1: col = Color(192, 255, 255, 128); break;
-				case 2: col = Color(192, 96, 255, 96); break;
+				case 1: realCol = Color(192, 255, 255, 128); break;
+				case 2: realCol = Color(192, 96, 255, 96); break;
 			}
-			sb.Fill(col, pos.x + RealPos.x, pos.y + RealPos.y, SlotSize, SlotSize, flags);
+			sb.Fill(realCol, pos.x + RealPos.x, pos.y + RealPos.y, SlotSize, SlotSize, flags);
 			sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 1 + RealPos.x, pos.y + 1 + RealPos.y, SlotSize - 2, SlotSize - 2, flags);
 		}
 
