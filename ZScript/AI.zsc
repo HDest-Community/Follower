@@ -39,10 +39,11 @@ extend class HDFollower
 
 		if (hdf_debug & FDebug_Status)
 		{
-			Console.Printf("%s (index %i) has %s out.\nCurrent status is %i. Current order is %i. Follower is %smoving.\nFollower is targeting %s. Follower following %s.\n--------------------",
+			Console.Printf("%s (index %i) has %s out with status %i.\nCurrent status is %i. Current order is %i. Follower is %smoving.\nFollower is targeting %s. Follower following %s.\n--------------------",
 				GetTag(),
 				Index,
 				SelWeapon ? SelWeapon.GetName() : "no weapon",
+				SelWeapon ? SelWeapon.Status : -1,
 				Status, Order, !Moving ? "not " : "",
 				FTarget.Actor ? FTarget.Actor.GetTag() : "nothing",
 				next is 'HDFollower' ? HDFollower(next).GetTag() : (next ? next.GetTag() : "nothing"));
@@ -103,22 +104,20 @@ extend class HDFollower
 
 			if (Order == FOrder_ComeAndHelp && bFRIENDLY && DistanceToPlayer < 512 && CanSeePlayer)
 			{
-				if (DistanceToPlayer < MedicRange && Status != FStatus_HealingPlayer) // [Ace] Start stapling if close enough. Minimum distance is 22. Don't go any lower or follower will be stuck walking towards you.
+				if (!PNeedsMedic && !PNeedsHelp)
 				{
+					StopHealing();	
+				}
+				else if (DistanceToPlayer < MedicRange && Status != FStatus_HealingPlayer) // [Ace] Start stapling if close enough. Minimum distance is 22. Don't go any lower or follower will be stuck walking towards you.
+				{
+					Status = FStatus_HealingPlayer;
 					if (PNeedsMedic)
 					{
-						Status = FStatus_HealingPlayer;
 						SetStateLabel('StapleHumptyDumptyBackTogetherAgain');
 					}
 					else if (PNeedsHelp)
 					{
-						Status = FStatus_HealingPlayer;
 						SetStateLabel('PullYouUp');
-					}
-					else
-					{
-						Status = FStatus_None;
-						Order = FOrder_Follow;
 					}
 				}
 				else
@@ -261,6 +260,7 @@ extend class HDFollower
 			else
 			{
 				ClearTarget();
+				IdleWeapon();
 				ReactionTime = default.ReactionTime;
 				if (SelWeapon && SelWeapon.Status == FollowerWeapon.WStatus_Idle)
 				{
