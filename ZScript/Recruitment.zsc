@@ -145,14 +145,14 @@ extend class FollowerHandler
 			"Marc", "Fabio", "Andrea", "Bernard", "Aleksy", "Roch", "Bartosz", "Maciej", "Marek", "Stryker", "Arkadiusz", "Adoranz", "Tristan", "Isaiah", "Mebunai", "Eleazar", "Ishbaal",
 			"Ahiam", "Hiddai", "Elhanan", "Abiezer", "Ithai", "Eliam", "Uriah", "Fane", "Reks", "Zayne", "Salvador", "Zeus", "Axton", "Zane", "Blake", "Raynor", "Jim", "Thomas", "Ronald",
 			"Wayn", "Lero", "Leon", "Jack", "Armanis", "Krieg", "Emerton", "Samael", "Kragoth", "Blisk", "Ryo", "Nathaniel", "Killian", "Dominic", "Santiago", "Sebastian", "Malcolm",
-			"Rakanoth", "Ixanos", "Nick", "Bane", "Kaada", "Loque", "Xan", "Isaak", "Hawkins", "Ne'Ban", "Miller", "Othello", "Abaddon", "Anubis", "Raiden", "Mengsk"
+			"Rakanoth", "Ixanos", "Nick", "Bane", "Kaada", "Loque", "Xan", "Isaak", "Hawkins", "Ne'Ban", "Miller", "Othello", "Abaddon", "Anubis", "Raiden", "Mengsk", "Samson", "Gabriel"
 		};
 		static const string FemaleNames[] =
 		{
 			"Arlin", "Elaine", "Ophelia", "Almedha", "Sana", "Karmin", "Ashera", "Liv", "Yrsa", "Kristiane", "Irene", "Hedvig", "Lena", "Freja", "Maya", "Kristine", "Elin", "Emeryn",
 			"Amelix", "Emson", "Rayne", "Azraelle", "Visse", "Ephemera", "Samantha", "Kura", "Kyra", "Malise", "Faith", "Edela", "Alice", "Ymir", "Lauren", "Alana", "Akasha", "Avicia",
 			"Lillian", "Lilith", "May", "Eleanor", "Yuzuki", "Kaede", "Aida", "Sapphire", "Selket", "Bastet", "Hathor", "Nekhbet", "Tayet", "Auriel", "Nephthys", "Athena", "Artemis",
-			"Eirene", "Eris", "Freya", "Hera", "Juno", "Kali", "Luna", "Maeve", "Minerva", "Persephone", "Rhea", "Selene", "Themis"
+			"Eirene", "Eris", "Freya", "Hera", "Juno", "Kali", "Luna", "Maeve", "Minerva", "Persephone", "Rhea", "Selene", "Themis", "Gabriella", "Gabby"
 		};
 		static const string NeutralNames[] =
 		{
