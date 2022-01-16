@@ -25,7 +25,7 @@ extend class HDFollower
 			while (TheEye.Next())
 			{
 				Actor next = TheEye.thing;
-				if (CheckTarget(next))
+				if (CheckTarget(next, true))
 				{
 					TargetList.Push(next);
 				}
@@ -36,7 +36,7 @@ extend class HDFollower
 		for (int i = 0; i < size; ++i)
 		{
 			Actor t = TargetList[i];
-			if (!t || !CheckTarget(t))
+			if (!t || !CheckTarget(t, true))
 			{
 				continue;
 			}
@@ -83,7 +83,7 @@ extend class HDFollower
 		}
 	}
 
-	protected virtual bool CheckTarget(Actor other = null)
+	protected virtual bool CheckTarget(Actor other = null, bool fromAcquire = false)
 	{
 		// [Ace] Don't target if:
 		// - Follower is friendly and target is friendly or player;
@@ -118,7 +118,7 @@ extend class HDFollower
 		bool bodyDamageCheck = !(other is 'HDMobBase') || HDMobBase(other).BodyDamage <= other.SpawnHealth() * 1.2;
 		bool botCheck = !(other is 'HERPBot' || other is 'DERPBot');
 		bool countableCheck = other.bCOUNTKILL || TargetUncountable.GetBool();
-		return botCheck && countableCheck && bodyDamageCheck && CanHitTarget(other) && (FriendlyCheck || HostileCHeck) && CheckSight(other, SF_SEEPASTSHOOTABLELINES) && !TargetIsIncapped(other);
+		return botCheck && countableCheck && bodyDamageCheck && CanHitTarget(other, !fromAcquire) && (FriendlyCheck || HostileCHeck) && CheckSight(other, SF_SEEPASTSHOOTABLELINES) && !TargetIsIncapped(other);
 	}
 
 	protected bool TargetIsIncapped(Actor other)
@@ -143,7 +143,8 @@ extend class HDFollower
 	{
 		for (int i = 0; i < Handler.Followers.Size(); ++i)
 		{
-			if (Handler.Followers[i] != self && Handler.Followers[i].FTarget.Actor == a && Handler.Followers[i].Status != FStatus_InactiveOrDead)
+			let flw = Handler.Followers[i];
+			if (flw != self && flw.FTarget.Actor == a && flw.Status != FStatus_InactiveOrDead && flw.SelWeapon && flw.SelWeapon.Status != FollowerWeapon.WStatus_Reloading)
 			{
 				return true;
 			}
@@ -152,7 +153,7 @@ extend class HDFollower
 		return false;
 	}
 
-	private bool CanHitTarget(Actor a)
+	private bool CanHitTarget(Actor a, bool allowDebug = true)
 	{
 		double OldAngle = angle;
 		double OldPitch = pitch;
@@ -163,9 +164,9 @@ extend class HDFollower
 		angle = OldAngle;
 		pitch = OldPitch;
 
-		if (data.HitActor != a && hdf_debug & FDebug_Aiming)
+		if (allowDebug && data.HitActor != a && hdf_debug & FDebug_Aiming)
 		{
-			Console.Printf("Failed to target %s. %s is blocking the line of fire.", a.GetClassName(), data.HitActor ? data.HitActor.GetClassName() : 'Nothing?????');
+			Console.Printf("[%s] %s failed to target %s. %s is blocking the line of fire.", GetTimestamp(), GetTag(), a.GetClassName(), data.HitActor ? data.HitActor.GetClassName() : 'Nothing???');
 		}
 
 		return data.HitActor == a || data.HitActor is 'HDPlayerPawn' || data.HitActor is 'HDFollower';

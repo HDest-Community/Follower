@@ -20,14 +20,10 @@ class FW_Bronto : FollowerWeapon
 				Owner.A_AlertMonsters();
 				Owner.A_Recoil(6);
 				ChamberedRound = CRType_Spent;
-				break;
-			}
-			case 10:
-			{
-				return true;
+				return FSResult_End;
 			}
 		}
-		return false;
+		return FSResult_None;
 	}
 	override bool DoReloadSequence(out int ticker)
 	{
@@ -72,14 +68,14 @@ class FW_Bronto : FollowerWeapon
 			}
 			case 62:
 			{
-				return true;
+				return FSResult_End;
 			}
 		}
-		return false;
+		return FSResult_None;
 	}
 	override int AssessPriority(Actor trgt, int shields, bool multitarget)
 	{
-		if ((trgt.bBOSS || trgt is 'PainLord' && trgt.Health < 400) && !multitarget)
+		if ((trgt.bBOSS || trgt is 'PainLord' && trgt.Health > trgt.default.Health * 0.4) && !multitarget)
 		{
 			return WPriority_Highest;
 		}
