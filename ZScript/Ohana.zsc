@@ -35,23 +35,33 @@ extend class HDFollower
 				return;
 			}
 
+			bool debug = hdf_debug & FDebug_Ohana;
+
 			// https://www.desmos.com/calculator/djspjquvmc
 			int deathReq = int(max(OhanaBaseTime / 30, OhanaBaseTime - (livingMonsters * 20) ** 1.23));
 			int dissReq = int(max(OhanaBaseTime / 30, OhanaBaseTime - (livingMonsters * 80) ** 1.25));
 
-			if (OhanaTicker >= deathReq && Health > 0)
+			if (Health > 0 && OhanaTicker >= deathReq)
 			{
+				if (debug)
+				{
+					Console.Printf("[%s] The monsters got to %s.", GetTimestamp(), GetTag());
+				}
 				A_Die();
 				BodyDamage = 10000;
 				BloodReviveTicker = 10000;
 			}
-			else if (OhanaTicker >= dissReq)
+			else if (Health <= 0 && OhanaTicker >= dissReq)
 			{
+				if (debug)
+				{
+					Console.Printf("[%s] %s's corpse was eaten.", GetTimestamp(), GetTag());
+				}
 				Handler.RemoveFollower(self, true);
 				return;
 			}
 
-			if (hdf_debug & FDebug_Ohana)
+			if (debug)
 			{
 				int timeLeft = (Health > 0 ? deathReq : dissReq) - OhanaTicker;
 				int secs = Thinker.Tics2Seconds(timeLeft); 
