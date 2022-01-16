@@ -201,6 +201,9 @@ extend class HDFollower
 		return false;
 	}
 
+	// [Ace; 16.01.22] It's not necessary to check if another follower is currently using the same weapon in order to prevent concentrated fire on trash.
+	// If the weapon priority is written properly, the follower will not select that weapon if it will be used in concentrated fire.
+	// Do that for all weapons and eventually no weapons will be selected, leading to the follower ignoring that particular target.
 	private void SelectBestWeapon(Actor trgt)
 	{
 		if (!trgt)
@@ -210,7 +213,14 @@ extend class HDFollower
 		
 		Array<FollowerWeapon> valid;
 		int shields = trgt.CountInv('HDMagicShield');
-		bool alreadyTargeted = IsAttackedBySomeoneElse(trgt);
+		bool alreadyTargeted = IsAttackedBySomeoneElse(trgt, false);
+
+		bool debug = hdf_debug & FDebug_Weapons;
+
+		if (debug)
+		{
+			Console.Printf("[%s] %s is attempting to select best weapon.", GetTimestamp(), GetTag());
+		}
 
 		for (int i = 0; i < Weapons.Size(); ++i)
 		{
@@ -256,13 +266,13 @@ extend class HDFollower
 			}
 		}
 
-		if (!newSel && SelWeapon && hdf_debug & FDebug_Weapons)
+		if (!newSel && SelWeapon && debug)
 		{
 			Console.Printf("[%s] %s's %s was nulled. No usable weapons.", GetTimestamp(), GetTag(), SelWeapon.GetName());
 		}
 		if (SelWeapon != newSel)
 		{
-			if (newSel && hdf_debug & FDebug_Weapons)
+			if (newSel && debug)
 			{
 				Console.Printf("[%s] %s selected %s with %i rounds and %s spare ammo.", GetTimestamp(), GetTag(), newSel.GetName(), int(newSel.ChamberedRound == newSel.CRType_Chambered) + newSel.Mag, newSel.HasSpare() ? "some" : "no");
 			}

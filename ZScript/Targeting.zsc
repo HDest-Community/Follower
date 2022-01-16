@@ -50,7 +50,7 @@ extend class HDFollower
 			else
 			{
 				HDMobBase hdmob = HDMobBase(t);
-				bool alreadyTargeted = IsAttackedBySomeoneElse(t);
+				bool alreadyTargeted = IsAttackedBySomeoneElse(t, true);
 				int shields = t.CountInv('HDMagicShield');
 
 				double noHealthFac = 1.0 - t.Health / double(t.SpawnHealth());
@@ -69,6 +69,8 @@ extend class HDFollower
 				{
 					priority *= 0.2;
 				}
+
+				priority += max(0, 100 - 100 * (Distance3D(t) / 1024.0));
 
 				if (!FTarget.Actor || FTarget.Actor != t && FTarget.Priority < priority)
 				{
@@ -139,12 +141,12 @@ extend class HDFollower
 		}
 	}
 
-	private bool IsAttackedBySomeoneElse(Actor a)
+	private bool IsAttackedBySomeoneElse(Actor a, bool ignoreWeapon)
 	{
 		for (int i = 0; i < Handler.Followers.Size(); ++i)
 		{
 			let flw = Handler.Followers[i];
-			if (flw != self && flw.FTarget.Actor == a && flw.Status != FStatus_InactiveOrDead && flw.SelWeapon && flw.SelWeapon.Status != FollowerWeapon.WStatus_Reloading)
+			if (flw != self && flw.FTarget.Actor == a && flw.Status != FStatus_InactiveOrDead && (ignoreWeapon || flw.SelWeapon && flw.SelWeapon.Status != FollowerWeapon.WStatus_Reloading))
 			{
 				return true;
 			}
