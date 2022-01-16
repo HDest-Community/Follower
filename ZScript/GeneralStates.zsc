@@ -34,11 +34,17 @@ extend class HDFollower
 		Status = FStatus_InactiveOrDead;
 		scale = default.scale;
 		CrouchFactor = 0;
+		OhanaTicker = 0;
 	}
 
 	protected void OnFalldown()
 	{
-		OnDeath();
+		ClearGoal();
+		ClearTarget();
+		IdleWeapon();
+		Status = FStatus_InactiveOrDead;
+		scale = default.scale;
+		CrouchFactor = 0;
 		MaxStepHeight = 0; // [Ace] Prevents you from sombrero-ing the follower if you stand over them while they're incapped.
 		A_SetSize(-1, deathheight);
 		A_Vocalize(PainSound);

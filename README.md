@@ -76,6 +76,7 @@ Marines basically function the exact same way as regular followers, and you can 
 - Followers will move out of the way if you're moving towards them while holding the Sprint key.
 - Holding Shift while giving orders will not close the menu.
 - While in input mode, pressing the Up and Down arrow keys moves through the command history.
+- Telling followers to stop in front of a linedef (e.g. switch or door) will activate it as if the player did it, allowing for some basic remote control.
 
 ### Modding
 ---

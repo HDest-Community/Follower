@@ -39,7 +39,8 @@ extend class HDFollower
 
 		if (hdf_debug & FDebug_Status)
 		{
-			Console.Printf("%s (index %i) has %s out with status %i.\nCurrent status is %i. Current order is %i. Follower is %smoving.\nFollower is targeting %s. Follower following %s.\n--------------------",
+			Console.Printf("[%s] %s (index %i) has %s out with status %i.\nCurrent status is %i. Current order is %i. Follower is %smoving.\nFollower is targeting %s. Follower is following %s.\n--------------------",
+				GetTimestamp(),
 				GetTag(),
 				Index,
 				SelWeapon ? SelWeapon.GetName() : "no weapon",
