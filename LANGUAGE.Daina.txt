@@ -137,12 +137,12 @@ DAINA_NOAMMO_RL_2 = "I'll need more rocket grenades, hon.";
 DAINA_NOAMMO_RL_3 = "Got more boom-booms?";
 
 DAINA_NOAMMO_LIBERATOR_1 = "My libby has libbed its last.";
-DAINA_NOAMMO_LIBERATOR_2 = "I'll need some seven mil for my Liberator.";
-DAINA_NOAMMO_LIBERATOR_3 = "Hey, do you happen to have any seven mil?";
+DAINA_NOAMMO_LIBERATOR_2 = "I'll need some mags for my Liberator.";
+DAINA_NOAMMO_LIBERATOR_3 = "Hey, do you happen to have any liberator mags?";
 
-DAINA_NOAMMO_BOSS_1 = "There goes my seven mil ammo. I hope you have any left.";
+DAINA_NOAMMO_BOSS_1 = "There goes my last liberator mag. I hope you have any left.";
 DAINA_NOAMMO_BOSS_2 = "So much for the Boss. I'm out.";
-DAINA_NOAMMO_BOSS_3 = "Spare any loose seven mil rounds?";
+DAINA_NOAMMO_BOSS_3 = "Spare any clips?";
 
 DAINA_NOAMMO_BRONTO_1 = "That was the last bolt. Got any on you?";
 DAINA_NOAMMO_BRONTO_2 = "I'm out of bronto bolts.";

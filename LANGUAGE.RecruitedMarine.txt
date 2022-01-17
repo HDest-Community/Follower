@@ -80,6 +80,18 @@ MARINE_NOAMMO_RL_1 = "Rocket launcher is out.";
 MARINE_NOAMMO_RL_2 = "No more rocket grenades, commander.";
 MARINE_NOAMMO_RL_3 = "I need more rocket grenades, commander.";
 
+MARINE_NOAMMO_LIBERATOR_1 = "Liberator is out, commander.";
+MARINE_NOAMMO_LIBERATOR_2 = "I'll need some mags for my liberator, commander.";
+MARINE_NOAMMO_LIBERATOR_3 = "Do you have any spare lib mags, commander?";
+
+MARINE_NOAMMO_BOSS_1 = "There goes the last clip, commander";
+MARINE_NOAMMO_BOSS_2 = "Boss has no ammo, commander.";
+MARINE_NOAMMO_BOSS_3 = "Do you have any spare clips, commander?";
+
+MARINE_NOAMMO_BRONTO_1 = "Brontornis is out.";
+MARINE_NOAMMO_BRONTO_2 = "No more brontornis shots, commander.";
+MARINE_NOAMMO_BRONTO_3 = "Spare any bronto rounds, commander?.";
+
 MARINE_MEDIC_STIMMED_1 = "The fight isn't over yet, commander.";
 MARINE_MEDIC_STIMMED_2 = "This will help you, commander.";
 MARINE_MEDIC_STIMMED_3 = "Let's get you back into the fight, commander.";
