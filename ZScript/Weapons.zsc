@@ -186,9 +186,8 @@ extend class HDFollower
 		else if (result == FollowerWeapon.RResult_NoAmmo)
 		{
 			// [Ace] Keep complaining if manual.
-			if (!(flags & RLF_SILENT) && (!wpn.HasWarnedLowAmmo || (flags & RLF_MANUAL)))
+			if (!(flags & RLF_SILENT) && flags & RLF_MANUAL)
 			{
-				wpn.HasWarnedLowAmmo = true;
 				PrintMessage(GetResponse("NOAMMO_"..wpn.GetLocalizationTag()), "NoAmmo/"..wpn.GetLocalizationTag(), PMType_Critical);
 			}
 

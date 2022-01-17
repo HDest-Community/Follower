@@ -143,7 +143,7 @@ AddOptionMenu "OptionsMenu"
 OptionValue "PrintLevel"
 {
 	0, "None"
-	1, "Critical only"
-	2, "Important only"
+	1, "Critical"
+	2, "Important"
 	3, "All"
 }

@@ -222,7 +222,6 @@ class FollowerWeapon abstract
 
 	CRType ChamberedRound;
 	int Mag;
-	bool HasWarnedLowAmmo;
 	HDFollower Owner;
 	bool Enabled;
 	WStatus Status;

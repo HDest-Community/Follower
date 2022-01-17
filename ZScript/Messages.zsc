@@ -1,5 +1,13 @@
 extend class HDFollower
 {
+	enum PrintMessageLevel
+	{
+		PMType_Forced,
+		PMType_Critical,
+		PMType_Important,
+		PMType_General
+	}
+	
 	// --------------------------------------------------
 	// STATIC
 	// --------------------------------------------------
@@ -57,19 +65,19 @@ extend class HDFollower
 		ResetCommentTimer();
 	}
 
-	protected void PrintMessage(string message, string voiceLine, PrintMessageType type)
+	protected void PrintMessage(string message, string voiceLine, PrintMessageLevel level)
 	{
 		if (Health <= 0 || bSILENT)
 		{
 			return;
 		}
 
-		if (message != "" && type <= CVar.GetCVar('hdf_printlevel_chat', LinkedPlayer.player).GetInt())
+		if (message != "" && level <= CVar.GetCVar('hdf_printlevel_chat', LinkedPlayer.player).GetInt())
 		{
 			ChatMessage(self, LinkedPlayer, message);
 		}
 
-		if (type <= CVar.GetCVar('hdf_printlevel_voice', LinkedPlayer.player).GetInt())
+		if (level <= CVar.GetCVar('hdf_printlevel_voice', LinkedPlayer.player).GetInt())
 		{
 			voiceLine = "Follower/"..GetLocalizationTag().."/"..voiceLine;
 			if (Distance3D(LinkedPlayer) < 512)

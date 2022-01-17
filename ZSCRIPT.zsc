@@ -34,14 +34,6 @@ version "4.6"
 
 class HDFollower : HDHumanoid abstract
 {
-	enum PrintMessageType
-	{
-		PMType_Forced,
-		PMType_Critical,
-		PMType_Important,
-		PMType_General
-	}
-
 	enum FollowerDebugLevel
 	{
 		FDebug_Weapons = 1,
