@@ -90,7 +90,7 @@ MARINE_NOAMMO_BOSS_3 = "Do you have any spare clips, commander?";
 
 MARINE_NOAMMO_BRONTO_1 = "Brontornis is out.";
 MARINE_NOAMMO_BRONTO_2 = "No more brontornis shots, commander.";
-MARINE_NOAMMO_BRONTO_3 = "Spare any bronto rounds, commander?.";
+MARINE_NOAMMO_BRONTO_3 = "Spare any bronto rounds, commander?";
 
 MARINE_MEDIC_STIMMED_1 = "The fight isn't over yet, commander.";
 MARINE_MEDIC_STIMMED_2 = "This will help you, commander.";
