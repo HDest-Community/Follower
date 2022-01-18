@@ -182,7 +182,7 @@ extend class HDFollower
 				HealSelf(toHeal);
 				A_StartSound("potion/chug", 5);
 
-				if (potion.Amount == 0)
+				if (potion.Amount <= 0)
 				{
 					TakeInvItem(potion, FIF_FORCE | FIF_REMOVE);
 					A_StartSound("potion/open", 6);
