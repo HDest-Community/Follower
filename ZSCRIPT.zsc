@@ -42,7 +42,7 @@ class HDFollower : HDHumanoid abstract
 		FDebug_Targeting = 8,
 		FDebug_Inventory = 16,
 		FDebug_Status = 32,
-		FDebug_Ohana = 64
+		FDebug_Ohana = 64,
 	}
 
 	// --------------------------------------------------
@@ -274,7 +274,8 @@ class HDFollower : HDHumanoid abstract
 	
 	FollowerHandler Handler;
 
-	protected double MovementSpeed, MaxMovementSpeed;
+	protected double MovementSpeed;
+	protected meta double MaxMovementSpeed;
 	property MovementSpeed: MovementSpeed, MaxMovementSpeed;
 
 	meta int ResurrectType;

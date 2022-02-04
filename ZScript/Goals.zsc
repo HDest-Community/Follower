@@ -29,6 +29,7 @@ extend class HDFollower
 	protected bool TrySetGoal(vector3 spawnPos, int flags = 0)
 	{
 		Actor tg = Spawn('TargetGoal', spawnPos);
+		tg.Height = Height;
 		if (tg && tg.pos.z - tg.floorz <= MaxStepHeight - 8 && Distance2D(tg) < MaxGoalRange && CheckSight(tg) && (flags & SGF_IGNOREVALID || tg.TestMobjLocation() && level.IsPointInLevel(spawnPos) && !CheckProximity('HDFollower', 64, 1, CPXF_ANCESTOR)))
 		{
 			if (flags & SGF_MULTI)
@@ -76,7 +77,7 @@ class TargetGoal : Actor
 			return;
 		}
 		
-		if ((master.Prev - master.pos).length() < 2)
+		if (Distance3D(master) > 16 && (master.Prev - master.pos).length() < 2)
 		{
 			if (++DestroyTicker == 25)
 			{
@@ -99,6 +100,7 @@ class TargetGoal : Actor
 		Radius 12;
 		Height 52;
 		+NOINTERACTION
+		+NOBLOCKMAP
 	}
 
 	States

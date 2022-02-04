@@ -39,15 +39,16 @@ extend class HDFollower
 
 		if (hdf_debug & FDebug_Status)
 		{
-			Console.Printf("[%s] %s (index %i) has %s out with status %i.\nCurrent status is %i. Current order is %i. Follower is %smoving.\nFollower is targeting %s. Follower is following %s.\n--------------------",
+			Console.Printf("[%s] %s (index %i) has %s out with status %i.\nCurrent status is %i. Current order is %i. Follower is %smoving. Goal is %s.\nFollower is targeting %s. Follower is following %s.\n--------------------",
 				GetTimestamp(),
 				GetTag(),
 				Index,
 				SelWeapon ? SelWeapon.GetName() : "no weapon",
 				SelWeapon ? SelWeapon.Status : -1,
 				Status, Order, !Moving ? "not " : "",
+				TGoal ? TGoal.GetTag() : "nothing",
 				FTarget.Actor ? FTarget.Actor.GetTag() : "nothing",
-				next is 'HDFollower' ? HDFollower(next).GetTag() : (next ? next.GetTag() : "nothing"));
+				next ? next.GetTag() : "nothing");
 		}
 		
 		PNeedsHelp = PlayerIsIncapped(); // [Ace] You're just incapped.
@@ -136,7 +137,7 @@ extend class HDFollower
 				// [Ace] Go to goal if it's too far away.
 				// !bSTANDSTILL means the follower will only chase goals if its current goal isn't forced.
 				double DistanceToNext = Distance3D(next);
-				if (bFRIENDLY && (DistanceToNext > MinFollowRange / distDiv || !canSeeNext) && DistanceToNext < MaxFollowRange && (!TGoal || TGoal && !TGoal.bSTANDSTILL))
+				if (bFRIENDLY && (DistanceToNext > GetMinRange(TGoal, distDiv) || !canSeeNext) && DistanceToNext < MaxFollowRange && (!TGoal || TGoal && !TGoal.bSTANDSTILL))
 				{
 					if (canSeeNext)
 					{
@@ -289,87 +290,77 @@ extend class HDFollower
 		double goalDist2 = TGoal ? Distance2D(TGoal) : 0;
 
 		// [Ace] Movement. Always travel to goals if there are any.
-		bool dedicatedGoal = TGoal is 'TargetGoal';
-		if (Status == FStatus_None && (!SelWeapon || SelWeapon.Status != FollowerWeapon.WStatus_Firing) && TGoal && (TGoal is next.GetClass() && goalDist2 > (Order == FOrder_ComeAndHelp && (PNeedsMedic || PNeedsHelp) ? MedicRange : (MinFollowRangeStop / distDiv)) || dedicatedGoal && goalDist2 > 16) && goalDist2 < MaxGoalRange)
+		if (Status == FStatus_None && (!SelWeapon || SelWeapon.Status != FollowerWeapon.WStatus_Firing) && TGoal && goalDist2 < MaxGoalRange)
 		{
-			// [Ace] Don't slow down if player is bleeding out their ass or needs help getting up.
-			if (TGoal is "PlayerPawn" && Order == FOrder_ComeAndHelp && (PNeedsMedic || PNeedsHelp))
+			double distDiff = max(goalDist2 - GetMinRange(TGoal, distDiv), 0);
+			double targetSpeed = min(0.2 + (distDiff * 0.5) / MaxMovementSpeed, MaxMovementSpeed);
+			if (MovementSpeed < targetSpeed)
 			{
-				if (tics == 2)
+				MovementSpeed = min(MovementSpeed + 0.5, targetSpeed);
+			}
+			else if (MovementSpeed > targetSpeed)
+			{
+				MovementSpeed = max(targetSpeed, MovementSpeed - 0.5);
+			}
+
+			if (MovementSpeed > MaxMovementSpeed * 0.25 && tics == 8)
+			{
+				tics = 4;
+			}
+			if (MovementSpeed > MaxMovementSpeed * 0.75 && tics == 4)
+			{
+				tics = 3;
+			}
+
+			if (distDiff < 0.25)
+			{
+				if (Order == FOrder_GoAndCover)
 				{
-					tics = 1;
+					Order = FOrder_Cover;
 				}
-				MovementSpeed = MaxMovementSpeed;
+				A_ChangeVelocity(0, 0, vel.z, CVF_REPLACE);
+				ClearGoal(true);
 			}
 			else
 			{
-				if (goalDist2 < (dedicatedGoal ? GoalRangeStop : MinFollowRangeStop / (distDiv - (distDiv - 1.0) * 0.5)))
+				// [Ace] Same as the corner thing from above but does it if the follower is moving.
+				A_Face(TGoal, 0, 0);
+
+				int sideVel = 0;
+				if (!(blockedSides & BSide_Left) && blockedSides & BSide_Right)
 				{
-					MovementSpeed = max(default.MovementSpeed * 0.25, MovementSpeed * 0.85);
+					sideVel = 1;
 				}
-				else
+				if (blockedSides & BSide_Left && !(blockedSides & BSide_Right))
 				{
-					// [Ace] The tics adjustment is purely visual.
-					if (tics == 2)
-					{
-						tics = 1;
-					}
-					MovementSpeed = min(default.MovementSpeed + goalDist2 / (HDCONST_ONEMETRE - 2 * min(ffcount - 1, 6)), MaxMovementSpeed);
+					sideVel = -1;
 				}
-			}
+				A_ChangeVelocity(MovementSpeed, MovementSpeed * sideVel, vel.z, CVF_RELATIVE | CVF_REPLACE);
 
-			// [Ace] Same as the corner thing from above but does it if the follower is moving.
-			A_Face(TGoal, 0, 0);
+				// [Ace] Ascend/descend ladders.
+				bool nearLadder = CheckProximity('hdladdertop', radius + 32) || CheckProximity('hdladderbottom', radius + 32);
+				MaxDropOffHeight = default.MaxDropOffHeight + (NearLadder ? LADDER_MAX : 0);
+				bFLOORHUGGER = nearLadder;
 
-			int sideVel = 0;
-			if (!(blockedSides & BSide_Left) && blockedSides & BSide_Right)
-			{
-				sideVel = 1;
-			}
-			if (blockedSides & BSide_Left && !(blockedSides & BSide_Right))
-			{
-				sideVel = -1;
-			}
-			A_ChangeVelocity(MovementSpeed, MovementSpeed * sideVel, vel.z, CVF_RELATIVE | CVF_REPLACE);
-			Moving = true;
+				// [Ace] There is a gap that can be crossed. If the player can do it, so can the follower.
+				bNODROPOFF = !(goalDist2 < HDCONST_ONEMETRE * 10 && (pos.z > floorz || abs(TGoal.floorz - floorz) < default.MaxDropOffHeight) && abs(TGoal.pos.z - pos.z) < default.MaxDropOffHeight);
 
-			// [Ace] Ascend/descend ladders.
-			bool nearLadder = CheckProximity('hdladdertop', radius + 32) || CheckProximity('hdladderbottom', radius + 32);
-			MaxDropOffHeight = default.MaxDropOffHeight + (NearLadder ? LADDER_MAX : 0);
-			bFLOORHUGGER = nearLadder;
+				// [Ace] Stop trying to reach goal shortly after losing LOS.
+				if (!CheckSight(TGoal, SF_SEEPASTSHOOTABLELINES | SF_IGNOREVISIBILITY) && ++NoSightTics == 50)
+				{
+					NoSightTics = 0;
+					ClearGoal(true);
+				}
 
-			// [Ace] There is a gap that can be crossed. If the player can do it, so can the follower.
-			bNODROPOFF = !(goalDist2 < HDCONST_ONEMETRE * 10 && (pos.z > floorz || abs(TGoal.floorz - floorz) < default.MaxDropOffHeight) && abs(TGoal.pos.z - pos.z) < default.MaxDropOffHeight);
-
-			// [Ace] Stop trying to reach goal shortly after losing LOS.
-			if (!CheckSight(TGoal, SF_SEEPASTSHOOTABLELINES | SF_IGNOREVISIBILITY) && ++NoSightTics == 50)
-			{
-				NoSightTics = 0;
-				ClearGoal();
-			}
-
-			// [Ace] Only play idle comments if moving.
-			if (CommentTimer <= 0)
-			{
-				PlayIdleComment();
+				// [Ace] Only play idle comments if moving.
+				if (CommentTimer <= 0)
+				{
+					PlayIdleComment();
+				}
 			}
 		}
-		else // [Ace] Deceleration.
-		{
-			vel.xy *= 0.98;
 
-			if (Order == FOrder_GoAndCover && vel.xy.length() < 0.65)
-			{
-				Order = FOrder_Cover;
-			}
-
-			if (vel.xy.length() < 0.15)
-			{
-				ClearGoal(true);
-				A_ChangeVelocity(0, 0, vel.z, CVF_REPLACE);
-				Moving = false;
-			}
-		}
+		Moving = vel.xy.length() > 0.01;
 	}
 
 	private void TryActivateLine()
@@ -463,13 +454,30 @@ extend class HDFollower
 		return sides;
 	}
 
+	double GetMinRange(Actor trgt, double distDiv)
+	{
+		if (!trgt)
+		{
+			return 0;
+		}
+
+		if (Order == FOrder_ComeAndHelp && (PNeedsMedic || PNeedsHelp))
+		{
+			return trgt.Radius + Radius;
+		}
+
+		if (trgt is 'TargetGoal')
+		{
+			return HDCONST_ONEMETRE * 0.3;
+		}
+		
+		return (HDCONST_ONEMETRE * 2) / distDiv;
+	}
+
 	// --------------------------------------------------
 	// CONSTANTS
 	// --------------------------------------------------
 
-	const GoalRangeStop = HDCONST_ONEMETRE * 0.8; // [Ace] Start decelerating if closer than this distance.
-	const MinFollowRangeStop = HDCONST_ONEMETRE * 2.8; // [Ace] If following the player, stop if closer than this distance.
-	const MinFollowRange = HDCONST_ONEMETRE * 3.6;
 	const MaxFollowRange = HDCONST_ONEMETRE * 25.0;
 	const MaxWaitRange = HDCONST_ONEMETRE * 12;
 	const MaxSearchRange = 24; // [Ace] This is for the LookFor* stuff.
