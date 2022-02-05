@@ -145,20 +145,26 @@ extend class FollowerHandler
 			"Marc", "Fabio", "Andrea", "Bernard", "Aleksy", "Roch", "Bartosz", "Maciej", "Marek", "Stryker", "Arkadiusz", "Adoranz", "Tristan", "Isaiah", "Mebunai", "Eleazar", "Ishbaal",
 			"Ahiam", "Hiddai", "Elhanan", "Abiezer", "Ithai", "Eliam", "Uriah", "Fane", "Reks", "Zayne", "Salvador", "Zeus", "Axton", "Zane", "Blake", "Raynor", "Jim", "Thomas", "Ronald",
 			"Wayn", "Lero", "Leon", "Jack", "Armanis", "Krieg", "Emerton", "Samael", "Kragoth", "Blisk", "Ryo", "Nathaniel", "Killian", "Dominic", "Santiago", "Sebastian", "Malcolm",
-			"Rakanoth", "Ixanos", "Nick", "Bane", "Kaada", "Loque", "Xan", "Isaak", "Hawkins", "Ne'Ban", "Miller", "Othello", "Abaddon", "Anubis", "Raiden", "Mengsk", "Samson", "Gabriel"
+			"Rakanoth", "Ixanos", "Nick", "Bane", "Kaada", "Loque", "Xan", "Isaak", "Hawkins", "Ne'Ban", "Miller", "Othello", "Abaddon", "Anubis", "Raiden", "Mengsk", "Samson", "Gabriel",
+			"Ranger", "Sarge", "Bitterman", "Hossman", "Uriel", "Vic", "Webster", "Sonny", "Vince", "Taz", "Earl", "Eugene", "Hector", "Wes", "Ronnie", "Mark", "Necroth", "Grail", "Damarus",
+			"Selig", "Manwell", "Kregore", "Bruce", "Arkon", "Rolph", "Arnold", "Lugar", "Sloan", "Harlin", "Brock", "Rankin", "Riker", "Axon"
 		};
 		static const string FemaleNames[] =
 		{
 			"Arlin", "Elaine", "Ophelia", "Almedha", "Sana", "Karmin", "Ashera", "Liv", "Yrsa", "Kristiane", "Irene", "Hedvig", "Lena", "Freja", "Maya", "Kristine", "Elin", "Emeryn",
 			"Amelix", "Emson", "Rayne", "Azraelle", "Visse", "Ephemera", "Samantha", "Kura", "Kyra", "Malise", "Faith", "Edela", "Alice", "Ymir", "Lauren", "Alana", "Akasha", "Avicia",
 			"Lillian", "Lilith", "May", "Eleanor", "Yuzuki", "Kaede", "Aida", "Sapphire", "Selket", "Bastet", "Hathor", "Nekhbet", "Tayet", "Auriel", "Nephthys", "Athena", "Artemis",
-			"Eirene", "Eris", "Freya", "Hera", "Juno", "Kali", "Luna", "Maeve", "Minerva", "Persephone", "Rhea", "Selene", "Themis", "Gabriella", "Gabby"
+			"Eirene", "Eris", "Freya", "Hera", "Juno", "Kali", "Luna", "Maeve", "Minerva", "Persephone", "Rhea", "Selene", "Themis", "Gabrielle", "Gabriella", "Gabby", "Elvira", "Mynx",
+			"Daemia", "Lucy", "Izzy", "Izabel", "Jade", "Kira", "Ming", "Cryss", "Freylis", "Falareth", "Makreth", "Nebri", "Rylisa", "Shyann", "Sara", "Ada", "Sarena", "Zanna", "Tara",
+			"Xyra", "Annaka", "Tamika", "Ryanna", "Azure", "Aryss", "Hunter", "Raven"
 		};
 		static const string NeutralNames[] =
 		{
 			"Tempest", "Cinder", "Vexx", "Drace", "Klyn", "Vayne", "Vail", "Brick", "Zero", "Blade", "Apocalypse", "Thunder", "Void", "Kanzaxe", "Hatchet", "Blink", "Whiskey", "Splinter",
 			"Light", "Reaper", "Jet", "Wraith", "Quill", "Discount", "Death", "Nil", "Umbra", "Scar", "Curse", "Banshee", "Arrow", "Dash", "Niven", "Phantom", "Barricade", "Enigma",
-			"Matrix", "Entropy", "Raven", "Nomad", "Prophet", "Jester", "Psycho", "Blitz", "Scorpion", "Fury", "Arclite", "Redeemer", "Bishop", "War", "Wrath", "Pestilence", "Inferno"
+			"Matrix", "Entropy", "Nomad", "Prophet", "Jester", "Psycho", "Blitz", "Scorpion", "Fury", "Arclite", "Redeemer", "Bishop", "War", "Wrath", "Pestilence", "Inferno",
+			"Vampire", "Doom", "Tormentor", "Major", "Visor", "Phobos", "Grunt", "Wrack", "Angel", "Razor", "Bones", "Baron", "Kamikaze", "Vega", "Bull", "Ghost", "Ninja",
+			"Vector", "Tensor", "Malice", "Blackjack", "Prism", "Remus", "Torch", "Anthrax", "Divisor", "Cathode", "Cyclops", "Virus", "Aspect", "Nova", "Raptor", "Eagle"
 		};
 
 		string PickedName = "";
