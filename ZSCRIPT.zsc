@@ -254,7 +254,7 @@ class HDFollower : HDHumanoid abstract
 		Stunned = NewStunned;
 
 		// [Ace] Same as above. For some reason HDMagicShield gets nuked if given while unpacking the follower.
-		if (Shields > 0)
+		if (Shields > 0 && ShieldClass)
 		{
 			let shld = GiveInventoryType(ShieldClass);
 			shld.Amount = Shields;
