@@ -127,15 +127,15 @@ extend class HDFollower
 			FData.ArmorMega = Armor.Mega;
 		}
 
-		let Shields = FindInventory('HDMagicShield', true);
-		if (Shields)
+		let sld = FindInventory('HDMagicShield', true);
+		if (shields)
 		{
-			FData.ShieldClass = (class<HDMagicShield>)(Shields.GetClass());
-			FData.Shields = Shields.Amount;
-			FData.MaxShields = Shields.MaxAmount;
-			FData.ShieldStrength = Shields.Stamina;
-			FData.RegenerateShields = Shields.bQUICKTORETALIATE;
-			FData.NoShieldsDegeneration = Shields.bSTANDSTILL;
+			FData.ShieldClass = (class<HDMagicShield>)(sld.GetClass());
+			FData.Shields = sld.Amount;
+			FData.MaxShields = sld.MaxAmount;
+			FData.ShieldStrength = sld.Stamina;
+			FData.RegenerateShields = sld.bQUICKTORETALIATE;
+			FData.NoShieldsDegeneration = sld.bSTANDSTILL;
 		}
 
 		FBody.Data.Push(FData);
@@ -151,6 +151,7 @@ extend class HDFollower
 
 	class<HDMagicShield> ShieldClass;
 	int Shields;
+	int MaxShields; // [Ace] Intentional hiding of HDMobBase variable.
 	int ShieldStrength;
 	bool RegenerateShields;
 	bool NoShieldsDegeneration;
