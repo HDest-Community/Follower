@@ -314,10 +314,6 @@ extend class HDFollower
 
 			if (distDiff < 0.25)
 			{
-				if (Order == FOrder_GoThere)
-				{
-					Order = FOrder_Stay;
-				}
 				A_ChangeVelocity(0, 0, vel.z, CVF_REPLACE);
 				ClearGoal(true);
 			}
@@ -361,6 +357,11 @@ extend class HDFollower
 		}
 
 		Moving = vel.xy.length() > 0.01;
+
+		if (!Moving && Order == FOrder_GoThere)
+		{
+			Order = FOrder_Stay;
+		}
 	}
 
 	private void TryActivateLine()
