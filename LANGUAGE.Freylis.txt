@@ -8,29 +8,22 @@ FREYLIS_ORDER_FOLLOW2_1 = "Sure, whatever you say.";
 FREYLIS_ORDER_FOLLOW2_2 = "Alright.";
 FREYLIS_ORDER_FOLLOW2_3 = "Let's move.";
 
-FREYLIS_ORDER_FOLLOWIGNORE1_1 = "I'm already pretending to be blind.";
-FREYLIS_ORDER_FOLLOWIGNORE1_2 = "I know, I know. I got it. I get the concept.";
-FREYLIS_ORDER_FOLLOWIGNORE1_3 = "Just shut up and let's get out of here.";
+FREYLIS_ORDER_STAY1_1 = "Shut up, I'm already half bored to death.";
+FREYLIS_ORDER_STAY1_2 = "*groan*";
+FREYLIS_ORDER_STAY1_3 = "You don't have to remind me I'm missing out on the action.";
 
-FREYLIS_ORDER_FOLLOWIGNORE2_1 = "Fine, but I'm not shooting if you get dropped.";
-FREYLIS_ORDER_FOLLOWIGNORE2_2 = "You know what? I agree. Let's bail.";
-FREYLIS_ORDER_FOLLOWIGNORE2_3 = "I'll conserve ammo, but it's not like it's rare.";
+FREYLIS_ORDER_STAY2_1 = "Alright, I'll stay here. Don't take forever. We ought to stick together.";
+FREYLIS_ORDER_STAY2_2 = "If you hear me mumbling that I miss you, that's just the wind.";
+FREYLIS_ORDER_STAY2_3 = "Fine, but make it quick.";
+FREYLIS_ORDER_STAY2_4 = "I'm going to grow roots here...";
 
-FREYLIS_ORDER_COVER1_1 = "I'm already covering you. Or do you need a blanket instead?";
-FREYLIS_ORDER_COVER1_2 = "Look, if I see anything, I'll shoot it.";
-FREYLIS_ORDER_COVER1_3 = "Shut up and keep shooting at the bad guys.";
+FREYLIS_ORDER_GOTHERE1_1 = "I can't reach that spot.";
+FREYLIS_ORDER_GOTHERE1_2 = "That's not happening.";
+FREYLIS_ORDER_GOTHERE1_3 = "Nope.";
 
-FREYLIS_ORDER_COVER2_1 = "If you get shot by accident, that wasn't me.";
-FREYLIS_ORDER_COVER2_2 = "I'll cover you.";
-FREYLIS_ORDER_COVER2_3 = "Will keep it simple. I see bad guys - I shoot.";
-
-FREYLIS_ORDER_GOANDCOVER1_1 = "I can't reach that spot.";
-FREYLIS_ORDER_GOANDCOVER1_2 = "That's not happening.";
-FREYLIS_ORDER_GOANDCOVER1_3 = "Nope.";
-
-FREYLIS_ORDER_GOANDCOVER2_1 = "On it.";
-FREYLIS_ORDER_GOANDCOVER2_2 = "Cover me while I get there.";
-FREYLIS_ORDER_GOANDCOVER2_3 = "Okay, I'll cover you from that spot.";
+FREYLIS_ORDER_GOTHERE2_1 = "On it.";
+FREYLIS_ORDER_GOTHERE2_2 = "Cover me while I get there.";
+FREYLIS_ORDER_GOTHERE2_3 = "Okay, I'll camp that spot.";
 
 FREYLIS_ORDER_HELP1_1 = "I'm running as fast as I can.";
 FREYLIS_ORDER_HELP1_2 = "Repeating yourself won't teleport me to you.";
@@ -60,6 +53,22 @@ FREYLIS_ORDER_HEAL2_1 = "This is going to hurt.";
 FREYLIS_ORDER_HEAL2_2 = "Yeah, I think it's time for some stapling.";
 FREYLIS_ORDER_HEAL2_3 = "I'm going to look like just incredible after this...";
 FREYLIS_ORDER_HEAL2_4 = "I really wish vampires didn't feel pain. Ouch.";
+
+FREYLIS_STANCE_AGGRESSIVE1_1 = "I'm already covering you. Or do you need a blanket instead?";
+FREYLIS_STANCE_AGGRESSIVE1_2 = "Look, if I see anything, I'll shoot it.";
+FREYLIS_STANCE_AGGRESSIVE1_3 = "Shut up and keep shooting at the bad guys.";
+
+FREYLIS_STANCE_AGGRESSIVE2_1 = "If you get shot by accident, that wasn't me.";
+FREYLIS_STANCE_AGGRESSIVE2_2 = "I'll cover you.";
+FREYLIS_STANCE_AGGRESSIVE2_3 = "Will keep it simple. I see bad guys, I shoot.";
+
+FREYLIS_STANCE_PASSIVE1_1 = "I'm already pretending to be blind.";
+FREYLIS_STANCE_PASSIVE1_2 = "I know, I know. I got it. I get the concept.";
+FREYLIS_STANCE_PASSIVE1_3 = "Just shut up and let's get out of here.";
+
+FREYLIS_STANCE_PASSIVE2_1 = "Fine, but I'm not shooting if you get dropped.";
+FREYLIS_STANCE_PASSIVE2_2 = "You know what? I agree. Let's bail.";
+FREYLIS_STANCE_PASSIVE2_3 = "I'll conserve ammo, but it's not like it's rare.";
 
 FREYLIS_CARRY_SUCCESS_1 = "I don't like being carried, but if you insist...";
 FREYLIS_CARRY_SUCCESS_2 = "Put me down, damn it!";

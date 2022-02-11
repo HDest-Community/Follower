@@ -3,9 +3,8 @@ extend class HDFollower
 	enum FOrder
 	{
 		FOrder_Follow,
-		FOrder_FollowIgnore,
-		FOrder_Cover,
-		FOrder_GoAndCover,
+		FOrder_Stay,
+		FOrder_GoThere,
 		FOrder_ComeAndHelp,
 		FOrder_HealSelf
 	}
@@ -44,21 +43,14 @@ extend class HDFollower
 				Order = newOrder;
 				return true;
 			}
-			case FOrder_FollowIgnore:
+			case FOrder_Stay:
 			{
-				PrintMessage(GetResponse("ORDER_FOLLOWIGNORE"..index), "Order/FollowIgnore"..index, PMType_General);
-				HaulAss();
-				Order = newOrder;
-				return true;
-			}
-			case FOrder_Cover:
-			{
-				PrintMessage(GetResponse("ORDER_COVER"..index), "Order/Cover"..index, PMType_General);
+				PrintMessage(GetResponse("ORDER_STAY"..index), "Order/Stay"..index, PMType_General);
 				Order = newOrder;
 				ClearGoal();
 				return true;
 			}
-			case FOrder_GoAndCover:
+			case FOrder_GoThere:
 			{
 				FLineTraceData TraceData;
 				LinkedPlayer.LineTrace(LinkedPlayer.angle, MaxGoalRange * 2, LinkedPlayer.pitch, TRF_THRUACTORS, LinkedPlayer.Height - 8, data: TraceData);
@@ -68,12 +60,12 @@ extend class HDFollower
 					HaulAss();
 					Order = newOrder;
 					ActivateAsPlayer = true;
-					PrintMessage(GetResponse("ORDER_GOANDCOVER2"), "Order/GoAndCover2", PMType_General);
+					PrintMessage(GetResponse("ORDER_GOTHERE2"), "Order/GoThere2", PMType_General);
 					return true;
 				}
 				else
 				{
-					PrintMessage(GetResponse("ORDER_GOANDCOVER1"), "Order/GoAndCover1", PMType_Important);
+					PrintMessage(GetResponse("ORDER_GOTHERE1"), "Order/GoThere1", PMType_Important);
 					return false;
 				}
 			}

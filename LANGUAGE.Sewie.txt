@@ -8,29 +8,21 @@ SEWIE_ORDER_FOLLOW2_1 = "Roger that, I'll stick close.";
 SEWIE_ORDER_FOLLOW2_2 = "Following the leader!";
 SEWIE_ORDER_FOLLOW2_3 = "Lead the way.";
 
-SEWIE_ORDER_FOLLOWIGNORE1_1 = "I'm already ignoring hostiles.";
-SEWIE_ORDER_FOLLOWIGNORE1_2 = "I'm already paying no attention to the baddies.";
-SEWIE_ORDER_FOLLOWIGNORE1_3 = "Don't have to tell me twice.";
+SEWIE_ORDER_STAY1_1 = "I'm already idling here.";
+SEWIE_ORDER_STAY1_2 = "I've been standing here for some time now.";
+SEWIE_ORDER_STAY1_3 = "You don't have to repeat yourself, y'know.";
 
-SEWIE_ORDER_FOLLOWIGNORE2_1 = "Doing a tactical retreat, are we?";
-SEWIE_ORDER_FOLLOWIGNORE2_2 = "Let's run!";
-SEWIE_ORDER_FOLLOWIGNORE2_3 = "Yeah, we should probably get the hell outta here.";
+SEWIE_ORDER_STAY2_1 = "I'll stay right here, then.";
+SEWIE_ORDER_STAY2_2 = "Sure!";
+SEWIE_ORDER_STAY2_3 = "Fine by me. Don't take too long, though, okay?";
 
-SEWIE_ORDER_COVER1_1 = "I'm already covering your back.";
-SEWIE_ORDER_COVER1_2 = "Already on it.";
-SEWIE_ORDER_COVER1_3 = "Stop worrying, nobody is going to shoot you.";
+SEWIE_ORDER_GOTHERE1_1 = "I can't go there.";
+SEWIE_ORDER_GOTHERE1_2 = "Sorry, I can't reach that.";
+SEWIE_ORDER_GOTHERE1_3 = "No can do.";
 
-SEWIE_ORDER_COVER2_1 = "Don't worry, I got your six.";
-SEWIE_ORDER_COVER2_2 = "Your back is safe.";
-SEWIE_ORDER_COVER2_3 = "I'll stay here and guard you.";
-
-SEWIE_ORDER_GOANDCOVER1_1 = "I can't go there.";
-SEWIE_ORDER_GOANDCOVER1_2 = "Sorry, I can't reach that.";
-SEWIE_ORDER_GOANDCOVER1_3 = "No can do.";
-
-SEWIE_ORDER_GOANDCOVER2_1 = "On my way!";
-SEWIE_ORDER_GOANDCOVER2_2 = "Whatever you say.";
-SEWIE_ORDER_GOANDCOVER2_3 = "Going!";
+SEWIE_ORDER_GOTHERE2_1 = "On my way!";
+SEWIE_ORDER_GOTHERE2_2 = "Whatever you say.";
+SEWIE_ORDER_GOTHERE2_3 = "Going!";
 
 SEWIE_ORDER_HELP1_1 = "I'm already coming.";
 SEWIE_ORDER_HELP1_2 = "I know, just hold on.";
@@ -59,6 +51,22 @@ SEWIE_ORDER_HEAL1_3 = "I'm stapling as fast as I can. It really hurts!";
 SEWIE_ORDER_HEAL2_1 = "Ouchie!";
 SEWIE_ORDER_HEAL2_2 = "This feels just like sewing clothes! Oof.";
 SEWIE_ORDER_HEAL2_3 = "Oh boy, this is going to hurt.";
+
+SEWIE_STANCE_AGGRESSIVE1_1 = "I'm already covering your back.";
+SEWIE_STANCE_AGGRESSIVE1_2 = "Already on it.";
+SEWIE_STANCE_AGGRESSIVE1_3 = "Stop worrying, nobody is going to shoot you."; // [Ace] And then you get shot.
+
+SEWIE_STANCE_AGGRESSIVE2_1 = "Don't worry, I got your six.";
+SEWIE_STANCE_AGGRESSIVE2_2 = "Your back is safe.";
+SEWIE_STANCE_AGGRESSIVE2_3 = "I'll stay here and guard you.";
+
+SEWIE_STANCE_PASSIVE1_1 = "I'm already ignoring hostiles.";
+SEWIE_STANCE_PASSIVE1_2 = "I'm already paying no attention to the baddies.";
+SEWIE_STANCE_PASSIVE1_3 = "Don't have to tell me twice.";
+
+SEWIE_STANCE_PASSIVE2_1 = "Doing a tactical retreat, are we?";
+SEWIE_STANCE_PASSIVE2_2 = "Let's run!";
+SEWIE_STANCE_PASSIVE2_3 = "Yeah, we should probably get the hell outta here.";
 
 SEWIE_CARRY_SUCCESS_1 = "Be gentle, okay?";
 SEWIE_CARRY_SUCCESS_2 = "Wheeeee!";

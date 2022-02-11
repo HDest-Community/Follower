@@ -8,29 +8,21 @@ MARINE_ORDER_FOLLOW2_1 = "Yes, commander!";
 MARINE_ORDER_FOLLOW2_2 = "Right behind you, commander.";
 MARINE_ORDER_FOLLOW2_3 = "Roger that, commander.";
 
-MARINE_ORDER_FOLLOWIGNORE1_1 = "Acknowledged.";
-MARINE_ORDER_FOLLOWIGNORE1_2 = "I'm already ignoring hostiles, commander.";
-MARINE_ORDER_FOLLOWIGNORE1_3 = "I'm blind to hostiles, commander";
+MARINE_ORDER_STAY1_1 = "I'm already camping this area, commander.";
+MARINE_ORDER_STAY1_2 = "Loud and clear, commander.";
+MARINE_ORDER_STAY1_3 = "Yes, commander.";
 
-MARINE_ORDER_FOLLOWIGNORE2_1 = "Fine, but I'm not shooting if you get dropped.";
-MARINE_ORDER_FOLLOWIGNORE2_2 = "You know what? I agree. Let's bail.";
-MARINE_ORDER_FOLLOWIGNORE2_3 = "I'll conserve ammo, but it's not like it's rare.";
+MARINE_ORDER_STAY2_1 = "Strategic positioning, commander? Clever!";
+MARINE_ORDER_STAY2_2 = "You can find me right here when you're done, commander.";
+MARINE_ORDER_STAY2_3 = "I'll camp this spot, commander.";
 
-MARINE_ORDER_COVER1_1 = "Your back is already safe, commander.";
-MARINE_ORDER_COVER1_2 = "Already on it, commander.";
-MARINE_ORDER_COVER1_3 = "If I see anything, I'll shoot it, commander.";
+MARINE_ORDER_GOTHERE1_1 = "I cannot reach that spot, commander.";
+MARINE_ORDER_GOTHERE1_2 = "I'm afraid that's impossible, commander.";
+MARINE_ORDER_GOTHERE1_3 = "That is beyond my abilities, commander.";
 
-MARINE_ORDER_COVER2_1 = "Nothing will get past me, commander.";
-MARINE_ORDER_COVER2_2 = "Yes, commander.";
-MARINE_ORDER_COVER2_3 = "As you say, commander.";
-
-MARINE_ORDER_GOANDCOVER1_1 = "I cannot reach that spot, commander.";
-MARINE_ORDER_GOANDCOVER1_2 = "I'm afraid that's impossible, commander.";
-MARINE_ORDER_GOANDCOVER1_3 = "That is beyond my abilities, commander.";
-
-MARINE_ORDER_GOANDCOVER2_1 = "On my way, commander.";
-MARINE_ORDER_GOANDCOVER2_2 = "Going there ASAP.";
-MARINE_ORDER_GOANDCOVER2_3 = "Yes, commander!";
+MARINE_ORDER_GOTHERE2_1 = "On my way, commander.";
+MARINE_ORDER_GOTHERE2_2 = "Going there ASAP.";
+MARINE_ORDER_GOTHERE2_3 = "Yes, commander!";
 
 MARINE_ORDER_HELP1_1 = "Hang in there, commander.";
 MARINE_ORDER_HELP1_2 = "I'm already on my way, commander.";
@@ -59,6 +51,22 @@ MARINE_ORDER_HEAL1_3 = "On it, commander.";
 MARINE_ORDER_HEAL2_1 = "That's a brilliant idea, commander.";
 MARINE_ORDER_HEAL2_2 = "I wouldn't say no to that.";
 MARINE_ORDER_HEAL2_3 = "I sure wouldn't want to die now, commander.";
+
+MARINE_STANCE_AGGRESSIVE1_1 = "Your back is already safe, commander.";
+MARINE_STANCE_AGGRESSIVE1_2 = "Already on it, commander.";
+MARINE_STANCE_AGGRESSIVE1_3 = "If I see anything, I'll shoot it, commander.";
+
+MARINE_STANCE_AGGRESSIVE2_1 = "Nothing will get past me, commander.";
+MARINE_STANCE_AGGRESSIVE2_2 = "Yes, commander.";
+MARINE_STANCE_AGGRESSIVE2_3 = "As you say, commander.";
+
+MARINE_STANCE_PASSIVE1_1 = "Acknowledged.";
+MARINE_STANCE_PASSIVE1_2 = "I'm already ignoring hostiles, commander.";
+MARINE_STANCE_PASSIVE1_3 = "I'm blind to hostiles, commander";
+
+MARINE_STANCE_PASSIVE2_1 = "Will do, commander.";
+MARINE_STANCE_PASSIVE2_2 = "Roger that, commander.";
+MARINE_STANCE_PASSIVE2_3 = "I'll conserve ammo, commander";
 
 MARINE_CARRY_SUCCESS_1 = "I don't know about this, commander.";
 MARINE_CARRY_SUCCESS_2 = "Are you sure about this, commander?";

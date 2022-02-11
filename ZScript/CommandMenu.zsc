@@ -39,7 +39,7 @@ extend class FollowerHandler
 		FMenu_Recruitment,
 		FMenu_Followers,
 		FMenu_Main,
-		FMenu_Orders,
+		FMenu_OrdersStance,
 		FMenu_Inventory,
 		FMenu_Miscellaneous,
 		FMenu_ColorPicker
@@ -330,17 +330,17 @@ extend class FollowerHandler
 					return;
 				}
 
-				Array<string> Commands;
-				Commands.Push("Recruit?");
-				Commands.Push("Cancel");
+				Array<string> commands;
+				commands.Push("Recruit?");
+				commands.Push("Cancel");
 
 				string n = (SelMarine[consoleplayer].bFRIENDLY ? "Friendly " : "Hostile ").."marine";
 				DrawRectangle(sb, pos, (140, rectHeight), col, fnt, GetTruncatedText(n, 16), flags, Font.FindFontColor('FLW_NameBlue'));
 				pos.y += rectHeight + Spacing;
 
-				for (int i = 0; i < Commands.Size(); ++i)
+				for (int i = 0; i < commands.Size(); ++i)
 				{
-					DrawRectangle(sb, pos, (140, rectHeight), col, fnt, (i + 1)..") "..Commands[i], flags);
+					DrawRectangle(sb, pos, (140, rectHeight), col, fnt, (i + 1)..") "..commands[i], flags);
 					pos.y += rectHeight + Spacing;
 				}
 				break;
@@ -410,18 +410,19 @@ extend class FollowerHandler
 					DrawRectangle(sb, pos, (160, rectHeight), col, fnt, selSize.." followers", flags, Font.FindFontColor('FLW_NameBlue'));
 					pos.y += rectHeight + Spacing;
 
-					DrawRectangle(sb, pos, (160, rectHeight), col, fnt, "1) Orders", flags);
-					pos.y += rectHeight + Spacing;
-
-					DrawRectangle(sb, pos, (160, rectHeight), col, fnt, InInputMode[consoleplayer] ? InputString[consoleplayer].."_" : "2) Input command", flags);
-					pos.y += rectHeight + Spacing;
-
-					DrawRectangle(sb, pos, (160, rectHeight), col, fnt, "3) Misc commands", flags);
-					pos.y += rectHeight + Spacing;
-
+					Array<string> commands;
+					commands.Push("Orders");
+					commands.Push(InInputMode[consoleplayer] ? InputString[consoleplayer].."_" : "3) Input command");
+					commands.Push("Misc commands");
 					if (Followers.Size() > 1)
 					{
-						DrawRectangle(sb, pos, (160, rectHeight), col, fnt, "4) Back...", flags);
+						commands.Push("Back...");
+					}
+
+					for (int i = 0; i < commands.Size(); ++i)
+					{
+						DrawRectangle(sb, pos, (160, rectHeight), col, fnt, (i + 1)..") "..commands[i], flags);
+						pos.y += rectHeight + Spacing;
 					}
 				}
 				else if (lastFol.Health <= 0)
@@ -457,29 +458,29 @@ extend class FollowerHandler
 						BloodDanger = "\c[FLW_BloodBlack](Certain Death)\c-";
 					}
 
-					Array<string> Commands;
-					Commands.Push("Carry follower");
+					Array<string> commands;
+					commands.Push("Carry follower");
 					if (lastFol.ResurrectType & HDFollower.RESF_BLUES)
 					{
-						Commands.Push((sb.CheckInventory("BluePotion", 1) ? "" : "\c[Red]").."Give blue potion\c- ".."\c[Blue]("..RequiredSips.."/12)\c-");
+						commands.Push((sb.CheckInventory("BluePotion", 1) ? "" : "\c[Red]").."Give blue potion\c- ".."\c[Blue]("..RequiredSips.."/12)\c-");
 					}
 					if (lastFol.ResurrectType & HDFollower.RESF_BLOOD)
 					{
-						Commands.Push("Feed blood "..BloodDanger);
+						commands.Push("Feed blood "..BloodDanger);
 					}
-					Commands.Push("Manage inventory");
+					commands.Push("Manage inventory");
 					if (lastFol.bCANDISMISS)
 					{
-						Commands.Push("\c[FLW_BloodRed]"..(UiData[consoleplayer].Confirmation ? "Confirm?" : "Dismiss").."\c-");
+						commands.Push("\c[FLW_BloodRed]"..(UiData[consoleplayer].Confirmation ? "Confirm?" : "Dismiss").."\c-");
 					}
 					if (Followers.Size() > 1)
 					{
-						Commands.Push("Back...");
+						commands.Push("Back...");
 					}
 
-					for (int i = 0; i < Commands.Size(); ++i)
+					for (int i = 0; i < commands.Size(); ++i)
 					{
-						DrawRectangle(sb, pos, (260, rectHeight), col, fnt, (i + 1)..") "..Commands[i], flags);
+						DrawRectangle(sb, pos, (260, rectHeight), col, fnt, (i + 1)..") "..commands[i], flags);
 						pos.y += rectHeight + Spacing;
 					}
 				}
@@ -495,19 +496,19 @@ extend class FollowerHandler
 						pos.y += rectHeight + Spacing;
 					}
 
-					Array<string> Commands;
-					Commands.Push("Orders");
-					Commands.Push("Carry follower");
-					Commands.Push("Manage inventory");
-					Commands.Push("Misc commands");
+					Array<string> commands;
+					commands.Push("Orders/stance");
+					commands.Push("Manage inventory");
+					commands.Push("Carry follower");
+					commands.Push("Misc commands");
 					if (Followers.Size() > 1)
 					{
-						Commands.Push("Back...");
+						commands.Push("Back...");
 					}
 
-					for (int i = 0; i < Commands.Size(); ++i)
+					for (int i = 0; i < commands.Size(); ++i)
 					{
-						DrawRectangle(sb, pos, (160, rectHeight), col, fnt, (i + 1)..") "..Commands[i], flags);
+						DrawRectangle(sb, pos, (160, rectHeight), col, fnt, (i + 1)..") "..commands[i], flags);
 						pos.y += rectHeight + Spacing;
 					}
 				}
@@ -518,14 +519,15 @@ extend class FollowerHandler
 			//
 			// --------------------------------------------------------------------------------
 
-			case FMenu_Orders:
+			case FMenu_OrdersStance:
 			{
 				if (!lastFol || lastFol.LinkedPlayer != players[consoleplayer].mo)
 				{
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
 					return;
 				}
-				static const string Orders[] = { "Follow", "Follow and ignore hostiles", "Stay and provide cover", "Go there and provide cover", "Come and help me", "Do some healing" };
+				static const string orders[] = { "Follow", "Stay here", "Go there and stay", "Come and help me", "Do some healing" };
+				static const string stances[] = { "Aggressive", "Passive" };
 
 				if (selSize > 1)
 				{
@@ -537,12 +539,17 @@ extend class FollowerHandler
 				}
 				pos.y += rectHeight + Spacing;
 
-				for (int i = 0; i < Orders.Size(); ++i)
+				for (int i = 0; i < orders.Size(); ++i)
 				{
-					DrawRectangle(sb, pos, (240, rectHeight), col, fnt, (i + 1)..") "..(selSize == 1 && lastFol.Order == i ? "\c[Green]" : "")..Orders[i].."\c-", flags);
+					DrawRectangle(sb, pos, (240, rectHeight), col, fnt, (i + 1)..") "..(selSize == 1 && lastFol.Order == i ? "\c[Green]" : "")..orders[i].."\c-", flags);
 					pos.y += rectHeight + Spacing;
 				}
-				DrawRectangle(sb, pos, (240, rectHeight), col, fnt, (Orders.Size() + 1)..") Back...", flags);
+				for (int i = 0; i < stances.Size(); ++i)
+				{
+					DrawRectangle(sb, pos, (240, rectHeight), col, fnt, (orders.Size() + i + 1)..") "..(selSize == 1 && lastFol.Stance == i ? "\c[Green]" : "")..stances[i].."\c-", flags);
+					pos.y += rectHeight + Spacing;
+				}
+				DrawRectangle(sb, pos, (240, rectHeight), col, fnt, (orders.Size() + stances.Size() + 1)..") Back...", flags);
 				break;
 			}
 
@@ -635,20 +642,20 @@ extend class FollowerHandler
 				}
 				pos.y += rectHeight + Spacing;
 
-				Array<string> Commands;
+				Array<string> commands;
 				if (!(lastFol.bDONTTRANSLATE))
 				{
-					Commands.Push("Change color");
+					commands.Push("Change color");
 				}
 				if (selSize == 1 && lastFol.bCANDISMISS)
 				{
-					Commands.Push("\c[FLW_BloodRed]"..(UiData[consoleplayer].Confirmation ? "Confirm?" : "Dismiss").."\c-");
+					commands.Push("\c[FLW_BloodRed]"..(UiData[consoleplayer].Confirmation ? "Confirm?" : "Dismiss").."\c-");
 				}
-				Commands.Push("Back...");
+				commands.Push("Back...");
 
-				for (int i = 0; i < Commands.Size(); ++i)
+				for (int i = 0; i < commands.Size(); ++i)
 				{
-					DrawRectangle(sb, pos, (200, rectHeight), col, fnt, (i + 1)..") "..Commands[i], flags);
+					DrawRectangle(sb, pos, (200, rectHeight), col, fnt, (i + 1)..") "..commands[i], flags);
 					pos.y += rectHeight + Spacing;
 				}
 				break;
@@ -994,13 +1001,13 @@ extend class FollowerHandler
 				NumKey = 10;
 			}
 
-			Array<FollowerCommand> Commands;
+			Array<FollowerCommand> commands;
 			switch (FollowerMenuLevel[consoleplayer])
 			{
 				case FMenu_Recruitment:
 				{
-					Commands.Push(CreateCommand("HDF_ConfirmRecruitment"));
-					Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Closed));
+					commands.Push(CreateCommand("HDF_ConfirmRecruitment"));
+					commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Closed));
 					break;
 				}
 
@@ -1113,7 +1120,7 @@ extend class FollowerHandler
 						{
 							case 1:
 							{
-								SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Orders);
+								SendNetworkEvent("HDF_SetFollowerMenu", FMenu_OrdersStance);
 								break;
 							}
 							case 2:
@@ -1138,41 +1145,41 @@ extend class FollowerHandler
 					}
 					else if (lastFol.Health <= 0)
 					{
-						Commands.Push(CreateCommand("HDF_CarryFollower"));
+						commands.Push(CreateCommand("HDF_CarryFollower"));
 						if (lastFol.ResurrectType & HDFollower.RESF_BLUES)
 						{
-							Commands.Push(CreateCommand("HDF_TryRevive", 0));
+							commands.Push(CreateCommand("HDF_TryRevive", 0));
 						}
 						if (lastFol.ResurrectType & HDFollower.RESF_BLOOD)
 						{
-							Commands.Push(CreateCommand("HDF_TryRevive", 1));
+							commands.Push(CreateCommand("HDF_TryRevive", 1));
 						}
-						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Inventory));
+						commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Inventory));
 						if (lastFol.bCANDISMISS)
 						{
 							if (UiData[consoleplayer].Confirmation)
 							{
-								Commands.Push(CreateCommand("HDF_DismissFollower"));
+								commands.Push(CreateCommand("HDF_DismissFollower"));
 							}
 							else
 							{
-								Commands.Push(CreateCommand("HDF_ToggleConfirmation", true, useUiHandler: true));
+								commands.Push(CreateCommand("HDF_ToggleConfirmation", true, useUiHandler: true));
 							}
 						}
 						if (Followers.Size() > 1)
 						{
-							Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Followers));
+							commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Followers));
 						}
 					}
 					else if (lastFol.bFRIENDLY)
 					{
-						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Orders));
-						Commands.Push(CreateCommand("HDF_CarryFollower"));
-						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Inventory));
-						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Miscellaneous));
+						commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_OrdersStance));
+						commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Inventory));
+						commands.Push(CreateCommand("HDF_CarryFollower"));
+						commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Miscellaneous));
 						if (Followers.Size() > 1)
 						{
-							Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Followers));
+							commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Followers));
 						}
 					}
 					break;
@@ -1182,15 +1189,16 @@ extend class FollowerHandler
 				//
 				// --------------------------------------------------------------------------------
 					
-				case FMenu_Orders:
+				case FMenu_OrdersStance:
 				{
-					Commands.Push(CreateCommand("HDF_ChangeOrders", HDFollower.FOrder_Follow));
-					Commands.Push(CreateCommand("HDF_ChangeOrders", HDFollower.FOrder_FollowIgnore));
-					Commands.Push(CreateCommand("HDF_ChangeOrders", HDFollower.FOrder_Cover));
-					Commands.Push(CreateCommand("HDF_ChangeOrders", HDFollower.FOrder_GoAndCover));
-					Commands.Push(CreateCommand("HDF_ChangeOrders", HDFollower.FOrder_ComeAndHelp));
-					Commands.Push(CreateCommand("HDF_ChangeOrders", HDFollower.FOrder_HealSelf));
-					Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Main));
+					commands.Push(CreateCommand("HDF_ChangeOrders", HDFollower.FOrder_Follow));
+					commands.Push(CreateCommand("HDF_ChangeOrders", HDFollower.FOrder_Stay));
+					commands.Push(CreateCommand("HDF_ChangeOrders", HDFollower.FOrder_GoThere));
+					commands.Push(CreateCommand("HDF_ChangeOrders", HDFollower.FOrder_ComeAndHelp));
+					commands.Push(CreateCommand("HDF_ChangeOrders", HDFollower.FOrder_HealSelf));
+					commands.Push(CreateCommand("HDF_ChangeStance", HDFollower.FStance_Aggressive));
+					commands.Push(CreateCommand("HDF_ChangeStance", HDFollower.FStance_Passive));
+					commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Main));
 					break;
 				}
 
@@ -1332,20 +1340,20 @@ extend class FollowerHandler
 
 					if (!(lastFol.bDONTTRANSLATE))
 					{
-						Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_ColorPicker));
+						commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_ColorPicker));
 					}
 					if (selSize == 1 && lastFol.bCANDISMISS)
 					{
 						if (UiData[consoleplayer].Confirmation)
 						{
-							Commands.Push(CreateCommand("HDF_DismissFollower"));
+							commands.Push(CreateCommand("HDF_DismissFollower"));
 						}
 						else
 						{
-							Commands.Push(CreateCommand("HDF_ToggleConfirmation", true, useUiHandler: true));
+							commands.Push(CreateCommand("HDF_ToggleConfirmation", true, useUiHandler: true));
 						}
 					}
-					Commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Main));
+					commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Main));
 					break;
 				}
 
@@ -1369,9 +1377,9 @@ extend class FollowerHandler
 				}
 			}
 
-			if (NumKey > 0 && NumKey - 1 < Commands.Size())
+			if (NumKey > 0 && NumKey - 1 < commands.Size())
 			{
-				FollowerCommand cmd = Commands[NumKey - 1];
+				FollowerCommand cmd = commands[NumKey - 1];
 				if (cmd.useUiHandler)
 				{
 					HandleUiCommand(cmd);
@@ -1640,7 +1648,7 @@ extend class FollowerHandler
 
 		if (cmd ~== "HDF_InputCommands")
 		{
-			string fullText = "\c[Sapphire]===== Input Commands =====";
+			string fullText = "\c[Sapphire]===== Input commands =====";
 			string commandsList[] =
 			{
 				"\c[Fire]rld/rel \c[Green]<name>/<index> \c[Brick][d]\n\c[DarkGray]Supports multiselect: \c[Green]Yes\n\c[DarkGray]Description: \c[Green]name\c[White] is the name of the weapon as displayed in the inventory. Partial names are supported, e.g. \c[Gold]rel hun\c[White] to reload the Hunter. If a single follower is selected, using the weapon's \c[Green]index\c[White] is also supported. If the follower has only one weapon, \c[Green]name\c[White] and \c[Green]index\c[White] can be omitted. \c[Brick]d\c[White] is an option that, if provided, will forcefully drop the magazine instead of storing it. ZM66 mags will still be dropped regardless of this option.\n",
@@ -1728,6 +1736,17 @@ extend class FollowerHandler
 			{
 				CloseFollowerMenu(e.Player);
 			}
+			return;
+		}
+
+		if (cmd ~== "HDF_ChangeStance")
+		{
+			int size = Selection[e.Player].SelFollowers.Size();
+			for (int i = 0; i < size; ++i)
+			{
+				Selection[e.Player].SelFollowers[i].ChangeStance(e.Args[0]);
+			}
+			CloseFollowerMenu(e.Player);
 			return;
 		}
 

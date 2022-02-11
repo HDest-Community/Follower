@@ -8,29 +8,21 @@ NARI_ORDER_FOLLOW2_1 = "Roger that, I'll stick close.";
 NARI_ORDER_FOLLOW2_2 = "Following the leader!";
 NARI_ORDER_FOLLOW2_3 = "Lead the way.";
 
-NARI_ORDER_FOLLOWIGNORE1_1 = "I'm already ignoring hostiles.";
-NARI_ORDER_FOLLOWIGNORE1_2 = "I'm already paying no attention to the baddies.";
-NARI_ORDER_FOLLOWIGNORE1_3 = "Don't have to tell me twice.";
+NARI_ORDER_STAY1_1 = "I'm already idling here.";
+NARI_ORDER_STAY1_2 = "I've been standing here for some time now.";
+NARI_ORDER_STAY1_3 = "You don't have to repeat yourself, y'know.";
 
-NARI_ORDER_FOLLOWIGNORE2_1 = "Doing a tactical retreat, are we?";
-NARI_ORDER_FOLLOWIGNORE2_2 = "Let's run!";
-NARI_ORDER_FOLLOWIGNORE2_3 = "Yeah, we should probably get the hell outta here.";
+NARI_ORDER_STAY2_1 = "I'll stay right here, then.";
+NARI_ORDER_STAY2_2 = "Sure!";
+NARI_ORDER_STAY2_3 = "Fine by me. Don't take too long, though, okay?";
 
-NARI_ORDER_COVER1_1 = "I'm already covering your back.";
-NARI_ORDER_COVER1_2 = "Already on it.";
-NARI_ORDER_COVER1_3 = "Stop worrying, nobody is going to shoot you.";
+NARI_ORDER_GOTHERE1_1 = "I can't go there.";
+NARI_ORDER_GOTHERE1_2 = "Sorry, I can't reach that.";
+NARI_ORDER_GOTHERE1_3 = "No can do.";
 
-NARI_ORDER_COVER2_1 = "Don't worry, I got your six.";
-NARI_ORDER_COVER2_2 = "Your back is safe.";
-NARI_ORDER_COVER2_3 = "I'll stay here and guard you.";
-
-NARI_ORDER_GOANDCOVER1_1 = "I can't go there.";
-NARI_ORDER_GOANDCOVER1_2 = "Sorry, I can't reach that.";
-NARI_ORDER_GOANDCOVER1_3 = "No can do.";
-
-NARI_ORDER_GOANDCOVER2_1 = "On my way!";
-NARI_ORDER_GOANDCOVER2_2 = "Whatever you say.";
-NARI_ORDER_GOANDCOVER2_3 = "Going!";
+NARI_ORDER_GOTHERE2_1 = "On my way!";
+NARI_ORDER_GOTHERE2_2 = "Whatever you say.";
+NARI_ORDER_GOTHERE2_3 = "Going!";
 
 NARI_ORDER_HELP1_1 = "I'm already coming.";
 NARI_ORDER_HELP1_2 = "I know, just hold on.";
@@ -59,6 +51,22 @@ NARI_ORDER_HEAL1_3 = "I'm stapling as fast as I can. It really hurts!";
 NARI_ORDER_HEAL2_1 = "Ouchie!";
 NARI_ORDER_HEAL2_2 = "This feels just like sewing clothes! Oof.";
 NARI_ORDER_HEAL2_3 = "Oh boy, this is going to hurt.";
+
+NARI_STANCE_AGGRESSIVE1_1 = "I'm already covering your back.";
+NARI_STANCE_AGGRESSIVE1_2 = "Already on it.";
+NARI_STANCE_AGGRESSIVE1_3 = "Stop worrying, nobody is going to shoot you."; // [Ace] And then you get shot.
+
+NARI_STANCE_AGGRESSIVE2_1 = "Don't worry, I got your six.";
+NARI_STANCE_AGGRESSIVE2_2 = "Your back is safe.";
+NARI_STANCE_AGGRESSIVE2_3 = "I'll stay here and guard you.";
+
+NARI_STANCE_PASSIVE1_1 = "I'm already ignoring hostiles.";
+NARI_STANCE_PASSIVE1_2 = "I'm already paying no attention to the baddies.";
+NARI_STANCE_PASSIVE1_3 = "Don't have to tell me twice.";
+
+NARI_STANCE_PASSIVE2_1 = "Doing a tactical retreat, are we?";
+NARI_STANCE_PASSIVE2_2 = "Let's run!";
+NARI_STANCE_PASSIVE2_3 = "Yeah, we should probably get the hell outta here.";
 
 NARI_CARRY_SUCCESS_1 = "Be gentle, okay?";
 NARI_CARRY_SUCCESS_2 = "Wheeeee!";

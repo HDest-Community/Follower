@@ -127,7 +127,7 @@ extend class HDFollower
 					TGoal = LinkedPlayer;
 				}
 			}
-			else if (Order < FOrder_Cover)
+			else if (Order == FOrder_Follow)
 			{
 				if (canSeeNext)
 				{
@@ -163,7 +163,7 @@ extend class HDFollower
 					}
 				}
 			}
-			else if (Order == FOrder_Cover && DistanceToPlayer < HDCONST_ONEMETRE * 5)
+			else if (Order == FOrder_Stay && DistanceToPlayer < HDCONST_ONEMETRE * 5)
 			{
 				A_Face(LinkedPlayer, 15);
 			}
@@ -174,7 +174,7 @@ extend class HDFollower
 			}
 
 			// [Ace] Using potions.
-			if (Order <= FOrder_Cover && !Moving && CanHealSelf() && GetAmount('BluePotion') > 0 && GetAge() % 24 == 0)
+			if (Order <= FOrder_Stay && !Moving && CanHealSelf() && GetAmount('BluePotion') > 0 && GetAge() % 24 == 0)
 			{
 				let potion = FindLowestAmount('BluePotion');
 				potion.Amount--;
@@ -225,7 +225,7 @@ extend class HDFollower
 		// [Ace] Enemy searching and weapon handling.
 		if (Weapons.Size() > 0)
 		{
-			if (HasUsableWeapons() && (!SelWeapon || SelWeapon.Status == FollowerWeapon.WStatus_Idle) && (!bFRIENDLY || Order != FOrder_FollowIgnore && Order != FOrder_GoAndCover))
+			if (HasUsableWeapons() && (!SelWeapon || SelWeapon.Status == FollowerWeapon.WStatus_Idle) && (!bFRIENDLY || Stance == FStance_Aggressive))
 			{
 				AcquireTargets();
 			}
@@ -275,7 +275,7 @@ extend class HDFollower
 		}
 
 		// [Ace] Crouching. One day I will implement proper sprites for this. Today is not that day.
-		if (bFRIENDLY && Status == FStatus_None && Order <= FOrder_Cover && PlayerIsCrouching() && !PlayerIsProne() && CanSeePlayer && DistanceToPlayer < HDCONST_ONEMETRE * 30)
+		if (bFRIENDLY && Status == FStatus_None && Order <= FOrder_Stay && PlayerIsCrouching() && !PlayerIsProne() && CanSeePlayer && DistanceToPlayer < HDCONST_ONEMETRE * 30)
 		{
 			CrouchFactor = min(CrouchFactor + 0.14, 0.5);
 		}
@@ -314,9 +314,9 @@ extend class HDFollower
 
 			if (distDiff < 0.25)
 			{
-				if (Order == FOrder_GoAndCover)
+				if (Order == FOrder_GoThere)
 				{
-					Order = FOrder_Cover;
+					Order = FOrder_Stay;
 				}
 				A_ChangeVelocity(0, 0, vel.z, CVF_REPLACE);
 				ClearGoal(true);
@@ -396,7 +396,7 @@ extend class HDFollower
 				Handler.Followers.Delete(i);
 				continue;
 			}
-			if (flw.Status != FStatus_InactiveOrDead && flw.bFRIENDLY && (flw.Order == FOrder_Follow || flw.Order == FOrder_FollowIgnore) && flw.LinkedPlayer == LinkedPlayer && Distance3D(flw) < MaxFollowRange)
+			if (flw.Status != FStatus_InactiveOrDead && flw.bFRIENDLY && flw.Order == FOrder_Follow && flw.LinkedPlayer == LinkedPlayer && Distance3D(flw) < MaxFollowRange)
 			{
 				return Handler.Followers[i];
 			}
@@ -493,6 +493,7 @@ extend class HDFollower
 	private bool Moving;
 	FStatus Status;
 	FOrder Order;
+	FStance Stance;
 	private FOrder PrevOrder;
 
 	private vector3 LastKnownPos;

@@ -1,0 +1,34 @@
+extend class HDFollower
+{
+	enum FStance
+	{
+		FStance_Aggressive,
+		FStance_Passive
+	}
+
+	void ChangeStance(FStance newStance)
+	{
+		if (Status == FStatus_InactiveOrDead)
+		{
+			return;
+		}
+
+		int index = Stance == newStance ? 1 : 2; // [Ace] 1 - already on it, 2 - new order.
+		switch (newStance)
+		{
+			case FStance_Aggressive:
+			{
+				PrintMessage(GetResponse("STANCE_AGGRESSIVE"..index), "Stance/Aggressive"..index, PMType_General);
+				Stance = newStance;
+				break;
+			}
+			case FStance_Passive:
+			{
+				PrintMessage(GetResponse("STANCE_PASSIVE"..index), "Stance/Passive"..index, PMType_General);
+				Stance = newStance;
+				HaulAss();
+				break;
+			}
+		}
+	}
+}
