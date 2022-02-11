@@ -498,8 +498,8 @@ extend class FollowerHandler
 
 					Array<string> commands;
 					commands.Push("Orders/stance");
-					commands.Push("Manage inventory");
 					commands.Push("Carry follower");
+					commands.Push("Manage inventory");
 					commands.Push("Misc commands");
 					if (Followers.Size() > 1)
 					{
@@ -1174,8 +1174,8 @@ extend class FollowerHandler
 					else if (lastFol.bFRIENDLY)
 					{
 						commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_OrdersStance));
-						commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Inventory));
 						commands.Push(CreateCommand("HDF_CarryFollower"));
+						commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Inventory));
 						commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_Miscellaneous));
 						if (Followers.Size() > 1)
 						{
