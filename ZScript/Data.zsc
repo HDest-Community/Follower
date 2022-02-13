@@ -128,7 +128,7 @@ extend class HDFollower
 		}
 
 		let sld = FindInventory('HDMagicShield', true);
-		if (shields)
+		if (sld)
 		{
 			FData.ShieldClass = (class<HDMagicShield>)(sld.GetClass());
 			FData.Shields = sld.Amount;
