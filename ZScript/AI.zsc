@@ -174,7 +174,7 @@ extend class HDFollower
 			}
 
 			// [Ace] Using potions.
-			if (Order <= FOrder_Stay && !Moving && CanHealSelf() && GetAmount('BluePotion') > 0 && GetAge() % 24 == 0)
+			if ((!SelWeapon || SelWeapon.Status == FollowerWeapon.WStatus_Idle) && Order <= FOrder_Stay && !Moving && CanHealSelf() && GetAmount('BluePotion') > 0 && GetAge() % 24 == 0)
 			{
 				let potion = FindLowestAmount('BluePotion');
 				potion.Amount--;
@@ -183,11 +183,11 @@ extend class HDFollower
 				HealSelf(toHeal);
 				A_StartSound("potion/chug", 5);
 
-				if (potion.Amount <= 0)
+				if (potion.Amount == 0)
 				{
 					TakeInvItem(potion, FIF_FORCE | FIF_REMOVE);
 					A_StartSound("potion/open", 6);
-					
+
 					Actor a = Spawn("SpentBottle", pos + (0, 0, height- 4), ALLOW_REPLACE);
 					a.angle = angle + 2;
 					a.vel = vel;

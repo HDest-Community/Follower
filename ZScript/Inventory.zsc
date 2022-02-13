@@ -157,7 +157,7 @@ extend class HDFollower
 
 	void DropInvItem(InventorySlot slot, int flags = 0)
 	{
-		if (!slot || !CanInteractWith())
+		if (!slot || !CanInteractWith() && !(flags & FIF_FORCE))
 		{
 			return;
 		}
@@ -202,7 +202,7 @@ extend class HDFollower
 
 	void TakeInvItem(InventorySlot slot, int flags = 0)
 	{
-		if (!slot || !CanInteractWith())
+		if (!slot || !CanInteractWith() && !(flags & FIF_FORCE))
 		{
 			return;
 		}
