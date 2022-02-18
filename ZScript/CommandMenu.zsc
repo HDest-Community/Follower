@@ -566,7 +566,7 @@ extend class FollowerHandler
 				}
 
 				int w = InvColumns * SlotSize + (InvColumns - 1);
-				int wHeight = rectHeight * 3;
+				int wepHeight = rectHeight * 3;
 
 				pos.y -= 70;
 
@@ -575,25 +575,25 @@ extend class FollowerHandler
 				{
 					for (int i = 0; i < wSize; ++i)
 					{
-						DrawWeaponRectangle(sb, pos + (0, (wHeight + Spacing) * i) - (0, wSize > 7 ? (wHeight + Spacing) * (wSize - 7) : 0), (w, wHeight), col, fnt, flags, lastFol, lastFol.Weapons[i]);
+						DrawWeaponRectangle(sb, pos + (0, (wepHeight + Spacing) * i) - (0, wSize > 7 ? (wepHeight + Spacing) * (wSize - 7) : 0), (w, wepHeight), col, fnt, flags, lastFol, lastFol.Weapons[i]);
 					}
 					pos.x += w + Spacing;
 				}
 
 				let arm = HDArmourWorn(lastFol.FindInventory("HDArmourWorn"));
-				bool showArmor = arm && (wSize < 2 || UiData[consoleplayer].SlotFocused == 0);
+				bool showArmor = arm && (wSize == 1 || UiData[consoleplayer].SlotFocused == 0);
 				if (showArmor)
 				{
-					DrawArmorRectangle(sb, pos + (w + Spacing, rectHeight + Spacing), (wHeight, wHeight), col, fnt, flags, arm);	
+					DrawArmorRectangle(sb, pos + (w + Spacing, rectHeight + Spacing), (wepHeight, wepHeight), col, fnt, flags, arm);	
 				}
 
-				DrawRectangle(sb, pos, (w + (showArmor ? wHeight + Spacing : (UiData[consoleplayer].SlotFocused > 0 ? w + Spacing : 0)), rectHeight), col, fnt, GetTruncatedText(lastFol.GetTag(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
+				DrawRectangle(sb, pos, (w + (showArmor ? wepHeight + Spacing : (UiData[consoleplayer].SlotFocused > 0 && wSize != 1 ? w + Spacing : 0)), rectHeight), col, fnt, GetTruncatedText(lastFol.GetTag(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
 				pos.y += rectHeight + Spacing;
 
 				if (wSize == 1)
 				{
-					DrawWeaponRectangle(sb, pos, (w, wHeight), col, fnt, flags, lastFol, lastFol.Weapons[0], selSize > 1 ? 1 : 0);
-					pos.y += wHeight + Spacing;
+					DrawWeaponRectangle(sb, pos, (w, wepHeight), col, fnt, flags, lastFol, lastFol.Weapons[0], selSize > 1 ? 1 : 0);
+					pos.y += wepHeight + Spacing;
 				}
 
 				int rows = int(ceil(HDFollower.SlotCount / double(InvColumns)));
