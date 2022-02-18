@@ -79,7 +79,7 @@ extend class HDFollower
 			let wep = FollowerWeapon.CreateAndAdd(cls, self);
 			wep.OnTransfer(foundWeapon);
 			foundWeapon.Destroy();
-			PrintMessage(GetResponse("WEAPONGIVE_NONE"), "WeaponGive/None", PMType_Important);
+			PrintMessage(GetResponse("WEAPONGIVE_NONE"), "WeaponGive/None", PMType_General);
 			A_StartSound("misc/w_pkup", 5);
 			Status = FStatus_None;
 		}
