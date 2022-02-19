@@ -91,40 +91,40 @@ class FW_RocketLauncher : FollowerWeapon
 
 	override bool CheckWeaponCondition(Actor trgt)
 	{
-		if (Owner.Distance3D(trgt) < HDCONST_ONEMETRE * 10)
+		if (Owner.distance3D(trgt) < HDCONST_ONEMETRE * 10)
 		{
 			return false;
 		}
 
-		bool OtherFollowersSafe = true;
+		bool otherFollowersSafe = true;
 		for (int i = 0; i < Owner.Handler.Followers.Size(); ++i)
 		{
 			HDFollower f = Owner.Handler.Followers[i];
-			bool HasSight = f.CheckSight(trgt, SF_SEEPASTSHOOTABLELINES);
-			double Dist = f.Distance3D(trgt);
-			if (Dist < HDCONST_ONEMETRE * 2 || Dist < HDCONST_ONEMETRE * 12 && HasSight)
+			bool hasSight = f.CheckSight(trgt, SF_SEEPASTSHOOTABLELINES);
+			double dist = f.distance3D(trgt);
+			if (dist < HDCONST_ONEMETRE * 2 || dist < HDCONST_ONEMETRE * 7 && hasSight)
 			{
-				OtherFollowersSafe = false;
+				otherFollowersSafe = false;
 				break;
 			}
 		}
-		bool OtherPlayersSafe = true;
+		bool otherPlayersSafe = true;
 		for (int i = 0; i < MAXPLAYERS; ++i)
 		{
 			let plr = HDPlayerPawn(players[i].mo);
 			if (plr)
 			{
-				bool HasSight = plr.CheckSight(trgt, SF_SEEPASTSHOOTABLELINES);
-				double Dist = plr.Distance3D(trgt);
-				if (Dist < HDCONST_ONEMETRE * 2 || Dist < HDCONST_ONEMETRE * 12 && HasSight)
+				bool hasSight = plr.CheckSight(trgt, SF_SEEPASTSHOOTABLELINES);
+				double dist = plr.distance3D(trgt);
+				if (dist < HDCONST_ONEMETRE * 2 || dist < HDCONST_ONEMETRE * 7 && hasSight)
 				{
-					OtherPlayersSafe = false;
+					otherPlayersSafe = false;
 					break;
 				}
 			}
 		}
 		
-		return OtherFollowersSafe && OtherPlayersSafe;
+		return otherFollowersSafe && otherPlayersSafe;
 	}
 
 	override void OnTransfer(HDWeapon wpn)
