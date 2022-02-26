@@ -77,6 +77,7 @@ Marines basically function the exact same way as regular followers, and you can 
 - Holding Shift while giving orders will not close the menu.
 - While in input mode, pressing the Up and Down arrow keys moves through the command history.
 - Telling followers to stop in front of a linedef (e.g. switch or door) will activate it as if the player did it, allowing for some basic remote control.
+- Followers will put out the fires of other nearby followers (within 1m), including yourself. You can do the same for them by being near.
 
 ### Modding
 ---

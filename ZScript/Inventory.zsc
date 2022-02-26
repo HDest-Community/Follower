@@ -26,12 +26,20 @@ extend class HDFollower
 
 	virtual clearscope bool IsValidItem(class<HDPickup> cls, bool ignoreWeaponValidity = false)
 	{
-		return cls && ((cls is 'HDAmmo' && AmmoIsUsed((class<HDAmmo>)(cls)) || ignoreWeaponValidity) || cls == 'PortableMedikit' || cls == 'PortableStimpack' || cls == 'BluePotion');
+		return cls && ((cls is 'HDAmmo' && AmmoIsUsed((class<HDAmmo>)(cls)) || ignoreWeaponValidity) || cls == 'PortableMedikit' || cls == 'PortableStimpack' || cls == 'BluePotion' || cls == 'PortableRadsuit');
 	}
 
 	// --------------------------------------------------
 	// ACTIONS
 	// --------------------------------------------------
+
+	protected void InventoryThink()
+	{
+		if (GetAmount('PortableRadsuit') > 0)
+		{
+			A_GiveInventory('HDFireDouse', 3);
+		}
+	}
 
 	// [Ace] Anything that's not a mag. Including loose ammo.
 	bool AddItem(HDPickup item, int amt = 1, int maxAmt = MaxLooseAmmoAmount, int slot = -1, int flags = 0)

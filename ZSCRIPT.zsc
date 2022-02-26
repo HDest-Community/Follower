@@ -217,16 +217,14 @@ class HDFollower : HDHumanoid abstract
 			CommentTimer--;
 		}
 
+		InventoryThink();
 		if (Health > 0)
 		{
 			AiThink();
 
-			if (GetAge() % 35 * 2 == 0)
+			if (GetAge() % 35 * 2 == 0 && Bloodloss > 0)
 			{
-				if (Bloodloss > 0)
-				{
-					Bloodloss--;
-				}
+				Bloodloss--;
 			}
 		}
 	}
