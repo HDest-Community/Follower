@@ -1752,7 +1752,7 @@ extend class FollowerHandler
 
 		if (cmd.IndexOf("hdf_tryreloadweapon") != -1)
 		{
-			int selSize = Selection[consoleplayer].SelFollowers.Size();
+			int selSize = Selection[e.Player].SelFollowers.Size();
 			
 			int argSize = args.Size();
 			bool dropMag = HasOption("d", args);
@@ -1769,7 +1769,7 @@ extend class FollowerHandler
 			{
 				for (int i = 0; i < selSize; ++i)
 				{
-					let flw = Selection[consoleplayer].SelFollowers[i];
+					let flw = Selection[e.Player].SelFollowers[i];
 					int wSize = flw.Weapons.Size();
 					if (!flw.CanInteractWith(false) || wSize == 0)
 					{
@@ -1821,10 +1821,10 @@ extend class FollowerHandler
 		{
 			if (args.Size() > 0)
 			{
-				int selSize = Selection[consoleplayer].SelFollowers.Size();
+				int selSize = Selection[e.Player].SelFollowers.Size();
 				for (int i = 0; i < selSize; ++i)
 				{
-					let flw = Selection[consoleplayer].SelFollowers[i];
+					let flw = Selection[e.Player].SelFollowers[i];
 					int wSize = flw.Weapons.Size();
 					if (!flw.CanInteractWith(false) || wSize == 0)
 					{
@@ -1885,9 +1885,9 @@ extend class FollowerHandler
 
 		if (cmd ~== "HDF_ChangeColor")
 		{
-			for (int i = 0; i < Selection[consoleplayer].SelFollowers.Size(); ++i)
+			for (int i = 0; i < Selection[e.Player].SelFollowers.Size(); ++i)
 			{
-				let flw = Selection[consoleplayer].SelFollowers[i];
+				let flw = Selection[e.Player].SelFollowers[i];
 				if (flw.CanInteractWith() && !(flw.bDONTTRANSLATE))
 				{
 					flw.A_SetTranslation("FollowerTranslation"..e.Args[0]);
