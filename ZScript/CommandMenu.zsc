@@ -1106,6 +1106,11 @@ extend class FollowerHandler
 					HDFollower lastFol = Selection[consoleplayer].GetLast();
 					int selSize = Selection[consoleplayer].SelFollowers.Size();
 
+					if (selSize == 0)
+					{
+						break;
+					}
+
 					if (selSize > 1)
 					{
 						if (e.KeyScan == InputEvent.Key_Enter && !InInputMode[consoleplayer] && ret)
@@ -1210,6 +1215,11 @@ extend class FollowerHandler
 				{
 					HDFollower lastFol = Selection[consoleplayer].GetLast();
 					int selSize = Selection[consoleplayer].SelFollowers.Size();
+
+					if (selSize == 0)
+					{
+						break;
+					}
 
 					// [Ace] Navigation.
 					int maxSIndex = HDFollower.SlotCount - 1;
@@ -1337,6 +1347,11 @@ extend class FollowerHandler
 				{
 					HDFollower lastFol = Selection[consoleplayer].GetLast();
 					int selSize = Selection[consoleplayer].SelFollowers.Size();
+
+					if (selSize == 0)
+					{
+						break;
+					}
 
 					if (!(lastFol.bDONTTRANSLATE))
 					{
