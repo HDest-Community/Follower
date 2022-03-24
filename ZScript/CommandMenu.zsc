@@ -412,7 +412,7 @@ extend class FollowerHandler
 
 					Array<string> commands;
 					commands.Push("Orders");
-					commands.Push(InInputMode[consoleplayer] ? InputString[consoleplayer].."_" : "3) Input command");
+					commands.Push(InInputMode[consoleplayer] ? InputString[consoleplayer].."_" : "Input command");
 					commands.Push("Misc commands");
 					if (Followers.Size() > 1)
 					{
