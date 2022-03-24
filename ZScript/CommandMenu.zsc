@@ -310,6 +310,7 @@ extend class FollowerHandler
 
 	private ui void DrawCommandMenu(HDStatusBar sb, vector2 pos, int flags, Color col, HUDFont fnt)
 	{
+		let plr = players[consoleplayer].mo;
 		vector2 OriginalPos = pos;
 		int rectHeight = fnt.mFont.GetHeight() + 4;
 
@@ -399,7 +400,7 @@ extend class FollowerHandler
 
 			case FMenu_Main:
 			{
-				if (!lastFol || lastFol.LinkedPlayer != players[consoleplayer].mo || !lastFol.bFRIENDLY && lastFol.Health > 0)
+				if (!lastFol || lastFol.LinkedPlayer != plr || !lastFol.bFRIENDLY && lastFol.Health > 0)
 				{
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
 					return;
@@ -491,7 +492,7 @@ extend class FollowerHandler
 
 					if (Followers.Size() == 1 && lastFol.CanInteractWith(false))
 					{
-						double dist = lastFol.Distance3D(lastFol.LinkedPlayer) / HDCONST_ONEMETRE;
+						double dist = lastFol.Distance3D(players[consoleplayer].mo) / HDCONST_ONEMETRE;
 						DrawRectangle(sb, pos, (160, rectHeight), col, fnt, String.Format("%.2fm", dist), flags, Font.CR_DARKGRAY);
 						pos.y += rectHeight + Spacing;
 					}
@@ -521,7 +522,7 @@ extend class FollowerHandler
 
 			case FMenu_OrdersStance:
 			{
-				if (!lastFol || lastFol.LinkedPlayer != players[consoleplayer].mo)
+				if (!lastFol || lastFol.LinkedPlayer != plr)
 				{
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
 					return;
@@ -559,7 +560,7 @@ extend class FollowerHandler
 
 			case FMenu_Inventory:
 			{
-				if (!lastFol || lastFol.LinkedPlayer != players[consoleplayer].mo)
+				if (!lastFol || lastFol.LinkedPlayer != plr)
 				{
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
 					return;
@@ -626,7 +627,7 @@ extend class FollowerHandler
 
 			case FMenu_Miscellaneous:
 			{
-				if (!lastFol || lastFol.LinkedPlayer != players[consoleplayer].mo)
+				if (!lastFol || lastFol.LinkedPlayer != plr)
 				{
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
 					return;
@@ -667,7 +668,7 @@ extend class FollowerHandler
 
 			case FMenu_ColorPicker:
 			{
-				if (!lastFol || lastFol.LinkedPlayer != players[consoleplayer].mo)
+				if (!lastFol || lastFol.LinkedPlayer != plr)
 				{
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
 					return;
@@ -733,7 +734,7 @@ extend class FollowerHandler
 
 		if (valid)
 		{
-			double dist = flw.Distance3D(flw.LinkedPlayer) / HDCONST_ONEMETRE;
+			double dist = flw.Distance3D(players[consoleplayer].mo) / HDCONST_ONEMETRE;
 			sb.DrawString(fnt, String.Format("%.2fm", dist), pos, flags | (flw.Squad > 0 ? sb.DI_TEXT_ALIGN_RIGHT : 0), Font.CR_DARKGRAY);
 		}
 	}
