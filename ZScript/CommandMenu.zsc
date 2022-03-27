@@ -1464,60 +1464,6 @@ extend class FollowerHandler
 			rawArgs.Split(args, " ");
 		}
 
-		if (cmd ~== "HDF_SetModifiers")
-		{
-			switch (e.Args[0])
-			{
-				case 0: Modifiers[e.Player] &= ~e.Args[1]; break;
-				case 1: Modifiers[e.Player] |= e.Args[1]; break;
-			}
-			return;
-		}
-
-		if (cmd ~== "HDF_SetFollowerPage")
-		{
-			switch (e.Args[0])
-			{
-				case 0: FollowerPage[e.Player]--; break;
-				case 1: FollowerPage[e.Player]++; break;
-			}
-			return;
-		}
-
-		if (cmd.IndexOf("hdf_rename") != -1)
-		{
-			if (args.Size() == 0)
-			{
-				return;
-			}
-
-			FLineTraceData data;
-			plr.LineTrace(plr.angle, HDCONST_ONEMETRE * 100, plr.pitch, TRF_SOLIDACTORS | TRF_THRUBLOCK, plr.height - 5, data: data);
-			if (data.HitActor is 'HDFollower')
-			{
-				data.HitActor.SetTag(args[0]);
-			}
-			return;
-		}
-
-		if (cmd.IndexOf("hdf_resetfollower") != -1)
-		{
-			if (args.Size() == 0)
-			{
-				return;
-			}
-
-			for (int i = 0; i < Followers.Size(); ++i)
-			{
-				if (Followers[i].GetTag() ~== args[0])
-				{
-					Followers[i].Reset();
-					break;
-				}
-			}
-			return;
-		}
-
 		if (cmd ~== "HDF_ConfirmRecruitment" && !e.IsManual)
 		{
 			CloseFollowerMenu(e.Player);
@@ -1583,6 +1529,65 @@ extend class FollowerHandler
 
 		if (Followers.Size() == 0)
 		{
+			return;
+		}
+
+		if (cmd.IndexOf("hdf_resetfollower") != -1)
+		{
+			if (args.Size() == 0)
+			{
+				return;
+			}
+
+			for (int i = 0; i < Followers.Size(); ++i)
+			{
+				if (Followers[i].GetTag() ~== args[0])
+				{
+					Followers[i].Reset();
+					break;
+				}
+			}
+			return;
+		}
+
+		if (cmd ~== "HDF_SetModifiers")
+		{
+			switch (e.Args[0])
+			{
+				case 0: Modifiers[e.Player] &= ~e.Args[1]; break;
+				case 1: Modifiers[e.Player] |= e.Args[1]; break;
+			}
+
+			if (CVar.GetCVar('hdf_quickselect', plr.player).GetBool() && Modifiers[e.Player] == 0)
+			{
+				ApplySelection(e.Player);
+			}
+			return;
+		}
+
+		if (cmd ~== "HDF_SetFollowerPage")
+		{
+			switch (e.Args[0])
+			{
+				case 0: FollowerPage[e.Player]--; break;
+				case 1: FollowerPage[e.Player]++; break;
+			}
+			return;
+		}
+
+		if (cmd.IndexOf("hdf_rename") != -1)
+		{
+			if (args.Size() == 0)
+			{
+				return;
+			}
+
+			FLineTraceData data;
+			plr.LineTrace(plr.angle, HDCONST_ONEMETRE * 100, plr.pitch, TRF_SOLIDACTORS | TRF_THRUBLOCK, plr.height - 5, data: data);
+			if (data.HitActor is 'HDFollower')
+			{
+				data.HitActor.SetTag(args[0]);
+			}
 			return;
 		}
 
