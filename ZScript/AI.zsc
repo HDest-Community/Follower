@@ -30,7 +30,7 @@ extend class HDFollower
 		int blockedSides = GetBlockedSides();
 
 		Actor next = GetNextInChain();
-		bool canSeeNext = CheckSight(next, SF_SEEPASTSHOOTABLELINES | SF_IGNOREVISIBILITY);
+		bool canSeeNext = CheckSight(next, SF_ALL);
 		if (!canSeeNext && (!TGoal || (blockedSides & (BSide_Left | BSide_Right))) && CanSeePlayer)
 		{
 			next = LinkedPlayer;
@@ -39,7 +39,7 @@ extend class HDFollower
 
 		if (hdf_debug & FDebug_Status)
 		{
-			Console.Printf("[%s] %s (index %i) has %s out with status %i.\nCurrent status is %i. Current order is %i. Follower is %smoving. Goal is %s.\nFollower is targeting %s. Follower is following %s.\n--------------------",
+			Console.Printf("[%s] %s (index %i) has %s out with status %i.\nCurrent status is %i. Current order is %i. Follower is %smoving. Goal is %s.\nFollower is targeting %s. Follower is following %s. Commander is %s.\n--------------------",
 				GetTimestamp(),
 				GetTag(),
 				Index,
@@ -48,7 +48,8 @@ extend class HDFollower
 				Status, Order, !Moving ? "not " : "",
 				TGoal ? TGoal.GetTag() : "nothing",
 				FTarget.Actor ? FTarget.Actor.GetTag() : "nothing",
-				next ? next.GetTag() : "nothing");
+				next ? next.GetTag() : "nothing",
+				LinkedPlayer ? LinkedPlayer.GetTag() : "nobody");
 		}
 		
 		PNeedsHelp = PlayerIsIncapped(); // [Ace] You're just incapped.
@@ -110,7 +111,7 @@ extend class HDFollower
 				{
 					StopHealing();	
 				}
-				else if (DistanceToPlayer < MedicRange && Status != FStatus_HealingPlayer) // [Ace] Start stapling if close enough. Minimum distance is 22. Don't go any lower or follower will be stuck walking towards you.
+				else if (DistanceToPlayer < MedicRange && Status != FStatus_HealingPlayer)
 				{
 					Status = FStatus_HealingPlayer;
 					if (PNeedsMedic)
@@ -342,7 +343,7 @@ extend class HDFollower
 				bNODROPOFF = !(goalDist2 < HDCONST_ONEMETRE * 10 && (pos.z > floorz || abs(TGoal.floorz - floorz) < default.MaxDropOffHeight) && abs(TGoal.pos.z - pos.z) < default.MaxDropOffHeight);
 
 				// [Ace] Stop trying to reach goal shortly after losing LOS.
-				if (!CheckSight(TGoal, SF_SEEPASTSHOOTABLELINES | SF_IGNOREVISIBILITY) && ++NoSightTics == 50)
+				if (!CheckSight(TGoal, SF_ALL) && ++NoSightTics == 50)
 				{
 					NoSightTics = 0;
 					ClearGoal(true);
@@ -482,6 +483,9 @@ extend class HDFollower
 	const MaxFollowRange = HDCONST_ONEMETRE * 25.0;
 	const MaxWaitRange = HDCONST_ONEMETRE * 12;
 	const MaxSearchRange = 24; // [Ace] This is for the LookFor* stuff.
+
+	const SF_ALL = SF_IGNOREVISIBILITY | SF_SEEPASTSHOOTABLELINES | SF_SEEPASTBLOCKEVERYTHING | SF_IGNOREWATERBOUNDARY;
+	const SF_NOINVISIBLE = SF_ALL & ~SF_IGNOREVISIBILITY;
 
 	// --------------------------------------------------
 	// VARIABLES

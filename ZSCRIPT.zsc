@@ -206,7 +206,7 @@ class HDFollower : HDHumanoid abstract
 			return;
 		}
 
-		CanSeePlayer = CheckSight(LinkedPlayer, SF_SEEPASTSHOOTABLELINES | SF_IGNOREVISIBILITY);
+		CanSeePlayer = CheckSight(LinkedPlayer, SF_ALL);
 		DistanceToPlayer = Distance3D(LinkedPlayer);
 
 		CheckOhana();

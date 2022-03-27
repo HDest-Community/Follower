@@ -120,7 +120,7 @@ extend class HDFollower
 		bool bodyDamageCheck = !(other is 'HDMobBase') || HDMobBase(other).BodyDamage <= other.SpawnHealth() * 1.2;
 		bool botCheck = !(other is 'HERPBot' || other is 'DERPBot');
 		bool countableCheck = other.bCOUNTKILL || TargetUncountable.GetBool();
-		return botCheck && countableCheck && bodyDamageCheck && CanHitTarget(other, !fromAcquire) && (FriendlyCheck || HostileCHeck) && CheckSight(other, SF_SEEPASTSHOOTABLELINES) && !TargetIsIncapped(other);
+		return botCheck && countableCheck && bodyDamageCheck && CanHitTarget(other, !fromAcquire) && (FriendlyCheck || HostileCHeck) && CheckSight(other, SF_NOINVISIBLE) && !TargetIsIncapped(other);
 	}
 
 	protected bool TargetIsIncapped(Actor other)

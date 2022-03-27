@@ -100,7 +100,7 @@ class FW_RocketLauncher : FollowerWeapon
 		for (int i = 0; i < Owner.Handler.Followers.Size(); ++i)
 		{
 			HDFollower f = Owner.Handler.Followers[i];
-			bool hasSight = f.CheckSight(trgt, SF_SEEPASTSHOOTABLELINES);
+			bool hasSight = f.CheckSight(trgt, HDFollower.SF_NOINVISIBLE);
 			double dist = f.distance3D(trgt);
 			if (dist < HDCONST_ONEMETRE * 2 || dist < HDCONST_ONEMETRE * 7 && hasSight)
 			{
@@ -114,7 +114,7 @@ class FW_RocketLauncher : FollowerWeapon
 			let plr = HDPlayerPawn(players[i].mo);
 			if (plr)
 			{
-				bool hasSight = plr.CheckSight(trgt, SF_SEEPASTSHOOTABLELINES);
+				bool hasSight = plr.CheckSight(trgt, HDFollower.SF_NOINVISIBLE);
 				double dist = plr.distance3D(trgt);
 				if (dist < HDCONST_ONEMETRE * 2 || dist < HDCONST_ONEMETRE * 7 && hasSight)
 				{

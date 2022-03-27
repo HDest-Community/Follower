@@ -30,7 +30,7 @@ extend class HDFollower
 	{
 		Actor tg = Spawn('TargetGoal', spawnPos);
 		tg.Height = Height;
-		if (tg && tg.pos.z - tg.floorz <= MaxStepHeight - 8 && Distance2D(tg) < MaxGoalRange && CheckSight(tg) && (flags & SGF_IGNOREVALID || tg.TestMobjLocation() && level.IsPointInLevel(spawnPos) && !CheckProximity('HDFollower', 64, 1, CPXF_ANCESTOR)))
+		if (tg && tg.pos.z - tg.floorz <= MaxStepHeight - 8 && Distance2D(tg) < MaxGoalRange && CheckSight(tg, SF_ALL) && (flags & SGF_IGNOREVALID || tg.TestMobjLocation() && level.IsPointInLevel(spawnPos) && !CheckProximity('HDFollower', 64, 1, CPXF_ANCESTOR)))
 		{
 			if (flags & SGF_MULTI)
 			{
