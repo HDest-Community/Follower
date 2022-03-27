@@ -2086,6 +2086,11 @@ extend class FollowerHandler
 
 	private void ApplySelection(int plrNum)
 	{
+		if (FollowerMenuLevel[plrNum] != FMenu_Followers)
+		{
+			return;
+		}
+		
 		int size = Selection[plrNum].SelFollowers.Size();
 		if (size == 0)
 		{
