@@ -33,6 +33,14 @@ class FW_Hunter : FollowerWeapon
 			}
 			case 6:
 			{
+				if (trgt && trgt.SpawnHealth() >= 200)
+				{
+					ticker = -1;
+				}
+				break;
+			}
+			case 12:
+			{
 				ticker = -1;
 				break;
 			}
