@@ -17,7 +17,7 @@ struct FollowerSelection
 
 struct FollowerUiData
 {
-	Array<HDPickup> ValidItems;
+	Array<Inventory> ValidItems;
 	int RepeatTics[4];
 	int ArrowKeysHeld;
 	int SlotFocused;
@@ -826,13 +826,13 @@ extend class FollowerHandler
 		}
 
 		int vSize = UiData[consoleplayer].ValidItems.Size();
-		HDPickup item = vSize > 0 && UiData[consoleplayer].PSlotIndex < vSize ? UiData[consoleplayer].ValidItems[UiData[consoleplayer].PSlotIndex] : null;
+		Inventory item = vSize > 0 && UiData[consoleplayer].PSlotIndex < vSize ? UiData[consoleplayer].ValidItems[UiData[consoleplayer].PSlotIndex] : null;
 		if (!item)
 		{
 			return;
 		}
 
-		int count = item is 'HDMagAmmo' ? HDMagAmmo(item).Mags.Size() : (!item.bMULTIPICKUP ? item.Amount : 1);
+		int count = item is 'HDMagAmmo' ? HDMagAmmo(item).Mags.Size() : (HDPickup(item) && !HDPickup(item).bMULTIPICKUP ? item.Amount : 1);
 		for (int i = 0; i < min(count, HDFollower.SlotCount); ++i)
 		{
 			vector2 realPos = (SlotSize * (i % InvColumns) + (i % InvColumns), SlotSize * (i / InvColumns) + (i / InvColumns));
@@ -844,7 +844,7 @@ extend class FollowerHandler
 			}
 			string icon = AceCore.GetIcon(item, amt);
 			sb.DrawImage(icon, pos + (SlotSize, SlotSize) / 2 + RealPos, flags | sb.DI_ITEM_CENTER, 1.0, (SlotSize, SlotSize) - (6, 6), (3.0, 3.0));
-			if (InventorySlot.IsRealMag(item.GetClass()) || item.bMULTIPICKUP && item.Amount > 0)
+			if (InventorySlot.IsRealMag(item.GetClass()) || HDPickup(item) && HDPickup(item).bMULTIPICKUP && item.Amount > 0)
 			{
 				sb.DrawString(sb.mAmountFont, sb.FormatNumber(amt, 1, 4), pos + (2, SlotSize - 8) + realPos, flags, Font.CR_GOLD);
 			}
@@ -1249,7 +1249,7 @@ extend class FollowerHandler
 									[AType, MType, MaxMag] = lastFol.Weapons[0].GetAmmoType();
 
 									InventorySlot selSlot = lastFol.Slots[UiData[consoleplayer].FSlotIndex];
-									class<HDPickup> itemcls = UiData[consoleplayer].ValidItems[i].GetClass();
+									class<Inventory> itemcls = UiData[consoleplayer].ValidItems[i].GetClass();
 									if (SelSlot && SelSlot.ItemClass == itemcls || !SelSlot && itemcls == (MType ? MType : AType))
 									{
 										UiData[consoleplayer].PSlotIndex = i;
@@ -1262,10 +1262,10 @@ extend class FollowerHandler
 								int size = UiData[consoleplayer].ValidItems.Size();
 								if (size > 0 && UiData[consoleplayer].PSlotIndex < size)
 								{
-									HDPickup item = UiData[consoleplayer].ValidItems[UiData[consoleplayer].PSlotIndex];
+									Inventory item = UiData[consoleplayer].ValidItems[UiData[consoleplayer].PSlotIndex];
 									if (IsValidIndex(item, UiData[consoleplayer].PSlotSubIndex))
 									{
-										if (item is 'HDMagAmmo' || !item.bMULTIPICKUP)
+										if (item is 'HDMagAmmo' || !HDPickup(item) || !HDPickup(item).bMULTIPICKUP)
 										{
 											if (item is 'HDMagAmmo')
 											{
@@ -1293,7 +1293,7 @@ extend class FollowerHandler
 								int size = UiData[consoleplayer].ValidItems.Size();
 								if (size > 0 && UiData[consoleplayer].PSlotIndex < size)
 								{
-									HDPickup item = UiData[consoleplayer].ValidItems[UiData[consoleplayer].PSlotIndex];
+									Inventory item = UiData[consoleplayer].ValidItems[UiData[consoleplayer].PSlotIndex];
 									SendNetworkEvent('hdf_transferitem:'..item.GetClassName(), UiData[consoleplayer].TransferAmount, UiData[consoleplayer].FSlotIndex);
 									UiData[consoleplayer].SlotFocused = 0;
 								}
@@ -1890,10 +1890,10 @@ extend class FollowerHandler
 
 		if (cmd.IndexOf("hdf_transferitem") != -1)
 		{
-			HDPickup item = HDPickup(players[e.Player].mo.FindInventory(args[0]));
+			Inventory item = players[e.Player].mo.FindInventory(args[0]);
 			if (item)
 			{
-				lastFol.AddItem(item, e.Args[0], item.bMULTIPICKUP ? HDFollower.MaxLooseAmmoAmount : 1, e.Args[1]);
+				lastFol.AddItem(item, e.Args[0], slot: e.Args[1]);
 			}
 			return;
 		}
@@ -2005,12 +2005,11 @@ extend class FollowerHandler
 	{
 		UiData[plrNum].ValidItems.Clear();
 		Actor plr = players[plrNum].mo;
-		for (Inventory Next = plr.Inv; Next; Next = Next.Inv)
+		for (Inventory next = plr.Inv; Next; Next = Next.Inv)
 		{
-			HDPickup item = HDPickup(Next);
-			if (item && flw.IsValidItem(item.GetClass()))
+			if (next && flw.IsValidItem(next.GetClass()))
 			{
-				UiData[plrNum].ValidItems.Push(item);
+				UiData[plrNum].ValidItems.Push(next);
 			}
 		}
 	}
@@ -2053,21 +2052,20 @@ extend class FollowerHandler
 		return text;
 	}
 
-	private ui bool IsValidIndex(HDPickup pkp, int index)
+	private ui bool IsValidIndex(Inventory item, int index)
 	{
-		let mag = HDMagAmmo(pkp);
-		if (mag)
+		if (HDMagAmmo(item))
 		{
-			int mSize = mag.Mags.Size();
+			int mSize = HDMagAmmo(item).Mags.Size();
 			return mSize > 0 && index < mSize;
 		}
-		if (pkp.bMULTIPICKUP)
+		if (HDPickup(item) && HDPickup(item).bMULTIPICKUP)
 		{
-			return pkp.Amount > 0 && index == 0;
+			return item.Amount > 0 && index == 0;
 		}
 		else
 		{
-			return pkp.Amount > 0 && index < pkp.Amount;
+			return item.Amount > 0 && index < item.Amount;
 		}
 	}
 

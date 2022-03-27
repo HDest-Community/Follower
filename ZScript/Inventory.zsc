@@ -1,11 +1,12 @@
 class InventorySlot
 {
-	class<HDPickup> ItemClass;
+	class<Inventory> ItemClass;
 	string Icon;
 	int Amount;
 	bool Multipickup;
+	ItemStorage Storage; // [Ace] Only useful for backpacks.
 
-	static clearscope bool IsRealMag(class<HDPickup> mag)
+	static clearscope bool IsRealMag(class<Inventory> mag)
 	{
 		return mag is 'HDMagAmmo' && GetDefaultByType((class<HDMagAmmo>)(mag)).MaxPerUnit > 0;
 	}
@@ -24,9 +25,9 @@ extend class HDFollower
 	// VIRTUALS
 	// --------------------------------------------------
 
-	virtual clearscope bool IsValidItem(class<HDPickup> cls, bool ignoreWeaponValidity = false)
+	virtual clearscope bool IsValidItem(class<Inventory> cls, bool ignoreWeaponValidity = false)
 	{
-		return cls && ((cls is 'HDAmmo' && AmmoIsUsed((class<HDAmmo>)(cls)) || ignoreWeaponValidity) || cls == 'PortableMedikit' || cls == 'PortableStimpack' || cls == 'BluePotion' || cls == 'PortableRadsuit');
+		return cls && ((cls is 'HDAmmo' && AmmoIsUsed((class<HDAmmo>)(cls)) || ignoreWeaponValidity) || cls == 'PortableMedikit' || cls == 'PortableStimpack' || cls == 'BluePotion' || cls == 'PortableRadsuit' || (cls == 'HDBackpack' && Find('HDBackpack') == null));
 	}
 
 	// --------------------------------------------------
@@ -42,7 +43,7 @@ extend class HDFollower
 	}
 
 	// [Ace] Anything that's not a mag. Including loose ammo.
-	bool AddItem(HDPickup item, int amt = 1, int maxAmt = MaxLooseAmmoAmount, int slot = -1, int flags = 0)
+	bool AddItem(Inventory item, int amt = 1, int maxAmt = MaxLooseAmmoAmount, int slot = -1, int flags = 0)
 	{
 		if (!(flags & FIF_FORCE))
 		{
@@ -51,6 +52,11 @@ extend class HDFollower
 				case 1: ThinkMessage(LinkedPlayer, "$TOOFAR_PLR"); return false;
 				case 2: ThinkMessage(LinkedPlayer, "$NOTFACING_PLR"); return false;
 			}
+		}
+
+		if (HDPickup(item) && !HDPickup(item).bMULTIPICKUP)
+		{
+			maxAmt = 1;
 		}
 
 		while (amt > 0 && item.Amount > 0)
@@ -80,17 +86,24 @@ extend class HDFollower
 			}
 			Slots[index].ItemClass = item.GetClass();
 			Slots[index].Icon = TexMan.GetName(item.Icon);
-			Slots[index].Multipickup = item.bMULTIPICKUP;
+			Slots[index].Multipickup = HDPickup(item) ? HDPickup(item).bMULTIPICKUP : false;
 			int leftInSlot = maxAmt - Slots[index].Amount;
 			int toAdd = min(leftInSlot, amt, item.Amount);
 			item.Amount -= toAdd;
 			Slots[index].Amount += toAdd;
 			amt -= toAdd;
+
+			if (item is 'HDBackpack')
+			{
+				Slots[index].Storage = HDBackpack(item).Storage;
+			}
+
 			if (item.Amount == 0)
 			{
 				item.Destroy();
 				break;
 			}
+
 			if (hdf_debug & FDebug_Inventory)
 			{
 				Console.Printf("[%s, %s], slot %i: added ITEM %s with an amount of %i.", GetTimestamp(), GetTag(), index, Slots[index].ItemClass.GetClassName(), Slots[index].Amount);
@@ -126,7 +139,10 @@ extend class HDFollower
 			return false;
 		}
 
-		Slots[index] = new('InventorySlot');
+		if (!Slots[index])
+		{
+			Slots[index] = new('InventorySlot');
+		}
 		Slots[index].ItemClass = mag.GetClass();
 		Slots[index].Icon = AceCore.GetIcon(mag);
 		Slots[index].Multipickup = false;
@@ -192,19 +208,23 @@ extend class HDFollower
 		}
 
 		// [Ace] HMMMMMM THIS CODE LOOKS FAMILIAR.
-		Inventory Spawned = Inventory(Actor.Spawn(slot.ItemClass, pos));
-		HDPickup newitem = HDPickup(Spawned);
+		Inventory spawned = Inventory(Actor.Spawn(slot.ItemClass, pos + (0, 0, height / 2)));
+		if (slot.ItemClass is 'HDBackpack')
+		{
+			HDBackpack(spawned).Storage = slot.Storage;
+		}
+		
 		if (slot.ItemClass is 'HDMagAmmo')
 		{
-			HDMagAmmo(newitem).Mags.Push(slot.Amount);
+			HDMagAmmo(spawned).Mags.Push(slot.Amount);
 		}
 		else
 		{
-			newitem.Amount = slot.Amount;
+			spawned.Amount = slot.Amount;
 		}
-		newitem.angle = angle;
-		newitem.A_ChangeVelocity(1.5, 0, 1, CVF_RELATIVE);
-		newitem.vel += vel;
+		spawned.angle = angle;
+		spawned.A_ChangeVelocity(1.5, 0, 1, CVF_RELATIVE);
+		spawned.vel += vel;
 		slot.Destroy();
 	}
 
@@ -242,6 +262,11 @@ extend class HDFollower
 			return;
 		}
 
+		if (slot.ItemClass is 'HDBackpack' && LinkedPlayer.FindInventory('HDBackpack'))
+		{
+			return;
+		}
+		
 		if (slot.ItemClass is 'HDMagAmmo')
 		{
 			HDMagAmmo.GiveMag(LinkedPlayer, slot.ItemClass, slot.Amount);
@@ -257,6 +282,13 @@ extend class HDFollower
 				return;
 			}
 			HDF.Give(LinkedPlayer, slot.ItemClass, maxAdd);
+
+			if (slot.ItemClass is 'HDBackpack')
+			{
+				let bp = HDBackpack(LinkedPlayer.FindInventory('HDBackpack'));
+				bp.Storage = slot.Storage;
+			}
+
 			slot.Amount -= maxAdd;
 			if (slot.Amount == 0)
 			{
@@ -269,9 +301,8 @@ extend class HDFollower
 	// INFORMATION
 	// --------------------------------------------------
 
-	clearscope InventorySlot Find(class<HDPickup> cls, int flags = 0)
+	clearscope InventorySlot Find(class<Inventory> cls, int flags = 0)
 	{
-		InventorySlot slot = null;
 		if (flags & FIF_REVERSEDIRECTION)
 		{
 			for (int i = SlotCount - 1; i >= 0; --i)
@@ -295,7 +326,7 @@ extend class HDFollower
 		return null;
 	}
 
-	clearscope InventorySlot FindHighestAmount(class<HDPickup> cls)
+	clearscope InventorySlot FindHighestAmount(class<Inventory> cls)
 	{
 		int maxFound = 0;
 		InventorySlot slot = null;
@@ -319,7 +350,7 @@ extend class HDFollower
 		return slot;
 	}
 
-	clearscope InventorySlot FindLowestAmount(class<HDPickup> cls)
+	clearscope InventorySlot FindLowestAmount(class<Inventory> cls)
 	{
 		int minFound = int.MAX;
 		InventorySlot slot = null;
@@ -342,7 +373,7 @@ extend class HDFollower
 		return slot;
 	}
 
-	clearscope int GetAmount(class<HDPickup> cls)
+	clearscope int GetAmount(class<Inventory> cls)
 	{
 		int Total = 0;
 		for (int i = 0; i < SlotCount; ++i)
@@ -379,7 +410,7 @@ extend class HDFollower
 		return -1;
 	}
 
-	clearscope int GetPartialItemIndex(class<HDPickup> cls, int startIndex = 0, int maxAmt = MaxLooseAmmoAmount)
+	clearscope int GetPartialItemIndex(class<Inventory> cls, int startIndex = 0, int maxAmt = MaxLooseAmmoAmount)
 	{
 		for (int i = startIndex; i < SlotCount; ++i)
 		{

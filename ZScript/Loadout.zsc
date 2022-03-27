@@ -14,7 +14,7 @@ extend class HDFollower
 
 		for (int i = 0; i < lines.Size(); ++i)
 		{
-			double amt = lines[i].Mid(3).ToDouble();
+			int amt = lines[i].Mid(3).ToInt();
 			if (amt == 0)
 			{
 				amt = 1;
@@ -34,7 +34,7 @@ extend class HDFollower
 				continue;
 			}
 
-			if (cls is 'HDWeapon')
+			if (cls is 'HDWeapon' && !GetDefaultByType((class<HDWeapon>)(cls)).bWIMPY_WEAPON)
 			{
 				for (int j = 0; j < Handler.AllWeapons.Size(); ++j)
 				{
@@ -48,14 +48,13 @@ extend class HDFollower
 				}
 			}
 
-			class<HDPickup> pkp = (class<HDPickup>)(cls);
-			if (IsValidItem(pkp, true))
+			if (IsValidItem(cls, true))
 			{
-				if (pkp is 'HDMagAmmo')
+				if (cls is 'HDMagAmmo')
 				{
-					for (int j = 0; j < int(amt); ++j)
+					for (int j = 0; j < amt; ++j)
 					{
-						HDMagAmmo spawned = HDMagAmmo(Spawn(pkp, pos));
+						HDMagAmmo spawned = HDMagAmmo(Spawn(cls, pos));
 						spawned.SyncAmount();
 						if (!AddMag(spawned, flags: FIF_FORCE))
 						{
@@ -66,9 +65,13 @@ extend class HDFollower
 				}
 				else
 				{
-					HDPickup spawned = HDPickup(Spawn(pkp, pos));
-					spawned.Amount = int(amt);
-					if (!AddItem(spawned, int(amt), spawned.bMULTIPICKUP ? MaxLooseAmmoAmount : 1, flags: FIF_FORCE))
+					Inventory spawned = Inventory(Spawn(cls, pos));
+					spawned.Amount = amt;
+					if (HDBackpack(spawned))
+					{
+						HDBackpack(spawned).LoadoutConfigure(input.Mid(input.IndexOf("bak") + 3));
+					}
+					if (!AddItem(spawned, amt, flags: FIF_FORCE))
 					{
 						spawned.Destroy();
 						break;
