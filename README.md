@@ -84,3 +84,7 @@ Marines basically function the exact same way as regular followers, and you can 
 ---
 - New followers can be added by inheriting from HDFollower and overriding the provided virtuals (if desired).
 - Do **NOT** add an `hdf_followers` option. This is an internal CVar and its only purpose is to allow players to control the built-in followers. If you don't want an addon follower to show up, don't load the addon.
+
+### Known Issues
+---
+- Sometimes followers will fail to follow the player or other followers while in specific sectors even if nothing obvious is blocking their way. This primarily happens on older maps that use the REJECT lump for sight checking. I don't know of a possible fix without side effects that I could implement on the mod's side.
