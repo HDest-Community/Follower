@@ -67,7 +67,7 @@ extend class HDFollower
 
 	clearscope bool CanApplyStim()
 	{
-		return LinkedPlayer && LinkedPlayer.stimcount < 4 && GetAmount('PortableStimpack') > 0 && LinkedPlayer.CountInv('HDBlues') <= 3 && LinkedPlayer.Health < 30; // [Ace] Don't stim player unless it's necessary.
+		return LinkedPlayer && LinkedPlayer.CountInv('HDStim') <= HDStim.HDSTIM_MAX - HDStim.HDSTIM_DOSE && GetAmount('PortableStimpack') > 0 && LinkedPlayer.CountInv('HDBlues') <= 15 && LinkedPlayer.Health < 40; // [Ace] Don't stim player unless it's necessary.
 	}
 
 	clearscope bool CanHealSelf()
