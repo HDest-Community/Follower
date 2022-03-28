@@ -1,9 +1,18 @@
 struct WearableParams
 {
-	class<Inventory> WorldItemCls;
-	class<Inventory> WornItemCls;
+	Name WorldItemCls;
+	Name WornItemCls;
 	string LanguagePrefix;
 	string SoundPrefix;
+
+	class<Inventory> GetWorldItem()
+	{
+		return WorldItemCls;
+	}
+	class<Inventory> GetWornItem()
+	{
+		return WornItemCls;
+	}
 }
 
 extend class HDFollower
@@ -14,6 +23,11 @@ extend class HDFollower
 
 	private void LookForWearable()
 	{
+		if (!WearableInfo.GetWorldItem() || !WearableInfo.GetWornItem())
+		{
+			return;
+		}
+
 		if (Distance3D(LinkedPlayer) > MaxWaitRange)
 		{
 			PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_RANAWAY"), WearableInfo.SoundPrefix.."/RanAway", PMType_Critical);
@@ -32,7 +46,7 @@ extend class HDFollower
 			{
 				PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_NONE"), WearableInfo.SoundPrefix.."/None", PMType_General);
 			}
-			else if (WearableInfo.WornItemCls is 'HDArmourWorn')
+			else if (WearableInfo.GetWorldItem() is 'HDArmourWorn')
 			{
 				let foundArmor = HDArmour(foundWearable);
 				let wornArmor = HDArmourWorn(wornWearable);
@@ -80,7 +94,7 @@ extend class HDFollower
 	
 	void TryUseWearable()
 	{
-		if (Status == FStatus_InactiveOrDead)
+		if (Status == FStatus_InactiveOrDead || !WearableInfo.GetWorldItem() || !WearableInfo.GetWornItem())
 		{
 			return;
 		}
@@ -98,13 +112,17 @@ extend class HDFollower
 
 	void DropWearable()
 	{
+		if (Status == FStatus_InactiveOrDead || !WearableInfo.GetWorldItem() || !WearableInfo.GetWornItem())
+		{
+			return;
+		}
+
 		let wornItem = FindInventory(WearableInfo.WornItemCls);
-		if (wornItem && Status != FStatus_InactiveOrDead)
+		if (wornItem)
 		{
 			A_DropInventory(WearableInfo.WornItemCls);
 			PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_STRIP"), WearableInfo.SoundPrefix.."/Strip", PMType_General);
 			Status = FStatus_None;
-			return;
 		}
 	}
 

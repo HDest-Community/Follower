@@ -192,6 +192,30 @@ NARI_BACKPACKGIVE_RANAWAY_1 = "I see you've changed your mind.";
 NARI_BACKPACKGIVE_RANAWAY_2 = "I don't mind that.";
 NARI_BACKPACKGIVE_RANAWAY_3 = "Looks like I got off easy!";
 
+NARI_PSGGIVE_INIT_1 = "Wow!";
+NARI_PSGGIVE_INIT_2 = "I'd love to have one!";
+NARI_PSGGIVE_INIT_3 = "Please give me one!";
+
+NARI_PSGGIVE_CANCEL_1 = "Aw, shucks...";
+NARI_PSGGIVE_CANCEL_2 = "You make me sad.";
+NARI_PSGGIVE_CANCEL_3 = "Darn.";
+
+NARI_PSGGIVE_STRIP_1 = "I'll miss it.";
+NARI_PSGGIVE_STRIP_2 = "Can I get a new one at some point?";
+NARI_PSGGIVE_STRIP_3 = "Hey, I'm not ready to part with it yet.";
+
+NARI_PSGGIVE_NONE_1 = "Incredible!";
+NARI_PSGGIVE_NONE_2 = "I feel so safe!";
+NARI_PSGGIVE_NONE_3 = "Thank you so much!";
+
+NARI_PSGGIVE_NOTHANKS_1 = "I'm afraid I can only carry one.";
+NARI_PSGGIVE_NOTHANKS_2 = "That won't work.";
+NARI_PSGGIVE_NOTHANKS_3 = "Nope.";
+
+NARI_PSGGIVE_RANAWAY_1 = "Hey, wait a minute!";
+NARI_PSGGIVE_RANAWAY_2 = "Come back!";
+NARI_PSGGIVE_RANAWAY_3 = "Aw...";
+
 NARI_WEAPONGIVE_INIT_1 = "Oh? A gun? For me? How nice of you.";
 NARI_WEAPONGIVE_INIT_2 = "Oh goody!";
 NARI_WEAPONGIVE_INIT_3 = "Mmmmm.";

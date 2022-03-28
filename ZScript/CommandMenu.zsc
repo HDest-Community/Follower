@@ -586,6 +586,11 @@ extend class FollowerHandler
 				{
 					for (Inventory next = lastFol.Inv; next != null; next = next.Inv)
 					{
+						if (next is 'HDMagicShield')
+						{
+							continue;
+						}
+
 						if (next.Icon || next is 'HDArmourWorn')
 						{
 							DrawWearableRectangle(sb, pos + (w + Spacing, rectHeight + Spacing + wearablesShown * (wepHeight + Spacing)), (wepHeight, wepHeight), col, fnt, flags, next);	
@@ -1536,6 +1541,25 @@ extend class FollowerHandler
 			return;
 		}
 
+		if (cmd ~== "HDF_InputCommands")
+		{
+			string fullText = "\c[Sapphire]===== Input commands =====";
+			string commandsList[] =
+			{
+				"\c[Fire]rld/rel \c[Green]<name>/<index> \c[Brick][d]\n\c[DarkGray]Supports multiselect: \c[Green]Yes\n\c[DarkGray]Description: \c[Green]name\c[White] is the name of the weapon as displayed in the inventory. Partial names are supported, e.g. \c[Gold]rel hun\c[White] to reload the Hunter. If a single follower is selected, using the weapon's \c[Green]index\c[White] is also supported. If the follower has only one weapon, \c[Green]name\c[White] and \c[Green]index\c[White] can be omitted. \c[Brick]d\c[White] is an option that, if provided, will forcefully drop the magazine instead of storing it. ZM66 mags will still be dropped regardless of this option.\n",
+				"\c[Fire]wpn\n\c[DarkGray]Supports multiselect: \c[Red]No\n\c[DarkGray]Description: \c[White]Enter weapon pickup mode. Type again to cancel.\n",
+				"\c[Fire]### \c[Brick][d]\n\c[DarkGray]Supports multiselect: \c[Red]No\n\c[DarkGray]Description: \c[White]Enter item pickup mode. Type again to cancel. Alternatively, if \c[Brick]d\c[White] is specified, drop worn item instead.\n\c[DarkGray]Supported codes: \c[Fire]arm\c- (Armor), \c[Fire]rad\c- (Radsuit), \c[Fire]bak\c- (Backpack), \c[Fire]psg\c- (Personal Shield Generator)\n",
+				"\c[Fire]rmv \c[Green]<name>/<index>\n\c[DarkGray]Supports multiselect: \c[Red]No\n\c[DarkGray]Description: \c[White]Empty the weapon and remove it from the list. This will not drop it!\n",
+				"\c[Fire]swp \c[Green]<index1> <index2>\n\c[DarkGray]Supports multiselect: \c[Red]No\n\c[DarkGray]Description: \c[White]Swap the weapons in those indices.\n"
+			};
+			for (int i = 0; i < commandsList.Size(); ++i)
+			{
+				fullText = fullText.."\n"..commandsList[i];
+			}
+			plr.A_Log(fullText, true);
+			return;
+		}
+
 		if (Followers.Size() == 0)
 		{
 			return;
@@ -1676,25 +1700,6 @@ extend class FollowerHandler
 			return;
 		}
 
-		if (cmd ~== "HDF_InputCommands")
-		{
-			string fullText = "\c[Sapphire]===== Input commands =====";
-			string commandsList[] =
-			{
-				"\c[Fire]rld/rel \c[Green]<name>/<index> \c[Brick][d]\n\c[DarkGray]Supports multiselect: \c[Green]Yes\n\c[DarkGray]Description: \c[Green]name\c[White] is the name of the weapon as displayed in the inventory. Partial names are supported, e.g. \c[Gold]rel hun\c[White] to reload the Hunter. If a single follower is selected, using the weapon's \c[Green]index\c[White] is also supported. If the follower has only one weapon, \c[Green]name\c[White] and \c[Green]index\c[White] can be omitted. \c[Brick]d\c[White] is an option that, if provided, will forcefully drop the magazine instead of storing it. ZM66 mags will still be dropped regardless of this option.\n",
-				"\c[Fire]wpn\n\c[DarkGray]Supports multiselect: \c[Red]No\n\c[DarkGray]Description: \c[White]Enter weapon pickup mode. Type again to cancel.\n",
-				"\c[Fire]arm/bak/rad \c[Brick][d]\n\c[DarkGray]Supports multiselect: \c[Red]No\n\c[DarkGray]Description: \c[White]Enter armor/radsuit/backpack pickup mode. Type again to cancel. Alternatively, if \c[Brick]d\c[White] is specified, drop worn armor/radsuit/backpack instead.\n",
-				"\c[Fire]rmv \c[Green]<name>/<index>\n\c[DarkGray]Supports multiselect: \c[Red]No\n\c[DarkGray]Description: \c[White]Empty the weapon and remove it from the list. This will not drop it!\n",
-				"\c[Fire]swp \c[Green]<index1> <index2>\n\c[DarkGray]Supports multiselect: \c[Red]No\n\c[DarkGray]Description: \c[White]Swap the weapons in those indices.\n"
-			};
-			for (int i = 0; i < commandsList.Size(); ++i)
-			{
-				fullText = fullText.."\n"..commandsList[i];
-			}
-			plr.A_Log(fullText, true);
-			return;
-		}
-
 		// [Ace] Do not allow the commands below to be used from the console.
 		// It used to be that you could, but with the advent of multiple followers, shortcuts are, unfortunately, no longer possible.
 		// Not without overengineering the code by passing the follower index or name to it, which gets reaaaally complicated
@@ -1733,10 +1738,10 @@ extend class FollowerHandler
 
 		if (cmd.IndexOf("hdf_wearablecommand") != -1)
 		{
-			static const class<Inventory> worldItemClasses[] = { 'HDArmour', 'PortableRadsuit', 'HDBackpack' };
-			static const class<Inventory> wornItemClasses[] = { 'HDArmourWorn', 'WornRadsuit', 'HDBackpack' };
-			static const string languagePrefixex[] = { "ARMORGIVE", "RADSUITGIVE", "BACKPACKGIVE" };
-			static const string soundPrefixes[] = { "ArmorGive", "RadsuitGive", "BackpackGive" };
+			static const Name worldItemClasses[] = { 'HDArmour', 'PortableRadsuit', 'HDBackpack', 'HDPersonalShieldGenerator' };
+			static const Name wornItemClasses[] = { 'HDArmourWorn', 'WornRadsuit', 'HDBackpack', 'HDPersonalShieldGenerator' };
+			static const string languagePrefixex[] = { "ARMORGIVE", "RADSUITGIVE", "BACKPACKGIVE", "PSGGIVE" };
+			static const string soundPrefixes[] = { "ArmorGive", "RadsuitGive", "BackpackGive", "PSGGive" };
 
 			lastFol.WearableInfo.WorldItemCls = worldItemClasses[e.Args[0]];
 			lastFol.WearableInfo.WornItemCls = wornItemClasses[e.Args[0]];
@@ -1966,6 +1971,11 @@ extend class FollowerHandler
 					SendNetworkEvent("HDF_WearableCommand:"..args, 2);
 					break;
 				}
+				case 'psg':
+				{
+					SendNetworkEvent("HDF_WearableCommand:"..args, 3);
+					break;
+				}
 				case 'swp':
 				{
 					// [Ace] 4 for mid because the format is "cmd arg1 arg2 arg3", so instead of passing the whitespace as well, omit it.
@@ -2032,7 +2042,7 @@ extend class FollowerHandler
 	{
 		UiData[plrNum].ValidItems.Clear();
 		Actor plr = players[plrNum].mo;
-		for (Inventory next = plr.Inv; Next; Next = Next.Inv)
+		for (Inventory next = plr.Inv; next; next = Next.Inv)
 		{
 			if (next && flw.IsValidItem(next.GetClass()))
 			{

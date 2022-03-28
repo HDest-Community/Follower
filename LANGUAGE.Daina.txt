@@ -268,6 +268,30 @@ DAINA_BACKPACKGIVE_RANAWAY_1 = "I see you've changed your mind.";
 DAINA_BACKPACKGIVE_RANAWAY_2 = "I don't mind that.";
 DAINA_BACKPACKGIVE_RANAWAY_3 = "Looks like I got off easy!";
 
+DAINA_PSGGIVE_INIT_1 = "Wow!";
+DAINA_PSGGIVE_INIT_2 = "I'd love to have one!";
+DAINA_PSGGIVE_INIT_3 = "Please give me one!";
+
+DAINA_PSGGIVE_CANCEL_1 = "Aw, shucks...";
+DAINA_PSGGIVE_CANCEL_2 = "You make me sad.";
+DAINA_PSGGIVE_CANCEL_3 = "Darn.";
+
+DAINA_PSGGIVE_STRIP_1 = "I'll miss it.";
+DAINA_PSGGIVE_STRIP_2 = "Can I get a new one at some point?";
+DAINA_PSGGIVE_STRIP_3 = "Hey, I'm not ready to part with it yet.";
+
+DAINA_PSGGIVE_NONE_1 = "Incredible!";
+DAINA_PSGGIVE_NONE_2 = "I feel so safe!";
+DAINA_PSGGIVE_NONE_3 = "Thank you so much!";
+
+DAINA_PSGGIVE_NOTHANKS_1 = "I'm afraid I can only carry one.";
+DAINA_PSGGIVE_NOTHANKS_2 = "That won't work.";
+DAINA_PSGGIVE_NOTHANKS_3 = "Nope.";
+
+DAINA_PSGGIVE_RANAWAY_1 = "Hey, wait a minute!";
+DAINA_PSGGIVE_RANAWAY_2 = "Come back!";
+DAINA_PSGGIVE_RANAWAY_3 = "Aw...";
+
 DAINA_WEAPONGIVE_INIT_1 = "Oh? A gun? For me? How nice of you.";
 DAINA_WEAPONGIVE_INIT_2 = "Oh goody!";
 DAINA_WEAPONGIVE_INIT_3 = "Mmmmm.";

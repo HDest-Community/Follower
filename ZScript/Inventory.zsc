@@ -4,7 +4,6 @@ class InventorySlot
 	string Icon;
 	int Amount;
 	bool Multipickup;
-	ItemStorage Storage; // [Ace] Only useful for backpacks.
 
 	static clearscope bool IsRealMag(class<Inventory> mag)
 	{
@@ -204,7 +203,7 @@ extend class HDFollower
 		Inventory spawned = Inventory(Actor.Spawn(slot.ItemClass, pos + (0, 0, height / 2)));
 		if (slot.ItemClass is 'HDMagAmmo')
 		{
-			HDMagAmmo(spawned).Mags.Push(slot.Amount);
+			HDMagAmmo(spawned).Mags[slot.Amount];
 		}
 		else
 		{

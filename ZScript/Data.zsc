@@ -1,3 +1,20 @@
+class HDWeaponData play
+{
+	class<Inventory> ItemClass;
+	int WeaponStatus[HDWEP_STATUSSLOTS];
+}
+
+class HDShieldData play
+{
+	class<HDMagicShield> ShieldClass;
+	int Shields;
+	int MaxShields;
+	int Strength;
+	bool RegenerateShields;
+	bool NoShieldsDegeneration;
+	int ReactionTime;
+}
+
 class FollowerData play
 {
 	class<HDFollower> FollowerClass;
@@ -36,12 +53,8 @@ class FollowerData play
 
 	ItemStorage Storage;
 
-	class<HDMagicShield> ShieldClass;
-	int Shields;
-	int MaxShields;
-	int ShieldStrength;
-	bool RegenerateShields;
-	bool NoShieldsDegeneration;
+	Array<HDWeaponData> WeaponData;
+	Array<HDShieldData> ShieldData;
 }
 
 extend class HDFollower
@@ -131,23 +144,42 @@ extend class HDFollower
 			data.ArmorMega = Armor.Mega;
 		}
 
+		data.HasRadsuit = FindInventory('WornRadsuit') != null;
+
 		let bpack = HDBackpack(FindInventory('HDBackpack'));
 		if (bpack)
 		{
 			data.Storage = bpack.Storage;
 		}
 
-		data.HasRadsuit = FindInventory('WornRadsuit') != null;
-
-		let sld = FindInventory('HDMagicShield', true);
-		if (sld)
+		for (Inventory next = Inv; next != null; next = Next.Inv)
 		{
-			data.ShieldClass = (class<HDMagicShield>)(sld.GetClass());
-			data.Shields = sld.Amount;
-			data.MaxShields = sld.MaxAmount;
-			data.ShieldStrength = sld.Stamina;
-			data.RegenerateShields = sld.bQUICKTORETALIATE;
-			data.NoShieldsDegeneration = sld.bSTANDSTILL;
+			if (next is 'HDWeapon' && next != bpack)
+			{
+				let wpn = HDWeapon(next);
+				let wepData = new('HDWeaponData');
+				wepData.ItemClass = next.GetClass();
+				for (int i = 0; i < wpn.WeaponStatus.Size(); ++i)
+				{
+					wepData.WeaponStatus[i] = wpn.WeaponStatus[i];
+				}
+				Console.Printf(wpn.GetClassName());
+				data.WeaponData.Push(wepData);
+			}
+
+			if (next is 'HDMagicShield')
+			{
+				let sld = HDMagicShield(next);
+				let sldData = new('HDShieldData');
+				sldData.ShieldClass = sld.GetClass();
+				sldData.Shields = sld.Amount;
+				sldData.MaxShields = sld.MaxAmount;
+				sldData.Strength = sld.Stamina;
+				sldData.RegenerateShields = sld.bQUICKTORETALIATE;
+				sldData.NoShieldsDegeneration = sld.bSTANDSTILL;
+				sldData.ReactionTime = sld.ReactionTime;
+				data.ShieldData.Push(sldData);
+			}
 		}
 
 		FBody.Data.Push(data);
@@ -160,13 +192,6 @@ extend class HDFollower
 	int NewBloodloss;
 	int NewStunned;
 	int NewBodyDamage;
-
-	class<HDMagicShield> ShieldClass;
-	int Shields;
-	int MaxShields; // [Ace] Intentional hiding of HDMobBase variable.
-	int ShieldStrength;
-	bool RegenerateShields;
-	bool NoShieldsDegeneration;
 }
 
 // [Ace] This is perhaps the only useful use of an inventory item.
@@ -275,21 +300,14 @@ class FollowerBody : HDPickup abstract
 						fol.NewStunned = data.Stunned;
 						fol.NewBodyDamage = data.BodyDamage;
 
-						fol.ShieldClass = data.ShieldClass;
-						fol.Shields = data.Shields;
-						fol.MaxShields = data.MaxShields;
-						fol.ShieldStrength = data.ShieldStrength;
-						fol.RegenerateShields = data.RegenerateShields;
-						fol.NoShieldsDegeneration = data.NoShieldsDegeneration;
-
 						fol.Weapons.Move(data.Weapons);
-						for (int i = 0; i < fol.Weapons.Size(); ++i)
+						for (int j = 0; j < fol.Weapons.Size(); ++j)
 						{
-							fol.Weapons[i].Owner = fol;
+							fol.Weapons[j].Owner = fol;
 						}
-						for (int i = 0; i < HDFollower.SlotCount; ++i)
+						for (int j = 0; j < HDFollower.SlotCount; ++j)
 						{
-							fol.Slots[i] = data.Slots[i];
+							fol.Slots[j] = data.Slots[j];
 						}
 						
 						fol.SuturesLeft = data.SuturesLeft;
@@ -301,16 +319,36 @@ class FollowerBody : HDPickup abstract
 							armor.Mega = data.ArmorMega;
 						}
 
+						if (data.HasRadsuit)
+						{
+							fol.GiveInventoryType('WornRadsuit');
+							fol.GiveInventoryType('PortableRadsuit');
+						}
+
 						if (data.Storage != null)
 						{
 							let bpack = HDBackpack(fol.GiveInventoryType('HDBackpack'));
 							bpack.Storage = data.Storage;
 						}
 
-						if (data.HasRadsuit)
+						for (int j = 0; j < data.WeaponData.Size(); ++j)
 						{
-							fol.GiveInventoryType('WornRadsuit');
-							fol.GiveInventoryType('PortableRadsuit');
+							let wpn = HDWeapon(fol.GiveInventoryType(data.WeaponData[j].ItemClass));
+							for (int k = 0; k < wpn.WeaponStatus.Size(); ++k)
+							{
+								wpn.WeaponStatus[k] = data.WeaponData[j].WeaponStatus[k];
+							}
+						}
+
+						for (int j = 0; j < data.ShieldData.Size(); ++j)
+						{
+							let sld = HDMagicShield(fol.GiveInventoryType(data.ShieldData[j].ShieldClass));
+							sld.Amount = data.ShieldData[j].Shields;
+							sld.MaxAmount = data.ShieldData[j].MaxShields;
+							sld.Stamina = data.ShieldData[j].Strength;
+							sld.bQUICKTORETALIATE = data.ShieldData[j].RegenerateShields;
+							sld.bSTANDSTILL = data.ShieldData[j].NoShieldsDegeneration;
+							sld.ReactionTime = data.ShieldData[j].ReactionTime;
 						}
 
 						if (data.IsBleeding)

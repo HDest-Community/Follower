@@ -251,17 +251,6 @@ class HDFollower : HDHumanoid abstract
 		Bloodloss = NewBloodloss;
 		BodyDamage = NewBodyDamage;
 		Stunned = NewStunned;
-
-		// [Ace] Same as above. For some reason HDMagicShield gets nuked if given while unpacking the follower.
-		if (Shields > 0 && ShieldClass)
-		{
-			let shld = GiveInventoryType(ShieldClass);
-			shld.Amount = Shields;
-			shld.MaxAmount = MaxShields;
-			shld.Stamina = ShieldStrength;
-			shld.bQUICKTORETALIATE = RegenerateShields;
-			shld.bSTANDSTILL = NoShieldsDegeneration;
-		}
 	}
 
 	// --------------------------------------------------

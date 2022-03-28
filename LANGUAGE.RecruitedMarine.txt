@@ -188,6 +188,30 @@ MARINE_BACKPACKGIVE_RANAWAY_1 = "I take it you can carry it on your own, command
 MARINE_BACKPACKGIVE_RANAWAY_2 = "Commander?";
 MARINE_BACKPACKGIVE_RANAWAY_3 = "I understand, commander.";
 
+MARINE_PSGGIVE_INIT_1 = "Shield generators!? I can't believe we finally have a decent equipment budget.";
+MARINE_PSGGIVE_INIT_2 = "Does it come in lime green, commander?";
+MARINE_PSGGIVE_INIT_3 = "Absolutely incredible, commander!";
+
+MARINE_PSGGIVE_CANCEL_1 = "A shame, commander, but I understand.";
+MARINE_PSGGIVE_CANCEL_2 = "Unfortunate.";
+MARINE_PSGGIVE_CANCEL_3 = "It would have come in handy, commander.";
+
+MARINE_PSGGIVE_STRIP_1 = "Please give it back, commander. It keeps me alive.";
+MARINE_PSGGIVE_STRIP_2 = "This is important for my survival, commander.";
+MARINE_PSGGIVE_STRIP_3 = "Here you go, commander.";
+
+MARINE_PSGGIVE_NONE_1 = "Amazing. My chances of survival just went up tenfold.";
+MARINE_PSGGIVE_NONE_2 = "Top-notch stuff, commander.";
+MARINE_PSGGIVE_NONE_3 = "Unfathomably based.";
+
+MARINE_PSGGIVE_NOTHANKS_1 = "Generators interfere with each other, commander. I can only carry one.";
+MARINE_PSGGIVE_NOTHANKS_2 = "Only one generator can work at the same time, commander.";
+MARINE_PSGGIVE_NOTHANKS_3 = "That is a bad idea, commander.";
+
+MARINE_PSGGIVE_RANAWAY_1 = "I am disappointed, commander.";
+MARINE_PSGGIVE_RANAWAY_2 = "It is quite sad that I won't get to have one.";
+MARINE_PSGGIVE_RANAWAY_3 = "What a shame.";
+
 MARINE_WEAPONGIVE_INIT_1 = "New equipment, commander?";
 MARINE_WEAPONGIVE_INIT_2 = "Looks like it's time to rock!";
 MARINE_WEAPONGIVE_INIT_3 = "Hoorah, commander!";

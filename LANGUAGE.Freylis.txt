@@ -198,6 +198,30 @@ FREYLIS_BACKPACKGIVE_RANAWAY_1 = "Somehow, I feel relieved.";
 FREYLIS_BACKPACKGIVE_RANAWAY_2 = "And don't come back!";
 FREYLIS_BACKPACKGIVE_RANAWAY_3 = "Sounds good to me!";
 
+FREYLIS_PSGGIVE_INIT_1 = "Holy shit, for real?";
+FREYLIS_PSGGIVE_INIT_2 = "That would be incredible.";
+FREYLIS_PSGGIVE_INIT_3 = "Awesome.";
+
+FREYLIS_PSGGIVE_CANCEL_1 = "Don't get my hopes up like that.";
+FREYLIS_PSGGIVE_CANCEL_2 = "Wow. That was cruel.";
+FREYLIS_PSGGIVE_CANCEL_3 = "Bummer.";
+
+FREYLIS_PSGGIVE_STRIP_1 = "Sad to part with this.";
+FREYLIS_PSGGIVE_STRIP_2 = "You're going to give it back, right?";
+FREYLIS_PSGGIVE_STRIP_3 = "I hope you're only going to replace the batteries.";
+
+FREYLIS_PSGGIVE_NONE_1 = "I am Death.";
+FREYLIS_PSGGIVE_NONE_2 = "Oh, NOW it's on!";
+FREYLIS_PSGGIVE_NONE_3 = "Where is your god now?";
+
+FREYLIS_PSGGIVE_NOTHANKS_1 = "Sorry, can only carry on one of these.";
+FREYLIS_PSGGIVE_NOTHANKS_2 = "I'm surprised you didn't know generators interfere with each other.";
+FREYLIS_PSGGIVE_NOTHANKS_3 = "No can do.";
+
+FREYLIS_PSGGIVE_RANAWAY_1 = "Get back here with that now!";
+FREYLIS_PSGGIVE_RANAWAY_2 = "Liar! I hate you!";
+FREYLIS_PSGGIVE_RANAWAY_3 = "Why would you do this!?";
+
 FREYLIS_WEAPONGIVE_INIT_1 = "Finally, about time you gave me something to shoot with.";
 FREYLIS_WEAPONGIVE_INIT_2 = "Just drop it over here.";
 FREYLIS_WEAPONGIVE_INIT_3 = "Would really be appreciated.";
