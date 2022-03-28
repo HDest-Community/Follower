@@ -46,7 +46,7 @@ extend class HDFollower
 			{
 				PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_NONE"), WearableInfo.SoundPrefix.."/None", PMType_General);
 			}
-			else if (WearableInfo.GetWorldItem() is 'HDArmourWorn')
+			else if (WearableInfo.GetWornItem() is 'HDArmourWorn')
 			{
 				let foundArmor = HDArmour(foundWearable);
 				let wornArmor = HDArmourWorn(wornWearable);
