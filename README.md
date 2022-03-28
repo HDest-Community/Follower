@@ -78,7 +78,6 @@ Marines basically function the exact same way as regular followers, and you can 
 - While in input mode, pressing the Up and Down arrow keys moves through the command history.
 - Telling followers to stop in front of a linedef (e.g. switch or door) will activate it as if the player did it, allowing for some basic remote control.
 - Followers will put out the fires of other nearby followers (within 1m), including yourself. You can do the same for them by being near.
-- You can give followers a radsuit to keep them protected from fire. It won't protect them from anything else.
 - Followers won't staple you if you are wearing armor. For convenience, the opposite does not apply.
 
 ### Modding

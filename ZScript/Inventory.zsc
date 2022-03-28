@@ -27,19 +27,17 @@ extend class HDFollower
 
 	virtual clearscope bool IsValidItem(class<Inventory> cls, bool ignoreWeaponValidity = false)
 	{
-		return cls && ((cls is 'HDAmmo' && AmmoIsUsed((class<HDAmmo>)(cls)) || ignoreWeaponValidity) || cls == 'PortableMedikit' || cls == 'PortableStimpack' || cls == 'BluePotion' || cls == 'PortableRadsuit' || (cls == 'HDBackpack' && Find('HDBackpack') == null));
+		return cls && ((cls is 'HDAmmo' && AmmoIsUsed((class<HDAmmo>)(cls)) || ignoreWeaponValidity) || cls == 'PortableMedikit' || cls == 'PortableStimpack' || cls == 'BluePotion');
 	}
 
 	// --------------------------------------------------
 	// ACTIONS
 	// --------------------------------------------------
 
+	// [Ace] Currently unused.
 	protected void InventoryThink()
 	{
-		if (GetAmount('PortableRadsuit') > 0)
-		{
-			A_GiveInventory('HDFireDouse', 3);
-		}
+		
 	}
 
 	// [Ace] Anything that's not a mag. Including loose ammo.
@@ -92,11 +90,6 @@ extend class HDFollower
 			item.Amount -= toAdd;
 			Slots[index].Amount += toAdd;
 			amt -= toAdd;
-
-			if (item is 'HDBackpack')
-			{
-				Slots[index].Storage = HDBackpack(item).Storage;
-			}
 
 			if (item.Amount == 0)
 			{
@@ -209,11 +202,6 @@ extend class HDFollower
 
 		// [Ace] HMMMMMM THIS CODE LOOKS FAMILIAR.
 		Inventory spawned = Inventory(Actor.Spawn(slot.ItemClass, pos + (0, 0, height / 2)));
-		if (slot.ItemClass is 'HDBackpack')
-		{
-			HDBackpack(spawned).Storage = slot.Storage;
-		}
-		
 		if (slot.ItemClass is 'HDMagAmmo')
 		{
 			HDMagAmmo(spawned).Mags.Push(slot.Amount);
@@ -262,11 +250,6 @@ extend class HDFollower
 			return;
 		}
 
-		if (slot.ItemClass is 'HDBackpack' && LinkedPlayer.FindInventory('HDBackpack'))
-		{
-			return;
-		}
-		
 		if (slot.ItemClass is 'HDMagAmmo')
 		{
 			HDMagAmmo.GiveMag(LinkedPlayer, slot.ItemClass, slot.Amount);
@@ -282,12 +265,6 @@ extend class HDFollower
 				return;
 			}
 			HDF.Give(LinkedPlayer, slot.ItemClass, maxAdd);
-
-			if (slot.ItemClass is 'HDBackpack')
-			{
-				let bp = HDBackpack(LinkedPlayer.FindInventory('HDBackpack'));
-				bp.Storage = slot.Storage;
-			}
 
 			slot.Amount -= maxAdd;
 			if (slot.Amount == 0)

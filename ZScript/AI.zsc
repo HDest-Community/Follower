@@ -3,7 +3,7 @@ enum FStatus
 	FStatus_None,
 	FStatus_HealingSelf,
 	FStatus_HealingPlayer,
-	FStatus_WaitingForArmor,
+	FStatus_WaitingForWearable,
 	FStatus_WaitingForWeapon,
 	FStatus_InactiveOrDead
 }
@@ -66,26 +66,14 @@ extend class HDFollower
 				SetStateLabel('StapleOwnAss');
 			}
 
-			if (Status >= FStatus_WaitingForArmor && Status <= FStatus_WaitingForWeapon)
+			if (Status >= FStatus_WaitingForWearable && Status <= FStatus_WaitingForWeapon)
 			{
-				if (Distance3D(LinkedPlayer) > MaxWaitRange)
+				switch (Status)
 				{
-					switch (Status)
-					{
-						case FStatus_WaitingForArmor: PrintMessage(GetResponse("ARMORGIVE_RANAWAY"), "ArmorGive/RanAway", PMType_Critical); break;
-						case FStatus_WaitingForWeapon: PrintMessage(GetResponse("WEAPONGIVE_RANAWAY"), "WeaponGive/RanAway", PMType_Critical); break;
-					}
-					Status = FStatus_None;
+					case FStatus_WaitingForWearable: LookForWearable(); break;
+					case FStatus_WaitingForWeapon: LookForWeapon(); break;
 				}
-				else
-				{
-					switch (Status)
-					{
-						case FStatus_WaitingForArmor: LookForArmor(); break;
-						case FStatus_WaitingForWeapon: LookForWeapon(); break;
-					}
-					A_Face(LinkedPlayer, 15);
-				}
+				A_Face(LinkedPlayer, 15);
 			}
 		}
 

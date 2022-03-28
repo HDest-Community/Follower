@@ -1,0 +1,116 @@
+struct WearableParams
+{
+	class<Inventory> WorldItemCls;
+	class<Inventory> WornItemCls;
+	string LanguagePrefix;
+	string SoundPrefix;
+}
+
+extend class HDFollower
+{
+	// --------------------------------------------------
+	// ACTIONS
+	// --------------------------------------------------
+
+	private void LookForWearable()
+	{
+		if (Distance3D(LinkedPlayer) > MaxWaitRange)
+		{
+			PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_RANAWAY"), WearableInfo.SoundPrefix.."/RanAway", PMType_Critical);
+			Status = FStatus_None;
+			tracer = null;
+			return;
+		}
+
+		CheckProximity(WearableInfo.worldItemCls, radius + MaxSearchRange, 1, CPXF_CLOSEST | CPXF_SETTRACER);
+		let foundWearable = Inventory(tracer);
+		let wornWearable = FindInventory(WearableInfo.WornItemCls);
+
+		if (foundWearable)
+		{
+			if (!wornWearable)
+			{
+				PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_NONE"), WearableInfo.SoundPrefix.."/None", PMType_General);
+			}
+			else if (WearableInfo.WornItemCls is 'HDArmourWorn')
+			{
+				let foundArmor = HDArmour(foundWearable);
+				let wornArmor = HDArmourWorn(wornWearable);
+
+				// [Ace] 1030 because mega armor's durability is calculated as 1000 + actual durability. Only while on the ground, though.
+				if (!wornArmor.Mega && foundArmor.Mega && foundArmor.Mags[0] >= 1020 || wornArmor.Mega && wornArmor.Durability < 20 && !foundArmor.Mega && foundArmor.Mags[0] > 60)
+				{
+					PrintMessage(GetResponse("ARMORGIVE_UPGRADE"), "ArmorGive/Upgrade", PMType_General);
+				}
+				else if (foundArmor.Mega == wornArmor.Mega && wornArmor.Durability < foundArmor.Mags[0] % 1000)
+				{
+					PrintMessage(GetResponse("ARMORGIVE_BETTERDURABILITY"), "ArmorGive/BetterDurability", PMType_General);
+				}
+				else
+				{
+					PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_NOTHANKS"), WearableInfo.SoundPrefix.."/NoThanks", PMType_Important);
+					Status = FStatus_None;
+					tracer = null;
+					return;
+				}
+
+				A_DropInventory(wornArmor.GetClass());
+			}
+			else
+			{
+				PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_NOTHANKS"), WearableInfo.SoundPrefix.."/NoThanks", PMType_Important);
+				Status = FStatus_None;
+				tracer = null;
+				return;
+			}
+
+			if (HDWeapon(foundWearable))
+			{
+				HDWeapon(foundWearable).ActualPickup(self);
+			}
+			else if (HDPickup(foundWearable))
+			{
+				HDPickup(foundWearable).ActualPickup(self);
+				UseInventory(FindInventory(foundWearable.GetClass()));
+			}
+			Status = FStatus_None;
+		}
+		tracer = null;
+	}
+	
+	void TryUseWearable()
+	{
+		if (Status == FStatus_InactiveOrDead)
+		{
+			return;
+		}
+		
+		if (Status == FStatus_WaitingForWearable)
+		{
+			PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_CANCEL"), WearableInfo.SoundPrefix.."/Cancel", PMType_Important);
+			Status = FStatus_None;
+			return;
+		}
+
+		Status = FStatus_WaitingForWearable;
+		PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_INIT"), WearableInfo.SoundPrefix.."/Init", PMType_Important);
+	}
+
+	void DropWearable()
+	{
+		let wornItem = FindInventory(WearableInfo.WornItemCls);
+		if (wornItem && Status != FStatus_InactiveOrDead)
+		{
+			A_DropInventory(WearableInfo.WornItemCls);
+			PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_STRIP"), WearableInfo.SoundPrefix.."/Strip", PMType_General);
+			Status = FStatus_None;
+			return;
+		}
+	}
+
+	// --------------------------------------------------
+	// VARIABLES
+	// --------------------------------------------------
+
+	WearableParams WearableInfo;
+}

@@ -581,14 +581,20 @@ extend class FollowerHandler
 					pos.x += w + Spacing;
 				}
 
-				let arm = HDArmourWorn(lastFol.FindInventory("HDArmourWorn"));
-				bool showArmor = arm && (wSize == 1 || UiData[consoleplayer].SlotFocused == 0);
-				if (showArmor)
+				int wearablesShown = 0;
+				if (wSize == 1 || UiData[consoleplayer].SlotFocused == 0)
 				{
-					DrawArmorRectangle(sb, pos + (w + Spacing, rectHeight + Spacing), (wepHeight, wepHeight), col, fnt, flags, arm);	
+					for (Inventory next = lastFol.Inv; next != null; next = next.Inv)
+					{
+						if (next.Icon || next is 'HDArmourWorn')
+						{
+							DrawWearableRectangle(sb, pos + (w + Spacing, rectHeight + Spacing + wearablesShown * (wepHeight + Spacing)), (wepHeight, wepHeight), col, fnt, flags, next);	
+							wearablesShown++;
+						}
+					}
 				}
 
-				DrawRectangle(sb, pos, (w + (showArmor ? wepHeight + Spacing : (UiData[consoleplayer].SlotFocused > 0 && wSize != 1 ? w + Spacing : 0)), rectHeight), col, fnt, GetTruncatedText(lastFol.GetTag(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
+				DrawRectangle(sb, pos, (w + (wearablesShown > 0 ? wepHeight + Spacing : (UiData[consoleplayer].SlotFocused > 0 && wSize != 1 ? w + Spacing : 0)), rectHeight), col, fnt, GetTruncatedText(lastFol.GetTag(), 30), flags, Font.FindFontColor('FLW_NameBlue'));
 				pos.y += rectHeight + Spacing;
 
 				if (wSize == 1)
@@ -866,13 +872,16 @@ extend class FollowerHandler
 		sb.DrawString(fnt, "Amount:"..amt, pos + (2, 2), flags, textCol);
 	}
 
-	private ui void DrawArmorRectangle(HDStatusBar sb, vector2 pos, vector2 size, Color col, HUDFont fnt, int flags, HDArmourWorn arm)
+	private ui void DrawWearableRectangle(HDStatusBar sb, vector2 pos, vector2 size, Color col, HUDFont fnt, int flags, Inventory wearable)
 	{
 		sb.Fill(col, pos.x, pos.y, size.x, size.y, flags);
 		sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 
-		sb.DrawImage(AceCore.GetIcon(arm), pos + size / 2, flags | sb.DI_ITEM_CENTER, box: size - (5, 5));
-		sb.DrawString(fnt, (arm.Mega ? "\c[Blue]" : "\c[DarkGreen]")..arm.Durability, pos + size - (4, 10), flags | sb.DI_TEXT_ALIGN_RIGHT);
+		sb.DrawImage(AceCore.GetIcon(wearable), pos + size / 2, flags | sb.DI_ITEM_CENTER, box: size - (3, 3));
+		if (wearable is 'HDArmourWorn')
+		{
+			sb.DrawString(fnt, (HDArmourWorn(wearable).Mega ? "\c[Blue]" : "\c[DarkGreen]")..HDArmourWorn(wearable).Durability, pos + size - (4, 10), flags | sb.DI_TEXT_ALIGN_RIGHT);
+		}
 	}
 
 	private ui void DrawRectangle(HDStatusBar sb, vector2 pos, vector2 size, Color col, HUDFont fnt, string command, int flags, int textCol = Font.CR_WHITE)
@@ -1674,7 +1683,7 @@ extend class FollowerHandler
 			{
 				"\c[Fire]rld/rel \c[Green]<name>/<index> \c[Brick][d]\n\c[DarkGray]Supports multiselect: \c[Green]Yes\n\c[DarkGray]Description: \c[Green]name\c[White] is the name of the weapon as displayed in the inventory. Partial names are supported, e.g. \c[Gold]rel hun\c[White] to reload the Hunter. If a single follower is selected, using the weapon's \c[Green]index\c[White] is also supported. If the follower has only one weapon, \c[Green]name\c[White] and \c[Green]index\c[White] can be omitted. \c[Brick]d\c[White] is an option that, if provided, will forcefully drop the magazine instead of storing it. ZM66 mags will still be dropped regardless of this option.\n",
 				"\c[Fire]wpn\n\c[DarkGray]Supports multiselect: \c[Red]No\n\c[DarkGray]Description: \c[White]Enter weapon pickup mode. Type again to cancel.\n",
-				"\c[Fire]arm \c[Brick][d]\n\c[DarkGray]Supports multiselect: \c[Red]No\n\c[DarkGray]Description: \c[White]Enter armor pickup mode. Type again to cancel. Alternatively, if \c[Brick]d\c[White] is specified, drop worn armor instead.\n",
+				"\c[Fire]arm/bak/rad \c[Brick][d]\n\c[DarkGray]Supports multiselect: \c[Red]No\n\c[DarkGray]Description: \c[White]Enter armor/radsuit/backpack pickup mode. Type again to cancel. Alternatively, if \c[Brick]d\c[White] is specified, drop worn armor/radsuit/backpack instead.\n",
 				"\c[Fire]rmv \c[Green]<name>/<index>\n\c[DarkGray]Supports multiselect: \c[Red]No\n\c[DarkGray]Description: \c[White]Empty the weapon and remove it from the list. This will not drop it!\n",
 				"\c[Fire]swp \c[Green]<index1> <index2>\n\c[DarkGray]Supports multiselect: \c[Red]No\n\c[DarkGray]Description: \c[White]Swap the weapons in those indices.\n"
 			};
@@ -1722,20 +1731,24 @@ extend class FollowerHandler
 			return;
 		}
 
-		if (cmd.IndexOf("hdf_armorcommand") != -1)
+		if (cmd.IndexOf("hdf_wearablecommand") != -1)
 		{
+			static const class<Inventory> worldItemClasses[] = { 'HDArmour', 'PortableRadsuit', 'HDBackpack' };
+			static const class<Inventory> wornItemClasses[] = { 'HDArmourWorn', 'WornRadsuit', 'HDBackpack' };
+			static const string languagePrefixex[] = { "ARMORGIVE", "RADSUITGIVE", "BACKPACKGIVE" };
+			static const string soundPrefixes[] = { "ArmorGive", "RadsuitGive", "BackpackGive" };
+
+			lastFol.WearableInfo.WorldItemCls = worldItemClasses[e.Args[0]];
+			lastFol.WearableInfo.WornItemCls = wornItemClasses[e.Args[0]];
+			lastFol.WearableInfo.LanguagePrefix = languagePrefixex[e.Args[0]];
+			lastFol.WearableInfo.SoundPrefix = soundPrefixes[e.Args[0]];
+
 			if (HasOption("d", args))
 			{
-				lastFol.DropArmor();
+				lastFol.DropWearable();
 				return;
 			}
-			lastFol.TryUseArmor();
-			return;
-		}
-
-		if (cmd ~== "HDF_DropArmor")
-		{
-			lastFol.DropArmor();
+			lastFol.TryUseWearable();
 			return;
 		}
 
@@ -1933,10 +1946,24 @@ extend class FollowerHandler
 		{
 			switch (cmd)
 			{
-				case 'wpn': SendNetworkEvent("HDF_TryWeapon"); break;
+				case 'wpn':
+				{
+					SendNetworkEvent("HDF_TryWeapon");
+					break;
+				}
 				case 'arm':
 				{
-					SendNetworkEvent("HDF_ArmorCommand:"..args);
+					SendNetworkEvent("HDF_WearableCommand:"..args, 0);
+					break;
+				}
+				case 'rad':
+				{
+					SendNetworkEvent("HDF_WearableCommand:"..args, 1);
+					break;
+				}
+				case 'bak':
+				{
+					SendNetworkEvent("HDF_WearableCommand:"..args, 2);
 					break;
 				}
 				case 'swp':

@@ -27,7 +27,7 @@ extend class HDFollower
 				continue;
 			}
 
-			if (cls is 'BattleArmour' || cls is 'BattleArmourWorn')
+			if (cls is 'GarrisonArmour' || cls is 'GarrisonArmourWorn' || cls is 'BattleArmour' || cls is 'BattleArmourWorn')
 			{
 				bool mega = cls == 'BattleArmour' || cls == 'BattleArmourWorn';
 				GiveArmour(1.0, mega ? 1.0 : 0, amt);
@@ -65,16 +65,24 @@ extend class HDFollower
 				}
 				else
 				{
-					Inventory spawned = Inventory(Spawn(cls, pos));
-					spawned.Amount = amt;
-					if (HDBackpack(spawned))
+					if (cls is 'HDBackpack')
 					{
-						HDBackpack(spawned).LoadoutConfigure(input.Mid(input.IndexOf("bak") + 3));
+						let bp = HDBackpack(GiveInventoryType('HDBackpack'));
+						bp.LoadoutConfigure(input.Mid(input.IndexOf("bak") + 3));
 					}
-					if (!AddItem(spawned, amt, flags: FIF_FORCE))
+					else if (cls is 'PortableRadsuit')
 					{
-						spawned.Destroy();
-						break;
+						let rad = GiveInventoryType('PortableRadsuit');
+						UseInventory(rad);
+					}
+					else
+					{
+						Inventory spawned = Inventory(Spawn(cls, pos));
+						spawned.Amount = amt;
+						if (!AddItem(spawned, amt, flags: FIF_FORCE))
+						{
+							spawned.Destroy();
+						}
 					}
 				}
 			}

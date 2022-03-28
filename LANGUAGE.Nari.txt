@@ -144,6 +144,54 @@ NARI_ARMORGIVE_RANAWAY_1 = "Doesn't look like you're planning to give me anythin
 NARI_ARMORGIVE_RANAWAY_2 = "Hey, where are you going!?";
 NARI_ARMORGIVE_RANAWAY_3 = "Wait up!";
 
+NARI_RADSUITGIVE_INIT_1 = "Oh, okay.";
+NARI_RADSUITGIVE_INIT_2 = "Yay!";
+NARI_RADSUITGIVE_INIT_3 = "Extra protection is always good.";
+
+NARI_RADSUITGIVE_CANCEL_1 = "Oh.";
+NARI_RADSUITGIVE_CANCEL_2 = "Alrighty, then!";
+NARI_RADSUITGIVE_CANCEL_3 = "Okie dokie.";
+
+NARI_RADSUITGIVE_STRIP_1 = "Aw.";
+NARI_RADSUITGIVE_STRIP_2 = "I just got comfy in there.";
+NARI_RADSUITGIVE_STRIP_3 = "Please don't let me get hit by fireballs.";
+
+NARI_RADSUITGIVE_NONE_1 = "Thank you!";
+NARI_RADSUITGIVE_NONE_2 = "It smells kind of funny.";
+NARI_RADSUITGIVE_NONE_3 = "Are you sure this will protect me?";
+
+NARI_RADSUITGIVE_NOTHANKS_1 = "I already have one.";
+NARI_RADSUITGIVE_NOTHANKS_2 = "I'm already comfy in mine.";
+NARI_RADSUITGIVE_NOTHANKS_3 = "Nah.";
+
+NARI_RADSUITGIVE_RANAWAY_1 = "But why?";
+NARI_RADSUITGIVE_RANAWAY_2 = "Oh...";
+NARI_RADSUITGIVE_RANAWAY_3 = "I'm sad.";
+
+NARI_BACKPACKGIVE_INIT_1 = "Your burdens are mine to bear, I guess.";
+NARI_BACKPACKGIVE_INIT_2 = "My back is scared.";
+NARI_BACKPACKGIVE_INIT_3 = "I'm going to need a massage after this.";
+
+NARI_BACKPACKGIVE_CANCEL_1 = "Okie dokie.";
+NARI_BACKPACKGIVE_CANCEL_2 = "Fine by me!";
+NARI_BACKPACKGIVE_CANCEL_3 = "Sure thing.";
+
+NARI_BACKPACKGIVE_STRIP_1 = "Ouch, my back.";
+NARI_BACKPACKGIVE_STRIP_2 = "That was heavy.";
+NARI_BACKPACKGIVE_STRIP_3 = "Please don't make me do that again.";
+
+NARI_BACKPACKGIVE_NONE_1 = "That IS heavy.";
+NARI_BACKPACKGIVE_NONE_2 = "Oof.";
+NARI_BACKPACKGIVE_NONE_3 = "I might need help with this.";
+
+NARI_BACKPACKGIVE_NOTHANKS_1 = "I can't carry two!";
+NARI_BACKPACKGIVE_NOTHANKS_2 = "These are too heavy for me to carry two of them!";
+NARI_BACKPACKGIVE_NOTHANKS_3 = "Please, I can't carry any more.";
+
+NARI_BACKPACKGIVE_RANAWAY_1 = "I see you've changed your mind.";
+NARI_BACKPACKGIVE_RANAWAY_2 = "I don't mind that.";
+NARI_BACKPACKGIVE_RANAWAY_3 = "Looks like I got off easy!";
+
 NARI_WEAPONGIVE_INIT_1 = "Oh? A gun? For me? How nice of you.";
 NARI_WEAPONGIVE_INIT_2 = "Oh goody!";
 NARI_WEAPONGIVE_INIT_3 = "Mmmmm.";

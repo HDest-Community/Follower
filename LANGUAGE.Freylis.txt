@@ -150,6 +150,54 @@ FREYLIS_ARMORGIVE_RANAWAY_1 = "Are you seriously going to leave me hanging?";
 FREYLIS_ARMORGIVE_RANAWAY_2 = "I don't appreciate being lied to.";
 FREYLIS_ARMORGIVE_RANAWAY_3 = "Damn you! Get back here!";
 
+FREYLIS_RADSUITGIVE_INIT_1 = "I really don't like wearing those, but if you insist...";
+FREYLIS_RADSUITGIVE_INIT_2 = "If I have to...";
+FREYLIS_RADSUITGIVE_INIT_3 = "Fine, but know that I don't like it.";
+
+FREYLIS_RADSUITGIVE_CANCEL_1 = "I have mixed feelings about this.";
+FREYLIS_RADSUITGIVE_CANCEL_2 = "Meh.";
+FREYLIS_RADSUITGIVE_CANCEL_3 = "Fine.";
+
+FREYLIS_RADSUITGIVE_STRIP_1 = "Thank fuck.";
+FREYLIS_RADSUITGIVE_STRIP_2 = "I don't know if the air smells worse inside or outside.";
+FREYLIS_RADSUITGIVE_STRIP_3 = "I really hope there are no cacodemons around.";
+
+FREYLIS_RADSUITGIVE_NONE_1 = "Might as well equip a sheet of paper.";
+FREYLIS_RADSUITGIVE_NONE_2 = "This is going to get shot in 3... 2... 1...";
+FREYLIS_RADSUITGIVE_NONE_3 = "Yeah... Thanks, I guess.";
+
+FREYLIS_RADSUITGIVE_NOTHANKS_1 = "Are you serious?";
+FREYLIS_RADSUITGIVE_NOTHANKS_2 = "You'll have to speak up, I can't hear you from inside this fireproof condom.";
+FREYLIS_RADSUITGIVE_NOTHANKS_3 = "In case you can't tell, I'm already wearing one.";
+
+FREYLIS_RADSUITGIVE_RANAWAY_1 = "Not like I was eager to wear that.";
+FREYLIS_RADSUITGIVE_RANAWAY_2 = "Alright, but when I get zapped to death, it'll be on you.";
+FREYLIS_RADSUITGIVE_RANAWAY_3 = "Yeah, I think I'm okay with this.";
+
+FREYLIS_BACKPACKGIVE_INIT_1 = "Suuuure, like I have nothing better to do than carry your shit.";
+FREYLIS_BACKPACKGIVE_INIT_2 = "Lazy cunt.";
+FREYLIS_BACKPACKGIVE_INIT_3 = "Do I look like a mule to you?";
+
+FREYLIS_BACKPACKGIVE_CANCEL_1 = "Giddy.";
+FREYLIS_BACKPACKGIVE_CANCEL_2 = "I was hoping you'd change your mind.";
+FREYLIS_BACKPACKGIVE_CANCEL_3 = "Nice.";
+
+FREYLIS_BACKPACKGIVE_STRIP_1 = "Thank fuck.";
+FREYLIS_BACKPACKGIVE_STRIP_2 = "Go see a doctor for your hoarding issues.";
+FREYLIS_BACKPACKGIVE_STRIP_3 = "My back is thankful.";
+
+FREYLIS_BACKPACKGIVE_NONE_1 = "I am sworn to carry your burd-- wait, no I'm not.";
+FREYLIS_BACKPACKGIVE_NONE_2 = "Great...";
+FREYLIS_BACKPACKGIVE_NONE_3 = "I love carrying around tons of useless shit.";
+
+FREYLIS_BACKPACKGIVE_NOTHANKS_1 = "Are you fucking kidding me?";
+FREYLIS_BACKPACKGIVE_NOTHANKS_2 = "Fuck off.";
+FREYLIS_BACKPACKGIVE_NOTHANKS_3 = "You carry that yourself.";
+
+FREYLIS_BACKPACKGIVE_RANAWAY_1 = "Somehow, I feel relieved.";
+FREYLIS_BACKPACKGIVE_RANAWAY_2 = "And don't come back!";
+FREYLIS_BACKPACKGIVE_RANAWAY_3 = "Sounds good to me!";
+
 FREYLIS_WEAPONGIVE_INIT_1 = "Finally, about time you gave me something to shoot with.";
 FREYLIS_WEAPONGIVE_INIT_2 = "Just drop it over here.";
 FREYLIS_WEAPONGIVE_INIT_3 = "Would really be appreciated.";

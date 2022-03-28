@@ -220,6 +220,54 @@ DAINA_ARMORGIVE_RANAWAY_1 = "Doesn't look like you're planning to give me anythi
 DAINA_ARMORGIVE_RANAWAY_2 = "Hey, where are you going!?";
 DAINA_ARMORGIVE_RANAWAY_3 = "Wait up!";
 
+DAINA_RADSUITGIVE_INIT_1 = "Oh, okay.";
+DAINA_RADSUITGIVE_INIT_2 = "Yay!";
+DAINA_RADSUITGIVE_INIT_3 = "Extra protection is always good.";
+
+DAINA_RADSUITGIVE_CANCEL_1 = "Oh.";
+DAINA_RADSUITGIVE_CANCEL_2 = "Alrighty, then!";
+DAINA_RADSUITGIVE_CANCEL_3 = "Okie dokie.";
+
+DAINA_RADSUITGIVE_STRIP_1 = "Aw.";
+DAINA_RADSUITGIVE_STRIP_2 = "I just got comfy in there.";
+DAINA_RADSUITGIVE_STRIP_3 = "Please don't let me get hit by fireballs.";
+
+DAINA_RADSUITGIVE_NONE_1 = "Thank you!";
+DAINA_RADSUITGIVE_NONE_2 = "It smells kind of funny.";
+DAINA_RADSUITGIVE_NONE_3 = "Are you sure this will protect me?";
+
+DAINA_RADSUITGIVE_NOTHANKS_1 = "I already have one.";
+DAINA_RADSUITGIVE_NOTHANKS_2 = "I'm already comfy in mine.";
+DAINA_RADSUITGIVE_NOTHANKS_3 = "Nah.";
+
+DAINA_RADSUITGIVE_RANAWAY_1 = "But why?";
+DAINA_RADSUITGIVE_RANAWAY_2 = "Oh...";
+DAINA_RADSUITGIVE_RANAWAY_3 = "I'm sad.";
+
+DAINA_BACKPACKGIVE_INIT_1 = "Your burdens are mine to bear, I guess.";
+DAINA_BACKPACKGIVE_INIT_2 = "My back is scared.";
+DAINA_BACKPACKGIVE_INIT_3 = "I'm going to need a massage after this.";
+
+DAINA_BACKPACKGIVE_CANCEL_1 = "Okie dokie.";
+DAINA_BACKPACKGIVE_CANCEL_2 = "Fine by me!";
+DAINA_BACKPACKGIVE_CANCEL_3 = "Sure thing.";
+
+DAINA_BACKPACKGIVE_STRIP_1 = "Ouch, my back.";
+DAINA_BACKPACKGIVE_STRIP_2 = "That was heavy.";
+DAINA_BACKPACKGIVE_STRIP_3 = "Please don't make me do that again.";
+
+DAINA_BACKPACKGIVE_NONE_1 = "That IS heavy.";
+DAINA_BACKPACKGIVE_NONE_2 = "Oof.";
+DAINA_BACKPACKGIVE_NONE_3 = "I might need help with this.";
+
+DAINA_BACKPACKGIVE_NOTHANKS_1 = "I can't carry two!";
+DAINA_BACKPACKGIVE_NOTHANKS_2 = "These are too heavy for me to carry two of them!";
+DAINA_BACKPACKGIVE_NOTHANKS_3 = "Please, I can't carry any more.";
+
+DAINA_BACKPACKGIVE_RANAWAY_1 = "I see you've changed your mind.";
+DAINA_BACKPACKGIVE_RANAWAY_2 = "I don't mind that.";
+DAINA_BACKPACKGIVE_RANAWAY_3 = "Looks like I got off easy!";
+
 DAINA_WEAPONGIVE_INIT_1 = "Oh? A gun? For me? How nice of you.";
 DAINA_WEAPONGIVE_INIT_2 = "Oh goody!";
 DAINA_WEAPONGIVE_INIT_3 = "Mmmmm.";

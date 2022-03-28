@@ -148,6 +148,54 @@ SEWIE_ARMORGIVE_RANAWAY_1 = "Doesn't look like you're planning to give me anythi
 SEWIE_ARMORGIVE_RANAWAY_2 = "Hey, where are you going!?";
 SEWIE_ARMORGIVE_RANAWAY_3 = "Wait up!";
 
+SEWIE_RADSUITGIVE_INIT_1 = "Oh, okay.";
+SEWIE_RADSUITGIVE_INIT_2 = "Yay!";
+SEWIE_RADSUITGIVE_INIT_3 = "Extra protection is always good.";
+
+SEWIE_RADSUITGIVE_CANCEL_1 = "Oh.";
+SEWIE_RADSUITGIVE_CANCEL_2 = "Alrighty, then!";
+SEWIE_RADSUITGIVE_CANCEL_3 = "Okie dokie.";
+
+SEWIE_RADSUITGIVE_STRIP_1 = "Aw.";
+SEWIE_RADSUITGIVE_STRIP_2 = "I just got comfy in there.";
+SEWIE_RADSUITGIVE_STRIP_3 = "Please don't let me get hit by fireballs.";
+
+SEWIE_RADSUITGIVE_NONE_1 = "Thank you!";
+SEWIE_RADSUITGIVE_NONE_2 = "It smells kind of funny.";
+SEWIE_RADSUITGIVE_NONE_3 = "Are you sure this will protect me?";
+
+SEWIE_RADSUITGIVE_NOTHANKS_1 = "I already have one.";
+SEWIE_RADSUITGIVE_NOTHANKS_2 = "I'm already comfy in mine.";
+SEWIE_RADSUITGIVE_NOTHANKS_3 = "Nah.";
+
+SEWIE_RADSUITGIVE_RANAWAY_1 = "But why?";
+SEWIE_RADSUITGIVE_RANAWAY_2 = "Oh...";
+SEWIE_RADSUITGIVE_RANAWAY_3 = "I'm sad.";
+
+SEWIE_BACKPACKGIVE_INIT_1 = "Your burdens are mine to bear, I guess.";
+SEWIE_BACKPACKGIVE_INIT_2 = "My back is scared.";
+SEWIE_BACKPACKGIVE_INIT_3 = "I'm going to need a massage after this.";
+
+SEWIE_BACKPACKGIVE_CANCEL_1 = "Okie dokie.";
+SEWIE_BACKPACKGIVE_CANCEL_2 = "Fine by me!";
+SEWIE_BACKPACKGIVE_CANCEL_3 = "Sure thing.";
+
+SEWIE_BACKPACKGIVE_STRIP_1 = "Ouch, my back.";
+SEWIE_BACKPACKGIVE_STRIP_2 = "That was heavy.";
+SEWIE_BACKPACKGIVE_STRIP_3 = "Please don't make me do that again.";
+
+SEWIE_BACKPACKGIVE_NONE_1 = "That IS heavy.";
+SEWIE_BACKPACKGIVE_NONE_2 = "Oof.";
+SEWIE_BACKPACKGIVE_NONE_3 = "I might need help with this.";
+
+SEWIE_BACKPACKGIVE_NOTHANKS_1 = "I can't carry two!";
+SEWIE_BACKPACKGIVE_NOTHANKS_2 = "These are too heavy for me to carry two of them!";
+SEWIE_BACKPACKGIVE_NOTHANKS_3 = "Please, I can't carry any more.";
+
+SEWIE_BACKPACKGIVE_RANAWAY_1 = "I see you've changed your mind.";
+SEWIE_BACKPACKGIVE_RANAWAY_2 = "I don't mind that.";
+SEWIE_BACKPACKGIVE_RANAWAY_3 = "Looks like I got off easy!";
+
 SEWIE_WEAPONGIVE_INIT_1 = "Oh? A gun? For me? How nice of you.";
 SEWIE_WEAPONGIVE_INIT_2 = "Oh goody!";
 SEWIE_WEAPONGIVE_INIT_3 = "Mmmmm.";

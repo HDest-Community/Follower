@@ -133,11 +133,17 @@ extend class HDFollower
 		{
 			DropInvItem(Slots[i], FIF_FORCE);
 		}
-		let WornArmor = FindInventory("HDArmourWorn");
-		if (WornArmor)
+
+		for (Inventory next = Inv; next != null;)
 		{
-			A_DropInventory(WornArmor.GetClass());
+			Inventory nextNext = next.Inv;
+			if (!next.bUNDROPPABLE && !next.bUNTOSSABLE)
+			{
+				A_DropInventory(next.GetClass());
+			}
+			next = nextNext;
 		}
+
 		for (int i = 0; i < 64; ++i)
 		{
 			vector3 POff = ((random() - 128) * Radius / 128, (random() - 128) * Radius / 128, random() * Height / 256);

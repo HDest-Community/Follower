@@ -10,7 +10,7 @@ version "4.6"
 #include "ZScript/Data.zsc"
 #include "ZScript/GeneralStates.zsc"
 #include "ZScript/Resurrection.zsc"
-#include "ZScript/Armor.zsc"
+#include "ZScript/Wearables.zsc"
 #include "ZScript/Medical.zsc"
 #include "ZScript/Weapons.zsc"
 #include "ZScript/AI.zsc"
@@ -217,7 +217,7 @@ class HDFollower : HDHumanoid abstract
 			CommentTimer--;
 		}
 
-		InventoryThink();
+		// InventoryThink();
 		if (Health > 0)
 		{
 			AiThink();

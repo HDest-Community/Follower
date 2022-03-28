@@ -140,6 +140,54 @@ MARINE_ARMORGIVE_RANAWAY_1 = "Good one, commander.";
 MARINE_ARMORGIVE_RANAWAY_2 = "You got me, commander.";
 MARINE_ARMORGIVE_RANAWAY_3 = "Let me know if you change your mind, commander.";
 
+MARINE_RADSUITGIVE_INIT_1 = "If I have to, commander.";
+MARINE_RADSUITGIVE_INIT_2 = "Roger that, commander.";
+MARINE_RADSUITGIVE_INIT_3 = "Environmental protection, commander?";
+
+MARINE_RADSUITGIVE_CANCEL_1 = "Alright, commander.";
+MARINE_RADSUITGIVE_CANCEL_2 = "Understood.";
+MARINE_RADSUITGIVE_CANCEL_3 = "Fine by me, commander.";
+
+MARINE_RADSUITGIVE_STRIP_1 = "Sounds good, commander.";
+MARINE_RADSUITGIVE_STRIP_2 = "These are rare and expensive, commander. We shouldn't be wearing them all the time anyway.";
+MARINE_RADSUITGIVE_STRIP_3 = "Got it, commander.";
+
+MARINE_RADSUITGIVE_NONE_1 = "I appreciate it, commander.";
+MARINE_RADSUITGIVE_NONE_2 = "More protection can never hurt. Thank you, commander.";
+MARINE_RADSUITGIVE_NONE_3 = "Much obliged, commander.";
+
+MARINE_RADSUITGIVE_NOTHANKS_1 = "I'm afraid I can only wear one at a time, commander.";
+MARINE_RADSUITGIVE_NOTHANKS_2 = "Uhhh... negative.";
+MARINE_RADSUITGIVE_NOTHANKS_3 = "Can't do, commander.";
+
+MARINE_RADSUITGIVE_RANAWAY_1 = "Heh, nice one, commander.";
+MARINE_RADSUITGIVE_RANAWAY_2 = "Gotta have some practical jokes once in a while. Right, commander?";
+MARINE_RADSUITGIVE_RANAWAY_3 = "Got me good, commander.";
+
+MARINE_BACKPACKGIVE_INIT_1 = "Let's share the burden, commander.";
+MARINE_BACKPACKGIVE_INIT_2 = "Good idea, commander.";
+MARINE_BACKPACKGIVE_INIT_3 = "Let me carry that for you, commander.";
+
+MARINE_BACKPACKGIVE_CANCEL_1 = "Are you sure you want to carry all that weight yourself, commander?";
+MARINE_BACKPACKGIVE_CANCEL_2 = "If you think that is best, commander.";
+MARINE_BACKPACKGIVE_CANCEL_3 = "Understood, commander.";
+
+MARINE_BACKPACKGIVE_STRIP_1 = "If I may, glad to have that off my back, commander.";
+MARINE_BACKPACKGIVE_STRIP_2 = "Thank you, commander.";
+MARINE_BACKPACKGIVE_STRIP_3 = "Here you go, commander.";
+
+MARINE_BACKPACKGIVE_NONE_1 = "It's heavy, but I'll manage.";
+MARINE_BACKPACKGIVE_NONE_2 = "Just let me know when you want it back, commander.";
+MARINE_BACKPACKGIVE_NONE_3 = "Don't worry, I'll carry it, commander.";
+
+MARINE_BACKPACKGIVE_NOTHANKS_1 = "I'm already carrying one, commander.";
+MARINE_BACKPACKGIVE_NOTHANKS_2 = "That'd be too much even for me, commander.";
+MARINE_BACKPACKGIVE_NOTHANKS_3 = "Apologies, commander, but I'll have to suggest to give it to somebody else.";
+
+MARINE_BACKPACKGIVE_RANAWAY_1 = "I take it you can carry it on your own, commander.";
+MARINE_BACKPACKGIVE_RANAWAY_2 = "Commander?";
+MARINE_BACKPACKGIVE_RANAWAY_3 = "I understand, commander.";
+
 MARINE_WEAPONGIVE_INIT_1 = "New equipment, commander?";
 MARINE_WEAPONGIVE_INIT_2 = "Looks like it's time to rock!";
 MARINE_WEAPONGIVE_INIT_3 = "Hoorah, commander!";

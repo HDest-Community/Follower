@@ -62,6 +62,14 @@ extend class HDFollower
 
 	private void LookForWeapon()
 	{
+		if (Distance3D(LinkedPlayer) > MaxWaitRange)
+		{
+			PrintMessage(GetResponse("WEAPONGIVE_RANAWAY"), "WeaponGive/RanAway", PMType_Critical);
+			Status = FStatus_None;
+			tracer = null;
+			return;
+		}
+
 		CheckProximity("HDWeapon", radius + MaxSearchRange, 1, CPXF_CLOSEST | CPXF_SETTRACER | CPXF_ANCESTOR);
 		HDWeapon foundWeapon = HDWeapon(tracer);
 
