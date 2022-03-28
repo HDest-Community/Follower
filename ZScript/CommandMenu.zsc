@@ -883,6 +883,12 @@ extend class FollowerHandler
 		sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 
 		sb.DrawImage(AceCore.GetIcon(wearable), pos + size / 2, flags | sb.DI_ITEM_CENTER, box: size - (3, 3));
+		if (wearable is 'HDWeapon')
+		{
+			let wpn = HDWeapon(wearable);
+			int num = wpn.GetSBarNum();
+			sb.DrawString(fnt, sb.FormatNumber(num, 1, 4), pos + size - (4, 10), flags | sb.DI_TEXT_ALIGN_RIGHT, sb.SavedColour);
+		}
 		if (wearable is 'HDArmourWorn')
 		{
 			sb.DrawString(fnt, (HDArmourWorn(wearable).Mega ? "\c[Blue]" : "\c[DarkGreen]")..HDArmourWorn(wearable).Durability, pos + size - (4, 10), flags | sb.DI_TEXT_ALIGN_RIGHT);

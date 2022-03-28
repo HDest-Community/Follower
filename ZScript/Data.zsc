@@ -221,7 +221,7 @@ class FollowerBody : HDPickup abstract
 		double total = 0;
 		for (int i = 0; i < Data.Size(); ++i)
 		{
-			total += default.Bulk + (Data[i].Storage != null ? Data[i].Storage.TotalBulk * 0.7 : 0);
+			total += default.Bulk + (Data[i].Storage != null ? 100 + Data[i].Storage.TotalBulk * 0.7 : 0);
 		}
 		return total;
 	}
