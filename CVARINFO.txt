@@ -1,7 +1,6 @@
 server int hdf_debug = 0;
 
 server bool hdf_collectbrass = true;
-server int hdf_extrabrass = 0;
 
 server bool hdf_ohana = false;
 
