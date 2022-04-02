@@ -118,9 +118,12 @@ extend class HDFollower
 		{
 			if (Distance3D(BlockActor) < HDCONST_ONEMETRE * 5)
 			{
-				double dangle = DeltaAngle(angle, AngleTo(BlockActor));
-				int dir = dangle > 0 ? -1 : 1;
-				A_ChangeVelocity(0, (default.MovementSpeed / frandom(1.3, 1.5)) * dir, vel.z, CVF_RELATIVE | CVF_REPLACE);
+				if (LastMovementDir == 0)
+				{
+					double dangle = DeltaAngle(angle, AngleTo(BlockActor));
+					LastMovementDir = dangle > 0 ? -1 : 1;
+				}
+				A_ChangeVelocity(0, (default.MovementSpeed / frandom(1.3, 1.5)) * LastMovementDir, vel.z, CVF_RELATIVE | CVF_REPLACE);
 			}
 			AimTimer = 0;
 			SetStateLabel('Aiming');
@@ -374,12 +377,14 @@ extend class HDFollower
 	private bool ContinueReloading;
 	private vector2 OldAim;
 	private int FireResult;
+	private int LastMovementDir;
 
 	States
 	{
 		See:
 			#### H 2
 			{
+				LastMovementDir = 0;
 				Status = FStatus_None;
 				AimTimer = 0;
 			}
@@ -403,6 +408,7 @@ extend class HDFollower
 			#### H 1 Aim();
 			#### H 1
 			{
+				LastMovementDir = 0;
 				LeadShot();
 				FireResult = SelWeapon.DoFiringSequence(WeaponTicker, FTarget.Actor);
 				WeaponTicker++;
