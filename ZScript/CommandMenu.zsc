@@ -1266,7 +1266,10 @@ extend class FollowerHandler
 								for (int i = 0; i < UiData[consoleplayer].ValidItems.Size(); ++i)
 								{
 									class<HDAmmo> AType, MType; int MaxMag;
-									[AType, MType, MaxMag] = lastFol.Weapons[0].GetAmmoType();
+									if (lastFol.Weapons.Size() > 0)
+									{
+										[AType, MType, MaxMag] = lastFol.Weapons[0].GetAmmoType();
+									}
 
 									InventorySlot selSlot = lastFol.Slots[UiData[consoleplayer].FSlotIndex];
 									class<Inventory> itemcls = UiData[consoleplayer].ValidItems[i].GetClass();
