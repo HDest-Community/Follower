@@ -959,7 +959,7 @@ extend class FollowerHandler
 		if (FollowerMenuLevel[consoleplayer] > FMenu_Closed && e.Type == InputEvent.Type_KeyDown)
 		{
 			int selSize = Selection[consoleplayer].SelFollowers.Size();
-			if (selSize == 0)
+			if (selSize == 0 && FollowerMenuLevel[consoleplayer] > FMenu_Recruitment)
 			{
 				return false;
 			}
