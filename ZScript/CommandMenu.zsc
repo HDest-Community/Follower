@@ -958,6 +958,14 @@ extend class FollowerHandler
 
 		if (FollowerMenuLevel[consoleplayer] > FMenu_Closed && e.Type == InputEvent.Type_KeyDown)
 		{
+			int selSize = Selection[consoleplayer].SelFollowers.Size();
+			if (selSize == 0)
+			{
+				return false;
+			}
+
+			HDFollower lastFol = Selection[consoleplayer].GetLast();
+
 			if (InInputMode[consoleplayer])
 			{
 				// [Ace] 'C' or 'c'. From what I tested, uppercase isn't even used, but let's check for it just in case.
@@ -1090,27 +1098,27 @@ extend class FollowerHandler
 					}
 					else
 					{
-						int FSize = Followers.Size();
-						int RelSize = min(FollowersPerPage, FSize - FollowersPerPage * FollowerPage[consoleplayer]);
-						bool HasMorePages = FSize > FollowersPerPage * (FollowerPage[consoleplayer] + 1);
-						int SelIndex = (NumKey + FollowersPerPage * FollowerPage[consoleplayer]) - 1;
-						if (NumKey == RelSize + 1 && HasMorePages)
+						int folSize = Followers.Size();
+						int relSize = min(FollowersPerPage, folSize - FollowersPerPage * FollowerPage[consoleplayer]);
+						bool hasMorePages = folSize > FollowersPerPage * (FollowerPage[consoleplayer] + 1);
+						int selIndex = (NumKey + FollowersPerPage * FollowerPage[consoleplayer]) - 1;
+						if (NumKey == relSize + 1 && hasMorePages)
 						{
 							SendNetworkEvent("HDF_SetFollowerPage", 1);
 						}
-						else if (FollowerPage[consoleplayer] > 0 && NumKey == RelSize + (HasMorePages ? 2 : 1))
+						else if (FollowerPage[consoleplayer] > 0 && NumKey == relSize + (hasMorePages ? 2 : 1))
 						{
 							SendNetworkEvent("HDF_SetFollowerPage", 0);
 						}
-						else if (NumKey > 0 && (NumKey - 1) < RelSize)
+						else if (NumKey > 0 && (NumKey - 1) < relSize)
 						{
 							if (Modifiers[consoleplayer] & OpMod_Shift)
 							{
-								SendNetworkEvent("HDF_ToggleSelection", SelIndex);
+								SendNetworkEvent("HDF_ToggleSelection", selIndex);
 							}
 							else
 							{
-								SendNetworkEvent("HDF_ToggleSelection", SelIndex, true);
+								SendNetworkEvent("HDF_ToggleSelection", selIndex, true);
 								SendNetworkEvent("HDF_ApplySelection");
 							}
 						}
@@ -1124,14 +1132,6 @@ extend class FollowerHandler
 
 				case FMenu_Main:
 				{
-					HDFollower lastFol = Selection[consoleplayer].GetLast();
-					int selSize = Selection[consoleplayer].SelFollowers.Size();
-
-					if (selSize == 0)
-					{
-						break;
-					}
-
 					if (selSize > 1)
 					{
 						if (e.KeyScan == InputEvent.Key_Enter && !InInputMode[consoleplayer] && ret)
@@ -1234,13 +1234,7 @@ extend class FollowerHandler
 
 				case FMenu_Inventory:
 				{
-					HDFollower lastFol = Selection[consoleplayer].GetLast();
-					int selSize = Selection[consoleplayer].SelFollowers.Size();
-
-					if (selSize == 0)
-					{
-						break;
-					}
+					
 
 					// [Ace] Navigation.
 					int maxSIndex = HDFollower.SlotCount - 1;
@@ -1343,22 +1337,32 @@ extend class FollowerHandler
 						}
 					}
 
-					if (NumKey == 2 && lastFol.CanInteractWith(false))
+					if (Modifiers[consoleplayer] & OpMod_Ctrl)
 					{
-						EnterInputMode(consoleplayer);
-						return true;
+						if (NumKey > 0 && NumKey <= 10)
+						{
+							SendNetworkEvent("HDF_TryReloadWeapon:"..NumKey);
+						}
 					}
-					if (NumKey == 1)
+					else
 					{
-						if (UiData[consoleplayer].SlotFocused > 0)
+						if (NumKey == 2 && lastFol.CanInteractWith(false))
 						{
-							UiData[consoleplayer].SlotFocused--;
+							EnterInputMode(consoleplayer);
+							return true;
 						}
-						else
+						if (NumKey == 1)
 						{
-							SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Main);
+							if (UiData[consoleplayer].SlotFocused > 0)
+							{
+								UiData[consoleplayer].SlotFocused--;
+							}
+							else
+							{
+								SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Main);
+							}
+							ret = true;
 						}
-						ret = true;
 					}
 					break;
 				}
@@ -1369,14 +1373,6 @@ extend class FollowerHandler
 
 				case FMenu_Miscellaneous:
 				{
-					HDFollower lastFol = Selection[consoleplayer].GetLast();
-					int selSize = Selection[consoleplayer].SelFollowers.Size();
-
-					if (selSize == 0)
-					{
-						break;
-					}
-
 					if (!(lastFol.bDONTTRANSLATE))
 					{
 						commands.Push(CreateCommand("HDF_SetFollowerMenu", FMenu_ColorPicker));
