@@ -41,6 +41,7 @@ extend class HDFollower
 		LinkedPlayer.woundcount = max(0, LinkedPlayer.woundcount - amt);
 		LinkedPlayer.unstablewoundcount = max(0, LinkedPlayer.unstablewoundcount - amt);
 		LinkedPlayer.oldwoundcount += amt;
+		LinkedPlayer.burncount = max(0, LinkedPlayer.burncount - amt * 2);
 	}
 
 	protected bool TryUnwrapMedikit()
@@ -75,11 +76,6 @@ extend class HDFollower
 		return Health < default.Health * 0.9 || BodyDamage > default.Health * 0.1;
 	}
 
-	clearscope bool PlayerHasWounds()
-	{
-		return LinkedPlayer && (LinkedPlayer.woundcount > 0 || LinkedPlayer.unstablewoundcount > 0);
-	}
-
 	clearscope bool PlayerIsIncapped()
 	{
 		return LinkedPlayer && LinkedPlayer.incapacitated >= 20 && (LinkedPlayer.incaptimer > MinIncap || LinkedPlayer.Health < 15); // [Ace] Player can't get up if lying on the floor at < 15 health, even if timer is 0.
@@ -87,7 +83,7 @@ extend class HDFollower
 
 	clearscope bool PlayerNeedsMedic()
 	{
-		return LinkedPlayer && LinkedPlayer.Health > 2 && (PlayerHasWounds() && !LinkedPlayer.FindInventory('HDArmourWorn') && (GetAmount('PortableMedikit') > 0 || SuturesLeft > 0) || CanApplyStim());
+		return LinkedPlayer && (LinkedPlayer.woundcount > 0 || LinkedPlayer.unstablewoundcount > 0 || LinkedPlayer.burncount > 0) && !LinkedPlayer.FindInventory('HDArmourWorn') && ((GetAmount('PortableMedikit') > 0 || SuturesLeft > 0) || CanApplyStim());
 	}
 
 	// --------------------------------------------------
