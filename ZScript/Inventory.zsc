@@ -203,7 +203,7 @@ extend class HDFollower
 		Inventory spawned = Inventory(Actor.Spawn(slot.ItemClass, pos + (0, 0, height / 2)));
 		if (slot.ItemClass is 'HDMagAmmo')
 		{
-			HDMagAmmo(spawned).Mags[slot.Amount];
+			HDMagAmmo(spawned).Mags[0] = slot.Amount;
 		}
 		else
 		{
