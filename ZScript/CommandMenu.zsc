@@ -853,7 +853,7 @@ extend class FollowerHandler
 				HDMagAmmo mag = HDMagAmmo(item);
 				amt = mag.Mags[i];
 			}
-			string icon = AceCore.GetIcon(item, amt);
+			string icon = ItemStorage.GetIcon(item, amt);
 			sb.DrawImage(icon, pos + (SlotSize, SlotSize) / 2 + RealPos, flags | sb.DI_ITEM_CENTER, 1.0, (SlotSize, SlotSize) - (6, 6), (3.0, 3.0));
 			if (InventorySlot.IsRealMag(item.GetClass()) || HDPickup(item) && HDPickup(item).bMULTIPICKUP && item.Amount > 0)
 			{
@@ -882,7 +882,7 @@ extend class FollowerHandler
 		sb.Fill(col, pos.x, pos.y, size.x, size.y, flags);
 		sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 
-		sb.DrawImage(AceCore.GetIcon(wearable), pos + size / 2, flags | sb.DI_ITEM_CENTER, box: size - (3, 3));
+		sb.DrawImage(ItemStorage.GetIcon(wearable), pos + size / 2, flags | sb.DI_ITEM_CENTER, box: size - (3, 3));
 		if (wearable is 'HDWeapon')
 		{
 			let wpn = HDWeapon(wearable);

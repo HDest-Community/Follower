@@ -136,14 +136,14 @@ extend class HDFollower
 			Slots[index] = new('InventorySlot');
 		}
 		Slots[index].ItemClass = mag.GetClass();
-		Slots[index].Icon = AceCore.GetIcon(mag);
+		Slots[index].Icon = ItemStorage.GetIcon(mag);
 		Slots[index].Multipickup = false;
 		if (magIndex == -1)
 		{
 			magIndex = mag.Mags.Size() - 1;
 		}
 		int magAmt = mag.Mags[magIndex];
-		Slots[index].Icon = AceCore.GetIcon(mag, magAmt);
+		Slots[index].Icon = ItemStorage.GetIcon(mag, magAmt);
 		Slots[index].Amount = magAmt;
 		mag.Mags.Delete(magIndex);
 		mag.Amount--;
