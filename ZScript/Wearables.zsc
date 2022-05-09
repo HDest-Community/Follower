@@ -40,7 +40,7 @@ extend class HDFollower
 		let foundWearable = Inventory(tracer);
 		let wornWearable = FindInventory(WearableInfo.WornItemCls);
 
-		if (foundWearable)
+		if (foundWearable && HDPlayerPawn.CheckStrip(self, foundWearable))
 		{
 			if (!wornWearable)
 			{
