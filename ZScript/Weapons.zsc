@@ -109,7 +109,8 @@ extend class HDFollower
 			Console.Printf("[%s] %s is aiming at %s.", GetTimestamp(), GetTag(), FTarget.Actor.GetClassName());
 		}
 
-		A_Face(FTarget.Actor, 0, 0, flags: FAF_MIDDLE);
+		double headOffset = FTarget.Actor.FindInventory('HDArmourWorn') && HDMobBase(FTarget.Actor) && !HDMobBase(FTarget.Actor).bHASHELMET ? FTarget.Actor.height * 0.2 : 0;
+		A_Face(FTarget.Actor, 0, 0, flags: FAF_MIDDLE, z_ofs: headOffset);
 		OldAim = (angle, pitch);
 
 		// [Ace] If you're incapped, follower can probably shoot over you. Otherwise it's not a good idea.
@@ -137,7 +138,8 @@ extend class HDFollower
 			return;
 		}
 		
-		A_Face(FTarget.Actor, 0, 0, flags: FAF_MIDDLE);
+		double headOffset = FTarget.Actor.FindInventory('HDArmourWorn') && HDMobBase(FTarget.Actor) && !HDMobBase(FTarget.Actor).bHASHELMET ? FTarget.Actor.height * 0.2 : 0;
+		A_Face(FTarget.Actor, 0, 0, flags: FAF_MIDDLE, z_ofs: headOffset);
 
 		// [Ace] Assume the average projectile travels at 500 m/s. Normally you'd want to use the actual speed, but things are a bit different here.
 		// Too lazy to add projectile info and whatnot. Maybe if this turns out to be too trash.
