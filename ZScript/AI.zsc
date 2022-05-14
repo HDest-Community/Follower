@@ -320,7 +320,7 @@ extend class HDFollower
 				{
 					sideVel = -1;
 				}
-				A_ChangeVelocity(MovementSpeed, MovementSpeed * sideVel, vel.z, CVF_RELATIVE | CVF_REPLACE);
+				A_ChangeVelocity(MovementSpeed, MovementSpeed * sideVel, waterlevel >= 2 ? MovementSpeed : vel.z, CVF_RELATIVE | CVF_REPLACE);
 
 				// [Ace] Ascend/descend ladders.
 				bool nearLadder = CheckProximity('hdladdertop', radius + 32) || CheckProximity('hdladderbottom', radius + 32);
