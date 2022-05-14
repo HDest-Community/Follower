@@ -43,8 +43,7 @@ extend class HDFollower
 
 	protected void PlayIdleComment()
 	{
-		bool Enabled = CVar.GetCVar('hdf_enablecomments', LinkedPlayer.player).GetBool();
-		if (!Enabled)
+		if (!CVar.GetCVar('hdf_enablecomments', LinkedPlayer.player).GetBool())
 		{
 			return;
 		}
