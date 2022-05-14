@@ -22,8 +22,6 @@ class FollowerHandler : EventHandler
 			return;
 		}
 
-		InitTranslationColors();
-
 		let Arbitrator = players[Net_Arbitrator].mo;
 		if (!Arbitrator)
 		{

@@ -21,7 +21,6 @@ version "4.6"
 #include "ZScript/Brass.zsc"
 #include "ZScript/Loadout.zsc"
 #include "ZScript/Messages.zsc"
-#include "ZScript/Translations.zsc"
 
 #include "ZScript/Followers/Freylis.zsc"
 #include "ZScript/Followers/Balthazar.zsc"

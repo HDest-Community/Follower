@@ -52,6 +52,31 @@ extend class FollowerHandler
 		HOLD_UP = 4,
 		HOLD_DOWN = 8,
 	}
+
+	static const int TranslationColors[] =
+	{
+		0xFFFF7F7F, 0xFFFF0000, 0xFFBF3F3F, 0xFF7F0000, 0xFF4F2F2F, 0xFFFF927F, 0xFFFF2600, 0xFFBF523F, 0xFF7F1300, 0xFF4F342F, 
+		0xFFFFA57F, 0xFFFF4C00, 0xFFBF663F, 0xFF7F2600, 0xFF4F392F, 0xFFFFB87F, 0xFFFF7200, 0xFFBF793F, 0xFF7F3900, 0xFF4F3E2F, 
+		0xFFFFCC7F, 0xFFFF9900, 0xFFBF8C3F, 0xFF7F4C00, 0xFF4F422F, 0xFFFFDF7F, 0xFFFFBF00, 0xFFBF9F3F, 0xFF7F5F00, 0xFF4F472F, 
+		0xFFFFF27F, 0xFFFFE500, 0xFFBFB23F, 0xFF7F7200, 0xFF4F4C2F, 0xFFF8FF7F, 0xFFF2FF00, 0xFFB8BF3F, 0xFF797F00, 0xFF4E4F2F, 
+		0xFFE5FF7F, 0xFFCBFF00, 0xFFA5BF3F, 0xFF657F00, 0xFF494F2F, 0xFFD2FF7F, 0xFFA5FF00, 0xFF92BF3F, 0xFF527F00, 0xFF444F2F, 
+		0xFFBFFF7F, 0xFF7FFF00, 0xFF7FBF3F, 0xFF3F7F00, 0xFF3F4F2F, 0xFFACFF7F, 0xFF59FF00, 0xFF6CBF3F, 0xFF2C7F00, 0xFF3A4F2F, 
+		0xFF99FF7F, 0xFF33FF00, 0xFF59BF3F, 0xFF197F00, 0xFF364F2F, 0xFF85FF7F, 0xFF0CFF00, 0xFF46BF3F, 0xFF067F00, 0xFF314F2F, 
+		0xFF7FFF8C, 0xFF00FF19, 0xFF3FBF4C, 0xFF007F0C, 0xFF2F4F32, 0xFF7FFF9F, 0xFF00FF3F, 0xFF3FBF5F, 0xFF007F1F, 0xFF2F4F37, 
+		0xFF7FFFB2, 0xFF00FF65, 0xFF3FBF72, 0xFF007F32, 0xFF2F4F3C, 0xFF7FFFC5, 0xFF00FF8C, 0xFF3FBF85, 0xFF007F46, 0xFF2F4F41, 
+		0xFF7FFFD8, 0xFF00FFB2, 0xFF3FBF98, 0xFF007F59, 0xFF2F4F46, 0xFF7FFFEB, 0xFF00FFD8, 0xFF3FBFAC, 0xFF007F6C, 0xFF2F4F4A, 
+		0xFF7FFFFF, 0xFF00FFFE, 0xFF3FBFBF, 0xFF007F7F, 0xFF2F4F4F, 0xFF7FEBFF, 0xFF00D8FF, 0xFF3FACBF, 0xFF006C7F, 0xFF2F4A4F, 
+		0xFF7FD8FF, 0xFF00B2FF, 0xFF3F99BF, 0xFF00597F, 0xFF2F464F, 0xFF7FC5FF, 0xFF008CFF, 0xFF3F85BF, 0xFF00467F, 0xFF2F414F, 
+		0xFF7FB2FF, 0xFF0065FF, 0xFF3F72BF, 0xFF00327F, 0xFF2F3C4F, 0xFF7F9FFF, 0xFF003FFF, 0xFF3F5FBF, 0xFF001F7F, 0xFF2F374F, 
+		0xFF7F8CFF, 0xFF0019FF, 0xFF3F4CBF, 0xFF000C7F, 0xFF2F334F, 0xFF857FFF, 0xFF0C00FF, 0xFF463FBF, 0xFF06007F, 0xFF312F4F, 
+		0xFF987FFF, 0xFF3200FF, 0xFF593FBF, 0xFF19007F, 0xFF362F4F, 0xFFAC7FFF, 0xFF5900FF, 0xFF6C3FBF, 0xFF2C007F, 0xFF3A2F4F, 
+		0xFFBF7FFF, 0xFF7F00FF, 0xFF7F3FBF, 0xFF3F007F, 0xFF3F2F4F, 0xFFD27FFF, 0xFFA500FF, 0xFF923FBF, 0xFF52007F, 0xFF442F4F, 
+		0xFFE57FFF, 0xFFCB00FF, 0xFFA53FBF, 0xFF65007F, 0xFF492F4F, 0xFFF87FFF, 0xFFF200FF, 0xFFB83FBF, 0xFF79007F, 0xFF4E2F4F, 
+		0xFFFF7FF2, 0xFFFF00E5, 0xFFBF3FB2, 0xFF7F0072, 0xFF4F2F4C, 0xFFFF7FDF, 0xFFFF00BF, 0xFFBF3F9F, 0xFF7F005F, 0xFF4F2F47, 
+		0xFFFF7FCC, 0xFFFF0099, 0xFFBF3F8C, 0xFF7F004C, 0xFF4F2F42, 0xFFFF7FB8, 0xFFFF0072, 0xFFBF3F79, 0xFF7F0039, 0xFF4F2F3E, 
+		0xFFFF7FA5, 0xFFFF004C, 0xFFBF3F66, 0xFF7F0026, 0xFF4F2F39, 0xFFFF7F92, 0xFFFF0026, 0xFFBF3F52, 0xFF7F0013, 0xFF4F2F34, 
+		0xFF000000, 0xFF191919, 0xFF333333, 0xFF4C4C4C, 0xFF666666, 0xFF7F7F7F, 0xFF999999, 0xFFB2B2B2, 0xFFCCCCCC, 0xFFE5E5E5
+	};
 	
 	private transient ui HUDFont MainFont;
 
@@ -229,7 +254,7 @@ extend class FollowerHandler
 
 			case FMenu_ColorPicker:
 			{
-				int maxIndex = TColors.Size() - 1;
+				int maxIndex = TranslationColors.Size() - 1;
 				if (UiData[consoleplayer].ArrowKeysHeld & HOLD_LEFT && UiData[consoleplayer].SelectedColorIndex % PickerColumns > 0 && UiData[consoleplayer].RepeatTics[0] % 3 == 0)
 				{
 					UiData[consoleplayer].SelectedColorIndex = max(UiData[consoleplayer].SelectedColorIndex - 1, 0);
@@ -685,7 +710,7 @@ extend class FollowerHandler
 					return;
 				}
 
-				int tSize = TColors.Size();
+				int tSize = TranslationColors.Size();
 				int rows = int(ceil(tSize / double(PickerColumns)));
 				double w = PickerColumns * ColSquareSize + (PickerColumns - 1) + 2;
 				double h = rows * ColSquareSize + (rows - 1) + 2;
@@ -705,10 +730,10 @@ extend class FollowerHandler
 				{
 					if (UiData[consoleplayer].SelectedColorIndex == i)
 					{
-						Color selCol = Color(255, int(TColors[i].r * 1.5), int(TColors[i].g * 1.5), int(TColors[i].b * 1.5));
-						sb.Fill(selCol, pos.x + (ColSquareSize + 1) * (i % PickerColumns), pos.y + (ColSquareSize + 1) * (i / PickerColumns), ColSquareSize + 2, ColSquareSize + 2, flags);
+						Color selCol = TranslationColors[i];
+						sb.Fill(Color(selCol.a, int(selCol.r * 2), int(selCol.g * 2), int(selCol.b * 2)), pos.x + (ColSquareSize + 1) * (i % PickerColumns), pos.y + (ColSquareSize + 1) * (i / PickerColumns), ColSquareSize + 2, ColSquareSize + 2, flags);
 					}
-					sb.Fill(TColors[i], pos.x + 1 + (ColSquareSize + 1) * (i % PickerColumns), pos.y + 1 + (ColSquareSize + 1) * (i / PickerColumns), ColSquareSize, ColSquareSize, flags);
+					sb.Fill(TranslationColors[i], pos.x + 1 + (ColSquareSize + 1) * (i % PickerColumns), pos.y + 1 + (ColSquareSize + 1) * (i / PickerColumns), ColSquareSize, ColSquareSize, flags);
 				}
 
 				DrawRectangle(sb, pos + (0, h + 1), (w, rectHeight), col, fnt, "0) Back", flags);
