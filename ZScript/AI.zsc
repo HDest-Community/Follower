@@ -214,7 +214,7 @@ extend class HDFollower
 		// [Ace] Enemy searching and weapon handling.
 		if (Weapons.Size() > 0)
 		{
-			if (HasUsableWeapons() && (!SelWeapon || SelWeapon.Status == FollowerWeapon.WStatus_Idle) && (!bFRIENDLY || Stance == FStance_Aggressive))
+			if (Order != FOrder_GoThere && (!SelWeapon || SelWeapon.Status == FollowerWeapon.WStatus_Idle) && (!bFRIENDLY || Stance == FStance_Aggressive) && HasUsableWeapons())
 			{
 				AcquireTargets();
 			}
