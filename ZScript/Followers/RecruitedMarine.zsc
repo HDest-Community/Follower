@@ -12,6 +12,7 @@ class RecruitedMarine : HDFollower
 		+HDFOLLOWER.CANDISMISS
 		HDFollower.FollowerInfo GENDER_MALE, 'FollowerBodyMarine', '';
 		HDFollower.ResurrectType RESF_MERCHANT;
+		SeeSound "marine/sight";
 		-DONTTRANSLATE
 	}
 
