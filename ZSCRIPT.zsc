@@ -154,7 +154,7 @@ class HDFollower : HDHumanoid abstract
 		}
 
 		bool FollowerDead = Health <= 0;
-		bool TooFar = Distance2D(LinkedPlayer) > HDCONST_ONEMETRE * 15;
+		bool TooFar = Distance3D(LinkedPlayer) > HDCONST_ONEMETRE * 15;
 
 		return TooFar || FollowerDead;
 	}
