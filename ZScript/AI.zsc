@@ -276,7 +276,7 @@ extend class HDFollower
 		scale.y = default.scale.y * (1.0 - CrouchFactor);
 		A_SetSize(-1, default.Height * (1.0 - CrouchFactor));
 
-		double goalDist2 = TGoal ? Distance3D(TGoal) : 0;
+		double goalDist2 = TGoal ? (TGoal is 'TargetGoal' ? Distance2D(TGoal) : Distance3D(TGoal)) : 0;
 
 		// [Ace] Movement. Always travel to goals if there are any.
 		if (Status == FStatus_None && (!SelWeapon || SelWeapon.Status != FollowerWeapon.WStatus_Firing) && TGoal && goalDist2 < MaxGoalRange)
