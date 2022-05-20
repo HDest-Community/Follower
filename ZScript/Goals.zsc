@@ -46,7 +46,8 @@ extend class HDFollower
 			}
 			if (flags & SGF_LASTKNOWN)
 			{
-				tg.bMISSILEMORE = true;
+				// [Ace] If last known, move a little further away on the movement vector to prevent followers from stopping right at the edge of a corner.
+				tg.SetOrigin(tg.Vec3Angle(24, AngleTo(tg)), false);
 			}
 			ClearGoal(); // [Ace] Nuke old goal.
 			tg.master = self;
