@@ -430,12 +430,12 @@ extend class HDFollower
 		int sides = 0;
 		FLineTraceData data;
 
-		LineTrace(angle - 25, radius + 7, 0, TRF_SOLIDACTORS, height - 6, 0, -radius, data);
+		LineTrace(angle + 25, radius + 7, 0, TRF_SOLIDACTORS, height - 6, 0, -radius / 1.5, data);
 		if (data.HitLine || data.HitActor)
 		{
 			sides |= BSide_Left;
 		}
-		LineTrace(angle + 25, radius + 7, 0, TRF_SOLIDACTORS, height - 6, 0, radius, data);
+		LineTrace(angle - 25, radius + 7, 0, TRF_SOLIDACTORS, height - 6, 0, radius / 1.5, data);
 		if (data.HitLine || data.HitActor)
 		{
 			sides |= BSide_Right;
