@@ -138,19 +138,6 @@ extend class HDFollower
 						TrySetGoal(LastKnownPos, SGF_IGNOREVALID | SGF_LASTKNOWN);
 					}
 				}
-
-				if (!Moving && IsSteppingOnSomeone())
-				{
-					// [Ace] Spawn a new idle spot.
-					for (int i = 0; i < 100; ++i)
-					{
-						vector3 SpotPos = Vec3Angle(frandom(radius * 3, radius * 6), random(0, 359));
-						if (TrySetGoal(SpotPos))
-						{
-							break;
-						}
-					}
-				}
 			}
 			else if (Order == FOrder_Stay && DistanceToPlayer < HDCONST_ONEMETRE * 5)
 			{
@@ -402,27 +389,6 @@ extend class HDFollower
 	bool IsInMovingState()
 	{
 		return InStateSequence(CurState, FindState('Moving'));
-	}
-
-	bool IsSteppingOnSomeone()
-	{
-		if (bOnMobj && !TGoal)
-		{
-			if (Distance2D(LinkedPlayer) <= LinkedPlayer.Radius + Radius)
-			{
-				return true;
-			}
-
-			for (int i = 0; i < Handler.Followers.Size(); ++i)
-			{
-				if (Distance2D(Handler.Followers[i]) <= Handler.Followers[i].Radius + Radius)
-				{
-					return true;
-				}
-			}
-		}
-
-		return false;
 	}
 
 	int GetBlockedSides()
