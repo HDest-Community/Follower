@@ -47,7 +47,7 @@ extend class HDFollower
 			if (flags & SGF_LASTKNOWN)
 			{
 				// [Ace] If last known, move a little further away on the movement vector to prevent followers from stopping right at the edge of a corner.
-				tg.SetOrigin(tg.Vec3Angle(24, AngleTo(tg)), false);
+				tg.SetOrigin(tg.Vec3Angle(16, AngleTo(tg)), false);
 			}
 			ClearGoal(); // [Ace] Nuke old goal.
 			tg.master = self;
@@ -107,7 +107,7 @@ class TargetGoal : Actor
 	States
 	{
 		Spawn:
-			TNT1 A 35 * 15;
+			BAL2 A 35 * 15;
 			Stop;
 	}
 }

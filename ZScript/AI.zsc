@@ -31,7 +31,7 @@ extend class HDFollower
 
 		Actor next = GetNextInChain();
 		bool canSeeNext = CheckSight(next, SF_ALL);
-		if (!canSeeNext && (!TGoal || (blockedSides & (BSide_Left | BSide_Right))) && CanSeePlayer)
+		if (!canSeeNext && !TGoal && CanSeePlayer)
 		{
 			next = LinkedPlayer;
 			canSeeNext = true;
@@ -307,6 +307,7 @@ extend class HDFollower
 				{
 					sideVel = -1;
 				}
+
 				A_ChangeVelocity(MovementSpeed, MovementSpeed * sideVel, waterlevel >= 2 ? MovementSpeed * sin(-pitch) : vel.z, CVF_RELATIVE | CVF_REPLACE);
 
 				// [Ace] Ascend/descend ladders.
@@ -318,10 +319,17 @@ extend class HDFollower
 				bNODROPOFF = !(goalDist2 < HDCONST_ONEMETRE * 10 && (pos.z > floorz || abs(TGoal.floorz - floorz) < default.MaxDropOffHeight) && abs(TGoal.pos.z - pos.z) < default.MaxDropOffHeight);
 
 				// [Ace] Stop trying to reach goal shortly after losing LOS.
-				if (!CheckSight(TGoal, SF_ALL) && ++NoSightTics == 50)
+				if (!CheckSight(TGoal, SF_ALL))
+				{
+					if (++NoSightTics == 50)
+					{
+						NoSightTics = 0;
+						ClearGoal(true);
+					}
+				}
+				else
 				{
 					NoSightTics = 0;
-					ClearGoal(true);
 				}
 
 				// [Ace] Only play idle comments if moving.
@@ -396,13 +404,13 @@ extend class HDFollower
 		int sides = 0;
 		FLineTraceData data;
 
-		LineTrace(angle + 25, radius + 7, 0, TRF_SOLIDACTORS, height - 6, 0, -radius / 1.5, data);
-		if (data.HitLine || data.HitActor)
+		bool hit = LineTrace(angle + 10, radius * 2, 0, TRF_SOLIDACTORS, height * 0.5, 0, -radius, data);
+		if (hit && (data.HitLine || data.HitActor && data.HitActor.CanCollideWith(self, false)))
 		{
 			sides |= BSide_Left;
 		}
-		LineTrace(angle - 25, radius + 7, 0, TRF_SOLIDACTORS, height - 6, 0, radius / 1.5, data);
-		if (data.HitLine || data.HitActor)
+		hit = LineTrace(angle - 10, radius * 2, 0, TRF_SOLIDACTORS, height * 0.5, 0, radius, data);
+		if (hit && (data.HitLine || data.HitActor && data.HitActor.CanCollideWith(self, false)))
 		{
 			sides |= BSide_Right;
 		}
