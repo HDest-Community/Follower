@@ -107,7 +107,7 @@ class TargetGoal : Actor
 	States
 	{
 		Spawn:
-			BAL2 A 35 * 15;
+			TNT1 A 35 * 15;
 			Stop;
 	}
 }

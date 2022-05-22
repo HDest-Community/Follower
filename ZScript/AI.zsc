@@ -405,12 +405,12 @@ extend class HDFollower
 		FLineTraceData data;
 
 		bool hit = LineTrace(angle + 10, radius * 2, 0, TRF_SOLIDACTORS, height * 0.5, 0, -radius, data);
-		if (hit && (data.HitLine || data.HitActor && data.HitActor.CanCollideWith(self, false)))
+		if (hit && (data.HitLine || data.HitActor && data.HitActor.Species != Species && data.HitActor.CanCollideWith(self, false)))
 		{
 			sides |= BSide_Left;
 		}
 		hit = LineTrace(angle - 10, radius * 2, 0, TRF_SOLIDACTORS, height * 0.5, 0, radius, data);
-		if (hit && (data.HitLine || data.HitActor && data.HitActor.CanCollideWith(self, false)))
+		if (hit && (data.HitLine || data.HitActor && data.HitActor.Species != Species && data.HitActor.CanCollideWith(self, false)))
 		{
 			sides |= BSide_Right;
 		}
