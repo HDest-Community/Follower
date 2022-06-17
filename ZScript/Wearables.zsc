@@ -40,8 +40,7 @@ extend class HDFollower
 		let foundWearable = Inventory(tracer);
 		let wornWearable = FindInventory(WearableInfo.WornItemCls);
 
-		bool strip = HDPickup(foundWearable) && HDPickup(foundWearable).WornLayer != 0 || HDWeapon(foundWearable) && HDWeapon(foundWearable).IsBeingWorn();
-		if (foundWearable && (!strip || HDPlayerPawn.CheckStrip(self, foundWearable)))
+		if (foundWearable)
 		{
 			if (!wornWearable)
 			{
@@ -68,8 +67,6 @@ extend class HDFollower
 					tracer = null;
 					return;
 				}
-
-				A_DropInventory(wornArmor.GetClass());
 			}
 			else
 			{
@@ -78,6 +75,8 @@ extend class HDFollower
 				tracer = null;
 				return;
 			}
+
+			while (HDPlayerPawn.CheckStrip(self, foundWearable) != CSResult_Nothing);
 
 			if (HDWeapon(foundWearable))
 			{
