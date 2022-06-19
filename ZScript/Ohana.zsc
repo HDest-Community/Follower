@@ -13,15 +13,15 @@ extend class HDFollower
 			return;
 		}
 
-		bool nearMerchant = false;
+		int merchantCount = 0;
 		Name clsStr = 'HDMerchant';
 		class<Actor> cls = clsStr;
 		if (cls)
 		{
-			nearMerchant = CheckProximity(cls, HDCONST_ONEMETRE * 10, 1, CPXF_CLOSEST | CPXF_ANCESTOR);
+			nearMerchant = CountProximity(cls, HDCONST_ONEMETRE * 10, CPXF_ANCESTOR);
 		}
 
-		if (OhanaMode.GetBool() && DistanceToPlayer > HDCONST_ONEMETRE * (CanSeePlayer ? 30 : 10) && (!nearMerchant || GetAge() % 3 == 0))
+		if (OhanaMode.GetBool() && DistanceToPlayer > HDCONST_ONEMETRE * (CanSeePlayer ? 30 : 10) && (merchantCount == 0 || GetAge() % (3 * merchantCount) == 0))
 		{
 			OhanaTicker++;
 

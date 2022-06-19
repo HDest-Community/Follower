@@ -103,7 +103,7 @@ extend class HDFollower
 				return;
 			}
 
-			int count = CountProximity(cls, HDCONST_ONEMETRE * 2, CPXF_CLOSEST | CPXF_ANCESTOR);
+			int count = CountProximity(cls, HDCONST_ONEMETRE * 2, CPXF_ANCESTOR);
 			if (count > 0)
 			{
 				int req = 35 * 60 * 10;
