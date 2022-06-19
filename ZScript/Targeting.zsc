@@ -94,7 +94,8 @@ extend class HDFollower
 		// - Target is dead;
 		// - Target is incapped;
 		// - Target is too fucked up;
-		// - Target is a bot.
+		// - Target is a robot.
+		// - Target is untargetable
 
 		if (!TargetUncountable)
 		{
@@ -115,12 +116,12 @@ extend class HDFollower
 			return false;
 		}
 
-		bool FriendlyCheck = bFRIENDLY && !other.bFRIENDLY && other != LinkedPlayer;
-		bool HostileCheck = !bFRIENDLY && (other == LinkedPlayer || other.bFRIENDLY);
+		bool friendlyCheck = bFRIENDLY && !other.bFRIENDLY && other != LinkedPlayer;
+		bool hostileCheck = !bFRIENDLY && (other == LinkedPlayer || other.bFRIENDLY);
 		bool bodyDamageCheck = !(other is 'HDMobBase') || HDMobBase(other).BodyDamage <= other.SpawnHealth() * 1.2;
 		bool botCheck = !(other is 'HERPBot' || other is 'DERPBot');
 		bool countableCheck = other.bCOUNTKILL || TargetUncountable.GetBool();
-		return botCheck && countableCheck && bodyDamageCheck && CanHitTarget(other, !fromAcquire) && (FriendlyCheck || HostileCHeck) && CheckSight(other, SF_NOINVISIBLE) && !TargetIsIncapped(other);
+		return botCheck && countableCheck && bodyDamageCheck && CanHitTarget(other, !fromAcquire) && (friendlyCheck || hostileCheck) && CheckSight(other, SF_NOINVISIBLE) && !TargetIsIncapped(other) && !other.bNOTARGET;
 	}
 
 	protected bool TargetIsIncapped(Actor other)
