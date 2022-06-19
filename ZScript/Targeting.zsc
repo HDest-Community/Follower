@@ -18,8 +18,8 @@ extend class HDFollower
 			TargetList.Clear();
 			TargetRefreshTicker = random[follrand](-5, 5);
 
-			double limit = HDCONST_ONEMETRE * MaxRange.GetInt();
-			MaxTargetRange = limit > 0 ? min(limit, default.MaxTargetRange) : default.MaxTargetRange;
+			double range = HDCONST_ONEMETRE * min(MaxRange.GetInt(), 300);
+			MaxTargetRange = range > 0 ? range : default.MaxTargetRange;
 
 			let TheEye = BlockThingsIterator.Create(self, MaxTargetRange);
 			while (TheEye.Next())
