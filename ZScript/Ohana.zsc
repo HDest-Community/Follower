@@ -18,7 +18,7 @@ extend class HDFollower
 		class<Actor> cls = clsStr;
 		if (cls)
 		{
-			nearMerchant = CountProximity(cls, HDCONST_ONEMETRE * 10, CPXF_ANCESTOR);
+			merchantCount = CountProximity(cls, HDCONST_ONEMETRE * 10, CPXF_ANCESTOR);
 		}
 
 		if (OhanaMode.GetBool() && DistanceToPlayer > HDCONST_ONEMETRE * (CanSeePlayer ? 30 : 10) && (merchantCount == 0 || GetAge() % (3 * merchantCount) == 0))
@@ -66,7 +66,7 @@ extend class HDFollower
 				int timeLeft = (Health > 0 ? deathReq : dissReq) - OhanaTicker;
 				int secs = Thinker.Tics2Seconds(timeLeft); 
 				string timeStr = String.Format("%02d:%02d:%02d", secs / 3600, (secs % 3600) / 60, secs % 60);
-				Console.Printf("[%s] %s is %s. %i monsters alive. Time left: %s. %s nearby.", GetTimestamp(), GetTag(), Health > 0 ? "alive" : "dead", livingMonsters, timeStr, nearMerchant ? "A merchant is" : "No merchants");
+				Console.Printf("[%s] %s is %s. %i monsters alive. Time left: %s. %i merchants are nearby.", GetTimestamp(), GetTag(), Health > 0 ? "alive" : "dead", livingMonsters, timeStr, merchantCount);
 			}
 		}
 		else if (OhanaTicker > 0)
