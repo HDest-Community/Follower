@@ -26,6 +26,9 @@ class FollowerData play
 	string Sounds[3];
 	int SpriteTranslation;
 
+	int Order;
+	int Stance;
+
 	int Health;
 
 	// Bleeding thinker stuff.
@@ -44,7 +47,6 @@ class FollowerData play
 	InventorySlot Slots[HDFollower.SlotCount];
 
 	int SuturesLeft;
-	int Order;
 
 	int ArmorDurability;
 	bool ArmorMega;
@@ -96,6 +98,9 @@ extend class HDFollower
 		data.Sounds[2] = DeathSound;
 		data.SpriteTranslation = self.Translation;
 
+		data.Order = Order;
+		data.Stance = Stance;
+
 		for (int i = 0; i < Weapons.Size(); ++i)
 		{
 			data.Weapons.Push(Weapons[i]);
@@ -135,7 +140,6 @@ extend class HDFollower
 		}
 
 		data.SuturesLeft = SuturesLeft;
-		data.Order = Order;
 
 		let armor = HDArmourWorn(FindInventory("HDArmourWorn"));
 		if (armor)
@@ -291,8 +295,10 @@ class FollowerBody : HDPickup abstract
 						fol.DeathSound = data.Sounds[2];
 						fol.Translation = data.SpriteTranslation;
 
-						fol.Health = data.Health;
 						fol.Order = data.Order;
+						fol.Stance = data.Stance;
+
+						fol.Health = data.Health;
 
 						// [Ace] These aren't even transferred properly because the monsters' PostBeginPlay() calls ResetDamageCounters().
 						// This is needed so that they are.
