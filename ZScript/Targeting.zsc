@@ -163,7 +163,7 @@ extend class HDFollower
 		A_Face(a, 0, 0, flags: FAF_MIDDLE);
 
 		FLineTraceData data;
-		LineTrace(angle, MaxTargetRange, pitch, TRF_NOSKY, GetShotHeight(), data: data);
+		LineTrace(angle, MaxTargetRange, pitch, TRF_NOSKY, GunHeight, data: data);
 		angle = OldAngle;
 		pitch = OldPitch;
 

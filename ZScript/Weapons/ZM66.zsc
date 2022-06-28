@@ -16,7 +16,7 @@ class FW_ZM66 : FollowerWeapon
 			{
 				Owner.frame++;
 				Owner.A_StartSound("weapons/rifle", CHAN_WEAPON);
-				HDBulletActor.FireBullet(Owner, "HDB_426", Owner.GetShotHeight());
+				HDBulletActor.FireBullet(Owner, "HDB_426", Owner.GunHeight);
 				Owner.A_AlertMonsters();
 				ChamberedRound = CRType_Empty;
 				if (!TryChamberRound())

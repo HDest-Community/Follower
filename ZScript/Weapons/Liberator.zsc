@@ -14,7 +14,7 @@ class FW_Liberator : FollowerWeapon
 			{
 				Owner.frame++;
 				Owner.A_StartSound("weapons/bigrifle", CHAN_WEAPON);
-				HDBulletActor.FireBullet(Owner, "HDB_776", Owner.GetShotHeight());
+				HDBulletActor.FireBullet(Owner, "HDB_776", Owner.GunHeight);
 				Owner.A_AlertMonsters();
 				Owner.A_SpawnItemEx("HDSpent7mm", cos(Owner.pitch) * 12, 0, Owner.height - 8 - sin(Owner.pitch) * 12, cos(Owner.pitch) * 3, 0.2 * randompick(-1, 1), -sin(Owner.pitch) * 3, 0, SXF_NOCHECKPOSITION | SXF_TRANSFERPITCH);
 				ChamberedRound = CRType_Empty;

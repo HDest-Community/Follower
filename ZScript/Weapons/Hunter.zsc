@@ -16,7 +16,7 @@ class FW_Hunter : FollowerWeapon
 				double ShotPower = HDShotgun.GetShotPower();
 				double Spread = 6 * ShotPower;
 				double SpeedFactor = 1.02857 * ShotPower;
-				double ShotHeight = Owner.GetShotHeight();
+				double ShotHeight = Owner.GunHeight;
 
 				HDBulletActor.FireBullet(Owner, "HDB_wad", ShotHeight);
 				let p = HDBulletActor.FireBullet(Owner, "HDB_00", ShotHeight, spread: Spread, speedfactor: SpeedFactor, amount: 10);

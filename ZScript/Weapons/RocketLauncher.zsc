@@ -13,7 +13,7 @@ class FW_RocketLauncher : FollowerWeapon
 		{
 			Owner.frame++;
 			GyroGrenade Proj;
-			Proj = GyroGrenade(Owner.Spawn("GyroGrenade", Owner.pos + (0, 0, Owner.GetShotHeight()), ALLOW_REPLACE));
+			Proj = GyroGrenade(Owner.Spawn("GyroGrenade", Owner.pos + (0, 0, Owner.GunHeight), ALLOW_REPLACE));
 			Proj.angle = Owner.angle;
 			Proj.target = Owner;
 			Proj.master = Owner;

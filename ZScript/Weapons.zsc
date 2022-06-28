@@ -160,7 +160,7 @@ extend class HDFollower
 	protected Actor AimBlocked()
 	{
 		FLineTraceData TraceData;
-		LineTrace(angle, MaxTargetRange, pitch, TRF_NOSKY, Height - HDCONST_CROWNTOSHOULDER, data: TraceData);
+		LineTrace(angle, MaxTargetRange, pitch, TRF_NOSKY, GunHeight, data: TraceData);
 		Actor a = TraceData.HitActor;
 		if (a && bFRIENDLY && (a is "PlayerPawn" || a is 'HDFollower' && a.bFRIENDLY || !a.bISMONSTER && a.bSOLID))
 		{
@@ -315,11 +315,6 @@ extend class HDFollower
 	// --------------------------------------------------
 	// INFORMATION
 	// --------------------------------------------------
-
-	clearscope double GetShotHeight()
-	{
-		return height - HDCONST_CROWNTOSHOULDER;
-	}
 
 	clearscope FollowerWeapon FindWeapon(class<FollowerWeapon> wpn)
 	{

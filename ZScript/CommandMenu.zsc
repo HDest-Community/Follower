@@ -1518,7 +1518,7 @@ extend class FollowerHandler
 		if (cmd ~== "HDF_OpenMenu")
 		{
 			FLineTraceData TraceData;
-			plr.LineTrace(plr.angle, HDCONST_ONEMETRE * 20, plr.pitch, TRF_NOSKY, plr.Height - HDCONST_CROWNTOSHOULDER, data: TraceData);
+			plr.LineTrace(plr.angle, HDCONST_ONEMETRE * 20, plr.pitch, TRF_NOSKY, plr.ViewHeight, data: TraceData);
 			Actor ATarget = TraceData.HitActor;
 
 			if (ATarget is 'HDOperator' && ATarget.Health > 0 && TraceData.Distance < HDCONST_ONEMETRE * 2 && !IsPuppet(ATarget) && (ATarget.bFRIENDLY || ATarget.InStateSequence(ATarget.CurState, ATarget.FindState('Falldown')) && HDOperator(ATarget).Stunned > 70))
