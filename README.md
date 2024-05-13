@@ -19,7 +19,7 @@ Original mod by Ace: https://gitlab.com/accensi/hd-addons/follower
 - Localized all text that I could find
 
 ---
-- Requires newest version of [AceCOreLib](https://github.com/HDest-Community/AceCoreLib).
+- Requires newest version of [AceCoreLib](https://github.com/HDest-Community/AceCoreLib).
 
 
 
