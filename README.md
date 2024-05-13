@@ -1,6 +1,9 @@
 Original mod by Ace: https://gitlab.com/accensi/hd-addons/follower
 
-This is a fixed and improved version by mickromash.
+### This is a fixed and improved version.
+- Code fixes and improves by mickromash
+- Additional testing by Faxer
+
 
 ### Changes
 ---
