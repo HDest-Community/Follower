@@ -15,8 +15,9 @@ This is a fixed and improved version by mickromash.
 - Fixed followers not healing themselfs on 90% health or 0.1 boddy damage
 - Localized all text that I could find
 
-
------------------------------ Original Readme ----------------------------------
+---
+### ORIGINAL REAMDE
+---
 
 ### Important
 ---
