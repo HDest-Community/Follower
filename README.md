@@ -8,7 +8,7 @@ This is a fixed and improved version by mickromash.
 - Followers now targeting small monsters (like Lost Soul or Babuin) much better
 - Followers reloading their weapons and healing between battles
 - Followers now trying to follow player through portals
-- Followers now tell player if they are lagging behind ("MissedPlayer" For audio)(FollowersName.."_FOLLOW_MISS_"..Index for message in language file ())
+- Followers now tell player if they are lagging behind ("MissedPlayer" For audio) (FollowersName.."_FOLLOW_MISS_"..Index for message in language file)
 - Followers now actually picking up armour (was broken in 4.8.2a fix)
 - Fixed liberator mags
 - Fixed followers aim
