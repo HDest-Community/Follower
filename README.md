@@ -18,7 +18,7 @@ Original mod by Ace: https://gitlab.com/accensi/hd-addons/follower
 - Fixed followers not healing themselves on 90% health or 0.1 body damage
 - Localized all text that I could find
 
-
+- Requires newest version of [AceCOreLib](https://github.com/HDest-Community/AceCoreLib).
 
 
 
