@@ -10,7 +10,8 @@ class FollowerFreylis : HDFollower
 		SeeSound "Follower/Freylis/See";
 		PainSound "Follower/Freylis/Pain";
 		DeathSound "Follower/Freylis/Death";
-		Tag "Freylis";
+		Tag "$TAG_FREYLIS";
+		HDFollower.UnLocalizeTag "Freylis";
 		HDFollower.FollowerInfo GENDER_FEMALE, 'FollowerBodyFreylis', 'LeftBehindFreylis';
 		XScale 1.06;
 	}
@@ -30,6 +31,6 @@ class FollowerBodyFreylis : FollowerBody
 	Default
 	{
 		Inventory.Icon "FOLLA0";
-		Tag "Freylis";
+		Tag "$TAG_FREYLIS";
 	}
 }

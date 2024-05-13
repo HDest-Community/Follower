@@ -1,5 +1,7 @@
 [enu default]
 
+TAG_NARI = "Nari";
+
 NARI_ORDER_FOLLOW1_1 = "I'm already following you.";
 NARI_ORDER_FOLLOW1_2 = "Right behind you.";
 NARI_ORDER_FOLLOW1_3 = "I'm already sticking close.";

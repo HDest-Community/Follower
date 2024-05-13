@@ -10,7 +10,8 @@ class FollowerValnos : HDFollower
 		SeeSound "Follower/Valnos/See";
 		PainSound "Follower/Valnos/Pain";
 		DeathSound "Follower/Valnos/Death";
-		Tag "Valnos";
+		Tag "$TAG_VALNOS";
+		HDFollower.UnLocalizeTag "Valnos";
 		+HDFOLLOWER.SILENT
 		HDFollower.FollowerInfo GENDER_MALE, 'FollowerBodyValnos', 'LeftBehindValnos';
 		HDFollower.ResurrectType RESF_BLUES | RESF_MERCHANT;
@@ -32,6 +33,6 @@ class FollowerBodyValnos : FollowerBody
 	Default
 	{
 		Inventory.Icon "FOLLC0";
-		Tag "Valnos";
+		Tag "$TAG_VALNOS";
 	}
 }

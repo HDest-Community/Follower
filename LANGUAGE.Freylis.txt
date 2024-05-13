@@ -1,5 +1,7 @@
 [enu default]
 
+TAG_FREYLIS = "Freylis";
+
 FREYLIS_ORDER_FOLLOW1_1 = "What, you want me to come even closer?";
 FREYLIS_ORDER_FOLLOW1_2 = "Tell me again and I'll kick you.";
 FREYLIS_ORDER_FOLLOW1_3 = "In case you haven't noticed, I'm right behind you.";

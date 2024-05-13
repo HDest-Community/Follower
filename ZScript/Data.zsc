@@ -124,8 +124,8 @@ extend class HDFollower
 			if (BleedThinker)
 			{
 				data.IsBleeding = true;
-				data.BleedPoints = BleedThinker.BleedPoints;
-				data.BleedRate = BleedThinker.BleedRate;
+				//data.BleedPoints = BleedThinker.BleedPoints;
+				//data.BleedRate = BleedThinker.BleedRate;
 				data.Source = BleedThinker.Source;
 			}
 		}

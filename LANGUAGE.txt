@@ -22,3 +22,174 @@ FOLLOWER_SQUAD_6 = "Alpha Force";
 FOLLOWER_SQUAD_7 = "Dagger Force";
 FOLLOWER_SQUAD_8 = "Task Force 141";
 FOLLOWER_SQUAD_9 = "The Sicilians";
+
+HDFOPT_NOTRIGGER = "Line trigger";
+HDFOPTDESC_NOTRIGGER = "Followers will trigger linedef actions, also will be able to use teleports";
+
+
+FLW_OBTFRIENDLY = "%s suffered friendly fire from %s, but friendly fire, isn't.";
+
+FLW_HIMU = "Him";
+FLW_HIM = "him";
+FLW_HERU = "Her";
+FLW_HER = "her";
+FLW_ITU = "It";
+FLW_IT = "it";
+FLW_THEMU = "Them";
+FLW_THEM = "them";
+
+FLW_CMDRECRUIT = "Recruit?";
+FLW_CMDCANCEL = "Cancel";
+FLW_CMDFRIENDLY = "Friendly ";
+FLW_CMDHOSTILE = "Hostile ";
+FLW_CMDMARINE = "marine";
+
+FLW_CMDNEXT = ") Next...";
+FLW_CMDBACK = ") Back...";
+
+FLW_CMDFOLLOWERS = " followers";
+
+FLW_CMDORDERSSTANCE = "Orders/stance";
+FLW_CMDORDERS = "Orders";
+FLW_CMDMANAGEINVENTOR = "Manage inventory";
+FLW_CMDMISCCOM = "Misc commands";
+FLW_CMDBACK1 = "Back...";
+FLW_CMDBACK2 = "0) Back";
+
+FLW_BLDFEEDSAFE = "\c[FLW_BloodGreen](Safe)\c-";
+FLW_BLDFEEDRISKY = "\c[FLW_BloodPoison](Risky)\c-";
+FLW_BLDFEEDDANGER = "\c[FLW_BloodYellow](Dangerous)\c-";
+FLW_BLDFEEDEXTRISKY = "\c[FLW_BloodOrange](Extremely Risky)\c-";
+FLW_BLDFEEDDEAD = "\c[FLW_BloodRed](Almost Deadly)\c-";
+FLW_BLDFEEDDEATH = "\c[FLW_BloodBlack](Certain Death)\c-";
+
+FLW_CMDBLUE = "Give blue potion\c- ";
+FLW_CMDFEEDBLD = "Feed blood ";
+
+FLW_CMDCARRYFLW = "Carry follower";
+
+FLW_CMDCONFRIM = "Confirm?";
+FLW_CMDDISMIS = "Dismiss";
+
+FLW_CMDDIST = "%.2fm";
+
+
+FLW_CMDORDFLW = "Follow";
+FLW_CMDORDSTAY = "Stay here";
+FLW_CMDORDGOTHERE = "Go there and stay";
+FLW_CMDORDHELPME = "Come and help me";
+FLW_CMDORDHEALING = "Do some healing";
+
+FLW_CMDSTANAGR = "Aggressive";
+FLW_CMDSTANPAS = "Passive";
+
+FLW_CMDINVBACK = "1) Cancel/Back";
+FLW_CMDINVCOMAN = "2) Input command";
+FLW_CMDINVTAKE = "Bsp) Take";
+FLW_CMDINVGIVE = "Ent) Select/Give";
+
+FLW_CMDCHNGCOL = "Change color";
+
+FLW_CMDAMMO = "Ammo";
+FLW_CMDAMOUNT = "Amount:";
+
+FLW_CMDINPUTSTITLE = "\c[Sapphire]===== Input commands =====";
+
+FLW_CMDINPUTS1 = "\c[Fire]rld/rel \c[Green]<name>/<index> \c[Brick][d]\n\c[DarkGray]Supports multiselect: \c[Green]Yes\n\c[DarkGray]Description: \c[Green]name\c[White] is the name of the weapon as displayed in the inventory. Partial names are supported, e.g. \c[Gold]rel hun\c[White] to reload the Hunter. If a single follower is selected, using the weapon's \c[Green]index\c[White] is also supported. If the follower has only one weapon, \c[Green]name\c[White] and \c[Green]index\c[White] can be omitted. \c[Brick]d\c[White] is an option that, if provided, will forcefully drop the magazine instead of storing it. ZM66 mags will still be dropped regardless of this option.\n";
+FLW_CMDINPUTS2 = "\c[Fire]wpn\n\c[DarkGray]Supports multiselect: \c[Red]No\n\c[DarkGray]Description: \c[White]Enter weapon pickup mode. Type again to cancel.\n";
+FLW_CMDINPUTS3 = "\c[Fire]### \c[Brick][d]\n\c[DarkGray]Supports multiselect: \c[Red]No\n\c[DarkGray]Description: \c[White]Enter item pickup mode. Type again to cancel. Alternatively, if \c[Brick]d\c[White] is specified, drop worn item instead.\n\c[DarkGray]Supported codes: \c[Fire]arm\c- (Armor), \c[Fire]rad\c- (Radsuit), \c[Fire]bak\c- (Backpack), \c[Fire]psg\c- (Personal Shield Generator)\n";
+FLW_CMDINPUTS4 = "\c[Fire]rmv \c[Green]<name>/<index>\n\c[DarkGray]Supports multiselect: \c[Red]No\n\c[DarkGray]Description: \c[White]Empty the weapon and remove it from the list. This will not drop it!\n";
+FLW_CMDINPUTS5 = "\c[Fire]swp \c[Green]<index1> <index2>\n\c[DarkGray]Supports multiselect: \c[Red]No\n\c[DarkGray]Description: \c[White]Swap the weapons in those indices.\n";				
+
+//Handler
+FLW_DONTLEAVE1 = "\c[White]You shouldn't leave you're buddies behind.\c-\n\n\c[White]Activate the exit again within two seconds to exit the level and leave ";
+FLW_DONTLEAVE2 = " to the monsters.\c-";
+
+FLW_DISCONNECT = "%s disconnected.";
+
+//Recruit
+FLW_RECCHATMSG = "\c[White]Marine: \c[Green]";
+
+FLW_RECMSGGOTOHELL = "Go to hell, sucker.";
+FLW_RECMSGKISSASS = "Kiss my ass.";
+FLW_RECMSGFUCKYOU = "Go fuck yourself.";
+FLW_RECMSGIDRATHERDIE = "HA HA HA *cough* I'd rather die.";
+
+FLW_RECMSGFINE = "Alright, fine.";
+FLW_RECMSGIONYOURSIDE = "Don't kill me. I'll fight on your side.";
+FLW_RECMSGYOUWIN = "You win.";
+FLW_RECMSGPAYWASBAD = "The pay was bad anyway.";
+
+FLW_RECMSGLEADWAY = "Lead the way.";
+FLW_RECMSGATYOURSERVIECE = "At your service.";
+FLW_RECMSGATYOURCOMMAND = "At your command.";
+FLW_RECMSGPOINTANDILLSHOOT = "Point and I'll shoot.";
+
+//Menu
+FLW_OPTNSTITLE = "HD Follower Options";
+FLW_OPTNSCOMMNDCONTROL = "Open Command Menu";
+FLW_OPTNSTITLE2 = "----- Gameplay & Behaviour -----";
+
+FLW_OPTNSOHANAOPT = "Ohana Mode";
+FLW_OPTNSOHANADESC1 = "It's a dangerous world. A good team always sticks together.";
+FLW_OPTNSOHANADESC2 = "Followers die if left alone for too long and their corpses get eaten eventually.";
+FLW_OPTNSOHANADESC3 = "How long that takes depends on the number of living monsters.";
+
+FLW_OPTNSBRASSOPT = "Collect Brass";
+
+FLW_OPTNSUNCOUNTOPT = "Target Uncountable Monsters";
+FLW_OPTNSUNCOUNTDESC1 = "By default, monsters that don't count towards the tally can be targeted.";
+FLW_OPTNSUNCOUNTDESC2 = "This allows you to disable that. One use case is so that the follower";
+FLW_OPTNSUNCOUNTDESC3 = "doesn't target Strife's civilians.";
+
+FLW_OPTNSTARGRANGEOPT = "Max Target Range";
+FLW_OPTNSDESC1= "Targeting is expensive on some maps. If you experience framerate issues, lower this value.";
+FLW_OPTNSDESC2= "This option overrides the maximum range (in meters), regardless of what's defined in the code.";
+
+FLW_OPTNSAUTOPLACEOPT= "Auto-Place Followers";
+FLW_OPTNSAUTOPLACEDESC1 = "Normally followers are packed into your inventory before leaving the map";
+FLW_OPTNSAUTOPLACEDESC2 = "and are placed on the next one, given enough space. This disables that.";
+
+FLW_OPTNSQUICKACCESSOPT = "Quick Access";
+FLW_OPTNSQUICKACCESSDESC = "Looking at a follower opens their menu. Effective range is 20m.";
+
+FLW_OPTNSQUICKSELOPT = "Quick Select";
+FLW_OPTNSQUICKSELDESC = "Letting go of modifier keys after making a selection automatically applies it.";
+
+FLW_OPTNSFLWTITLE = "----- Followers -----";
+FLW_OPTNSCSTMFLW = "Custom Followers";
+
+FLW_OPTNSVISUALTITLE = "----- Audio/Visual -----";
+FLW_OPTNSUISCALEOPT = "UI Scale";
+FLW_OPTNSUICOLOPT = "UI Color";
+FLW_OPTNSCHATOPT = "Chat Responses";
+FLW_OPTNSVOICEOPT = "Voice Responses";
+FLW_OPTNSIDLECOMOPT = "Enable Idle Comments";
+FLW_OPTNSIDLECOMDESC1 = "Voice/text lines the followers will sometimes say when they move.";
+FLW_OPTNSIDLECOMDESC2 = "Voice lines are prioritized over text lines if they exist.";
+
+FLW_OPTNSLOADOUTFREYLIS = "Follower Loadout - Freylis";
+FLW_OPTNSLOADOUTBALTHAZAR = "Follower Loadout - Balthazar";
+FLW_OPTNSLOADOUTVALNOS = "Follower Loadout - Valnos";
+FLW_OPTNSLOADOUTDAINA = "Follower Loadout - Daina";
+FLW_OPTNSLOADOUTSEWIE = "Follower Loadout - Sewie";
+FLW_OPTNSLOADOUTNARI = "Follower Loadout - Nari";
+
+FLW_OPTNSENABLEED = "Enabled";
+FLW_OPTNSTELEPORTTOPLAYER = "Teleport To Player";
+FLW_OPTNSRESETFLW = "Reset Follower";
+FLW_OPTNSLOADOUT = "Loadout:";
+
+FLW_OPTNSCUSTOMTITLE = "Custom Followers Menus";
+FLW_OPTNSCUSTOMDESC1 = "This is where you will find the submenus for custom followers.";
+FLW_OPTNSCUSTOMDESC2 = "Provided you loaded any in the first place.";
+FLW_OPTNSAVAILABLEFLW = "----- Available Followers -----";
+
+FLW_MENUTITLE = "HD Follower";
+
+FLW_OPTNSPRINTLVL1 = "None";
+FLW_OPTNSPRINTLVL2 = "Critical";
+FLW_OPTNSPRINTLVL3 = "Important";
+FLW_OPTNSPRINTLVL4 = "All";
+
+TAG_Valnos = "Valnos";

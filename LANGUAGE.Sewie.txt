@@ -1,5 +1,7 @@
 [enu default]
 
+TAG_SEWIE = "Sewie";
+
 SEWIE_ORDER_FOLLOW1_1 = "I'm already following you.";
 SEWIE_ORDER_FOLLOW1_2 = "Right behind you.";
 SEWIE_ORDER_FOLLOW1_3 = "I'm already sticking close.";

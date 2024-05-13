@@ -26,7 +26,7 @@ extend class HDFollower
 
 	virtual clearscope bool IsValidItem(class<Inventory> cls, bool ignoreWeaponValidity = false)
 	{
-		return cls && ((cls is 'HDAmmo' && AmmoIsUsed((class<HDAmmo>)(cls)) || ignoreWeaponValidity) || cls == 'PortableMedikit' || cls == 'PortableStimpack' || cls == 'BluePotion');
+		return cls && ((cls is 'HDAmmo' && AmmoIsUsed((class<HDAmmo>)(cls)) || ignoreWeaponValidity) || cls == 'PortableMedikit' || cls == 'PortableStimpack' || cls == 'HDHealingPotion');
 	}
 
 	// --------------------------------------------------
@@ -136,14 +136,14 @@ extend class HDFollower
 			Slots[index] = new('InventorySlot');
 		}
 		Slots[index].ItemClass = mag.GetClass();
-		Slots[index].Icon = ItemStorage.GetIcon(mag);
 		Slots[index].Multipickup = false;
 		if (magIndex == -1)
 		{
 			magIndex = mag.Mags.Size() - 1;
 		}
 		int magAmt = mag.Mags[magIndex];
-		Slots[index].Icon = ItemStorage.GetIcon(mag, magAmt);
+		Slots[index].Icon = mag.getmagsprite(magAmt);//ItemStorage.GetIcon(mag);
+		//Slots[index].Icon = ""..mag.Icon;//ItemStorage.GetIcon(mag, magAmt);
 		Slots[index].Amount = magAmt;
 		mag.Mags.Delete(magIndex);
 		mag.Amount--;

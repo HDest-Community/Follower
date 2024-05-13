@@ -1,152 +1,155 @@
 OptionMenu "HDFollowerMenu"
 {
-	Title "HD Follower Options"
+	Title "$FLW_OPTNSTITLE"
 	
-	Control "Open Command Menu", "HDF_OpenMenu"
+	Control "$FLW_OPTNSCOMMNDCONTROL", "HDF_OpenMenu"
 	StaticText ""
 	
-	StaticText "----- Gameplay & Behaviour -----", "Teal"
-	Option "Ohana Mode", "hdf_ohana", "OnOff"
-	StaticText "It's a dangerous world. A good team always sticks together.", "White"
-	StaticText "Followers die if left alone for too long and their corpses get eaten eventually.", "White"
-	StaticText "How long that takes depends on the number of living monsters.", "White"
+	StaticText "$FLW_OPTNSTITLE2", "Teal"
+	Option "$FLW_OPTNSOHANAOPT", "hdf_ohana", "OnOff"
+	StaticText "$FLW_OPTNSOHANADESC1", "White"
+	StaticText "$FLW_OPTNSOHANADESC2", "White"
+	StaticText "$FLW_OPTNSOHANADESC3", "White"
 	StaticText ""
-	Option "Collect Brass", "hdf_collectbrass", "YesNo"
+	Option "$FLW_OPTNSBRASSOPT", "hdf_collectbrass", "YesNo"
 	StaticText ""
-	Option "Target Uncountable Monsters", "hdf_targetuncountable", "YesNo"
-	StaticText "By default, monsters that don't count towards the tally can be targeted.", "White"
-	StaticText "This allows you to disable that. One use case is so that the follower", "White"
-	StaticText "doesn't target Strife's civilians.", "White"
+	Option "$FLW_OPTNSUNCOUNTOPT", "hdf_targetuncountable", "YesNo"
+	StaticText "$FLW_OPTNSUNCOUNTDESC1", "White"
+	StaticText "$FLW_OPTNSUNCOUNTDESC2", "White"
+	StaticText "$FLW_OPTNSUNCOUNTDESC3", "White"
 	StaticText ""
-	ScaleSlider "Max Target Range", "hdf_maxrange", 0, 300, 5, "Default"
-	StaticText "Targeting is expensive on some maps. If you experience framerate issues, lower this value.", "White"
-	StaticText "This option overrides the maximum range (in meters), regardless of what's defined in the code.", "White"
+	ScaleSlider "$FLW_OPTNSTARGRANGEOPT", "hdf_maxrange", 0, 300, 5, "Default"
+	StaticText "$FLW_OPTNSDESC1", "White"
+	StaticText "$FLW_OPTNSDESC2", "White"
 	StaticText ""
-	Option "Auto-Place Followers", "hdf_droponstart", "YesNo"
-	StaticText "Normally followers are packed into your inventory before leaving the map", "White"
-	StaticText "and are placed on the next one, given enough space. This disables that.", "White"
+	Option "$FLW_OPTNSAUTOPLACEOPT", "hdf_droponstart", "YesNo"
+	StaticText "$FLW_OPTNSAUTOPLACEDESC1", "White"
+	StaticText "$FLW_OPTNSAUTOPLACEDESC2", "White"
 	StaticText ""
-	Option "Quick Access", "hdf_quickaccess", "OnOff"
-	StaticText "Looking at a follower opens their menu. Effective range is 20m.", "White"
+	Option "$FLW_OPTNSQUICKACCESSOPT", "hdf_quickaccess", "OnOff"
+	StaticText "$FLW_OPTNSQUICKACCESSDESC", "White"
 	StaticText ""
-	Option "Quick Select", "hdf_quickselect", "OnOff"
-	StaticText "Letting go of modifier keys after making a selection automatically applies it.", "White"
+	Option "$FLW_OPTNSQUICKSELOPT", "hdf_quickselect", "OnOff"
+	StaticText "$FLW_OPTNSQUICKSELDESC", "White"
+	StaticText ""
+	//Option "$HDFOPT_NOTRIGGER", "hdf_NoTrigger", "OnOff"
+	//StaticText "$HDFOPTDESC_NOTRIGGER", "White"
+	//StaticText ""
+
+	StaticText "$FLW_OPTNSFLWTITLE", "Teal"
+	Submenu "$TAG_Freylis", "HDFollowerMenuFreylis"
+	Submenu "$TAG_Balthazar", "HDFollowerMenuBalthazar"
+	Submenu "$TAG_Valnos", "HDFollowerMenuValnos"
+	Submenu "$TAG_Daina", "HDFollowerMenuDaina"
+	Submenu "$TAG_Sewie", "HDFollowerMenuSewie"
+	Submenu "$TAG_Nari", "HDFollowerMenuNari"
+	StaticText ""
+	Submenu "$FLW_OPTNSCSTMFLW", "HDFollowerMenuCustom"
 	StaticText ""
 
-	StaticText "----- Followers -----", "Teal"
-	Submenu "Freylis", "HDFollowerMenuFreylis"
-	Submenu "Balthazar", "HDFollowerMenuBalthazar"
-	Submenu "Valnos", "HDFollowerMenuValnos"
-	Submenu "Daina", "HDFollowerMenuDaina"
-	Submenu "Sewie", "HDFollowerMenuSewie"
-	Submenu "Nari", "HDFollowerMenuNari"
+	StaticText "$FLW_OPTNSVISUALTITLE", "Teal"
+	Slider "$FLW_OPTNSUISCALEOPT", "hdf_uiscale", 0.1, 3.0, 0.1, 1
+	ColorPicker "$FLW_OPTNSUICOLOPT", "hdf_uicolor"
 	StaticText ""
-	Submenu "Custom Followers", "HDFollowerMenuCustom"
+	Option "$FLW_OPTNSCHATOPT", "hdf_printlevel_chat", "PrintLevel"
+	Option "$FLW_OPTNSVOICEOPT", "hdf_printlevel_voice", "PrintLevel"
 	StaticText ""
-
-	StaticText "----- Audio/Visual -----", "Teal"
-	Slider "UI Scale", "hdf_uiscale", 0.1, 3.0, 0.1, 1
-	ColorPicker "UI Color", "hdf_uicolor"
-	StaticText ""
-	Option "Chat Responses", "hdf_printlevel_chat", "PrintLevel"
-	Option "Voice Responses", "hdf_printlevel_voice", "PrintLevel"
-	StaticText ""
-	Option "Enable Idle Comments", "hdf_enablecomments", "YesNo"
-	StaticText "Voice/text lines the followers will sometimes say when they move.", "White"
-	StaticText "Voice lines are prioritized over text lines if they exist.", "White"
+	Option "$FLW_OPTNSIDLECOMOPT", "hdf_enablecomments", "YesNo"
+	StaticText "$FLW_OPTNSIDLECOMDESC1", "White"
+	StaticText "$FLW_OPTNSIDLECOMDESC2", "White"
 	StaticText ""
 }
 
 OptionMenu "HDFollowerMenuFreylis"
 {
-	Title "Follower Loadout - Freylis"
+	Title "$FLW_OPTNSLOADOUTFREYLIS"
 
-	FlagOption "Enabled", "hdf_followers", "YesNo", 0
+	FlagOption "$FLW_OPTNSENABLEED", "hdf_followers", "YesNo", 0
 	StaticText ""
-	SafeCommand "Teleport To Player", "HDF_WarpFreylisToPlayer"
-	SafeCommand "Reset Follower", "HDF_ResetFreylis"
+	SafeCommand "$FLW_OPTNSTELEPORTTOPLAYER", "HDF_WarpFreylisToPlayer"
+	SafeCommand "$FLW_OPTNSRESETFLW", "HDF_ResetFreylis"
 	StaticText ""
-	TextField "Loadout:", "hdf_loadout_freylis"
+	TextField "$FLW_OPTNSLOADOUT", "hdf_loadout_freylis"
 }
 
 OptionMenu "HDFollowerMenuBalthazar"
 {
-	Title "Follower Loadout - Balthazar"
+	Title "$FLW_OPTNSLOADOUTBALTHAZAR"
 
-	FlagOption "Enabled", "hdf_followers", "YesNo", 1
+	FlagOption "$FLW_OPTNSENABLEED", "hdf_followers", "YesNo", 1
 	StaticText ""
-	SafeCommand "Teleport To Player", "HDF_WarpBalthazarToPlayer"
-	SafeCommand "Reset Follower", "HDF_ResetBalthazar"
+	SafeCommand "$FLW_OPTNSTELEPORTTOPLAYER", "HDF_WarpBalthazarToPlayer"
+	SafeCommand "$FLW_OPTNSRESETFLW", "HDF_ResetBalthazar"
 	StaticText ""
-	TextField "Loadout:", "hdf_loadout_balthazar"
+	TextField "$FLW_OPTNSLOADOUT", "hdf_loadout_balthazar"
 }
 
 OptionMenu "HDFollowerMenuValnos"
 {
-	Title "Follower Loadout - Valnos"
+	Title "$FLW_OPTNSLOADOUTVALNOS"
 
-	FlagOption "Enabled", "hdf_followers", "YesNo", 2
+	FlagOption "$FLW_OPTNSENABLEED", "hdf_followers", "YesNo", 2
 	StaticText ""
-	SafeCommand "Teleport To Player", "HDF_WarpValnosToPlayer"
-	SafeCommand "Reset Follower", "HDF_ResetValnos"
+	SafeCommand "$FLW_OPTNSTELEPORTTOPLAYER", "HDF_WarpValnosToPlayer"
+	SafeCommand "$FLW_OPTNSRESETFLW", "HDF_ResetValnos"
 	StaticText ""
-	TextField "Loadout:", "hdf_loadout_valnos"
+	TextField "$FLW_OPTNSLOADOUT", "hdf_loadout_valnos"
 }
 
 OptionMenu "HDFollowerMenuDaina"
 {
-	Title "Follower Loadout - Daina"
+	Title "$FLW_OPTNSLOADOUTDAINA"
 
-	FlagOption "Enabled", "hdf_followers", "YesNo", 3
+	FlagOption "$FLW_OPTNSENABLEED", "hdf_followers", "YesNo", 3
 	StaticText ""
-	SafeCommand "Teleport To Player", "HDF_WarpDainaToPlayer"
-	SafeCommand "Reset Follower", "HDF_ResetDaina"
+	SafeCommand "$FLW_OPTNSTELEPORTTOPLAYER", "HDF_WarpDainaToPlayer"
+	SafeCommand "$FLW_OPTNSRESETFLW", "HDF_ResetDaina"
 	StaticText ""
-	TextField "Loadout:", "hdf_loadout_daina"
+	TextField "$FLW_OPTNSLOADOUT", "hdf_loadout_daina"
 }
 
 OptionMenu "HDFollowerMenuSewie"
 {
-	Title "Follower Loadout - Sewie"
+	Title "$FLW_OPTNSLOADOUTSEWIE"
 
-	FlagOption "Enabled", "hdf_followers", "YesNo", 4
+	FlagOption "$FLW_OPTNSENABLEED", "hdf_followers", "YesNo", 4
 	StaticText ""
-	SafeCommand "Teleport To Player", "HDF_WarpSewieToPlayer"
-	SafeCommand "Reset Follower", "HDF_ResetSewie"
+	SafeCommand "$FLW_OPTNSTELEPORTTOPLAYER", "HDF_WarpSewieToPlayer"
+	SafeCommand "$FLW_OPTNSRESETFLW", "HDF_ResetSewie"
 	StaticText ""
-	TextField "Loadout:", "hdf_loadout_sewie"
+	TextField "$FLW_OPTNSLOADOUT", "hdf_loadout_sewie"
 }
 
 OptionMenu "HDFollowerMenuNari"
 {
-	Title "Follower Loadout - Nari"
+	Title "$FLW_OPTNSLOADOUTNARI"
 
-	FlagOption "Enabled", "hdf_followers", "YesNo", 5
+	FlagOption "$FLW_OPTNSENABLEED", "hdf_followers", "YesNo", 5
 	StaticText ""
-	SafeCommand "Teleport To Player", "HDF_WarpNariToPlayer"
-	SafeCommand "Reset Follower", "HDF_ResetNari"
+	SafeCommand "$FLW_OPTNSTELEPORTTOPLAYER", "HDF_WarpNariToPlayer"
+	SafeCommand "$FLW_OPTNSRESETFLW", "HDF_ResetNari"
 	StaticText ""
-	TextField "Loadout:", "hdf_loadout_nari"
+	TextField "$FLW_OPTNSLOADOUT", "hdf_loadout_nari"
 }
 
 OptionMenu "HDFollowerMenuCustom"
 {
-	Title "Custom Followers Menus"
+	Title "$FLW_OPTNSCUSTOMTITLE"
 
-	StaticText "This is where you will find the submenus for custom followers."
-	StaticText "Provided you loaded any in the first place."
-	StaticText "----- Available Followers -----", "Teal"
+	StaticText "$FLW_OPTNSCUSTOMDESC1"
+	StaticText "$FLW_OPTNSCUSTOMDESC2"
+	StaticText "$FLW_OPTNSAVAILABLEFLW", "Teal"
 }
 
 AddOptionMenu "OptionsMenu"
 {
-	Submenu "HD Follower", "HDFollowerMenu"
+	Submenu "$FLW_MENUTITLE", "HDFollowerMenu"
 }
 
 OptionValue "PrintLevel"
 {
-	0, "None"
-	1, "Critical"
-	2, "Important"
-	3, "All"
+	0, "$FLW_OPTNSPRINTLVL1"
+	1, "$FLW_OPTNSPRINTLVL2"
+	2, "$FLW_OPTNSPRINTLVL3"
+	3, "$FLW_OPTNSPRINTLVL4"
 }

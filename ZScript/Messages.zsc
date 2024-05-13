@@ -14,7 +14,8 @@ extend class HDFollower
 
 	static void ChatMessage(HDFollower flw, Actor other, string message)
 	{
-		other.A_Log("\c[White]"..flw.GetTag()..": \c[Green]"..message.."\c-", true);
+		String FLWTag = flw.GetTag();
+		other.A_Log("\c[White]"..FLWTag..": \c[Green]"..message.."\c-", true);
 		other.A_StartSound("misc/chat", 20, CHANF_LOCAL);
 	}
 
@@ -29,7 +30,9 @@ extend class HDFollower
 
 	protected virtual string GetLocalizationTag() const
 	{
-		return GetTag();
+		String FLWTag=GetTag();
+		if(UnLocalizeTag!="")FLWTag = UnLocalizeTag;
+		return FLWTag;
 	}
 
 	// --------------------------------------------------

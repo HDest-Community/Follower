@@ -10,7 +10,8 @@ class FollowerDaina : HDFollower
 		SeeSound "Follower/Daina/See";
 		PainSound "Follower/Daina/Pain";
 		DeathSound "Follower/Daina/Death";
-		Tag "Daina";
+		Tag "$TAG_DAINA";
+		HDFollower.UnLocalizeTag "Daina";
 		HDFollower.FollowerInfo GENDER_FEMALE, 'FollowerBodyDaina', 'LeftBehindDaina';
 	}
 
@@ -29,6 +30,6 @@ class FollowerBodyDaina : FollowerBody
 	Default
 	{
 		Inventory.Icon "FOLLD0";
-		Tag "Daina";
+		Tag "$TAG_DAINA";
 	}
 }

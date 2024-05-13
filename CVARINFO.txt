@@ -13,6 +13,8 @@ user int hdf_printlevel_voice = 3;
 server bool hdf_targetuncountable = true;
 server int hdf_maxrange = 0;
 
+server bool hdf_NoTrigger = true;
+
 user bool hdf_droponstart = true;
 user bool hdf_quickaccess = true;
 user bool hdf_quickselect = false;

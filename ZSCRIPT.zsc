@@ -124,7 +124,7 @@ class HDFollower : HDHumanoid abstract
 
 	override string GetObituary(Actor victim, Actor inflictor, Name mod, bool playerattack)
 	{
-		return String.Format("%s suffered friendly fire from %s, but friendly fire, isn't.", HDPlayerPawn(victim).player.GetUserName(), inflictor.target ? HDFollower(inflictor.target).GetTag() : inflictor.GetTag());
+		return String.Format("$FLW_OBTFRIENDLY", HDPlayerPawn(victim).player.GetUserName(), inflictor.target ? HDFollower(inflictor.target).GetTag() : inflictor.GetTag());
 	}
 
 	clearscope string GetPronoun(bool upper)
@@ -132,10 +132,10 @@ class HDFollower : HDHumanoid abstract
 		// [Ace] Personal pronouns, objective case, third person singular.
 		switch (Gender)
 		{
-			case GENDER_MALE: return upper ? "Him" : "him";
-			case GENDER_FEMALE: return upper ? "Her" : "her";
-			case GENDER_NEUTRAL: return upper ? "It" : "it";
-			case GENDER_OTHER: return upper ? "Them" : "them";
+			case GENDER_MALE: return upper ? StringTable.Localize("$FLW_HIMU") : StringTable.Localize("$FLW_HIM");
+			case GENDER_FEMALE: return upper ? StringTable.Localize("$FLW_HERU") : StringTable.Localize("$FLW_HER");
+			case GENDER_NEUTRAL: return upper ? StringTable.Localize("$FLW_ITU") : StringTable.Localize("$FLW_IT");
+			case GENDER_OTHER: return upper ? StringTable.Localize("$FLW_THEMU") : StringTable.Localize("$FLW_THEM");
 		}
 
 		return "??????";
@@ -219,6 +219,9 @@ class HDFollower : HDHumanoid abstract
 		// InventoryThink();
 		if (Health > 0)
 		{
+			if(ReloadCoolDown>0)ReloadCoolDown--;
+			if(MissPlayer>0 && DistanceToPlayer > 500)MissPlayer--;
+			//if(MissPlayer>0)Console.Printf("MissPlr "..MissPlayer);
 			AiThink();
 
 			if (GetAge() % 35 * 2 == 0 && Bloodloss > 0)
@@ -278,7 +281,15 @@ class HDFollower : HDHumanoid abstract
 	private int BehaviourFlags;
 	flagdef Silent: BehaviourFlags, 0;
 	flagdef CanDismiss: BehaviourFlags, 1;
-
+	
+	String UnLocalizeTag;
+	property UnLocalizeTag : UnLocalizeTag;
+	
+	int ReloadCoolDown;
+	property ReloadCoolDown : ReloadCoolDown;
+	int MissPlayer;
+	property MissPlayer : MissPlayer;
+	
 	Default
 	{
 		Health 200;
@@ -289,7 +300,9 @@ class HDFollower : HDHumanoid abstract
 		MaxStepHeight 80;
 		MaxDropOffHeight 192;
 		MaxTargetRange HDCONST_ONEMETRE * 80;
-		ReactionTime 10;
+		ReactionTime 5;
+		HDFollower.ReloadCoolDown 70;
+		HDFollower.MissPlayer 70;
 		+ROLLCENTER
 		+ROLLSPRITE
 		+FRIENDLY
@@ -298,6 +311,7 @@ class HDFollower : HDHumanoid abstract
 		+NODROPOFF
 		+NOBLOCKMONST
 		+NOTELESTOMP
+		-NOTELEPORT
 		+NOTELEFRAG // [Ace] Because starting levels can telefrag the followers in multiplayer if there isn't enough space.
 		+BLOCKASPLAYER
 		+NOTRIGGER
@@ -311,6 +325,7 @@ class HDFollower : HDHumanoid abstract
 		HDMobBase.MaxBloodLoss 400;
 		Species 'HDFollower';
 		HDFollower.ResurrectType RESF_ALL;
+		HDFollower.UnLocalizeTag "";
 	}
 }
 

@@ -61,12 +61,12 @@ extend class HDFollower
 				}
 			}
 		}
-		else if (ResurrectType & RESF_BLOOD && LinkedPlayer.woundcount > 0)
+		else if (ResurrectType & RESF_BLOOD && LinkedPlayer.oldwoundcount > 0)
 		{
 			int req = GetRequiredBlood();
 			int realReq = min(105 + req * 8, 350);
 
-			if (CanReach(MaxReviveDistance) == 0 && LinkedPlayer.woundcount > min(req, 40) && PlayerIsCrouching())
+			if (CanReach(MaxReviveDistance) == 0 && LinkedPlayer.oldwoundcount > min(req, 40) && PlayerIsCrouching())
 			{
 				AbsorbedBlood++;
 				SpawnReviveParticles(0xFF1111, AbsorbedBlood / double(max(1.0, realReq)));
@@ -168,7 +168,7 @@ extend class HDFollower
 					return true;
 				}
 
-				let Potion = BluePotion(LinkedPlayer.FindInventory("BluePotion"));
+				let Potion = HDHealingPotion(LinkedPlayer.FindInventory("HDHealingPotion"));
 				if (!Potion)
 				{
 					ThinkMessage(LinkedPlayer, "$REVIVE_BLUES_NONE_PLR");
@@ -176,15 +176,16 @@ extend class HDFollower
 				}
 
 				int req = GetRequiredSips();
-				if (Potion.Mags[Potion.Mags.Size() - 1] < req)
+				if (Potion.weaponstatus[HDHM_AMOUNT] < req)
 				{
 					ThinkMessage(LinkedPlayer, StringTable.Localize("$REVIVE_BLUES_NOTENOUGH_PLR1").." "..req.."/12 "..StringTable.Localize("$REVIVE_BLUES_NOTENOUGH_PLR2"));
 					return false;
 				}
-				Potion.Mags[Potion.Mags.Size() - 1] -= req;
-				if (Potion.Mags[Potion.Mags.Size() - 1] == 0)
+				Potion.weaponstatus[HDHM_AMOUNT] -= req;
+				if (Potion.weaponstatus[HDHM_AMOUNT] == 0)
 				{
-					Potion.TakeMag(false);
+					//Potion.TakeMag(false);
+					Potion.DropInventory(Potion);
 					Actor a = LinkedPlayer.Spawn("SpentBottle",LinkedPlayer.pos + (0, 0, LinkedPlayer.Height - 4), ALLOW_REPLACE);
 					a.angle = LinkedPlayer.angle + 2;
 					a.vel = LinkedPlayer.vel;
@@ -206,7 +207,7 @@ extend class HDFollower
 					return false;
 				}
 
-				LinkedPlayer.woundcount += ((GetRequiredBlood() - LinkedPlayer.woundcount) + 3) * (LinkedPlayer.CountInv('HDBlues') > 20 ? 2 : 1);
+				LinkedPlayer.oldwoundcount += ((GetRequiredBlood() - LinkedPlayer.oldwoundcount) + 3) * (LinkedPlayer.CountInv('HealingMagic') > 20 ? 2 : 1);
 				break;
 			}
 		}
