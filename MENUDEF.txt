@@ -146,6 +146,11 @@ AddOptionMenu "OptionsMenu"
 	Submenu "$FLW_MENUTITLE", "HDFollowerMenu"
 }
 
+AddOptionMenu "HDAddonMenu"
+{
+	Submenu "$FLW_MENUTITLE", "HDFollowerMenu"
+}
+
 OptionValue "PrintLevel"
 {
 	0, "$FLW_OPTNSPRINTLVL1"
