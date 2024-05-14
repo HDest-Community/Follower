@@ -17,6 +17,7 @@ Original mod by Ace: https://gitlab.com/accensi/hd-addons/follower
 - Fixed followers aim
 - Fixed followers not healing themselves on 90% health or 0.1 body damage
 - Localized all text that I could find
+
 14.05
 - Amount of items given to follower is now entered with numbers
 - Fixed no ammo messages not appear
