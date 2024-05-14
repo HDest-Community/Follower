@@ -160,7 +160,7 @@ class FollowerWeapon abstract
 
 		if (MType)
 		{
-			if(MType is 'HD7mMag')
+			/*if(MType is 'HD7mMag')
 			{
 				InventorySlot wpnAmmo = Owner.FindHighestAmount(MType);
 				int rndcnt=wpnAmmo.Amount%100;
@@ -170,11 +170,12 @@ class FollowerWeapon abstract
 				Owner.TakeInvItem(wpnAmmo, HDFollower.FIF_FORCE | HDFollower.FIF_REMOVE);
 			}
 			else
-			{
+			{*/
 				InventorySlot wpnAmmo = Owner.FindHighestAmount(MType);
 				Mag = wpnAmmo.Amount;
+				MagRecast = wpnAmmo.Recast;
 				Owner.TakeInvItem(wpnAmmo, HDFollower.FIF_FORCE | HDFollower.FIF_REMOVE);
-			}
+			//}
 		}
 		else if (AType)
 		{

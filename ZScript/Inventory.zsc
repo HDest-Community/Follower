@@ -4,6 +4,7 @@ class InventorySlot
 	string Icon;
 	int Amount;
 	bool Multipickup;
+	int Recast;
 
 	static clearscope bool IsRealMag(class<Inventory> mag)
 	{
@@ -142,6 +143,13 @@ extend class HDFollower
 			magIndex = mag.Mags.Size() - 1;
 		}
 		int magAmt = mag.Mags[magIndex];
+		if(mag is 'HD7mMag')
+		{
+			int rndcnt=mag.Mags[magIndex]%100;
+				
+			magAmt=rndcnt;
+			Slots[index].Recast=clamp(rndcnt-(mag.Mags[magIndex]/100),0,rndcnt);
+		}
 		Slots[index].Icon = mag.getmagsprite(magAmt);//ItemStorage.GetIcon(mag);
 		//Slots[index].Icon = ""..mag.Icon;//ItemStorage.GetIcon(mag, magAmt);
 		Slots[index].Amount = magAmt;
@@ -251,6 +259,14 @@ extend class HDFollower
 
 		if (slot.ItemClass is 'HDMagAmmo')
 		{
+			Int MagAmount = slot.Amount;
+			if(slot.ItemClass is 'HD7mMag')
+			{
+				//MagAmount=slot.Amount;
+				int fullets=clamp(30-Slot.Recast,0,MagAmount);
+				//Console.Printf("fullets "..fullets);
+				MagAmount+=fullets*100;
+			}
 			HDMagAmmo.GiveMag(LinkedPlayer, slot.ItemClass, slot.Amount);
 			slot.Destroy();
 		}

@@ -199,6 +199,11 @@ extend class HDFollower
 			{
 				SelWeapon.WeaponFlags |= FollowerWeapon.FWF_DROPMAG;
 			}
+			class<HDAmmo> AType, MType; int MaxMag;
+			[AType, MType, MaxMag] = SelWeapon.GetAmmoType();
+			if((!(flags & RLF_DROPMAG) && GetAmount(MType)<=MaxMag && SelWeapon.Mag+GetAmount(AType)<=MaxMag)||
+			(!MType && SelWeapon.Mag+GetAmount(AType)<=MaxMag))
+			PrintMessage(GetResponse("NOAMMO_"..SelWeapon.GetLocalizationTag()), "NoAmmo/"..SelWeapon.GetLocalizationTag(), PMType_Critical);
 			return true;
 		}
 		else if (result == FollowerWeapon.RResult_NoAmmo)
