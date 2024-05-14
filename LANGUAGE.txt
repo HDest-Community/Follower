@@ -91,7 +91,7 @@ FLW_CMDINVGIVE = "Ent) Select/Give";
 FLW_CMDCHNGCOL = "Change color";
 
 FLW_CMDAMMO = "Ammo";
-FLW_CMDAMOUNT = "Amount:";
+FLW_CMDAMOUNT = "Enter amount:";
 
 FLW_CMDINPUTSTITLE = "\c[Sapphire]===== Input commands =====";
 

@@ -186,8 +186,10 @@ extend class FollowerHandler
 					}
 					else if (UiData[consoleplayer].SlotFocused == 2)
 					{
-						int amt = Modifiers[consoleplayer] & OpMod_Shift ? 20 : 2;
-						UiData[consoleplayer].TransferAmount = clamp(UiData[consoleplayer].TransferAmount - amt, 0, 1000);
+						/*InInputMode[consoleplayer] = true;
+						UiData[consoleplayer].TransferAmount = InputString[ConsolePlayer].ToInt();*/
+						//int amt = Modifiers[consoleplayer] & OpMod_Shift ? 20 : 2;
+						//UiData[consoleplayer].TransferAmount = clamp(UiData[consoleplayer].TransferAmount - amt, 0, 1000);
 					}
 				}
 				if (UiData[consoleplayer].ArrowKeysHeld & HOLD_RIGHT && UiData[consoleplayer].RepeatTics[1] % 3 == 0)
@@ -205,8 +207,9 @@ extend class FollowerHandler
 					}
 					else if (UiData[consoleplayer].SlotFocused == 2)
 					{
-						int amt = Modifiers[consoleplayer] & OpMod_Shift ? 20 : 2;
-						UiData[consoleplayer].TransferAmount = clamp(UiData[consoleplayer].TransferAmount + amt, 0, 1000);
+						//UiData[consoleplayer].TransferAmount = InputString[ConsolePlayer].ToInt();
+						//int amt = Modifiers[consoleplayer] & OpMod_Shift ? 20 : 2;
+						//UiData[consoleplayer].TransferAmount = clamp(UiData[consoleplayer].TransferAmount + amt, 0, 1000);
 					}
 				}
 				if (UiData[consoleplayer].ArrowKeysHeld & HOLD_UP && UiData[consoleplayer].RepeatTics[2] % 3 == 0)
@@ -438,7 +441,7 @@ extend class FollowerHandler
 
 					Array<string> commands;
 					commands.Push("$FLW_CMDORDERS");
-					commands.Push(InInputMode[consoleplayer] ? InputString[consoleplayer].."_" : "Input command");
+					commands.Push((InInputMode[consoleplayer] && UiData[consoleplayer].SlotFocused != 2)? InputString[consoleplayer].."_" : "Input command");
 					commands.Push("$FLW_CMDMISCCOM");
 					if (Followers.Size() > 1)
 					{
@@ -648,7 +651,7 @@ extend class FollowerHandler
 
 				if (lastFol.CanInteractWith(false))
 				{
-					DrawRectangle(sb, pos, (w, rectHeight), col, fnt, InInputMode[consoleplayer] ? InputString[consoleplayer].."_" : StringTable.Localize("$FLW_CMDINVCOMAN"), flags);
+					DrawRectangle(sb, pos, (w, rectHeight), col, fnt, (InInputMode[consoleplayer] && UiData[consoleplayer].SlotFocused != 2) ? InputString[consoleplayer].."_" : StringTable.Localize("$FLW_CMDINVCOMAN"), flags);
 					pos.y += rectHeight + Spacing;
 				}
 
@@ -895,7 +898,8 @@ extend class FollowerHandler
 		if (UiData[consoleplayer].SlotFocused == 2)
 		{
 			int rectHeight = MainFont.mFont.GetHeight() + 4;
-			DrawAmountRectangle(sb, pos + (0, size.y), (size.x, rectHeight), col, fnt, UiData[consoleplayer].TransferAmount, 1000, flags, Font.CR_CREAM);
+			DrawRectangle(sb, pos + (0, size.y), (size.x, rectHeight), col, fnt, StringTable.Localize("$FLW_CMDAMOUNT")..InputString[ConsolePlayer], flags, textCol: Font.CR_CREAM);
+			//DrawAmountRectangle(sb, pos + (0, size.y), (size.x, rectHeight), col, fnt, InputString[ConsolePlayer].ToInt(), flags, textCol: Font.CR_CREAM);
 		}
 	}
 
@@ -1033,6 +1037,20 @@ extend class FollowerHandler
 					}
 					case InputEvent.Key_Enter:
 					{
+						if(UiData[consoleplayer].SlotFocused == 2)
+						{
+							int size = UiData[consoleplayer].ValidItems.Size();
+							if (size > 0 && UiData[consoleplayer].PSlotIndex < size)
+							{
+								Inventory item = UiData[consoleplayer].ValidItems[UiData[consoleplayer].PSlotIndex];
+								SendNetworkEvent('hdf_transferitem:'..item.GetClassName(), InputString[ConsolePlayer].ToInt(), UiData[consoleplayer].FSlotIndex);
+								UiData[consoleplayer].SlotFocused--;
+							}
+							else
+							{
+								UiData[consoleplayer].SlotFocused = 0;
+							}
+						}	
 						InInputMode[consoleplayer] = false;
 						ret = true;
 						break;
@@ -1327,6 +1345,7 @@ extend class FollowerHandler
 										}
 										else
 										{
+											EnterInputMode(consoleplayer);
 											UiData[consoleplayer].SlotFocused++;
 										}
 									}
@@ -1343,7 +1362,7 @@ extend class FollowerHandler
 								if (size > 0 && UiData[consoleplayer].PSlotIndex < size)
 								{
 									Inventory item = UiData[consoleplayer].ValidItems[UiData[consoleplayer].PSlotIndex];
-									SendNetworkEvent('hdf_transferitem:'..item.GetClassName(), UiData[consoleplayer].TransferAmount, UiData[consoleplayer].FSlotIndex);
+									SendNetworkEvent('hdf_transferitem:'..item.GetClassName(), InputString[ConsolePlayer].ToInt(), UiData[consoleplayer].FSlotIndex);
 									UiData[consoleplayer].SlotFocused--;
 								}
 								else
@@ -1380,7 +1399,7 @@ extend class FollowerHandler
 					{
 						if (NumKey == 2 && lastFol.CanInteractWith(false))
 						{
-							EnterInputMode(consoleplayer);
+							if(UiData[consoleplayer].SlotFocused != 2)EnterInputMode(consoleplayer);
 							return true;
 						}
 						if (NumKey == 1)
