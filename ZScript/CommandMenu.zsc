@@ -306,7 +306,7 @@ extend class FollowerHandler
 
 		if (UiData[consoleplayer].SlotFocused < 2)
 		{
-			UiData[consoleplayer].TransferAmount = 0;
+			UiData[consoleplayer].TransferAmount = 1;
 		}
 
 		if (UiData[consoleplayer].SlotFocused < 1)
@@ -1344,7 +1344,7 @@ extend class FollowerHandler
 								{
 									Inventory item = UiData[consoleplayer].ValidItems[UiData[consoleplayer].PSlotIndex];
 									SendNetworkEvent('hdf_transferitem:'..item.GetClassName(), UiData[consoleplayer].TransferAmount, UiData[consoleplayer].FSlotIndex);
-									UiData[consoleplayer].SlotFocused = 0;
+									UiData[consoleplayer].SlotFocused--;
 								}
 								else
 								{
