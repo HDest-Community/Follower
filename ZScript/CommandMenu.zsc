@@ -898,7 +898,10 @@ extend class FollowerHandler
 		if (UiData[consoleplayer].SlotFocused == 2)
 		{
 			int rectHeight = MainFont.mFont.GetHeight() + 4;
-			DrawRectangle(sb, pos + (0, size.y), (size.x, rectHeight), col, fnt, StringTable.Localize("$FLW_CMDAMOUNT")..InputString[ConsolePlayer], flags, textCol: Font.CR_CREAM);
+			String EnterChar = "_";
+			if(InputString[ConsolePlayer].Length()>=4){EnterChar = "";InputString[ConsolePlayer].Remove(4,1);}
+			
+			DrawRectangle(sb, pos + (0, size.y), (size.x, rectHeight), col, fnt, StringTable.Localize("$FLW_CMDAMOUNT")..InputString[ConsolePlayer]..enterchar, flags, textCol: Font.CR_CREAM);
 			//DrawAmountRectangle(sb, pos + (0, size.y), (size.x, rectHeight), col, fnt, InputString[ConsolePlayer].ToInt(), flags, textCol: Font.CR_CREAM);
 		}
 	}
