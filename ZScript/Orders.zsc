@@ -168,7 +168,7 @@ Class HDFollowerCamera:IdleDummy{
 class FollowerScreen:HDWeapon{
 	HDFollowerCamera FollowerCamera;
 	default{
-		+inventory.invbar
+		//+inventory.invbar
 		+weapon.wimpy_weapon
 		+nointeraction
 		+hdweapon.droptranslation
@@ -213,7 +213,11 @@ class FollowerScreen:HDWeapon{
 	{
 		if(Owner)
 		{
-		if(Owner.Player.ReadyWeapon!=self && !(Owner.Player.ReadyWeapon is "NullWeapon") && !(Owner.Player.PendingWeapon==Self))Abort();
+			if(Owner.Player.ReadyWeapon!=self && !(Owner.Player.ReadyWeapon is "NullWeapon") && !(Owner.Player.PendingWeapon==Self))
+			{
+				if(FollowerCamera)FollowerCamera.Destroy();
+				Owner.A_TakeInventory(Self.GetClassName());
+			}
 		}
 	}
 	states{
