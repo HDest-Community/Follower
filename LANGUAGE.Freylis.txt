@@ -243,3 +243,7 @@ FREYLIS_WEAPONGIVE_NOTHANKS_3 = "Nope.";
 FREYLIS_WEAPONGIVE_RANAWAY_1 = "Are you seriously going to leave me hanging?";
 FREYLIS_WEAPONGIVE_RANAWAY_2 = "I don't appreciate being lied to.";
 FREYLIS_WEAPONGIVE_RANAWAY_3 = "Damn you! Get back here!";
+
+FREYLIS_FOLLOW_MISS_1 = "Why are you running?";
+FREYLIS_FOLLOW_MISS_2 = "Get back NOW!";
+FREYLIS_FOLLOW_MISS_3 = "Now is not the time to play hide and seek.";

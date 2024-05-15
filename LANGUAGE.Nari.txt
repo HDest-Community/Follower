@@ -237,3 +237,7 @@ NARI_WEAPONGIVE_NOTHANKS_3 = "Sorry, I'm unable to use this.";
 NARI_WEAPONGIVE_RANAWAY_1 = "Hey, come back!";
 NARI_WEAPONGIVE_RANAWAY_2 = "Why do you do this to me?";
 NARI_WEAPONGIVE_RANAWAY_3 = "Aw.";
+
+NARI_FOLLOW_MISS_1 = "Oh, we've split up.";
+NARI_FOLLOW_MISS_2 = "Why so fast?";
+NARI_FOLLOW_MISS_3 = "Hey, wait a minute!";

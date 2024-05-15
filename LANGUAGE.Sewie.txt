@@ -241,3 +241,7 @@ SEWIE_WEAPONGIVE_NOTHANKS_3 = "Sorry, I'm unable to use this.";
 SEWIE_WEAPONGIVE_RANAWAY_1 = "Hey, come back!";
 SEWIE_WEAPONGIVE_RANAWAY_2 = "Why do you do this to me?";
 SEWIE_WEAPONGIVE_RANAWAY_3 = "Aw.";
+
+SEWIE_FOLLOW_MISS_1 = "Hey, come back here!";
+SEWIE_FOLLOW_MISS_2 = "Where am I?";
+SEWIE_FOLLOW_MISS_3 = "No need to rush, man!";

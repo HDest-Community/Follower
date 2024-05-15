@@ -233,3 +233,7 @@ MARINE_WEAPONGIVE_NOTHANKS_3 = "You can keep that one, commander.";
 MARINE_WEAPONGIVE_RANAWAY_1 = "Good one, commander.";
 MARINE_WEAPONGIVE_RANAWAY_2 = "You got me, commander.";
 MARINE_WEAPONGIVE_RANAWAY_3 = "Let me know if you change your mind, commander.";
+
+MARINE_FOLLOW_MISS_1 = "Can't see you, commander!";
+MARINE_FOLLOW_MISS_2 = "Got separated from you, commander.";
+MARINE_FOLLOW_MISS_3 = "I'm lost, commander!";
