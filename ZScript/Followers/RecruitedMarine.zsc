@@ -1,13 +1,14 @@
 class RecruitedMarine : HDFollower
 {
-	override string GetLocalizationTag()
+	/*override string GetLocalizationTag()
 	{
 		return "Marine";
-	}
+	}*/
 
 	Default
 	{
-		Tag "Marine";
+		Tag "$TAG_MARINE";
+		HDFollower.UnLocalizeTag "Marine";
 		+HDMOBBASE.HASHELMET
 		+HDFOLLOWER.CANDISMISS
 		HDFollower.FollowerInfo GENDER_MALE, 'FollowerBodyMarine', '';
@@ -30,6 +31,6 @@ class FollowerBodyMarine : FollowerBody
 	{
 		Inventory.MaxAmount 50; // [Ace] Stop hoarding marines, damn it.
 		Inventory.Icon "FOLLZ0";
-		Tag "Marine";
+		Tag "$TAG_MARINE";
 	}
 }

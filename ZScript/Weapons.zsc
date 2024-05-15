@@ -138,7 +138,7 @@ extend class HDFollower
 			return;
 		}
 		
-		double headOffset = FTarget.Actor.FindInventory('HDArmourWorn') && HDMobBase(FTarget.Actor) && !HDMobBase(FTarget.Actor).bHASHELMET ? FTarget.Actor.height * 0.2 : 0;
+		double headOffset = FTarget.Actor.FindInventory('HDArmourWorn') && HDMobBase(FTarget.Actor) && !HDMobBase(FTarget.Actor).bHASHELMET ? FTarget.Actor.height * 0.1 : 0;
 		A_Face(FTarget.Actor, 0, 0, flags: FAF_MIDDLE, z_ofs: headOffset);
 
 		// [Ace] Assume the average projectile travels at 500 m/s. Normally you'd want to use the actual speed, but things are a bit different here.
@@ -152,8 +152,13 @@ extend class HDFollower
 		}
 
 		newAim *= ticsToTarget;
-
-		angle = oldAim.x + newAim.x;
+		let ltp=FTarget.Actor.pos;// - FTarget.Actor.vel;
+		let lsp=prev;
+		double ach=deltaangle(
+			hdmath.angleto(lsp.xy,ltp.xy),
+			hdmath.angleto(pos.xy,FTarget.Actor.pos.xy)
+		);
+		//angle = oldAim.x + newAim.x;
 		pitch = oldAim.y + newAim.y;
 	}
 
@@ -194,6 +199,11 @@ extend class HDFollower
 			{
 				SelWeapon.WeaponFlags |= FollowerWeapon.FWF_DROPMAG;
 			}
+			class<HDAmmo> AType, MType; int MaxMag;
+			[AType, MType, MaxMag] = SelWeapon.GetAmmoType();
+			if((!(flags & RLF_DROPMAG) && GetAmount(MType)<=MaxMag && SelWeapon.Mag+GetAmount(AType)<=MaxMag)||
+			(!MType && SelWeapon.Mag+GetAmount(AType)<=MaxMag))
+			PrintMessage(GetResponse("NOAMMO_"..SelWeapon.GetLocalizationTag()), "NoAmmo/"..SelWeapon.GetLocalizationTag(), PMType_Critical);
 			return true;
 		}
 		else if (result == FollowerWeapon.RResult_NoAmmo)

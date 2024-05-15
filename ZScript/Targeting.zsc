@@ -21,13 +21,19 @@ extend class HDFollower
 			double range = HDCONST_ONEMETRE * min(MaxRange.GetInt(), 300);
 			MaxTargetRange = range > 0 ? range : default.MaxTargetRange;
 
-			let TheEye = BlockThingsIterator.Create(self, MaxTargetRange);
+			//let TheEye = ThinkerIterator.Create("Actor");
+			let TheEye = BlockThingsIterator.Create(Self, MaxTargetRange);
+			Actor Next;
 			while (TheEye.Next())
+			//While(Next = Actor(TheEye.Next()))
 			{
 				Actor next = TheEye.thing;
+				//if(Distance3D(Next)>MaxTargetRange || Next == Self)Continue;
+				//else if(Next.bISMONSTER)Console.Printf(Next.GetClassName());
 				if (CheckTarget(next, true))
 				{
 					TargetList.Push(next);
+					//Console.Printf("Add "..Next.GetClassName());
 				}
 			}
 		}
@@ -80,6 +86,7 @@ extend class HDFollower
 					}
 					FTarget.Actor = t;
 					FTarget.Priority = int(priority);
+					ReloadCoolDown = GetDefaultByType("HDFollower").ReloadCoolDown;
 				}
 			}
 		}
@@ -121,7 +128,12 @@ extend class HDFollower
 		bool bodyDamageCheck = !(other is 'HDMobBase') || HDMobBase(other).BodyDamage <= other.SpawnHealth() * 1.2;
 		bool botCheck = !(other is 'HERPBot' || other is 'DERPBot');
 		bool countableCheck = other.bCOUNTKILL || TargetUncountable.GetBool();
-		return botCheck && countableCheck && bodyDamageCheck && CanHitTarget(other, !fromAcquire) && (friendlyCheck || hostileCheck) && CheckSight(other, SF_NOINVISIBLE) && !TargetIsIncapped(other) && !other.bNOTARGET;
+		/*if(!bodyDamageCheck)Console.Printf("!bodyDamageCheck");
+		if(!botCheck)Console.Printf("!botCheck");
+		if(!countableCheck)Console.Printf("!countableCheck");
+		if(!CanHitTarget(other, !fromAcquire))Console.Printf("!CanHitTarget");
+		if(!CheckSight(other, SF_NOINVISIBLE))Console.Printf("!CheckSight");*/
+		return botCheck && countableCheck && bodyDamageCheck /*&& CanHitTarget(other, !fromAcquire)*/ && (friendlyCheck || hostileCheck) && CheckSight(other, SF_NOINVISIBLE) && !TargetIsIncapped(other);// && !other.bNOTARGET;
 	}
 
 	protected bool TargetIsIncapped(Actor other)
@@ -171,7 +183,8 @@ extend class HDFollower
 		{
 			Console.Printf("[%s] %s failed to target %s. %s is blocking the line of fire.", GetTimestamp(), GetTag(), a.GetClassName(), data.HitActor ? data.HitActor.GetClassName() : 'Nothing???');
 		}
-
+		//if(data.HitType == Trace_HitActor)Console.Printf("CanHit "..data.HitActor.GetClassName());
+		//else Spawn("BulletPuff", data.HitLocation);
 		return data.HitActor == a || data.HitActor is 'HDPlayerPawn' || data.HitActor is 'HDFollower';
 	}
 

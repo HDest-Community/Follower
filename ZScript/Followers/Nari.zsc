@@ -10,7 +10,8 @@ class FollowerNari : HDFollower
 		SeeSound "Follower/Nari/See";
 		PainSound "Follower/Nari/Pain";
 		DeathSound "Follower/Nari/Death";
-		Tag "Nari";
+		Tag "$TAG_NARI";
+		HDFollower.UnLocalizeTag "Nari";
 		HDFollower.FollowerInfo GENDER_FEMALE, 'FollowerBodyNari', 'LeftBehindNari';
 		HDFollower.ResurrectType RESF_BLUES | RESF_MERCHANT;
 	}
@@ -30,6 +31,6 @@ class FollowerBodyNari : FollowerBody
 	Default
 	{
 		Inventory.Icon "FOLLF0";
-		Tag "Nari";
+		Tag "$TAG_NARI";
 	}
 }

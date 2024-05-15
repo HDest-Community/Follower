@@ -31,14 +31,14 @@ extend class FollowerHandler
 
 		if (!m.bFRIENDLY && random(0, 2))
 		{
-			string msg = "Go to hell, sucker.";
+			string msg = "$FLW_RECMSGGOTOHELL";
 			switch(random[msgrand](1, 3))
 			{
-				case 1: msg = "Kiss my ass."; break;
-				case 2: msg = "Go fuck yourself."; break;
-				case 3: msg = "HA HA HA *cough* I'd rather die."; break;
+				case 1: msg = "$FLW_RECMSGKISSASS"; break;
+				case 2: msg = "$FLW_RECMSGFUCKYOU"; break;
+				case 3: msg = "$FLW_RECMSGIDRATHERDIE"; break;
 			}
-			players[owningPlayer].mo.A_Log("\c[White]Marine: \c[Green]"..msg.."\c-");
+			players[owningPlayer].mo.A_Log(StringTable.Localize("$FLW_RECCHATMSG")..StringTable.Localize(msg).."\c-");
 			players[owningPlayer].mo.A_StartSound("misc/chat", 20, CHANF_LOCAL);
 			m.DamageMobj(m, m, m.Health, 'maxhpdrain', DMG_FORCED);
 
@@ -53,27 +53,27 @@ extend class FollowerHandler
 		}
 		else if (!m.bFRIENDLY)
 		{
-			string msg = "Alright, fine.";
+			string msg = "$FLW_RECMSGFINE";
 			switch(random[msgrand](1, 3))
 			{
-				case 1: msg = "Don't kill me. I'll fight on your side."; break;
-				case 2: msg = "You win."; break;
-				case 3: msg = "The pay was bad anyway."; break;
+				case 1: msg = "$FLW_RECMSGIONYOURSIDE"; break;
+				case 2: msg = "$FLW_RECMSGYOUWIN"; break;
+				case 3: msg = "$FLW_RECMSGPAYWASBAD"; break;
 			}
-			players[owningPlayer].mo.A_Log("\c[White]Marine: \c[Green]"..msg.."\c-");
+			players[owningPlayer].mo.A_Log(StringTable.Localize("$FLW_RECCHATMSG")..StringTable.Localize(msg).."\c-");
 			players[owningPlayer].mo.A_StartSound("misc/chat", 20, CHANF_LOCAL);
 			m.A_SetFriendly(true);
 		}
 		else
 		{
-			string msg = "Lead the way.";
+			string msg = "$FLW_RECMSGLEADWAY";
 			switch(random[msgrand](1, 3))
 			{
-				case 1: msg = "At your service."; break;
-				case 2: msg = "At your command."; break;
-				case 3: msg = "Point and I'll shoot."; break;
+				case 1: msg = "$FLW_RECMSGATYOURSERVIECE"; break;
+				case 2: msg = "$FLW_RECMSGATYOURCOMMAND"; break;
+				case 3: msg = "$FLW_RECMSGPOINTANDILLSHOOT"; break;
 			}
-			players[owningPlayer].mo.A_Log("\c[White]Marine: \c[Green]"..msg.."\c-");
+			players[owningPlayer].mo.A_Log(StringTable.Localize("$FLW_RECCHATMSG")..StringTable.Localize(msg).."\c-");
 			players[owningPlayer].mo.A_StartSound("misc/chat", 20, CHANF_LOCAL);
 		}
 

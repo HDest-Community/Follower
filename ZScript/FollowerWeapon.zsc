@@ -117,7 +117,15 @@ class FollowerWeapon abstract
 		{
 			if (MType)
 			{
-				HDMagAmmo.SpawnMag(Owner, MType, Mag);
+				if(MType is 'HD7mMag')
+				{
+					int magamt=Mag;
+
+					int fullets=clamp(30-MagRecast,0,magamt);
+					magamt+=fullets*100;
+					HDMagAmmo.SpawnMag(Owner, MType, magamt);
+				}
+				else HDMagAmmo.SpawnMag(Owner, MType, Mag);
 			}
 			else
 			{
@@ -126,6 +134,7 @@ class FollowerWeapon abstract
 				Inventory(a).Amount = Mag;
 			}
 			Mag = 0;
+			MagRecast = 0;
 		}
 	}
 
@@ -151,9 +160,22 @@ class FollowerWeapon abstract
 
 		if (MType)
 		{
-			InventorySlot wpnAmmo = Owner.FindHighestAmount(MType);
-			Mag = wpnAmmo.Amount;
-			Owner.TakeInvItem(wpnAmmo, HDFollower.FIF_FORCE | HDFollower.FIF_REMOVE);
+			/*if(MType is 'HD7mMag')
+			{
+				InventorySlot wpnAmmo = Owner.FindHighestAmount(MType);
+				int rndcnt=wpnAmmo.Amount%100;
+				
+				Mag=rndcnt;
+				MagRecast=clamp(rndcnt-(wpnAmmo.Amount/100),0,rndcnt);
+				Owner.TakeInvItem(wpnAmmo, HDFollower.FIF_FORCE | HDFollower.FIF_REMOVE);
+			}
+			else
+			{*/
+				InventorySlot wpnAmmo = Owner.FindHighestAmount(MType);
+				Mag = wpnAmmo.Amount;
+				MagRecast = wpnAmmo.Recast;
+				Owner.TakeInvItem(wpnAmmo, HDFollower.FIF_FORCE | HDFollower.FIF_REMOVE);
+			//}
 		}
 		else if (AType)
 		{
@@ -179,11 +201,28 @@ class FollowerWeapon abstract
 		[AType, MType, MaxMag] = GetAmmoType();
 		if (MType && Mag > -1)
 		{
-			HDMagAmmo m = HDMagAmmo(HDMagAmmo.SpawnMag(Owner, MType, Mag));
-			if (flags & EMF_KEEP && !(WeaponFlags & FWF_DROPMAG))
+			if(MType is 'HD7mMag')
 			{
-				Owner.AddMag(m, flags: HDFollower.FIF_FORCE);
+				int magamt=Mag;
+
+				int fullets=clamp(30-MagRecast,0,magamt);
+				//Console.Printf("fullets "..fullets);
+				magamt+=fullets*100;
+				HDMagAmmo m = HDMagAmmo(HDMagAmmo.SpawnMag(Owner, MType, magamt));
+				if (flags & EMF_KEEP && !(WeaponFlags & FWF_DROPMAG))
+				{
+					Owner.AddMag(m, flags: HDFollower.FIF_FORCE);
+				}
 			}
+			else
+			{
+				HDMagAmmo m = HDMagAmmo(HDMagAmmo.SpawnMag(Owner, MType, Mag));
+				if (flags & EMF_KEEP && !(WeaponFlags & FWF_DROPMAG))
+				{
+					Owner.AddMag(m, flags: HDFollower.FIF_FORCE);
+				}
+			}
+			MagRecast = 0;
 			Mag = -1;
 		}
 	}
@@ -192,8 +231,10 @@ class FollowerWeapon abstract
 	{
 		if (ChamberedRound == CRType_Empty && Mag > 0)
 		{
+			if(MagRecast>0 && HD7mMag.CheckRecast(Mag,MagRecast))MagRecast--;	
 			Mag--;
 			ChamberedRound = CRType_Chambered;
+			//Console.Printf("Mag: "..Mag.." Recast: "..MagRecast);
 			return true;
 		}
 
@@ -222,6 +263,7 @@ class FollowerWeapon abstract
 
 	CRType ChamberedRound;
 	int Mag;
+	int MagRecast;
 	HDFollower Owner;
 	bool Enabled;
 	WStatus Status;

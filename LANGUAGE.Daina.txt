@@ -1,5 +1,7 @@
 [enu default]
 
+TAG_DAINA = "Daina";
+
 DAINA_ORDER_FOLLOW1_1 = "I'm already following you.";
 DAINA_ORDER_FOLLOW1_2 = "Right behind you.";
 DAINA_ORDER_FOLLOW1_3 = "I'm already sticking close.";
@@ -311,3 +313,7 @@ DAINA_WEAPONGIVE_NOTHANKS_3 = "Sorry, I'm unable to use this.";
 DAINA_WEAPONGIVE_RANAWAY_1 = "Hey, come back!";
 DAINA_WEAPONGIVE_RANAWAY_2 = "Why do you do this to me?";
 DAINA_WEAPONGIVE_RANAWAY_3 = "Aw.";
+
+DAINA_FOLLOW_MISS_1 = "Hey, wait!";
+DAINA_FOLLOW_MISS_2 = "Wait for me!";
+DAINA_FOLLOW_MISS_3 = "You've run too far!";

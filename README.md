@@ -1,7 +1,42 @@
+Original mod by Ace: https://gitlab.com/accensi/hd-addons/follower
+
+### This is a fixed and improved version.
+- Code fixes and improves by mickromash
+- Additional testing by Faxer
+
+
+### Changes
+---
+- Mod updated to Hideous Destructor v4.11.3d
+- Followers now targeting small monsters (like Lost Soul or Babuin) much better
+- Followers reloading their weapons and healing themselves between battles
+- Followers now trying to follow player through portals
+- Followers now tell player if they are lagging behind ("MissedPlayer" For audio) (FollowersName.."_FOLLOW_MISS_"..Index for message in language file)
+- Followers now actually picking up armour (was broken in 4.8.2a fix)
+- Fixed liberator mags
+- Fixed followers aim
+- Fixed followers not healing themselves on 90% health or 0.1 body damage
+- Localized all text that I could find
+
+14.05
+- Amount of items given to follower is now entered with numbers
+- Fixed no ammo messages not appear
+
+---
+- Requires newest version of [AceCoreLib](https://github.com/HDest-Community/AceCoreLib).
+
+
+
+---
+### ORIGINAL REAMDE
+---
+
+
+
 ### Important
 ---
-- This mod requires [AceCoreLib](https://github.com/HDest-Community/AceCoreLib).
-- The mod needs at least GZDoom 4.6.0 to run. LZDoom does not currently have a compiled version that supports it. However, the mod will work with the next stable version of LZDoom. It will also work if you compile LZDoom yourself.
+- This mod requires [AceCoreLib](https://gitlab.com/accensi/hd-addons/acecorelib).
+- The mod needs at least GZDoom 4.11.0 to run. LZDoom does not currently have a compiled version that supports it. However, the mod will work with the next stable version of LZDoom. It will also work if you compile LZDoom yourself.
 
 **NOTE: *Freylis's sprites are not for public use. Please do not use them anywhere. Thank you.***
 

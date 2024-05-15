@@ -186,8 +186,10 @@ extend class FollowerHandler
 					}
 					else if (UiData[consoleplayer].SlotFocused == 2)
 					{
-						int amt = Modifiers[consoleplayer] & OpMod_Shift ? 20 : 2;
-						UiData[consoleplayer].TransferAmount = clamp(UiData[consoleplayer].TransferAmount - amt, 0, 1000);
+						/*InInputMode[consoleplayer] = true;
+						UiData[consoleplayer].TransferAmount = InputString[ConsolePlayer].ToInt();*/
+						//int amt = Modifiers[consoleplayer] & OpMod_Shift ? 20 : 2;
+						//UiData[consoleplayer].TransferAmount = clamp(UiData[consoleplayer].TransferAmount - amt, 0, 1000);
 					}
 				}
 				if (UiData[consoleplayer].ArrowKeysHeld & HOLD_RIGHT && UiData[consoleplayer].RepeatTics[1] % 3 == 0)
@@ -205,8 +207,9 @@ extend class FollowerHandler
 					}
 					else if (UiData[consoleplayer].SlotFocused == 2)
 					{
-						int amt = Modifiers[consoleplayer] & OpMod_Shift ? 20 : 2;
-						UiData[consoleplayer].TransferAmount = clamp(UiData[consoleplayer].TransferAmount + amt, 0, 1000);
+						//UiData[consoleplayer].TransferAmount = InputString[ConsolePlayer].ToInt();
+						//int amt = Modifiers[consoleplayer] & OpMod_Shift ? 20 : 2;
+						//UiData[consoleplayer].TransferAmount = clamp(UiData[consoleplayer].TransferAmount + amt, 0, 1000);
 					}
 				}
 				if (UiData[consoleplayer].ArrowKeysHeld & HOLD_UP && UiData[consoleplayer].RepeatTics[2] % 3 == 0)
@@ -306,7 +309,7 @@ extend class FollowerHandler
 
 		if (UiData[consoleplayer].SlotFocused < 2)
 		{
-			UiData[consoleplayer].TransferAmount = 0;
+			UiData[consoleplayer].TransferAmount = 1;
 		}
 
 		if (UiData[consoleplayer].SlotFocused < 1)
@@ -357,16 +360,16 @@ extend class FollowerHandler
 				}
 
 				Array<string> commands;
-				commands.Push("Recruit?");
-				commands.Push("Cancel");
+				commands.Push("$FLW_CMDRECRUIT");
+				commands.Push("$FLW_CMDCANCEL");
 
-				string n = (SelMarine[consoleplayer].bFRIENDLY ? "Friendly " : "Hostile ").."marine";
+				string n = (SelMarine[consoleplayer].bFRIENDLY ? StringTable.Localize("$FLW_CMDFRIENDLY") : StringTable.Localize("$FLW_CMDHOSTILE")..StringTable.Localize("$FLW_CMDMARINE"));
 				DrawRectangle(sb, pos, (140, rectHeight), col, fnt, GetTruncatedText(n, 16), flags, Font.FindFontColor('FLW_NameBlue'));
 				pos.y += rectHeight + Spacing;
 
 				for (int i = 0; i < commands.Size(); ++i)
 				{
-					DrawRectangle(sb, pos, (140, rectHeight), col, fnt, (i + 1)..") "..commands[i], flags);
+					DrawRectangle(sb, pos, (140, rectHeight), col, fnt, (i + 1)..") "..StringTable.Localize(commands[i]), flags);
 					pos.y += rectHeight + Spacing;
 				}
 				break;
@@ -403,7 +406,7 @@ extend class FollowerHandler
 				if (FSize > FollowersPerPage * (FollowerPage[consoleplayer] + 1))
 				{
 					LastIndex++;
-					DrawRectangle(sb, pos, (190, rectHeight), col, fnt, LastIndex..") Next...", flags);
+					DrawRectangle(sb, pos, (190, rectHeight), col, fnt, LastIndex..StringTable.Localize("$FLW_CMDNEXT"), flags);
 					pos.y += rectHeight + Spacing;
 				}
 				if (FollowerPage[consoleplayer] > 0)
@@ -413,7 +416,7 @@ extend class FollowerHandler
 					{
 						LastIndex = 0;
 					}
-					DrawRectangle(sb, pos, (190, rectHeight), col, fnt, LastIndex..") Back...", flags);
+					DrawRectangle(sb, pos, (190, rectHeight), col, fnt, LastIndex..StringTable.Localize("$FLW_CMDBACK"), flags);
 					pos.y += rectHeight + Spacing;
 				}
 				break;
@@ -433,21 +436,21 @@ extend class FollowerHandler
 
 				if (selSize > 1)
 				{
-					DrawRectangle(sb, pos, (160, rectHeight), col, fnt, selSize.." followers", flags, Font.FindFontColor('FLW_NameBlue'));
+					DrawRectangle(sb, pos, (160, rectHeight), col, fnt, selSize..StringTable.Localize("$FLW_CMDFOLLOWERS"), flags, Font.FindFontColor('FLW_NameBlue'));
 					pos.y += rectHeight + Spacing;
 
 					Array<string> commands;
-					commands.Push("Orders");
-					commands.Push(InInputMode[consoleplayer] ? InputString[consoleplayer].."_" : "Input command");
-					commands.Push("Misc commands");
+					commands.Push("$FLW_CMDORDERS");
+					commands.Push((InInputMode[consoleplayer] && UiData[consoleplayer].SlotFocused != 2)? InputString[consoleplayer].."_" : "Input command");
+					commands.Push("$FLW_CMDMISCCOM");
 					if (Followers.Size() > 1)
 					{
-						commands.Push("Back...");
+						commands.Push("$FLW_CMDBACK1");
 					}
 
 					for (int i = 0; i < commands.Size(); ++i)
 					{
-						DrawRectangle(sb, pos, (160, rectHeight), col, fnt, (i + 1)..") "..commands[i], flags);
+						DrawRectangle(sb, pos, (160, rectHeight), col, fnt, (i + 1)..") "..StringTable.Localize(commands[i]), flags);
 						pos.y += rectHeight + Spacing;
 					}
 				}
@@ -461,47 +464,47 @@ extend class FollowerHandler
 					string BloodDanger;
 					if (RequiredBlood < 10)
 					{
-						BloodDanger = "\c[FLW_BloodGreen](Safe)\c-";
+						BloodDanger = "$FLW_BLDFEEDSAFE";
 					}
 					else if (RequiredBlood < 20)
 					{
-						BloodDanger = "\c[FLW_BloodPoison](Risky)\c-";
+						BloodDanger = "$FLW_BLDFEEDRISKY";
 					}
 					else if (RequiredBlood < 30)
 					{
-						BloodDanger = "\c[FLW_BloodYellow](Dangerous)\c-";
+						BloodDanger = "$FLW_BLDFEEDDANGER";
 					}
 					else if (RequiredBlood < 40)
 					{
-						BloodDanger = "\c[FLW_BloodOrange](Extremely Risky)\c-";
+						BloodDanger = "$FLW_BLDFEEDEXTRISKY";
 					}
 					else if (RequiredBlood < 50)
 					{
-						BloodDanger = "\c[FLW_BloodRed](Almost Deadly)\c-";
+						BloodDanger = "$FLW_BLDFEEDDEAD";
 					}
 					else
 					{
-						BloodDanger = "\c[FLW_BloodBlack](Certain Death)\c-";
+						BloodDanger = "$FLW_BLDFEEDDEATH";
 					}
 
 					Array<string> commands;
-					commands.Push("Carry follower");
+					commands.Push(StringTable.Localize("$FLW_CMDCARRYFLW"));
 					if (lastFol.ResurrectType & HDFollower.RESF_BLUES)
 					{
-						commands.Push((sb.CheckInventory("BluePotion", 1) ? "" : "\c[Red]").."Give blue potion\c- ".."\c[Blue]("..RequiredSips.."/12)\c-");
+						commands.Push((sb.CheckInventory("HDHealingPotion", 1) ? "" : "\c[Red]")..StringTable.Localize("$FLW_CMDBLUE").."\c[Blue]("..RequiredSips.."/12)\c-");
 					}
 					if (lastFol.ResurrectType & HDFollower.RESF_BLOOD)
 					{
-						commands.Push("Feed blood "..BloodDanger);
+						commands.Push(StringTable.Localize("$FLW_CMDFEEDBLD")..StringTable.Localize(BloodDanger));
 					}
 					commands.Push("Manage inventory");
 					if (lastFol.bCANDISMISS)
 					{
-						commands.Push("\c[FLW_BloodRed]"..(UiData[consoleplayer].Confirmation ? "Confirm?" : "Dismiss").."\c-");
+						commands.Push("\c[FLW_BloodRed]"..(UiData[consoleplayer].Confirmation ? StringTable.Localize("$FLW_CMDCONFRIM") : StringTable.Localize("$FLW_CMDDISMIS")).."\c-");
 					}
 					if (Followers.Size() > 1)
 					{
-						commands.Push("Back...");
+						commands.Push(StringTable.Localize("$FLW_CMDBACK1"));
 					}
 
 					for (int i = 0; i < commands.Size(); ++i)
@@ -518,23 +521,23 @@ extend class FollowerHandler
 					if (Followers.Size() == 1 && lastFol.CanInteractWith(false))
 					{
 						double dist = lastFol.Distance3D(players[consoleplayer].mo) / HDCONST_ONEMETRE;
-						DrawRectangle(sb, pos, (160, rectHeight), col, fnt, String.Format("%.2fm", dist), flags, Font.CR_DARKGRAY);
+						DrawRectangle(sb, pos, (160, rectHeight), col, fnt, String.Format(StringTable.Localize("$FLW_CMDDIST"), dist), flags, Font.CR_DARKGRAY);
 						pos.y += rectHeight + Spacing;
 					}
 
 					Array<string> commands;
-					commands.Push("Orders/stance");
-					commands.Push("Carry follower");
-					commands.Push("Manage inventory");
-					commands.Push("Misc commands");
+					commands.Push("$FLW_CMDORDERSSTANCE");
+					commands.Push("$FLW_CMDCARRYFLW");
+					commands.Push("$FLW_CMDMANAGEINVENTOR");
+					commands.Push("$FLW_CMDMISCCOM");
 					if (Followers.Size() > 1)
 					{
-						commands.Push("Back...");
+						commands.Push("$FLW_CMDBACK1");
 					}
 
 					for (int i = 0; i < commands.Size(); ++i)
 					{
-						DrawRectangle(sb, pos, (160, rectHeight), col, fnt, (i + 1)..") "..commands[i], flags);
+						DrawRectangle(sb, pos, (160, rectHeight), col, fnt, (i + 1)..") "..StringTable.Localize(commands[i]), flags);
 						pos.y += rectHeight + Spacing;
 					}
 				}
@@ -552,12 +555,12 @@ extend class FollowerHandler
 					SendNetworkEvent("HDF_SetFollowerMenu", FMenu_Closed);
 					return;
 				}
-				static const string orders[] = { "Follow", "Stay here", "Go there and stay", "Come and help me", "Do some healing" };
-				static const string stances[] = { "Aggressive", "Passive" };
+				static const string orders[] = { "$FLW_CMDORDFLW", "$FLW_CMDORDSTAY", "$FLW_CMDORDGOTHERE", "$FLW_CMDORDHELPME", "$FLW_CMDORDHEALING" };
+				static const string stances[] = { "$FLW_CMDSTANAGR", "$FLW_CMDSTANPAS" };
 
 				if (selSize > 1)
 				{
-					DrawRectangle(sb, pos, (240, rectHeight), col, fnt, selSize.." followers", flags, Font.FindFontColor('FLW_NameBlue'));
+					DrawRectangle(sb, pos, (240, rectHeight), col, fnt, selSize..StringTable.Localize("$FLW_CMDFOLLOWERS"), flags, Font.FindFontColor('FLW_NameBlue'));
 				}
 				else
 				{
@@ -567,15 +570,15 @@ extend class FollowerHandler
 
 				for (int i = 0; i < orders.Size(); ++i)
 				{
-					DrawRectangle(sb, pos, (240, rectHeight), col, fnt, (i + 1)..") "..(selSize == 1 && lastFol.Order == i ? "\c[Green]" : "")..orders[i].."\c-", flags);
+					DrawRectangle(sb, pos, (240, rectHeight), col, fnt, (i + 1)..") "..(selSize == 1 && lastFol.Order == i ? "\c[Green]" : "")..StringTable.Localize(orders[i]).."\c-", flags);
 					pos.y += rectHeight + Spacing;
 				}
 				for (int i = 0; i < stances.Size(); ++i)
 				{
-					DrawRectangle(sb, pos, (240, rectHeight), col, fnt, (orders.Size() + i + 1)..") "..(selSize == 1 && lastFol.Stance == i ? "\c[Green]" : "")..stances[i].."\c-", flags);
+					DrawRectangle(sb, pos, (240, rectHeight), col, fnt, (orders.Size() + i + 1)..") "..(selSize == 1 && lastFol.Stance == i ? "\c[Green]" : "")..StringTable.Localize(stances[i]).."\c-", flags);
 					pos.y += rectHeight + Spacing;
 				}
-				DrawRectangle(sb, pos, (240, rectHeight), col, fnt, (orders.Size() + stances.Size() + 1)..") Back...", flags);
+				DrawRectangle(sb, pos, (240, rectHeight), col, fnt, (orders.Size() + stances.Size() + 1)..StringTable.Localize("$FLW_CMDBACK"), flags);
 				break;
 			}
 
@@ -643,17 +646,17 @@ extend class FollowerHandler
 				}
 				pos.y += invh;
 
-				DrawRectangle(sb, pos, (w, rectHeight), col, fnt, "1) Cancel/Back", flags);
+				DrawRectangle(sb, pos, (w, rectHeight), col, fnt, StringTable.Localize("$FLW_CMDINVBACK"), flags);
 				pos.y += rectHeight + Spacing;
 
 				if (lastFol.CanInteractWith(false))
 				{
-					DrawRectangle(sb, pos, (w, rectHeight), col, fnt, InInputMode[consoleplayer] ? InputString[consoleplayer].."_" : "2) Input command", flags);
+					DrawRectangle(sb, pos, (w, rectHeight), col, fnt, (InInputMode[consoleplayer] && UiData[consoleplayer].SlotFocused != 2) ? InputString[consoleplayer].."_" : StringTable.Localize("$FLW_CMDINVCOMAN"), flags);
 					pos.y += rectHeight + Spacing;
 				}
 
-				DrawRectangle(sb, pos, (w, rectHeight), col, fnt, "Bsp) Take", flags); pos.y += rectHeight + Spacing;
-				DrawRectangle(sb, pos, (w, rectHeight), col, fnt, "Ent) Select/Give", flags); pos.y += rectHeight + Spacing;
+				DrawRectangle(sb, pos, (w, rectHeight), col, fnt, StringTable.Localize("$FLW_CMDINVTAKE"), flags); pos.y += rectHeight + Spacing;
+				DrawRectangle(sb, pos, (w, rectHeight), col, fnt, StringTable.Localize("$FLW_CMDINVGIVE"), flags); pos.y += rectHeight + Spacing;
 				break;
 			}
 
@@ -671,7 +674,7 @@ extend class FollowerHandler
 
 				if (selSize > 1)
 				{
-					DrawRectangle(sb, pos, (200, rectHeight), col, fnt, selSize.." followers", flags, Font.FindFontColor('FLW_NameBlue'));
+					DrawRectangle(sb, pos, (200, rectHeight), col, fnt, selSize..StringTable.Localize("$FLW_CMDFOLLOWERS"), flags, Font.FindFontColor('FLW_NameBlue'));
 				}
 				else
 				{
@@ -682,13 +685,13 @@ extend class FollowerHandler
 				Array<string> commands;
 				if (!(lastFol.bDONTTRANSLATE))
 				{
-					commands.Push("Change color");
+					commands.Push(StringTable.Localize("$FLW_CMDCHNGCOL"));
 				}
 				if (selSize == 1 && lastFol.bCANDISMISS)
 				{
-					commands.Push("\c[FLW_BloodRed]"..(UiData[consoleplayer].Confirmation ? "Confirm?" : "Dismiss").."\c-");
+					commands.Push("\c[FLW_BloodRed]"..(UiData[consoleplayer].Confirmation ? StringTable.Localize("$FLW_CMDCONFRIM") : StringTable.Localize("$FLW_CMDDISMIS")).."\c-");
 				}
-				commands.Push("Back...");
+				commands.Push(StringTable.Localize("$FLW_CMDBACK1"));
 
 				for (int i = 0; i < commands.Size(); ++i)
 				{
@@ -717,7 +720,7 @@ extend class FollowerHandler
 
 				if (selSize > 1)
 				{
-					DrawRectangle(sb, pos, (w, rectHeight), col, fnt, selSize.." followers", flags, Font.FindFontColor('FLW_NameBlue'));
+					DrawRectangle(sb, pos, (w, rectHeight), col, fnt, selSize..StringTable.Localize("$FLW_CMDFOLLOWERS"), flags, Font.FindFontColor('FLW_NameBlue'));
 				}
 				else
 				{
@@ -736,7 +739,7 @@ extend class FollowerHandler
 					sb.Fill(TranslationColors[i], pos.x + 1 + (ColSquareSize + 1) * (i % PickerColumns), pos.y + 1 + (ColSquareSize + 1) * (i / PickerColumns), ColSquareSize, ColSquareSize, flags);
 				}
 
-				DrawRectangle(sb, pos + (0, h + 1), (w, rectHeight), col, fnt, "0) Back", flags);
+				DrawRectangle(sb, pos + (0, h + 1), (w, rectHeight), col, fnt, StringTable.Localize("$FLW_CMDBACK2"), flags);
 				pos.y += rectHeight + Spacing;
 				break;
 			}
@@ -771,7 +774,7 @@ extend class FollowerHandler
 		if (valid)
 		{
 			double dist = flw.Distance3D(players[consoleplayer].mo) / HDCONST_ONEMETRE;
-			sb.DrawString(fnt, String.Format("%.2fm", dist), pos, flags | (flw.Squad > 0 ? sb.DI_TEXT_ALIGN_RIGHT : 0), Font.CR_DARKGRAY);
+			sb.DrawString(fnt, String.Format(StringTable.Localize("$FLW_CMDDIST"), dist), pos, flags | (flw.Squad > 0 ? sb.DI_TEXT_ALIGN_RIGHT : 0), Font.CR_DARKGRAY);
 		}
 	}
 
@@ -799,7 +802,7 @@ extend class FollowerHandler
 			class<HDAmmo> AType, MType; int MaxMag;
 			[AType, MType, MaxMag] = wpn.GetAmmoType();
 
-			sb.DrawString(fnt, "Ammo", pos + (size.x - 4, size.y - 24), flags | sb.DI_TEXT_ALIGN_RIGHT, Font.CR_WHITE);
+			sb.DrawString(fnt, StringTable.Localize("$FLW_CMDAMMO"), pos + (size.x - 4, size.y - 24), flags | sb.DI_TEXT_ALIGN_RIGHT, Font.CR_WHITE);
 			string ChamberString = "";
 			switch (wpn.ChamberedRound)
 			{
@@ -862,7 +865,9 @@ extend class FollowerHandler
 		}
 
 		int vSize = UiData[consoleplayer].ValidItems.Size();
-		Inventory item = vSize > 0 && UiData[consoleplayer].PSlotIndex < vSize ? UiData[consoleplayer].ValidItems[UiData[consoleplayer].PSlotIndex] : null;
+		
+		Inventory item;
+		if(UiData[consoleplayer].PSlotIndex>-1)item = vSize > 0 && UiData[consoleplayer].PSlotIndex < vSize ? UiData[consoleplayer].ValidItems[UiData[consoleplayer].PSlotIndex] : null;
 		if (!item)
 		{
 			return;
@@ -873,12 +878,16 @@ extend class FollowerHandler
 		{
 			vector2 realPos = (SlotSize * (i % InvColumns) + (i % InvColumns), SlotSize * (i / InvColumns) + (i / InvColumns));
 			int amt = item.Amount;
+			string icon = ""..item.icon;
 			if (item is 'HDMagAmmo')
 			{
 				HDMagAmmo mag = HDMagAmmo(item);
 				amt = mag.Mags[i];
+				int magIndex = mag.Mags.Size() - 1;
+				int magAmt = mag.Mags[magIndex];
+				icon = mag.getmagsprite(magAmt);
 			}
-			string icon = ItemStorage.GetIcon(item, amt);
+			//string icon = ItemStorage.GetIcon(item, amt);
 			sb.DrawImage(icon, pos + (SlotSize, SlotSize) / 2 + RealPos, flags | sb.DI_ITEM_CENTER, 1.0, (SlotSize, SlotSize) - (6, 6), (3.0, 3.0));
 			if (InventorySlot.IsRealMag(item.GetClass()) || HDPickup(item) && HDPickup(item).bMULTIPICKUP && item.Amount > 0)
 			{
@@ -889,7 +898,11 @@ extend class FollowerHandler
 		if (UiData[consoleplayer].SlotFocused == 2)
 		{
 			int rectHeight = MainFont.mFont.GetHeight() + 4;
-			DrawAmountRectangle(sb, pos + (0, size.y), (size.x, rectHeight), col, fnt, UiData[consoleplayer].TransferAmount, 1000, flags, Font.CR_CREAM);
+			String EnterChar = "_";
+			if(InputString[ConsolePlayer].Length()>=4){EnterChar = "";InputString[ConsolePlayer].Remove(4,1);}
+			
+			DrawRectangle(sb, pos + (0, size.y), (size.x, rectHeight), col, fnt, StringTable.Localize("$FLW_CMDAMOUNT")..InputString[ConsolePlayer]..enterchar, flags, textCol: Font.CR_CREAM);
+			//DrawAmountRectangle(sb, pos + (0, size.y), (size.x, rectHeight), col, fnt, InputString[ConsolePlayer].ToInt(), flags, textCol: Font.CR_CREAM);
 		}
 	}
 
@@ -899,15 +912,14 @@ extend class FollowerHandler
 		sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 		double percent = amt / double(maxAmt);
 		sb.Fill(Color(DarkAlpha, 255, 255, 128), pos.x + 1, pos.y + 1, (size.x - 2) * percent, size.y - 2, flags);
-		sb.DrawString(fnt, "Amount:"..amt, pos + (2, 2), flags, textCol);
+		sb.DrawString(fnt, StringTable.Localize("$FLW_CMDAMOUNT")..amt, pos + (2, 2), flags, textCol);
 	}
 
 	private ui void DrawWearableRectangle(HDStatusBar sb, vector2 pos, vector2 size, Color col, HUDFont fnt, int flags, Inventory wearable)
 	{
 		sb.Fill(col, pos.x, pos.y, size.x, size.y, flags);
 		sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
-
-		sb.DrawImage(ItemStorage.GetIcon(wearable), pos + size / 2, flags | sb.DI_ITEM_CENTER, box: size - (3, 3));
+		String WearSprite = ""..wearable.Icon;
 		if (wearable is 'HDWeapon')
 		{
 			let wpn = HDWeapon(wearable);
@@ -917,7 +929,9 @@ extend class FollowerHandler
 		if (wearable is 'HDArmourWorn')
 		{
 			sb.DrawString(fnt, (HDArmourWorn(wearable).Mega ? "\c[Blue]" : "\c[DarkGreen]")..HDArmourWorn(wearable).Durability, pos + size - (4, 10), flags | sb.DI_TEXT_ALIGN_RIGHT);
+			WearSprite = HDArmourWorn(wearable).mega?"ARMCA0":"ARMSA0";
 		}
+		sb.DrawImage(WearSprite, pos + size / 2, flags | sb.DI_ITEM_CENTER, box: size - (3, 3));
 	}
 
 	private ui void DrawRectangle(HDStatusBar sb, vector2 pos, vector2 size, Color col, HUDFont fnt, string command, int flags, int textCol = Font.CR_WHITE)
@@ -1026,6 +1040,20 @@ extend class FollowerHandler
 					}
 					case InputEvent.Key_Enter:
 					{
+						if(UiData[consoleplayer].SlotFocused == 2)
+						{
+							int size = UiData[consoleplayer].ValidItems.Size();
+							if (size > 0 && UiData[consoleplayer].PSlotIndex < size)
+							{
+								Inventory item = UiData[consoleplayer].ValidItems[UiData[consoleplayer].PSlotIndex];
+								SendNetworkEvent('hdf_transferitem:'..item.GetClassName(), InputString[ConsolePlayer].ToInt(), UiData[consoleplayer].FSlotIndex);
+								UiData[consoleplayer].SlotFocused--;
+							}
+							else
+							{
+								UiData[consoleplayer].SlotFocused = 0;
+							}
+						}	
 						InInputMode[consoleplayer] = false;
 						ret = true;
 						break;
@@ -1320,6 +1348,7 @@ extend class FollowerHandler
 										}
 										else
 										{
+											EnterInputMode(consoleplayer);
 											UiData[consoleplayer].SlotFocused++;
 										}
 									}
@@ -1336,8 +1365,8 @@ extend class FollowerHandler
 								if (size > 0 && UiData[consoleplayer].PSlotIndex < size)
 								{
 									Inventory item = UiData[consoleplayer].ValidItems[UiData[consoleplayer].PSlotIndex];
-									SendNetworkEvent('hdf_transferitem:'..item.GetClassName(), UiData[consoleplayer].TransferAmount, UiData[consoleplayer].FSlotIndex);
-									UiData[consoleplayer].SlotFocused = 0;
+									SendNetworkEvent('hdf_transferitem:'..item.GetClassName(), InputString[ConsolePlayer].ToInt(), UiData[consoleplayer].FSlotIndex);
+									UiData[consoleplayer].SlotFocused--;
 								}
 								else
 								{
@@ -1373,7 +1402,7 @@ extend class FollowerHandler
 					{
 						if (NumKey == 2 && lastFol.CanInteractWith(false))
 						{
-							EnterInputMode(consoleplayer);
+							if(UiData[consoleplayer].SlotFocused != 2)EnterInputMode(consoleplayer);
 							return true;
 						}
 						if (NumKey == 1)
@@ -1573,18 +1602,18 @@ extend class FollowerHandler
 
 		if (cmd ~== "HDF_InputCommands")
 		{
-			string fullText = "\c[Sapphire]===== Input commands =====";
+			string fullText = "$FLW_CMDINPUTSTITLE";
 			string commandsList[] =
 			{
-				"\c[Fire]rld/rel \c[Green]<name>/<index> \c[Brick][d]\n\c[DarkGray]Supports multiselect: \c[Green]Yes\n\c[DarkGray]Description: \c[Green]name\c[White] is the name of the weapon as displayed in the inventory. Partial names are supported, e.g. \c[Gold]rel hun\c[White] to reload the Hunter. If a single follower is selected, using the weapon's \c[Green]index\c[White] is also supported. If the follower has only one weapon, \c[Green]name\c[White] and \c[Green]index\c[White] can be omitted. \c[Brick]d\c[White] is an option that, if provided, will forcefully drop the magazine instead of storing it. ZM66 mags will still be dropped regardless of this option.\n",
-				"\c[Fire]wpn\n\c[DarkGray]Supports multiselect: \c[Red]No\n\c[DarkGray]Description: \c[White]Enter weapon pickup mode. Type again to cancel.\n",
-				"\c[Fire]### \c[Brick][d]\n\c[DarkGray]Supports multiselect: \c[Red]No\n\c[DarkGray]Description: \c[White]Enter item pickup mode. Type again to cancel. Alternatively, if \c[Brick]d\c[White] is specified, drop worn item instead.\n\c[DarkGray]Supported codes: \c[Fire]arm\c- (Armor), \c[Fire]rad\c- (Radsuit), \c[Fire]bak\c- (Backpack), \c[Fire]psg\c- (Personal Shield Generator)\n",
-				"\c[Fire]rmv \c[Green]<name>/<index>\n\c[DarkGray]Supports multiselect: \c[Red]No\n\c[DarkGray]Description: \c[White]Empty the weapon and remove it from the list. This will not drop it!\n",
-				"\c[Fire]swp \c[Green]<index1> <index2>\n\c[DarkGray]Supports multiselect: \c[Red]No\n\c[DarkGray]Description: \c[White]Swap the weapons in those indices.\n"
+				"$FLW_CMDINPUTS1",
+				"$FLW_CMDINPUTS2",
+				"$FLW_CMDINPUTS3",
+				"$FLW_CMDINPUTS4",
+				"$FLW_CMDINPUTS5"
 			};
 			for (int i = 0; i < commandsList.Size(); ++i)
 			{
-				fullText = fullText.."\n"..commandsList[i];
+				fullText = StringTable.Localize(fullText).."\n"..StringTable.Localize(commandsList[i]);
 			}
 			plr.A_Log(fullText, true);
 			return;
@@ -1768,6 +1797,7 @@ extend class FollowerHandler
 
 		if (cmd.IndexOf("hdf_wearablecommand") != -1)
 		{
+		
 			static const Name worldItemClasses[] = { 'HDArmour', 'PortableRadsuit', 'HDBackpack', 'HDPersonalShieldGenerator' };
 			static const Name wornItemClasses[] = { 'HDArmourWorn', 'WornRadsuit', 'HDBackpack', 'HDPersonalShieldGenerator' };
 			static const string languagePrefixex[] = { "ARMORGIVE", "RADSUITGIVE", "BACKPACKGIVE", "PSGGIVE" };

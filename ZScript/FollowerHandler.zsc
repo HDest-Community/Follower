@@ -112,14 +112,19 @@ class FollowerHandler : EventHandler
 				if (Followers[i].IsDeadOrMissing() && Followers[i].MissingClass)
 				{
 					missingFollowers.Push(Followers[i]);
-					missingNames.Push(Followers[i].GetTag());
+					String FlwTag = Followers[i].GetTag();
+					if(Followers[i].UnLocalizeTag!="")FLWTag = Followers[i].UnLocalizeTag;
+					missingNames.Push(FlwTag);
 				}
 			}
 			
 			int MSize = missingFollowers.Size();
 			if (MSize > 0)
 			{
-				e.Thing.A_Print("\c[White]You shouldn't leave "..AceCore.MakeOxfordComma(missingNames).." behind.\c-\n\n\c[White]Activate the exit again within two seconds to exit the level and leave "..(MSize > 1 ? "them" : missingFollowers[0].GetPronoun(false)).." to the monsters.\c-", 4);
+				e.Thing.A_Print(StringTable.Localize("$FLW_DONTLEAVE1")..(MSize > 1 ? StringTable.Localize("$FLW_THEM") : missingFollowers[0].GetPronoun(false))..StringTable.Localize("$FLW_DONTLEAVE2"), 4);
+				//e.Thing.A_Print("\c[White]You shouldn't leave "..AceCore.MakeOxfordComma(missingNames).." behind.\c-\n\n\c[White]Activate the exit again within two seconds to exit the level and leave "..(MSize > 1 ? "them" : missingFollowers[0].GetPronoun(false)).." to the monsters.\c-", 4);
+				//for some reason it's not pulling the relavent info from acecorelib for the "MakeOxfordComma" despite it actually being there??? Might just port the class directly into Followers.
+				
 				e.ShouldActivate = false;
 				CanExitNow = true;
 				WarningResetTimer = 70;

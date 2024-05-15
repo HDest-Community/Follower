@@ -10,7 +10,8 @@ class FollowerBalthazar : HDFollower
 		SeeSound "Follower/Balthazar/See";
 		PainSound "Follower/Balthazar/Pain";
 		DeathSound "Follower/Balthazar/Death";
-		Tag "Balthazar";
+		Tag "$TAG_Balthazar";
+		HDFollower.UnLocalizeTag "Balthazar";
 		+HDMOBBASE.HASHELMET
 		HDFollower.FollowerInfo GENDER_MALE, 'FollowerBodyBalthazar', 'LeftBehindBalthazar';
 		Scale 0.9;
@@ -32,6 +33,6 @@ class FollowerBodyBalthazar : FollowerBody
 	Default
 	{
 		Inventory.Icon "FOLLB0";
-		Tag "Balthazar";
+		Tag "$TAG_Balthazar";
 	}
 }

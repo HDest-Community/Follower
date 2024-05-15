@@ -4,6 +4,7 @@ class InventorySlot
 	string Icon;
 	int Amount;
 	bool Multipickup;
+	int Recast;
 
 	static clearscope bool IsRealMag(class<Inventory> mag)
 	{
@@ -26,7 +27,7 @@ extend class HDFollower
 
 	virtual clearscope bool IsValidItem(class<Inventory> cls, bool ignoreWeaponValidity = false)
 	{
-		return cls && ((cls is 'HDAmmo' && AmmoIsUsed((class<HDAmmo>)(cls)) || ignoreWeaponValidity) || cls == 'PortableMedikit' || cls == 'PortableStimpack' || cls == 'BluePotion');
+		return cls && ((cls is 'HDAmmo' && AmmoIsUsed((class<HDAmmo>)(cls)) || ignoreWeaponValidity) || cls == 'PortableMedikit' || cls == 'PortableStimpack' || cls == 'HDHealingPotion');
 	}
 
 	// --------------------------------------------------
@@ -136,14 +137,21 @@ extend class HDFollower
 			Slots[index] = new('InventorySlot');
 		}
 		Slots[index].ItemClass = mag.GetClass();
-		Slots[index].Icon = ItemStorage.GetIcon(mag);
 		Slots[index].Multipickup = false;
 		if (magIndex == -1)
 		{
 			magIndex = mag.Mags.Size() - 1;
 		}
 		int magAmt = mag.Mags[magIndex];
-		Slots[index].Icon = ItemStorage.GetIcon(mag, magAmt);
+		if(mag is 'HD7mMag')
+		{
+			int rndcnt=mag.Mags[magIndex]%100;
+				
+			magAmt=rndcnt;
+			Slots[index].Recast=clamp(rndcnt-(mag.Mags[magIndex]/100),0,rndcnt);
+		}
+		Slots[index].Icon = mag.getmagsprite(magAmt);//ItemStorage.GetIcon(mag);
+		//Slots[index].Icon = ""..mag.Icon;//ItemStorage.GetIcon(mag, magAmt);
 		Slots[index].Amount = magAmt;
 		mag.Mags.Delete(magIndex);
 		mag.Amount--;
@@ -251,6 +259,14 @@ extend class HDFollower
 
 		if (slot.ItemClass is 'HDMagAmmo')
 		{
+			Int MagAmount = slot.Amount;
+			if(slot.ItemClass is 'HD7mMag')
+			{
+				//MagAmount=slot.Amount;
+				int fullets=clamp(30-Slot.Recast,0,MagAmount);
+				//Console.Printf("fullets "..fullets);
+				MagAmount+=fullets*100;
+			}
 			HDMagAmmo.GiveMag(LinkedPlayer, slot.ItemClass, slot.Amount);
 			slot.Destroy();
 		}

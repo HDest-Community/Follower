@@ -27,6 +27,8 @@ extend class HDFollower
 			return;
 		}
 
+		//bNOTRIGGER = !hdf_NoTrigger;
+
 		int blockedSides = GetBlockedSides();
 
 		Actor next = GetNextInChain();
@@ -60,17 +62,19 @@ extend class HDFollower
 		
 		if (!SelWeapon)
 		{
-			if (Order == FOrder_HealSelf && !Moving && Status != FStatus_HealingSelf)
+			if (( Order == FOrder_HealSelf || (Order <= FOrder_Follow && ReloadCoolDown <= 0 && NeedToHealSelf()) ) && !Moving && Status != FStatus_HealingSelf && (GetAmount('PortableMedikit') > 0 || SuturesLeft > 0))
 			{
+				Order = FOrder_HealSelf;
 				Status = FStatus_HealingSelf;
 				SetStateLabel('StapleOwnAss');
 			}
 
-			if (Status >= FStatus_WaitingForWearable && Status <= FStatus_WaitingForWeapon)
+			if (Status <= FStatus_WaitingForWeapon)
+			//if (Status >= FStatus_WaitingForWearable && Status <= FStatus_WaitingForWeapon)
 			{
 				switch (Status)
 				{
-					case FStatus_WaitingForWearable: LookForWearable(); break;
+					//case FStatus_WaitingForWearable: LookForWearable(); break;
 					case FStatus_WaitingForWeapon: LookForWeapon(); break;
 				}
 				A_Face(LinkedPlayer, 15);
@@ -118,26 +122,53 @@ extend class HDFollower
 			}
 			else if (Order == FOrder_Follow)
 			{
+			
+				bool NextTeleported;
+				bNOTRIGGER=False;
 				if (canSeeNext)
 				{
 					LastKnownPos = next.Pos;
+					if(Distance3D(next) < GetMinRange(TGoal, distDiv) && MissPlayer < GetDefaultByType("HDFollower").MissPlayer){MissPlayer = GetDefaultByType("HDFollower").MissPlayer;}
 				}
+				
+				if(
+			abs(LastKnownPos.X - next.pos.x)>=64
+			||abs(LastKnownPos.Y - next.pos.y)>=64
+			){
+			LastKnownPos = (LastKnownPos!=(0,0,0))?LastKnownPos:(Next.Prev.X + LastVel.X*200, Next.Prev.Y + LastVel.Y*200, Next.Prev.Z);
+			NextTeleported=True;}
+			Else LastVel = Next.Vel;
+			if(!NextTeleported)bNOTRIGGER=True;
+				
+				
+		
 
 				// [Ace] Go to goal if it's too far away.
 				// !bSTANDSTILL means the follower will only chase goals if its current goal isn't forced.
 				double DistanceToNext = Distance3D(next);
-				if (bFRIENDLY && (DistanceToNext > GetMinRange(TGoal, distDiv) || !canSeeNext) && DistanceToNext < MaxFollowRange && (!TGoal || !TGoal.bSTANDSTILL))
+				if (bFRIENDLY && !NextTeleported && (DistanceToNext > GetMinRange(TGoal, distDiv) || !canSeeNext) && DistanceToNext < MaxFollowRange && (!TGoal || !TGoal.bSTANDSTILL))
 				{
 					if (canSeeNext)
 					{
 						TGoal = next;
+						if(DistanceToNext < GetMinRange(TGoal, distDiv) && MissPlayer < GetDefaultByType("HDFollower").MissPlayer)MissPlayer = GetDefaultByType("HDFollower").MissPlayer;
+						else if(MissPlayer <= 0){PrintMessage(GetResponse("FOLLOW_MISS"), "MissedPlayer", PMType_General);MissPlayer = GetDefaultByType("HDFollower").MissPlayer*50;}
 					}
 					// [Ace] If following the goal and the goal is nearby but suddenly goes around a corner, try to go around the same corner.
-					else if (LastKnownPos != (0, 0, 0) && (!TGoal || TGoal && TGoal.pos != LastKnownPos))
+					else if (LastKnownPos != (0, 0, 0) && (!TGoal || (TGoal && TGoal.pos != LastKnownPos)))
 					{
 						TrySetGoal(LastKnownPos, SGF_IGNOREVALID | SGF_LASTKNOWN);
+						if(MissPlayer <= 0){PrintMessage(GetResponse("FOLLOW_MISS"), "MissedPlayer", PMType_General);MissPlayer = GetDefaultByType("HDFollower").MissPlayer*50;}
 					}
 				}
+				if(bFRIENDLY && NextTeleported)
+				{
+					if(MissPlayer <= 0){PrintMessage(GetResponse("FOLLOW_MISS"), "MissedPlayer", PMType_General);MissPlayer = GetDefaultByType("HDFollower").MissPlayer*50;}
+					TrySetGoal(LastKnownPos, SGF_IGNOREVALID | SGF_LASTKNOWN);
+					NextTeleported=false;
+					//Console.Printf("Teleported!");
+				}
+			
 			}
 			else if (Order == FOrder_Stay && DistanceToPlayer < HDCONST_ONEMETRE * 5)
 			{
@@ -150,9 +181,9 @@ extend class HDFollower
 			}
 
 			// [Ace] Using potions.
-			if ((!SelWeapon || SelWeapon.Status == FollowerWeapon.WStatus_Idle) && Order <= FOrder_Stay && !Moving && CanHealSelf() && GetAmount('BluePotion') > 0 && GetAge() % 24 == 0)
+			if ((!SelWeapon || SelWeapon.Status == FollowerWeapon.WStatus_Idle) && (Order <= FOrder_Stay || Order == FOrder_Follow && ReloadCoolDown <= 0) && !Moving && CanHealSelf() && GetAmount('HDHealingPotion') > 0 && GetAge() % 24 == 0)
 			{
-				let potion = FindLowestAmount('BluePotion');
+				let potion = FindLowestAmount('HDHealingPotion');
 				potion.Amount--;
 
 				int toHeal = default.Health / 4;
@@ -177,9 +208,9 @@ extend class HDFollower
 			}
 
 			// [Ace] Walk away if you get too close.
-			if ((!Moving || TGoal && TGoal.bSTANDSTILL) && DistanceToPlayer <= HDCONST_ONEMETRE / 2 + radius + LinkedPlayer.radius && GetPlayerMovementAngle() <= MaxMovementAngle && LinkedPlayer.vel.xy.length() > 0.25 && LinkedPlayer.player.cmd.buttons & BT_SPEED)
+			if ((!Moving || TGoal && TGoal.bSTANDSTILL) && DistanceToPlayer <= HDCONST_ONEMETRE + radius + LinkedPlayer.radius && GetPlayerMovementAngle() <= MaxMovementAngle && ((LinkedPlayer.vel.xy.length() > 0.25 && LinkedPlayer.player.cmd.buttons & BT_SPEED) || (LinkedPlayer.vel.xy.length() > 4)))
 			{
-				TrySetGoal(Vec3Angle(HDCONST_ONEMETRE * 1.5, AngleTo(LinkedPlayer) + 180), SGF_IGNOREVALID | SGF_MOVEAWAY);
+				TrySetGoal(Vec3Angle(HDCONST_ONEMETRE * LinkedPlayer.Vel.xy.length(), AngleTo(LinkedPlayer) + 180), SGF_IGNOREVALID | SGF_MOVEAWAY);
 			}
 
 			// [Ace] Mutually put out any fires.
@@ -204,8 +235,20 @@ extend class HDFollower
 			if (Order != FOrder_GoThere && (!SelWeapon || SelWeapon.Status == FollowerWeapon.WStatus_Idle) && (!bFRIENDLY || Stance == FStance_Aggressive) && HasUsableWeapons())
 			{
 				AcquireTargets();
+		if(ReactionTime >= Default.ReactionTime && !CheckTarget() && ReloadCoolDown <= 0)
+		{
+			int result = 213;
+			for (int i = 0; i < Weapons.Size(); ++i)
+			{
+				if (Weapons[i]){result = Weapons[i].TryReload(Weapons[i].TRF_CHECK);}
+				class<HDAmmo> AType, MType; int MaxMag;
+				[AType, MType, MaxMag] = Weapons[i].GetAmmoType();
+				if (Weapons[i] && (Weapons[i].Mag <= 0 || !MType/* && Weapons[i].Mag <= MaxMag/2*/) && result == FollowerWeapon.RResult_CanReload){Weapons[i].Status = FollowerWeapon.WStatus_Reloading;SelWeapon = Weapons[i];
+				if(GetAmount(MType)<=MaxMag && Weapons[i].Mag+GetAmount(AType)<=MaxMag)PrintMessage(GetResponse("NOAMMO_"..Weapons[i].GetLocalizationTag()), "NoAmmo/"..Weapons[i].GetLocalizationTag(), PMType_Critical); Break;}
 			}
-
+		}	
+			}
+			
 			if (SelWeapon && SelWeapon.Status == FollowerWeapon.WStatus_Reloading)
 			{
 				if (SelWeapon.DoReloadSequence(WeaponTicker))
@@ -344,6 +387,7 @@ extend class HDFollower
 
 		if (!Moving && Order == FOrder_GoThere)
 		{
+			TryActivateLine();
 			Order = FOrder_Stay;
 		}
 	}
@@ -474,4 +518,5 @@ extend class HDFollower
 	private bool PNeedsHelp;
 	private bool PNeedsMedic;
 	private double CrouchFactor;
+	private Vector3 LastVel;
 }

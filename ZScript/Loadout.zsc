@@ -24,7 +24,7 @@ extend class HDFollower
 			class<Inventory> cls = HDBackpack.FindByRefId(ref);
 			if (!cls)
 			{
-				continue;
+				Continue;
 			}
 
 			if (cls is 'GarrisonArmour' || cls is 'GarrisonArmourWorn' || cls is 'BattleArmour' || cls is 'BattleArmourWorn')
@@ -36,6 +36,7 @@ extend class HDFollower
 
 			if (cls is 'HDWeapon' && !GetDefaultByType((class<HDWeapon>)(cls)).bWIMPY_WEAPON)
 			{
+				Bool GotWeapon;
 				for (int j = 0; j < Handler.AllWeapons.Size(); ++j)
 				{
 					let tempWpn = FollowerWeapon(new(Handler.AllWeapons[j]));
@@ -43,9 +44,11 @@ extend class HDFollower
 					if (realWpn && realWpn == cls)
 					{
 						FollowerWeapon.CreateAndAdd(tempWpn.GetClass(), self);
-						break;
+						GotWeapon=True;
+						Break;
 					}
 				}
+				if(GotWeapon)Continue;
 			}
 
 			if (IsValidItem(cls, true))

@@ -38,8 +38,8 @@ extend class HDFollower
 
 	protected void PatchPlayerWounds(int amt)
 	{
-		LinkedPlayer.woundcount = max(0, LinkedPlayer.woundcount - amt);
-		LinkedPlayer.unstablewoundcount = max(0, LinkedPlayer.unstablewoundcount - amt);
+		LinkedPlayer.oldwoundcount = max(0, LinkedPlayer.oldwoundcount - amt);
+		LinkedPlayer.aggravateddamage = max(0, LinkedPlayer.aggravateddamage - amt);
 		LinkedPlayer.oldwoundcount += amt;
 		LinkedPlayer.burncount = max(0, LinkedPlayer.burncount - amt * 2);
 	}
@@ -48,12 +48,19 @@ extend class HDFollower
 	{
 		if (GetAmount('PortableMedikit') > 0)
 		{
-			let stim = HDMagAmmo(GiveInventoryType('PortableStimpack'));
-			stim.SyncAmount();
-			if (!AddMag(stim, flags: FIF_FORCE))
+			//let stim = HDMagAmmo(GiveInventoryType('PortableStimpack'));
+			//stim.SyncAmount();
+			//if (!AddMag(stim, flags: FIF_FORCE))
+			//{
+			Inventory spawned = Inventory(Spawn('PortableStimpack', pos));
+			spawned.Amount = 1;
+			if (!AddItem(spawned, 1, flags: FIF_FORCE))
 			{
+				spawned.Destroy();
 				A_DropInventory('PortableStimpack');
 			}
+			
+			//}
 			A_DropItem('SecondBlood');
 			TakeInvItem(Find('PortableMedikit'), FIF_FORCE | FIF_REMOVE);
 			SuturesLeft = MaxSutures;
@@ -68,12 +75,17 @@ extend class HDFollower
 
 	clearscope bool CanApplyStim()
 	{
-		return LinkedPlayer && LinkedPlayer.CountInv('HDStim') <= HDStim.HDSTIM_MAX - HDStim.HDSTIM_DOSE && GetAmount('PortableStimpack') > 0 && LinkedPlayer.CountInv('HDBlues') <= 15 && LinkedPlayer.Health < 40; // [Ace] Don't stim player unless it's necessary.
+		return LinkedPlayer && LinkedPlayer.CountInv('HDStim') <= HDStim.HDSTIM_MAX - HDStim.HDSTIM_DOSE && GetAmount('PortableStimpack') > 0 && LinkedPlayer.CountInv('HealingMagic') <= 15 && LinkedPlayer.Health < 40; // [Ace] Don't stim player unless it's necessary.
 	}
 
 	clearscope bool CanHealSelf()
 	{
-		return Health < default.Health * 0.9 || BodyDamage > default.Health * 0.1;
+		return Health < default.Health || BodyDamage > 0;
+	}
+	
+	clearscope bool NeedToHealSelf()
+	{
+		return Health <= default.Health * 0.8 || BodyDamage >= default.Health * 0.2;
 	}
 
 	clearscope bool PlayerIsIncapped()
@@ -83,7 +95,7 @@ extend class HDFollower
 
 	clearscope bool PlayerNeedsMedic()
 	{
-		return LinkedPlayer && (LinkedPlayer.woundcount > 0 || LinkedPlayer.unstablewoundcount > 0 || LinkedPlayer.burncount > 0) && !LinkedPlayer.FindInventory('HDArmourWorn') && ((GetAmount('PortableMedikit') > 0 || SuturesLeft > 0) || CanApplyStim());
+		return LinkedPlayer && (LinkedPlayer.oldwoundcount > 0 || LinkedPlayer.aggravateddamage > 0 || LinkedPlayer.burncount > 0) && !LinkedPlayer.FindInventory('HDArmourWorn') && ((GetAmount('PortableMedikit') > 0 || SuturesLeft > 0) || CanApplyStim());
 	}
 
 	// --------------------------------------------------

@@ -11,7 +11,8 @@ class FW_SMG : FollowerWeapon
 		Owner.frame++; // [Ace] Muzzle flash frame.
 		Owner.A_StartSound("weapons/smg", CHAN_WEAPON);
 		HDBulletActor.FireBullet(Owner, "HDB_9", Owner.GunHeight, speedfactor: 1.1);
-		HDWeapon.EjectCasing(Owner, 'HDSpent9mm', 11, -frandom(79, 81), frandom(7, 7.5));
+		HDWeapon.EjectCasing(Owner, 'HDSpent9mm',frandom(-1,2),(frandom(0.2,0.3),-frandom(7,7.5),frandom(0,0.2)),(0,0,-2));
+		
 		ChamberedRound = CRType_Empty;
 		if (!TryChamberRound())
 		{

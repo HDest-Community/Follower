@@ -10,7 +10,8 @@ class FollowerSewie : HDFollower
 		SeeSound "Follower/Sewie/See";
 		PainSound "Follower/Sewie/Pain";
 		DeathSound "Follower/Sewie/Death";
-		Tag "Sewie";
+		Tag "$TAG_SEWIE";
+		HDFollower.UnLocalizeTag "Sewie";
 		HDFollower.FollowerInfo GENDER_FEMALE, 'FollowerBodySewie', 'LeftBehindSewie';
 	}
 
@@ -29,6 +30,6 @@ class FollowerBodySewie : FollowerBody
 	Default
 	{
 		Inventory.Icon "FOLLE0";
-		Tag "Sewie";
+		Tag "$TAG_SEWIE";
 	}
 }

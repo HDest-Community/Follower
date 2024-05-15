@@ -1,5 +1,7 @@
 [enu default]
 
+TAG_MARINE = "Marine";
+
 MARINE_ORDER_FOLLOW1_1 = "I'm already following you, commander.";
 MARINE_ORDER_FOLLOW1_2 = "Already got your back, commander.";
 MARINE_ORDER_FOLLOW1_3 = "Negative, commander.";
