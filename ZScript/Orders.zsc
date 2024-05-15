@@ -112,4 +112,148 @@ extend class HDFollower
 
 		return false;
 	}
+	
+	void TurnOnCamera()
+	{
+		if (FollowerCamera || !LinkedPlayer)
+		{
+			return;
+		}
+		
+		FollowerCamera = HDFollowerCamera(Spawn("HDFollowerCamera", pos));
+		if(FollowerCamera)
+		{
+			FollowerCamera.Master = Self;
+			FollowerScreen actualweapon=FollowerScreen(spawn("FollowerScreen",LinkedPlayer.pos));
+			if(actualweapon){
+			actualweapon.attachtoowner(LinkedPlayer);
+			LinkedPlayer.A_SelectWeapon("FollowerScreen");
+			actualweapon.FollowerCamera = FollowerCamera;
+			}
+		}
+	}
+	HDFollowerCamera FollowerCamera;
+}
+
+Class HDFollowerCamera:IdleDummy{
+	bool Controlled;
+	Vector3 Offset;
+	override void postbeginplay(){
+		super.postbeginplay();
+		if(Master)
+		{
+			A_SetAngle(Master.Angle,SPF_INTERPOLATE);
+			A_SetPitch(Master.Pitch,SPF_INTERPOLATE);
+			A_SetRoll(Master.roll);
+			Offset = (AngleToVector(Master.Angle), 0) * 5;
+			setorigin( (Master.Pos.XY, Master.Pos.Z+Master.Height*0.8) + offset, true);
+		}
+	}
+	override void tick(){
+		if(!Master){
+			destroy();
+			return;
+		}
+		if(!Controlled)
+		{
+			A_SetAngle(Master.Angle,SPF_INTERPOLATE);
+			A_SetPitch(Master.Pitch,SPF_INTERPOLATE);
+			A_SetRoll(Master.roll);
+		}
+		Offset = (AngleToVector(Angle), 0) * 5;
+		setorigin( (Master.Pos.XY, Master.Pos.Z+Master.Height*0.8) + offset, true);
+	}
+}
+
+class FollowerScreen:HDWeapon{
+	HDFollowerCamera FollowerCamera;
+	default{
+		+inventory.invbar
+		+weapon.wimpy_weapon
+		+nointeraction
+		+hdweapon.droptranslation
+		inventory.icon "TNT1A0";
+		weapon.selectionorder 1012;
+	}
+	action void Abort(){
+		if(invoker.FollowerCamera)invoker.FollowerCamera.Destroy();
+		//A_SelectWeapon("HDFist");
+		setweaponstate("nope");
+		dropinventory(invoker);
+	}
+	override inventory CreateTossable(int amt){
+		return NULL;
+	}
+	override string gethelptext(){
+		LocalizeHelp();
+		return
+		LWPHELP_FIREMODE..StringTable.Localize("$DERPCWH_FMODE");
+	}
+	override void DrawSightPicture(
+		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
+		bool sightbob,vector2 bob,double fov,bool scopeview,actor hpc
+	){
+		if(!FollowerCamera)return;
+		let cam=FollowerCamera;
+		if(!cam)return;
+
+		int scaledyoffset=46;
+		name ctex="HDXCAM_DERP";
+		texman.setcameratotexture(cam,ctex,60);
+		sb.drawimage(
+			ctex,(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
+			alpha:1.,scale:((0.25/1.2),0.25)
+		);
+		sb.drawimage(
+			"tbwindow",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
+			scale:(1,1)
+		);
+	}
+	Override Void Tick()
+	{
+		if(Owner)
+		{
+		if(Owner.Player.ReadyWeapon!=self && !(Owner.Player.ReadyWeapon is "NullWeapon") && !(Owner.Player.PendingWeapon==Self))Abort();
+		}
+	}
+	states{
+	select:
+		TNT1 A 10;
+		goto super::select;
+	ready:
+		TNT1 A 1{
+			if(!invoker.FollowerCamera)
+				{
+				Abort();
+				return;
+				}
+			A_WeaponReady(WRF_NOFIRE);
+			int bt=player.cmd.buttons;
+			if(!invoker.FollowerCamera||invoker.FollowerCamera.distance3d(self)>frandom(0.9,1.1)*DERP_CONTROLRANGE)
+				invoker.FollowerCamera.Destroy();
+				if(!invoker.FollowerCamera){
+					A_SelectWeapon("HDFist");
+					invoker.GoAwayAndDie();
+				}
+
+			bool moved=false;
+			if(bt&BT_FIREMODE){
+				invoker.FollowerCamera.controlled=true;
+				int yaw=clamp(GetMouseX(true)>>5,-10,10);
+				if(!yaw)yaw=clamp(-player.cmd.sidemove,-10,10);
+				int ptch=clamp(GetMouseY(true)>>5,-10,10);
+				if(yaw||ptch){
+					invoker.FollowerCamera.pitch=clamp(invoker.FollowerCamera.pitch-clamp(ptch,-10,10),-90,60);
+					invoker.FollowerCamera.angle+=clamp(yaw,-DERP_MAXTICTURN,DERP_MAXTICTURN);
+					if(yaw)moved=true;
+				}
+			}else invoker.FollowerCamera.Controlled=false;
+			
+			if(!invoker.bweaponbusy&&hdplayerpawn(self))hdplayerpawn(self).nocrosshair=0;
+		}
+		goto readyend;
+	spawn:
+		TNT1 A 0;
+		stop;
+	}
 }

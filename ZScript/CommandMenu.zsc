@@ -1609,7 +1609,8 @@ extend class FollowerHandler
 				"$FLW_CMDINPUTS2",
 				"$FLW_CMDINPUTS3",
 				"$FLW_CMDINPUTS4",
-				"$FLW_CMDINPUTS5"
+				"$FLW_CMDINPUTS5",
+				"$FLW_CMDINPUTS6"
 			};
 			for (int i = 0; i < commandsList.Size(); ++i)
 			{
@@ -1820,6 +1821,12 @@ extend class FollowerHandler
 		if (cmd ~== "HDF_TryWeapon")
 		{
 			lastFol.TryUseWeapon();
+			return;
+		}
+		
+		if (cmd ~== "HDF_Camera")
+		{
+			lastFol.TurnOnCamera();
 			return;
 		}
 
@@ -2046,6 +2053,9 @@ extend class FollowerHandler
 					}
 					break;
 				}
+				case 'cam':
+					SendNetworkEvent("HDF_Camera");
+					Break;
 			}
 		}
 
