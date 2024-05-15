@@ -2,7 +2,7 @@ Original mod by Ace: https://gitlab.com/accensi/hd-addons/follower
 
 ### This is a fixed and improved version.
 - Code fixes and improves by mickromash
-- Additional testing by Faxer
+- Additional testing and new followers lines by Faxer
 
 
 ### Changes
