@@ -208,7 +208,10 @@ extend class HDFollower
 			}
 
 			// [Ace] Walk away if you get too close.
-			if ((!Moving || TGoal && TGoal.bSTANDSTILL) && DistanceToPlayer <= HDCONST_ONEMETRE + radius + LinkedPlayer.radius && GetPlayerMovementAngle() <= MaxMovementAngle && ((LinkedPlayer.vel.xy.length() > 0.25 && LinkedPlayer.player.cmd.buttons & BT_SPEED) || (LinkedPlayer.vel.xy.length() > 4)))
+			if ((!Moving || TGoal && TGoal.bSTANDSTILL) && (
+			(DistanceToPlayer <= HDCONST_ONEMETRE + radius + LinkedPlayer.radius && GetPlayerMovementAngle() <= MaxMovementAngle && ((LinkedPlayer.vel.xy.length() > 0.25 && LinkedPlayer.player.cmd.buttons & BT_SPEED) || LinkedPlayer.vel.xy.length() > 4 || LinkedPlayer.Vel.X*Cos(LinkedPlayer.Angle-180) + LinkedPlayer.Vel.Y*Sin(LinkedPlayer.Angle-180) > 0.1))||
+			(DistanceToPlayer <= radius + LinkedPlayer.radius + HDCONST_ONEMETRE * 0.1 && GetPlayerMovementAngle() <= MaxMovementAngle && (LinkedPlayer.vel.xy.length() > 0.2 || (LinkedPlayer.Vel.X*Cos(LinkedPlayer.Angle-180) + LinkedPlayer.Vel.Y*Sin(LinkedPlayer.Angle-180) > 0.1)))
+			))
 			{
 				TrySetGoal(Vec3Angle(HDCONST_ONEMETRE * LinkedPlayer.Vel.xy.length(), AngleTo(LinkedPlayer) + 180), SGF_IGNOREVALID | SGF_MOVEAWAY);
 			}
