@@ -140,6 +140,7 @@ extend class HDFollower
 		
 		double headOffset = FTarget.Actor.FindInventory('HDArmourWorn') && HDMobBase(FTarget.Actor) && !HDMobBase(FTarget.Actor).bHASHELMET ? FTarget.Actor.height * 0.1 : 0;
 		A_Face(FTarget.Actor, 0, 0, flags: FAF_MIDDLE, z_ofs: headOffset);
+		if(FTarget.Actor.Height<40)A_Face(FTarget.Actor, 0, 0, flags: FAF_MIDDLE, z_ofs: headOffset-FTarget.Actor.Height/2);
 
 		// [Ace] Assume the average projectile travels at 500 m/s. Normally you'd want to use the actual speed, but things are a bit different here.
 		// Too lazy to add projectile info and whatnot. Maybe if this turns out to be too trash.
@@ -152,14 +153,14 @@ extend class HDFollower
 		}
 
 		newAim *= ticsToTarget;
-		let ltp=FTarget.Actor.pos;// - FTarget.Actor.vel;
+		let ltp=FTarget.Actor.pos - FTarget.Actor.vel;
 		let lsp=prev;
 		double ach=deltaangle(
 			hdmath.angleto(lsp.xy,ltp.xy),
 			hdmath.angleto(pos.xy,FTarget.Actor.pos.xy)
 		);
-		//angle = oldAim.x + newAim.x;
-		pitch = oldAim.y + newAim.y;
+		angle = oldAim.x + newAim.x;
+		//pitch = oldAim.y + newAim.y;
 	}
 
 	protected Actor AimBlocked()
