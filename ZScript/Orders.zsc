@@ -53,7 +53,8 @@ extend class HDFollower
 			case FOrder_GoThere:
 			{
 				FLineTraceData TraceData;
-				LinkedPlayer.LineTrace(LinkedPlayer.angle, MaxGoalRange * 2, LinkedPlayer.pitch, TRF_THRUACTORS, LinkedPlayer.Height - 8, data: TraceData);
+				if(!FollowerCamera || !FollowerCamera.Controlled)LinkedPlayer.LineTrace(LinkedPlayer.angle, MaxGoalRange * 2, LinkedPlayer.pitch, TRF_THRUACTORS, LinkedPlayer.Height - 8, data: TraceData);
+				else FollowerCamera.LineTrace(FollowerCamera.angle, MaxGoalRange * 2, FollowerCamera.pitch, TRF_THRUACTORS, FollowerCamera.Pos.Z, data: TraceData);
 				if ((TraceData.HitType == TraceData.TRACE_HitFloor || TraceData.HitType == TraceData.TRACE_HitWall) && TrySetGoal(TraceData.HitLocation, SGF_IGNOREVALID | (flags & COF_MULTI ? SGF_MULTI : 0)))
 				{
 					// [Ace] Drop whatever they're doing and haul ass to their destination.
@@ -207,6 +208,10 @@ class FollowerScreen:HDWeapon{
 		sb.drawimage(
 			"tbwindow",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
 			scale:(1,1)
+		);
+		sb.drawimage(
+			"CamCros",(0,scaledyoffset*0.8)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_TOP,
+			alpha:0.4,scale:(1.5,1.5)
 		);
 	}
 	Override Void Tick()
