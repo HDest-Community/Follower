@@ -117,7 +117,7 @@ class FollowerWeapon abstract
 		{
 			if (MType)
 			{
-				if(MType is 'HD7mMag')
+				if(MType is 'HD7mMag' || MType is 'HD7mClip')
 				{
 					int magamt=Mag;
 
@@ -201,7 +201,7 @@ class FollowerWeapon abstract
 		[AType, MType, MaxMag] = GetAmmoType();
 		if (MType && Mag > -1)
 		{
-			if(MType is 'HD7mMag')
+			if(MType is 'HD7mMag' || MType is 'HD7mClip')
 			{
 				int magamt=Mag;
 

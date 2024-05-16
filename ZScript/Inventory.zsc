@@ -143,7 +143,7 @@ extend class HDFollower
 			magIndex = mag.Mags.Size() - 1;
 		}
 		int magAmt = mag.Mags[magIndex];
-		if(mag is 'HD7mMag')
+		if(mag is 'HD7mMag' || mag is 'HD7mClip')
 		{
 			int rndcnt=mag.Mags[magIndex]%100;
 				
@@ -260,14 +260,14 @@ extend class HDFollower
 		if (slot.ItemClass is 'HDMagAmmo')
 		{
 			Int MagAmount = slot.Amount;
-			if(slot.ItemClass is 'HD7mMag')
+			if(slot.ItemClass is 'HD7mMag' || slot.ItemClass is 'HD7mClip')
 			{
 				//MagAmount=slot.Amount;
 				int fullets=clamp(30-Slot.Recast,0,MagAmount);
 				//Console.Printf("fullets "..fullets);
 				MagAmount+=fullets*100;
 			}
-			HDMagAmmo.GiveMag(LinkedPlayer, slot.ItemClass, slot.Amount);
+			HDMagAmmo.GiveMag(LinkedPlayer, slot.ItemClass, MagAmount);
 			slot.Destroy();
 		}
 		else
