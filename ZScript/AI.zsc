@@ -308,6 +308,8 @@ extend class HDFollower
 
 		scale.y = default.scale.y * (1.0 - CrouchFactor);
 		A_SetSize(-1, default.Height * (1.0 - CrouchFactor));
+		cameraheight=GetDefaultByType("HDMobBase").CameraHeight * (1.0 - CrouchFactor);
+		gunheight=cameraheight-1.5;
 
 		double goalDist2 = TGoal ? (TGoal is 'TargetGoal' ? Distance2D(TGoal) : Distance3D(TGoal)) : 0;
 
