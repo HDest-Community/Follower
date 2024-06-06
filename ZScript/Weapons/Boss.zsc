@@ -1,5 +1,6 @@
 class FW_Boss : FollowerWeapon
 {
+	int frontreticle, CustomChamb;
 	override string GetName() { return "Boss Rifle"; }
 	override string GetIcon() { return "BORFA0"; }
 	override class<HDAmmo>, class<HDMagAmmo>, int GetAmmoType() { return 'SevenMilAmmo', 'HD7mClip', 10; }
@@ -227,6 +228,18 @@ class FW_Boss : FollowerWeapon
 	{
 		Mag = wpn.WeaponStatus[BOSSS_MAG];
 		ChamberedRound = wpn.WeaponStatus[BOSSS_CHAMBER];
+		frontreticle = wpn.WeaponStatus[0] & BOSSF_FRONTRETICLE ? 1 : 0;
+		CustomChamb = wpn.WeaponStatus[0] & BOSSF_CUSTOMCHAMBER ? 1 : 0;
+	}
+	
+	override void OnBackTransfer(HDWeapon wpn)
+	{
+		wpn.WeaponStatus[BOSSS_MAG] = Mag;
+		wpn.WeaponStatus[BOSSS_CHAMBER] = ChamberedRound;
+		if(frontreticle>0) wpn.weaponstatus[0]|=BOSSF_FRONTRETICLE;
+		else wpn.weaponstatus[0]&=~BOSSF_FRONTRETICLE;
+		if(CustomChamb>0) wpn.weaponstatus[0]|=BOSSF_CUSTOMCHAMBER;
+		else wpn.weaponstatus[0]&=~BOSSF_CUSTOMCHAMBER;
 	}
 
 	private bool MustChamber;

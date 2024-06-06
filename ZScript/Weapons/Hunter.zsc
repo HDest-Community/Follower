@@ -1,5 +1,6 @@
 class FW_Hunter : FollowerWeapon
 {
+	int Choke, Semi, FullAuto;
 	override string GetName() { return "Hunter"; }
 	override string GetIcon() { return "HUNTA0"; }
 	override class<HDAmmo>, class<HDMagAmmo>, int GetAmmoType() { return 'HDShellAmmo', null, 7; }
@@ -171,6 +172,23 @@ class FW_Hunter : FollowerWeapon
 			sh.Amount = wpn.WeaponStatus[SHOTS_SIDESADDLE];
 			Owner.AddItem(sh, sh.Amount, flags: Owner.FIF_FORCE);
 		}
+		Choke = wpn.weaponstatus[HUNTS_CHOKE];
+		Semi = wpn.WeaponStatus[0] & HUNTF_EXPORT ? 1 : 0;
+		FullAuto = wpn.WeaponStatus[0] & HUNTF_CANFULLAUTO ? 1 : 0;
+	}
+	
+	override void OnBackTransfer(HDWeapon wpn)
+	{
+		wpn.WeaponStatus[HUNTS_TUBE] = Mag;
+		wpn.WeaponStatus[HUNTS_CHAMBER] = ChamberedRound;
+		wpn.WeaponStatus[SHOTS_SIDESADDLE] = 0;
+		wpn.weaponstatus[HUNTS_CHOKE] = Choke;
+		
+		if(Semi>0)wpn.weaponstatus[0]|=HUNTF_EXPORT;
+		else wpn.weaponstatus[0]&=~HUNTF_EXPORT;
+		
+		if(FullAuto>0)wpn.weaponstatus[0]|=HUNTF_CANFULLAUTO;
+		else wpn.weaponstatus[0]&=~HUNTF_CANFULLAUTO;
 	}
 
 	private bool MustChamber;

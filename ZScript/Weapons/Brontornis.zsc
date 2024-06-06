@@ -91,4 +91,9 @@ class FW_Bronto : FollowerWeapon
 	{
 		ChamberedRound = wpn.WeaponStatus[BRONS_CHAMBER];
 	}
+	
+	override void OnBackTransfer(HDWeapon wpn)
+	{
+		wpn.WeaponStatus[BRONS_CHAMBER] = ChamberedRound;
+	}
 }

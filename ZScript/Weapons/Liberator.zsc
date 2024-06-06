@@ -1,5 +1,6 @@
 class FW_Liberator : FollowerWeapon
 {
+	int nogl, nobull, noauto, lefty, altreticle, frontreticle, Crossdot;
 	override string GetName() { return "Liberator"; }
 	override string GetIcon() { return "BRLLA0"; }
 	override class<HDAmmo>, class<HDMagAmmo>, int GetAmmoType() { return 'SevenMilAmmo', 'HD7mMag', 30; }
@@ -110,5 +111,42 @@ class FW_Liberator : FollowerWeapon
 		{
 			Owner.A_DropItem('HDRocketAmmo', 1);
 		}
+		
+		nogl = wpn.WeaponStatus[LIBS_FLAGS] & LIBF_NOLAUNCHER? 1 : 0;
+		nobull = wpn.WeaponStatus[LIBS_FLAGS] & LIBF_NOBULLPUP? 1 : 0;
+		noauto = wpn.WeaponStatus[LIBS_FLAGS] & LIBF_NOAUTO? 1 : 0;
+		lefty = wpn.WeaponStatus[LIBS_FLAGS] & LIBF_LEFTY? 1 : 0;
+		altreticle = wpn.WeaponStatus[LIBS_FLAGS] & LIBF_ALTRETICLE? 1 : 0;
+		frontreticle = wpn.WeaponStatus[LIBS_FLAGS] & LIBF_FRONTRETICLE? 1 : 0;
+		Crossdot = wpn.weaponstatus[LIBS_DOT];
+	}
+	
+	override void OnBackTransfer(HDWeapon wpn)
+	{
+		wpn.WeaponStatus[LIBS_MAG] = Mag;
+		wpn.WeaponStatus[LIBS_CHAMBER] = ChamberedRound;
+		wpn.weaponstatus[LIBS_FLAGS]&=~LIBF_GRENADELOADED;
+		
+		
+		if(nogl>0)wpn.WeaponStatus[LIBS_FLAGS]|=LIBF_NOLAUNCHER;
+		else wpn.WeaponStatus[LIBS_FLAGS]&=~LIBF_NOLAUNCHER;
+		
+		if(nobull>0)wpn.WeaponStatus[LIBS_FLAGS]|=LIBF_NOBULLPUP;
+		else wpn.WeaponStatus[LIBS_FLAGS]&=~LIBF_NOBULLPUP;
+		
+		if(noauto>0)wpn.WeaponStatus[LIBS_FLAGS]|=LIBF_NOAUTO;
+		else wpn.WeaponStatus[LIBS_FLAGS]&=~LIBF_NOAUTO;
+		
+		if(lefty>0)wpn.WeaponStatus[LIBS_FLAGS]|=LIBF_LEFTY;
+		else wpn.WeaponStatus[LIBS_FLAGS]&=~LIBF_LEFTY;
+		
+		if(altreticle>0)wpn.WeaponStatus[LIBS_FLAGS]|=LIBF_ALTRETICLE;
+		else wpn.WeaponStatus[LIBS_FLAGS]&=~LIBF_ALTRETICLE;
+		
+		if(frontreticle>0)wpn.WeaponStatus[LIBS_FLAGS]|=LIBF_FRONTRETICLE;
+		else wpn.WeaponStatus[LIBS_FLAGS]&=~LIBF_FRONTRETICLE;
+		
+		
+		wpn.weaponstatus[LIBS_DOT] = Crossdot;
 	}
 }

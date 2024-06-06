@@ -279,6 +279,33 @@ extend class HDFollower
 				ThinkMessage(LinkedPlayer, "$NOSPACE_PLR");
 				return;
 			}
+			
+			if(slot.ItemClass is 'PortableStimpack')
+			{
+
+		bool hasprevious=(
+			LinkedPlayer
+			&&LinkedPlayer.findinventory(slot.ItemClass)
+		);
+
+		//spawn the weapon
+		hdweapon actualweapon=hdweapon(spawn(slot.ItemClass,pos));
+		actualweapon.special=special;
+		actualweapon.changetid(tid);
+		if(LinkedPlayer){
+			actualweapon.attachtoowner(LinkedPlayer);
+
+			//apply defaults from owner
+			actualweapon.defaultconfigure(player);
+		}
+
+		//apply config applicable to this weapongiver
+
+		//if there was a previous weapon, bring this one down to the spares
+		if(hasprevious&&LinkedPlayer.getage()>5){
+			actualweapon.AddSpareWeaponRegular(LinkedPlayer);
+		}
+			}
 			HDF.Give(LinkedPlayer, slot.ItemClass, maxAdd);
 
 			slot.Amount -= maxAdd;

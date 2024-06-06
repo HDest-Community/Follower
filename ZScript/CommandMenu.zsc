@@ -1942,7 +1942,12 @@ extend class FollowerHandler
 						int index = args[0].ToInt();
 						if (index > 0 && index <= wSize)
 						{
-							flw.Weapons[index - 1].EmptyWeapon();
+							//flw.Weapons[index - 1].EmptyWeapon();
+							HDWeapon DropWeap = HDWeapon(Flw.Spawn(flw.Weapons[index - 1].GetRealWeapon(), flw.pos + (0, 0, flw.height / 2)));
+							flw.Weapons[index - 1].OnBackTransfer(DropWeap);
+							DropWeap.angle = flw.angle;
+							DropWeap.A_ChangeVelocity(1.5, 0, 1, CVF_RELATIVE);
+							DropWeap.vel += flw.vel;
 							flw.Weapons[index - 1].Destroy();
 							flw.Weapons.Delete(index - 1);
 							continue;
@@ -1955,7 +1960,12 @@ extend class FollowerHandler
 						continue;
 					}
 					int index = flw.Weapons.Find(wpn);
-					wpn.EmptyWeapon();
+					//wpn.EmptyWeapon();
+					HDWeapon DropWeap1 = HDWeapon(Flw.Spawn(wpn.GetRealWeapon(), flw.pos + (0, 0, flw.height / 2)));
+					wpn.OnBackTransfer(DropWeap1);
+					DropWeap1.angle = flw.angle;
+					DropWeap1.A_ChangeVelocity(1.5, 0, 1, CVF_RELATIVE);
+					DropWeap1.vel += flw.vel;
 					wpn.Destroy();
 					flw.Weapons.Delete(index);
 				}
@@ -2067,7 +2077,7 @@ extend class FollowerHandler
 				SendNetworkEvent("HDF_TryReloadWeapon:"..args);
 				break;
 			}
-			case 'rmv':
+			case 'drp':
 			{
 				if (input.Length() > 3)
 				{

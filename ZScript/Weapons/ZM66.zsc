@@ -1,5 +1,6 @@
 class FW_ZM66 : FollowerWeapon
 {
+	int nogl, noauto, Crossdot;
 	override string GetName() { return "ZM66"; }
 	override string GetIcon() { return "RIFLA0"; }
 	override class<HDAmmo>, class<HDMagAmmo>, int GetAmmoType() { return 'FourMilAmmo', 'HD4mMag', 50; }
@@ -16,7 +17,7 @@ class FW_ZM66 : FollowerWeapon
 			{
 				Owner.frame++;
 				Owner.A_StartSound("weapons/rifle", CHAN_WEAPON);
-				HDBulletActor.FireBullet(Owner, "HDB_426", Owner.GunHeight);
+				HDBulletActor.FireBullet(Owner, "HDB_426", Owner.GunHeight);		
 				Owner.A_AlertMonsters();
 				ChamberedRound = CRType_Empty;
 				if (!TryChamberRound())
@@ -115,5 +116,25 @@ class FW_ZM66 : FollowerWeapon
 		{
 			Owner.A_DropItem('HDRocketAmmo', 1);
 		}
+		
+		nogl = wpn.WeaponStatus[ZM66S_FLAGS] & ZM66F_NOLAUNCHER? 1 : 0;
+		noauto = wpn.WeaponStatus[ZM66S_FLAGS] & ZM66F_NOFIRESELECT? 1 : 0;
+		Crossdot = wpn.weaponstatus[ZM66S_DOT];
+	}
+	
+	override void OnBackTransfer(HDWeapon wpn)
+	{
+		wpn.WeaponStatus[ZM66S_MAG] = Mag;
+		
+		if(ChamberedRound > 0)wpn.weaponstatus[ZM66S_FLAGS]|=ZM66F_CHAMBER;
+		else wpn.weaponstatus[ZM66S_FLAGS]&=~ZM66F_CHAMBER;
+		
+		if(nogl>0)wpn.WeaponStatus[ZM66S_FLAGS]|=ZM66F_NOLAUNCHER;
+		else wpn.WeaponStatus[ZM66S_FLAGS]&=~ZM66F_NOLAUNCHER;
+		
+		if(noauto>0)wpn.WeaponStatus[ZM66S_FLAGS]|=ZM66F_NOFIRESELECT;
+		else wpn.WeaponStatus[ZM66S_FLAGS]&=~ZM66F_NOFIRESELECT;
+		
+		wpn.weaponstatus[ZM66S_DOT] = Crossdot;
 	}
 }

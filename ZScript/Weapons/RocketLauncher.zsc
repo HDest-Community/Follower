@@ -1,5 +1,6 @@
 class FW_RocketLauncher : FollowerWeapon
 {
+	bool nomag;
 	override string GetName() { return "Rocket Launcher"; }
 	override string GetIcon() { return "LAUNA0"; }
 	override class<HDAmmo>, class<HDMagAmmo>, int GetAmmoType() { return 'HDRocketAmmo', null, 5; }
@@ -131,5 +132,17 @@ class FW_RocketLauncher : FollowerWeapon
 	{
 		Mag = wpn.WeaponStatus[RLS_MAG];
 		ChamberedRound = wpn.WeaponStatus[RLS_CHAMBER] > 0 ? 2 : 0;
+		if(wpn.WeaponStatus[RLS_CHAMBER] > 1){ChamberedRound = 0;Owner.A_DropItem('HEATAmmo', 1);}
+		nomag = wpn.WeaponStatus[0] & RLF_NOMAG ? True:False;
+	}
+	
+	override void OnBackTransfer(HDWeapon wpn)
+	{
+		wpn.WeaponStatus[RLS_MAG] = Mag;
+		if(ChamberedRound>0)wpn.WeaponStatus[RLS_CHAMBER] = 1;
+		else wpn.WeaponStatus[RLS_CHAMBER] = 0;
+		
+		if(NoMag)wpn.WeaponStatus[0]|=RLF_NOMAG;
+		else wpn.WeaponStatus[0]&=~RLF_NOMAG;
 	}
 }

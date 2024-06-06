@@ -1,5 +1,6 @@
 class FW_SMG : FollowerWeapon
 {
+	int fireswitch, reflexsight, CrossDot;
 	override string GetName() { return "SMG"; }
 	override string GetIcon() { return "SMGNA0"; }
 	override class<HDAmmo>, class<HDMagAmmo>, int GetAmmoType() { return 'HDPistolAmmo', 'HD9mMag30', 30; }
@@ -86,5 +87,20 @@ class FW_SMG : FollowerWeapon
 	{
 		Mag = wpn.WeaponStatus[SMGS_MAG];
 		ChamberedRound = wpn.WeaponStatus[SMGS_CHAMBER];
+		fireswitch = wpn.WeaponStatus[SMGS_SWITCHTYPE];
+		reflexsight = wpn.WeaponStatus[0] & SMGF_REFLEXSIGHT? 1 : 0;
+		CrossDot = wpn.WeaponStatus[SMGS_DOT];
+	}
+	
+	override void OnBackTransfer(HDWeapon wpn)
+	{
+		wpn.WeaponStatus[SMGS_MAG] = Mag;
+		wpn.WeaponStatus[SMGS_CHAMBER] = ChamberedRound;
+		wpn.WeaponStatus[SMGS_SWITCHTYPE] = fireSwitch;
+		
+		if(reflexsight)wpn.WeaponStatus[0]|=SMGF_REFLEXSIGHT;
+		else wpn.WeaponStatus[0]&=~SMGF_REFLEXSIGHT;
+		
+		wpn.WeaponStatus[SMGS_DOT] = CrossDot;
 	}
 }

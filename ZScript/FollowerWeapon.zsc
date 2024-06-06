@@ -100,6 +100,7 @@ class FollowerWeapon abstract
 	abstract play FireSequenceResult DoFiringSequence(out int ticker, Actor trgt);
 	abstract play bool DoReloadSequence(out int ticker);
 	abstract play void OnTransfer(HDWeapon wpn);
+	abstract play void OnBackTransfer(HDWeapon wpn);
 
 	virtual play bool CheckWeaponCondition(Actor trgt) { return true; }
 	virtual play void EmptyWeapon()
