@@ -231,6 +231,9 @@ extend class HDFollower
 				LinkedPlayer.A_GiveInventory('HDFireDouse', 3);
 			}
 		}
+		
+		// [Mickromash] try to dodge projectile
+		if(abs(Vel.Z) <= 0.1 && DodgeTimer <= 0)A_DodgeFireBall(40);
 
 		// [Ace] Enemy searching and weapon handling.
 		if (Weapons.Size() > 0)
@@ -314,7 +317,7 @@ extend class HDFollower
 		double goalDist2 = TGoal ? (TGoal is 'TargetGoal' ? Distance2D(TGoal) : Distance3D(TGoal)) : 0;
 
 		// [Ace] Movement. Always travel to goals if there are any.
-		if (Status == FStatus_None && (!SelWeapon || SelWeapon.Status != FollowerWeapon.WStatus_Firing) && TGoal && goalDist2 < MaxGoalRange)
+		if (Status == FStatus_None && (!SelWeapon || SelWeapon.Status != FollowerWeapon.WStatus_Firing) && TGoal && goalDist2 < MaxGoalRange && DodgeTimer <= 23)
 		{
 			double distDiff = max(goalDist2 - GetMinRange(TGoal, distDiv), 0);
 			double targetSpeed = min(0.2 + (distDiff * 0.5) / MaxMovementSpeed, MaxMovementSpeed);
@@ -389,7 +392,10 @@ extend class HDFollower
 		}
 
 		Moving = vel.xy.length() > 0.01;
-
+		
+		// [Mickromash] try to dodge projectile
+		if(abs(Vel.Z) <= 0.1 && DodgeTimer <= 0)A_DodgeFireBall(40);
+		
 		if (!Moving && Order == FOrder_GoThere)
 		{
 			TryActivateLine();
@@ -413,6 +419,66 @@ extend class HDFollower
 			}
 		}
 		ActivateAsPlayer = false;
+	}
+	
+	Void A_DodgeFireBall(int CoolDown)
+	{
+		Actor FirBal, mo;
+		ThinkerIterator Iter = ThinkerIterator.Create('HDFireball');
+		While (mo = HDFireball(iter.Next()))
+		{
+			if(mo.Distance3D(self)>140)Continue;
+			if((mo.Vel.X > 0 && mo.Pos.X > Pos.X && abs(mo.Vel.X) > abs(mo.Vel.Y)) || (mo.Vel.Y > 0 && mo.Pos.Y > Pos.Y && abs(mo.Vel.Y) > abs(mo.Vel.X)) || (mo.Vel.X < 0 && mo.Pos.X < Pos.X && abs(mo.Vel.X) > abs(mo.Vel.Y)) || (mo.Vel.Y < 0 && mo.Pos.Y < Pos.Y && abs(mo.Vel.Y) > abs(mo.Vel.X)))
+			Continue;
+			if(abs(VectorAngle(mo.Vel.X, mo.Vel.Y)) > abs(mo.AngleTo(Self)) + 30 || abs(VectorAngle(mo.Vel.X, mo.Vel.Y)) < abs(mo.AngleTo(Self)) - 30)
+			Continue;
+			if(mo.Vel.XY.Length() + abs(mo.Vel.Z) <= 1)Continue;
+			if(!hdf_dodgeUnseen)
+			{
+			Let OldTarget = Target;
+			Target = mo;
+			if(!CheckIfTargetInLOS(180, 0, 140, 0)){Target=OldTarget;Continue;}
+			Target=OldTarget;
+			}
+			if(!FirBal || FirBal.Distance3D(Self) > mo.Distance3D(Self))FirBal = mo;
+		}
+				
+		if(FirBal != NULL)
+		{
+			Int Direction = 0;
+			FLineTraceData TraceLeft, TraceRight;
+			LineTrace(AngleTo(FirBal) - 90, HDCONST_ONEMETRE * 3, 0, TRF_NOSKY, GunHeight, data: TraceLeft);
+			LineTrace(AngleTo(FirBal) + 90, HDCONST_ONEMETRE * 3, 0, TRF_NOSKY, GunHeight, data: TraceRight);
+			//Mickromahs - Dodge only left or right if projectile is in line with follower or if there're walls near follower
+			if(TraceLeft.HitType == TraceLeft.TRACE_HITWALL || TraceRight.HitType == TraceLeft.TRACE_HITWALL || !(abs(VectorAngle(FirBal.Vel.X, FirBal.Vel.Y)) > abs(FirBal.AngleTo(Self)) + 8 || abs(VectorAngle(FirBal.Vel.X, FirBal.Vel.Y)) < abs(FirBal.AngleTo(Self)) - 8))
+			{
+				if(TraceLeft.HitType == TraceLeft.TRACE_HITWALL || (TraceLeft.HitType == TRACE_HitActor  && TraceRight.HitType == TraceLeft.TRACE_HITWALL))
+				Direction = 90;
+				else Direction = -90;
+				Int RandVel = frandom(5.4, 6);
+				Int OldAngle = Angle;
+				Angle = AngleTo(FirBal) + Direction;
+				A_ChangeVelocity(RandVel, 0, Vel.Z + Random(1.5, 2.2), CVF_RELATIVE | CVF_REPLACE);
+				Angle = OldAngle;
+			}
+			else
+			{
+				//Thanks to GammaGhost for helping with getting pitch from velocity
+				Vector3 offset = (AngleToVector(VectorAngle(FirBal.Vel.X, FirBal.Vel.Y), abs(Cos(-atan2 (FirBal.Vel.Z, FirBal.Vel.XY.Length ())))), -sin(-atan2 (FirBal.Vel.Z, FirBal.Vel.XY.Length ()))) * (FirBal.Distance3D(Self) - Radius);
+				Actor BalDirect = Spawn("Actor", FirBal.Pos + offset);
+				if(BalDirect)
+				{
+				Int RandVel = frandom(5.4, 6);
+				Int OldAngle = Angle;
+				Angle = AngleTo(BalDirect) + 180;
+				A_ChangeVelocity(RandVel, 0, Vel.Z + Random(1.5, 2.2), CVF_RELATIVE | CVF_REPLACE);
+				Angle = OldAngle;
+				BalDirect.Destroy();
+				}
+			}
+			//Moving = True;
+			DodgeTimer = CoolDown;
+		}
 	}
 
 	// --------------------------------------------------

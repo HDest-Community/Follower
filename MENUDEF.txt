@@ -13,6 +13,9 @@ OptionMenu "HDFollowerMenu"
 	StaticText ""
 	Option "$FLW_OPTNSBRASSOPT", "hdf_collectbrass", "YesNo"
 	StaticText ""
+	Option "$FLW_OPTNSDODGEOPT", "hdf_dodgeunseen", "YesNo"
+	StaticText "$FLW_OPTNDODGEDESC", "White"
+	StaticText ""
 	Option "$FLW_OPTNSUNCOUNTOPT", "hdf_targetuncountable", "YesNo"
 	StaticText "$FLW_OPTNSUNCOUNTDESC1", "White"
 	StaticText "$FLW_OPTNSUNCOUNTDESC2", "White"
@@ -142,11 +145,6 @@ OptionMenu "HDFollowerMenuCustom"
 }
 
 AddOptionMenu "OptionsMenu"
-{
-	Submenu "$FLW_MENUTITLE", "HDFollowerMenu"
-}
-
-AddOptionMenu "HDAddonMenu"
 {
 	Submenu "$FLW_MENUTITLE", "HDFollowerMenu"
 }

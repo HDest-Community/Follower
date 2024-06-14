@@ -194,3 +194,6 @@ FLW_OPTNSPRINTLVL3 = "Important";
 FLW_OPTNSPRINTLVL4 = "All";
 
 TAG_Valnos = "Valnos";
+
+FLW_OPTNSDODGEOPT = "Dodge unseen projectiles";
+FLW_OPTNDODGEDESC = "Follower will dodge projectiles that are not in their line of sight.";
