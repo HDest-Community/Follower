@@ -48,7 +48,7 @@ class HDFollower : HDHumanoid abstract
 	// --------------------------------------------------
 	// VIRTUALS
 	// --------------------------------------------------
-
+		
 	override void Die(Actor source, Actor inflictor, int dmgflags, Name mod)
 	{
 		OhanaTicker = 0;
