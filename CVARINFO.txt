@@ -19,6 +19,8 @@ user bool hdf_droponstart = true;
 user bool hdf_quickaccess = true;
 user bool hdf_quickselect = false;
 
+server bool hdf_dodgeunseen = true;
+
 server int hdf_followers = 7;
 
 server string hdf_loadout_freylis = "";

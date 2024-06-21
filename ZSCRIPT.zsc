@@ -186,7 +186,7 @@ class HDFollower : HDHumanoid abstract
 		}
 
 		Super.Tick();
-
+		if(DodgeTimer>0)DodgeTimer--;
 		// [Ace] It's possible for LinkedPlayer to become null if the attached player leaves the game. In that case, automatically assign it to the first non-null player.
 		if (!LinkedPlayer)
 		{
@@ -289,6 +289,7 @@ class HDFollower : HDHumanoid abstract
 	property ReloadCoolDown : ReloadCoolDown;
 	int MissPlayer;
 	property MissPlayer : MissPlayer;
+	int DodgeTimer;
 	
 	Default
 	{
@@ -300,7 +301,7 @@ class HDFollower : HDHumanoid abstract
 		MaxStepHeight 80;
 		MaxDropOffHeight 192;
 		MaxTargetRange HDCONST_ONEMETRE * 80;
-		ReactionTime 5;
+		ReactionTime 8;
 		HDFollower.ReloadCoolDown 70;
 		HDFollower.MissPlayer 70;
 		+ROLLCENTER
