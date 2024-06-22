@@ -140,31 +140,31 @@ extend class FollowerHandler
 		string UniqueName = "Anonymous";
 		static const string MaleNames[] =
 		{
-			"Arcturus", "Proteus", "Orion", "Deimos", "Kawaimomona", "Kaihalulu", "Kalani", "Akamu", "Amari", "Sanjuro", "Tezuka", "Hoshino", "Ota", "Soma", "Kashiwa", "Nakada",
-			"Haddi", "Gunnar", "Isekai", "Mikkel", "Adel", "Jónar", "Kasper", "Steinn", "Gustav", "Leonhard", "Leon", "Loki", "Vilbert", "Almar", "Stadius", "Mikail", "Koen", "Gino",
-			"Marc", "Fabio", "Andrea", "Bernard", "Aleksy", "Roch", "Bartosz", "Maciej", "Marek", "Stryker", "Arkadiusz", "Adoranz", "Tristan", "Isaiah", "Mebunai", "Eleazar", "Ishbaal",
-			"Ahiam", "Hiddai", "Elhanan", "Abiezer", "Ithai", "Eliam", "Uriah", "Fane", "Reks", "Zayne", "Salvador", "Zeus", "Axton", "Zane", "Blake", "Raynor", "Jim", "Thomas", "Ronald",
-			"Wayn", "Lero", "Leon", "Jack", "Armanis", "Krieg", "Emerton", "Samael", "Kragoth", "Blisk", "Ryo", "Nathaniel", "Killian", "Dominic", "Santiago", "Sebastian", "Malcolm",
-			"Rakanoth", "Ixanos", "Nick", "Bane", "Kaada", "Loque", "Xan", "Isaak", "Hawkins", "Ne'Ban", "Miller", "Othello", "Abaddon", "Anubis", "Raiden", "Mengsk", "Samson", "Gabriel",
-			"Ranger", "Sarge", "Bitterman", "Hossman", "Uriel", "Vic", "Webster", "Sonny", "Vince", "Taz", "Earl", "Eugene", "Hector", "Wes", "Ronnie", "Mark", "Necroth", "Grail", "Damarus",
-			"Selig", "Manwell", "Kregore", "Bruce", "Arkon", "Rolph", "Arnold", "Lugar", "Sloan", "Harlin", "Brock", "Rankin", "Riker", "Axon"
+			"$FLWNAME_Arcturus", "$FLWNAME_Proteus", "$FLWNAME_Orion", "$FLWNAME_Deimos", "$FLWNAME_Kawaimomona", "$FLWNAME_Kaihalulu", "$FLWNAME_Kalani", "$FLWNAME_Akamu", "$FLWNAME_Amari", "$FLWNAME_Sanjuro", "$FLWNAME_Tezuka", "$FLWNAME_Hoshino", "$FLWNAME_Ota", "$FLWNAME_Soma", "$FLWNAME_Kashiwa", "$FLWNAME_Nakada",
+			"$FLWNAME_Haddi", "$FLWNAME_Gunnar", "$FLWNAME_Isekai", "$FLWNAME_Mikkel", "$FLWNAME_Adel", "$FLWNAME_Jónar", "$FLWNAME_Kasper", "$FLWNAME_Steinn", "$FLWNAME_Gustav", "$FLWNAME_Leonhard", "$FLWNAME_Leon", "$FLWNAME_Loki", "$FLWNAME_Vilbert", "$FLWNAME_Almar", "$FLWNAME_Stadius", "$FLWNAME_Mikail", "$FLWNAME_Koen",
+			"$FLWNAME_Gino", "$FLWNAME_Marc", "$FLWNAME_Fabio", "$FLWNAME_Andrea", "$FLWNAME_Bernard", "$FLWNAME_Aleksy", "$FLWNAME_Roch", "$FLWNAME_Bartosz", "$FLWNAME_Maciej", "$FLWNAME_Marek", "$FLWNAME_Stryker", "$FLWNAME_Arkadiusz", "$FLWNAME_Adoranz", "$FLWNAME_Tristan", "$FLWNAME_Isaiah", "$FLWNAME_Mebunai", "$FLWNAME_Eleazar",
+			"$FLWNAME_Ishbaal", "$FLWNAME_Ahiam", "$FLWNAME_Hiddai", "$FLWNAME_Elhanan", "$FLWNAME_Abiezer", "$FLWNAME_Ithai", "$FLWNAME_Eliam", "$FLWNAME_Uriah", "$FLWNAME_Fane", "$FLWNAME_Reks", "$FLWNAME_Zayne", "$FLWNAME_Salvador", "$FLWNAME_Zeus", "$FLWNAME_Axton", "$FLWNAME_Zane", "$FLWNAME_Blake", "$FLWNAME_Raynor", "$FLWNAME_Jim",
+			"$FLWNAME_Thomas", "$FLWNAME_Ronald", "$FLWNAME_Wayn", "$FLWNAME_Lero", "$FLWNAME_Leon", "$FLWNAME_Jack", "$FLWNAME_Armanis", "$FLWNAME_Krieg", "$FLWNAME_Emerton", "$FLWNAME_Samael", "$FLWNAME_Kragoth", "$FLWNAME_Blisk", "$FLWNAME_Ryo", "$FLWNAME_Nathaniel", "$FLWNAME_Killian", "$FLWNAME_Dominic", "$FLWNAME_Santiago",
+			"$FLWNAME_Sebastian", "$FLWNAME_Malcolm", "$FLWNAME_Rakanoth", "$FLWNAME_Ixanos", "$FLWNAME_Nick", "$FLWNAME_Bane", "$FLWNAME_Kaada", "$FLWNAME_Loque", "$FLWNAME_Xan", "$FLWNAME_Isaak", "$FLWNAME_Hawkins", "$FLWNAME_NeBan", "$FLWNAME_Miller", "$FLWNAME_Othello", "$FLWNAME_Abaddon", "$FLWNAME_Anubis", "$FLWNAME_Raiden",
+			"$FLWNAME_Mengsk", "$FLWNAME_Samson", "$FLWNAME_Gabriel", "$FLWNAME_Ranger", "$FLWNAME_Sarge", "$FLWNAME_Bitterman", "$FLWNAME_Hossman", "$FLWNAME_Uriel", "$FLWNAME_Vic", "$FLWNAME_Webster", "$FLWNAME_Sonny", "$FLWNAME_Vince", "$FLWNAME_Taz", "$FLWNAME_Earl", "$FLWNAME_Eugene", "$FLWNAME_Hector", "$FLWNAME_Wes", "$FLWNAME_Ronnie",
+			"$FLWNAME_Mark", "$FLWNAME_Necroth", "$FLWNAME_Grail", "$FLWNAME_Damarus", "$FLWNAME_Selig", "$FLWNAME_Manwell", "$FLWNAME_Kregore", "$FLWNAME_Bruce", "$FLWNAME_Arkon", "$FLWNAME_Rolph", "$FLWNAME_Arnold", "$FLWNAME_Lugar", "$FLWNAME_Sloan", "$FLWNAME_Harlin", "$FLWNAME_Brock", "$FLWNAME_Rankin", "$FLWNAME_Riker", "$FLWNAME_Axon"
 		};
 		static const string FemaleNames[] =
 		{
-			"Arlin", "Elaine", "Ophelia", "Almedha", "Sana", "Karmin", "Ashera", "Liv", "Yrsa", "Kristiane", "Irene", "Hedvig", "Lena", "Freja", "Maya", "Kristine", "Elin", "Emeryn",
-			"Amelix", "Emson", "Rayne", "Azraelle", "Visse", "Ephemera", "Samantha", "Kura", "Kyra", "Malise", "Faith", "Edela", "Alice", "Ymir", "Lauren", "Alana", "Akasha", "Avicia",
-			"Lillian", "Lilith", "May", "Eleanor", "Yuzuki", "Kaede", "Aida", "Sapphire", "Selket", "Bastet", "Hathor", "Nekhbet", "Tayet", "Auriel", "Nephthys", "Athena", "Artemis",
-			"Eirene", "Eris", "Freya", "Hera", "Juno", "Kali", "Luna", "Maeve", "Minerva", "Persephone", "Rhea", "Selene", "Themis", "Gabrielle", "Gabriella", "Gabby", "Elvira", "Mynx",
-			"Daemia", "Lucy", "Izzy", "Izabel", "Jade", "Kira", "Ming", "Cryss", "Freylis", "Falareth", "Makreth", "Nebri", "Rylisa", "Shyann", "Sara", "Ada", "Sarena", "Zanna", "Tara",
-			"Xyra", "Annaka", "Tamika", "Ryanna", "Azure", "Aryss", "Hunter", "Raven"
+			"$FLWNAME_Arlin", "$FLWNAME_Elaine", "$FLWNAME_Ophelia", "$FLWNAME_Almedha", "$FLWNAME_Sana", "$FLWNAME_Karmin", "$FLWNAME_Ashera", "$FLWNAME_Liv", "$FLWNAME_Yrsa", "$FLWNAME_Kristiane", "$FLWNAME_Irene", "$FLWNAME_Hedvig", "$FLWNAME_Lena", "$FLWNAME_Freja", "$FLWNAME_Maya", "$FLWNAME_Kristine", "$FLWNAME_Elin", "$FLWNAME_Emeryn",
+			"$FLWNAME_Amelix", "$FLWNAME_Emson", "$FLWNAME_Rayne", "$FLWNAME_Azraelle", "$FLWNAME_Visse", "$FLWNAME_Ephemera", "$FLWNAME_Samantha", "$FLWNAME_Kura", "$FLWNAME_Kyra", "$FLWNAME_Malise", "$FLWNAME_Faith", "$FLWNAME_Edela", "$FLWNAME_Alice", "$FLWNAME_Ymir", "$FLWNAME_Lauren", "$FLWNAME_Alana", "$FLWNAME_Akasha", "$FLWNAME_Avicia",
+			"$FLWNAME_Lillian", "$FLWNAME_Lilith", "$FLWNAME_May", "$FLWNAME_Eleanor", "$FLWNAME_Yuzuki", "$FLWNAME_Kaede", "$FLWNAME_Aida", "$FLWNAME_Sapphire", "$FLWNAME_Selket", "$FLWNAME_Bastet", "$FLWNAME_Hathor", "$FLWNAME_Nekhbet", "$FLWNAME_Tayet", "$FLWNAME_Auriel", "$FLWNAME_Nephthys", "$FLWNAME_Athena", "$FLWNAME_Artemis",
+			"$FLWNAME_Eirene", "$FLWNAME_Eris", "$FLWNAME_Freya", "$FLWNAME_Hera", "$FLWNAME_Juno", "$FLWNAME_Kali", "$FLWNAME_Luna", "$FLWNAME_Maeve", "$FLWNAME_Minerva", "$FLWNAME_Persephone", "$FLWNAME_Rhea", "$FLWNAME_Selene", "$FLWNAME_Themis", "$FLWNAME_Gabrielle", "$FLWNAME_Gabriella", "$FLWNAME_Gabby", "$FLWNAME_Elvira", "$FLWNAME_Mynx",
+			"$FLWNAME_Daemia", "$FLWNAME_Lucy", "$FLWNAME_Izzy", "$FLWNAME_Izabel", "$FLWNAME_Jade", "$FLWNAME_Kira", "$FLWNAME_Ming", "$FLWNAME_Cryss", "$FLWNAME_Freylis", "$FLWNAME_Falareth", "$FLWNAME_Makreth", "$FLWNAME_Nebri", "$FLWNAME_Rylisa", "$FLWNAME_Shyann", "$FLWNAME_Sara", "$FLWNAME_Ada", "$FLWNAME_Sarena", "$FLWNAME_Zanna", "$FLWNAME_Tara",
+			"$FLWNAME_Xyra", "$FLWNAME_Annaka", "$FLWNAME_Tamika", "$FLWNAME_Ryanna", "$FLWNAME_Azure", "$FLWNAME_Aryss", "$FLWNAME_Hunter", "$FLWNAME_Raven"
 		};
 		static const string NeutralNames[] =
 		{
-			"Tempest", "Cinder", "Vexx", "Drace", "Klyn", "Vayne", "Vail", "Brick", "Zero", "Blade", "Apocalypse", "Thunder", "Void", "Kanzaxe", "Hatchet", "Blink", "Whiskey", "Splinter",
-			"Light", "Reaper", "Jet", "Wraith", "Quill", "Discount", "Death", "Nil", "Umbra", "Scar", "Curse", "Banshee", "Arrow", "Dash", "Niven", "Phantom", "Barricade", "Enigma",
-			"Matrix", "Entropy", "Nomad", "Prophet", "Jester", "Psycho", "Blitz", "Scorpion", "Fury", "Arclite", "Redeemer", "Bishop", "War", "Wrath", "Pestilence", "Inferno",
-			"Vampire", "Doom", "Tormentor", "Major", "Visor", "Phobos", "Grunt", "Wrack", "Angel", "Razor", "Bones", "Baron", "Kamikaze", "Vega", "Bull", "Ghost", "Ninja",
-			"Vector", "Tensor", "Malice", "Blackjack", "Prism", "Remus", "Torch", "Anthrax", "Divisor", "Cathode", "Cyclops", "Virus", "Aspect", "Nova", "Raptor", "Eagle"
+			"$FLWNAME_Tempest", "$FLWNAME_Cinder", "$FLWNAME_Vexx", "$FLWNAME_Drace", "$FLWNAME_Klyn", "$FLWNAME_Vayne", "$FLWNAME_Vail", "$FLWNAME_Brick", "$FLWNAME_Zero", "$FLWNAME_Blade", "$FLWNAME_Apocalypse", "$FLWNAME_Thunder", "$FLWNAME_Void", "$FLWNAME_Kanzaxe", "$FLWNAME_Hatchet", "$FLWNAME_Blink", "$FLWNAME_Whiskey", "$FLWNAME_Splinter",
+			"$FLWNAME_Light", "$FLWNAME_Reaper", "$FLWNAME_Jet", "$FLWNAME_Wraith", "$FLWNAME_Quill", "$FLWNAME_Discount", "$FLWNAME_Death", "$FLWNAME_Nil", "$FLWNAME_Umbra", "$FLWNAME_Scar", "$FLWNAME_Curse", "$FLWNAME_Banshee", "$FLWNAME_Arrow", "$FLWNAME_Dash", "$FLWNAME_Niven", "$FLWNAME_Phantom", "$FLWNAME_Barricade", "$FLWNAME_Enigma",
+			"$FLWNAME_Matrix", "$FLWNAME_Entropy", "$FLWNAME_Nomad", "$FLWNAME_Prophet", "$FLWNAME_Jester", "$FLWNAME_Psycho", "$FLWNAME_Blitz", "$FLWNAME_Scorpion", "$FLWNAME_Fury", "$FLWNAME_Arclite", "$FLWNAME_Redeemer", "$FLWNAME_Bishop", "$FLWNAME_War", "$FLWNAME_Wrath", "$FLWNAME_Pestilence", "$FLWNAME_Inferno",
+			"$FLWNAME_Vampire", "$FLWNAME_Doom", "$FLWNAME_Tormentor", "$FLWNAME_Major", "$FLWNAME_Visor", "$FLWNAME_Phobos", "$FLWNAME_Grunt", "$FLWNAME_Wrack", "$FLWNAME_Angel", "$FLWNAME_Razor", "$FLWNAME_Bones", "$FLWNAME_Baron", "$FLWNAME_Kamikaze", "$FLWNAME_Vega", "$FLWNAME_Bull", "$FLWNAME_Ghost", "$FLWNAME_Ninja",
+			"$FLWNAME_Vector", "$FLWNAME_Tensor", "$FLWNAME_Malice", "$FLWNAME_Blackjack", "$FLWNAME_Prism", "$FLWNAME_Remus", "$FLWNAME_Torch", "$FLWNAME_Anthrax", "$FLWNAME_Divisor", "$FLWNAME_Cathode", "$FLWNAME_Cyclops", "$FLWNAME_Virus", "$FLWNAME_Aspect", "$FLWNAME_Nova", "$FLWNAME_Raptor", "$FLWNAME_Eagle"
 		};
 
 		string PickedName = "";

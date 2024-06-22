@@ -1961,11 +1961,11 @@ extend class FollowerHandler
 					}
 					int index = flw.Weapons.Find(wpn);
 					//wpn.EmptyWeapon();
-					HDWeapon DropWeap1 = HDWeapon(Flw.Spawn(wpn.GetRealWeapon(), flw.pos + (0, 0, flw.height / 2)));
-					wpn.OnBackTransfer(DropWeap1);
-					DropWeap1.angle = flw.angle;
-					DropWeap1.A_ChangeVelocity(1.5, 0, 1, CVF_RELATIVE);
-					DropWeap1.vel += flw.vel;
+					HDWeapon DropWeap = HDWeapon(Flw.Spawn(wpn.GetRealWeapon(), flw.pos + (0, 0, flw.height / 2)));
+					wpn.OnBackTransfer(DropWeap);
+					DropWeap.angle = flw.angle;
+					DropWeap.A_ChangeVelocity(1.5, 0, 1, CVF_RELATIVE);
+					DropWeap.vel += flw.vel;
 					wpn.Destroy();
 					flw.Weapons.Delete(index);
 				}
