@@ -111,6 +111,7 @@ extend class HDFollower
 
 		double headOffset = FTarget.Actor.FindInventory('HDArmourWorn') && HDMobBase(FTarget.Actor) && !HDMobBase(FTarget.Actor).bHASHELMET ? FTarget.Actor.height * 0.2 : 0;
 		A_Face(FTarget.Actor, 0, 0, flags: FAF_MIDDLE, z_ofs: headOffset);
+		if(FTarget.Actor.Height<40)A_Face(FTarget.Actor, 0, 0, flags: FAF_MIDDLE, z_ofs: headOffset-FTarget.Actor.Height/2);
 		OldAim = (angle, pitch);
 
 		// [Ace] If you're incapped, follower can probably shoot over you. Otherwise it's not a good idea.
@@ -165,16 +166,66 @@ extend class HDFollower
 
 	protected Actor AimBlocked()
 	{
-		FLineTraceData TraceData;
-		LineTrace(angle, MaxTargetRange, pitch, TRF_NOSKY, GunHeight, data: TraceData);
-		Actor a = TraceData.HitActor;
-		if (a && bFRIENDLY && (a is "PlayerPawn" || a is 'HDFollower' && a.bFRIENDLY || !a.bISMONSTER && a.bSOLID))
+		/*FLineTraceData TraceData;
+		Actor a, b;
+		b = Spawn(FTarget.Actor.GetClass(), Pos + (Radius*Cos(Angle), Radius*Sin(Angle), 0));
+		if(b)
 		{
-			if (hdf_debug & FDebug_Aiming)
+		For(int i = 0;i<4;i++)
+		{
+			int Square=2;
+			if(i>1)Square=-Square;
+			LineTrace(angleTo(FTarget.Actor)+Square, FTarget.Actor.Distance3D(Self)*1.5, (i==0||i==3)?PitchTo(FTarget.Actor, 0, -FTarget.Actor.Height)-Square:Pitch+Square, TRF_NOSKY|TRF_THRUSPECIES, Height, data: TraceData);
+			a = TraceData.HitActor;
+			if (a && bFRIENDLY && (a is "PlayerPawn" || a is 'HDFollower' && a.bFRIENDLY || !a.bISMONSTER && a.bSOLID))
 			{
-				Console.Printf("[%s] %s's aim is being blocked by %s.", GetTimestamp(), GetTag(), a.GetClassName());
+				Spawn("BulletPuff", TraceData.HitLocation);
+				if (hdf_debug)// & FDebug_Aiming)
+				{
+					Console.Printf("[%s] %s's aim is being blocked by %s (%i)", GetTimestamp(), GetTag(), a.GetClassName(), i+1);
+				}
+				break;
 			}
-			return a;
+			else if(TraceData.HitType==TRACE_HitWall||TraceData.HitType==TRACE_HitFloor)Spawn("BulletPuff", Tracedata.HitLocation);
+			else a = null;
+		}
+		b.Destroy();
+		}
+		if(a!=null)Return a;*/
+		Actor a, b;//a - the one we don't want to shoot //b Target if it stands between follower and a
+		Vector3 LocateDir;
+		Double BulThru;//Not to shoot someone behind the target
+		if(SelWeapon)
+		{
+			if(SelWeapon.GetName() == "Boss Rifle" || SelWeapon.GetName() == "Liberator")BulThru = 2;
+			else if(SelWeapon.GetName() == "ZM66")BulThru = 1*5;
+			else BulThru = 1;
+		}
+		Int BullRange = 2;//Not to shoot someone near the target
+		{
+			if(SelWeapon.GetName() == "Boss Rifle" || SelWeapon.GetName() == "Liberator")BullRange = 0;
+			else if(SelWeapon.GetName() == "ZM66" || SelWeapon.GetName() == "Slayer" || SelWeapon.GetName() == "SMG")BullRange = 2;
+			else if(SelWeapon.GetName() == "Hunter")BullRange = 3;
+		}
+		For(int i=0;i<4;i++)
+		{
+			int Square=BullRange;
+			if(i>1)Square=-Square;
+			LocateDir = (AngleToVector(AngleTo(FTarget.Actor)+Square, 
+			Cos((i==0||i==3)?PitchTo(FTarget.Actor, GunHeight)+Square:PitchTo(FTarget.Actor, GunHeight)-Square)), 
+			-Sin((i==0||i==3)?PitchTo(FTarget.Actor, GunHeight)+Square:PitchTo(FTarget.Actor, GunHeight)-Square)); 
+			
+			FollowerAimBlockedChecker BlckCheck = New("FollowerAimBlockedChecker");
+			BlckCheck.Master = Self;
+			BlckCheck.Target = FTarget.Actor;
+			BlckCheck.Trace(Pos + (0, 0, GunHeight), CurSector, LocateDir, Distance3D(FTarget.Actor)*BulThru, 0);
+			if(BlckCheck.Actr != Null){a=BlckCheck.Actr;
+			if(BlckCheck.BlockdActr!= Null)b=BlckCheck.BlockdActr;Break;}
+		}
+		if(a != Null)
+		{
+			if(b != Null && (BulThru == 1 || (BulThru == 1.5 && b.Distance3D(a)>HDCONST_ONEMETRE * 2)))Return Null;
+			Return a;
 		}
 		return null;
 	}
@@ -444,5 +495,22 @@ extend class HDFollower
 				}
 			}
 			Loop;
+	}
+}
+
+class FollowerAimBlockedChecker : LineTracer
+{
+	Actor Target, Master, Actr, BlockdActr;
+
+	override ETraceStatus TraceCallback()
+	{
+		Let Cur = Results.HitActor;
+			if ( cur == master || cur == target || !(master.bFRIENDLY && (Cur is "PlayerPawn" || Cur is 'HDFollower' && cur.bFRIENDLY || !cur.bISMONSTER && cur.bSOLID)))
+			{if(cur == target)BlockdActr=cur;return TRACE_Skip;}
+										
+				
+            Actr = Results.HitActor;return TRACE_Stop;
+		
+			return TRACE_Skip;
 	}
 }
