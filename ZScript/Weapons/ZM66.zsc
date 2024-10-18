@@ -115,6 +115,7 @@ class FW_ZM66 : FollowerWeapon
 		if (wpn.WeaponStatus[0] & ZM66F_GRENADELOADED)
 		{
 			Owner.A_DropItem('HDRocketAmmo', 1);
+			Owner.A_StartSound("weapons/grenopen",CHAN_WEAPON);
 		}
 		
 		nogl = wpn.WeaponStatus[ZM66S_FLAGS] & ZM66F_NOLAUNCHER? 1 : 0;
@@ -125,6 +126,8 @@ class FW_ZM66 : FollowerWeapon
 	override void OnBackTransfer(HDWeapon wpn)
 	{
 		wpn.WeaponStatus[ZM66S_MAG] = Mag;
+		
+		wpn.weaponstatus[ZM66S_FLAGS]&=~ZM66F_GRENADELOADED;
 		
 		if(ChamberedRound > 0)wpn.weaponstatus[ZM66S_FLAGS]|=ZM66F_CHAMBER;
 		else wpn.weaponstatus[ZM66S_FLAGS]&=~ZM66F_CHAMBER;
