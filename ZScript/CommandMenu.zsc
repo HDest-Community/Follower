@@ -919,19 +919,18 @@ extend class FollowerHandler
 	{
 		sb.Fill(col, pos.x, pos.y, size.x, size.y, flags);
 		sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
-		String WearSprite = ""..wearable.Icon;
+
 		if (wearable is 'HDWeapon')
 		{
-			let wpn = HDWeapon(wearable);
-			int num = wpn.GetSBarNum();
-			sb.DrawString(fnt, sb.FormatNumber(num, 1, 4), pos + size - (4, 10), flags | sb.DI_TEXT_ALIGN_RIGHT, sb.SavedColour);
+			sb.DrawImage(""..wearable.Icon, pos + size / 2, flags | sb.DI_ITEM_CENTER, box: size - (3, 3));
+			sb.DrawString(fnt, sb.FormatNumber(HDWeapon(wearable).GetSBarNum(), 1, 4), pos + size - (4, 10), flags | sb.DI_TEXT_ALIGN_RIGHT, sb.SavedColour);
 		}
+
 		if (wearable is 'HDArmourWorn')
 		{
+			sb.DrawImage(HDArmourWorn(wearable).mega?"ARMCA0":"ARMSA0", pos + size / 2, flags | sb.DI_ITEM_CENTER, box: size - (3, 3));
 			sb.DrawString(fnt, (HDArmourWorn(wearable).Mega ? "\c[Blue]" : "\c[DarkGreen]")..HDArmourWorn(wearable).Durability, pos + size - (4, 10), flags | sb.DI_TEXT_ALIGN_RIGHT);
-			WearSprite = HDArmourWorn(wearable).mega?"ARMCA0":"ARMSA0";
 		}
-		sb.DrawImage(WearSprite, pos + size / 2, flags | sb.DI_ITEM_CENTER, box: size - (3, 3));
 	}
 
 	private ui void DrawRectangle(HDStatusBar sb, vector2 pos, vector2 size, Color col, HUDFont fnt, string command, int flags, int textCol = Font.CR_WHITE)
