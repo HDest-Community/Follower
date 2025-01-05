@@ -497,7 +497,7 @@ extend class FollowerHandler
 					{
 						commands.Push(StringTable.Localize("$FLW_CMDFEEDBLD")..StringTable.Localize(BloodDanger));
 					}
-					commands.Push("Manage inventory");
+					commands.Push(StringTable.Localize("$FLW_CMDMANAGEINVENTOR"));
 					if (lastFol.bCANDISMISS)
 					{
 						commands.Push("\c[FLW_BloodRed]"..(UiData[consoleplayer].Confirmation ? StringTable.Localize("$FLW_CMDCONFRIM") : StringTable.Localize("$FLW_CMDDISMIS")).."\c-");
