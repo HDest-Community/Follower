@@ -614,11 +614,6 @@ extend class FollowerHandler
 				{
 					for (Inventory next = lastFol.Inv; next != null; next = next.Inv)
 					{
-						if (next is 'HDMagicShield')
-						{
-							continue;
-						}
-
 						if (next.Icon || next is 'HDArmourWorn')
 						{
 							DrawWearableRectangle(sb, pos + (w + Spacing, rectHeight + Spacing + wearablesShown * (wepHeight + Spacing)), (wepHeight, wepHeight), col, fnt, flags, next);	
@@ -930,6 +925,12 @@ extend class FollowerHandler
 		{
 			sb.DrawImage(HDArmourWorn(wearable).mega?"ARMCA0":"ARMSA0", pos + size / 2, flags | sb.DI_ITEM_CENTER, box: size - (3, 3));
 			sb.DrawString(fnt, (HDArmourWorn(wearable).Mega ? "\c[Blue]" : "\c[DarkGreen]")..HDArmourWorn(wearable).Durability, pos + size - (4, 10), flags | sb.DI_TEXT_ALIGN_RIGHT);
+		}
+
+		if (wearable is 'HDMagicShield')
+		{
+			sb.DrawImage(""..wearable.Icon, pos + size / 2, flags | sb.DI_ITEM_CENTER, box: size - (3, 3));
+			sb.DrawString(fnt, "\c[Cyan]"..HDMagicShield(wearable).amount, pos + size - (4, 10), flags | sb.DI_TEXT_ALIGN_RIGHT);
 		}
 	}
 
@@ -1798,10 +1799,10 @@ extend class FollowerHandler
 		if (cmd.IndexOf("hdf_wearablecommand") != -1)
 		{
 		
-			static const Name worldItemClasses[] = { 'HDArmour', 'PortableRadsuit', 'HDBackpack', 'HDPersonalShieldGenerator' };
-			static const Name wornItemClasses[] = { 'HDArmourWorn', 'WornRadsuit', 'HDBackpack', 'HDPersonalShieldGenerator' };
-			static const string languagePrefixex[] = { "ARMORGIVE", "RADSUITGIVE", "BACKPACKGIVE", "PSGGIVE" };
-			static const string soundPrefixes[] = { "ArmorGive", "RadsuitGive", "BackpackGive", "PSGGive" };
+			static const Name worldItemClasses[] = { 'HDArmour', 'PortableRadsuit', 'HDBackpack', 'HDPersonalShieldGenerator', 'ShieldCore' };
+			static const Name wornItemClasses[] = { 'HDArmourWorn', 'WornRadsuit', 'HDBackpack', 'HDPersonalShieldGenerator', 'HDMagicShield' };
+			static const string languagePrefixex[] = { "ARMORGIVE", "RADSUITGIVE", "BACKPACKGIVE", "PSGGIVE", "SHIELDCOREGIVE" };
+			static const string soundPrefixes[] = { "ArmorGive", "RadsuitGive", "BackpackGive", "PSGGive", "ShieldCoreGive" };
 
 			lastFol.WearableInfo.WorldItemCls = worldItemClasses[e.Args[0]];
 			lastFol.WearableInfo.WornItemCls = wornItemClasses[e.Args[0]];
@@ -2050,6 +2051,11 @@ extend class FollowerHandler
 				case 'psg':
 				{
 					SendNetworkEvent("HDF_WearableCommand:"..args, 3);
+					break;
+				}
+				case 'shd':
+				{
+					SendNetworkEvent("HDF_WearableCommand:"..args, 4);
 					break;
 				}
 				case 'swp':
