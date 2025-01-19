@@ -241,18 +241,18 @@ extend class HDFollower
 			if (Order != FOrder_GoThere && (!SelWeapon || SelWeapon.Status == FollowerWeapon.WStatus_Idle) && (!bFRIENDLY || Stance == FStance_Aggressive) && HasUsableWeapons())
 			{
 				AcquireTargets();
-		if(ReactionTime >= Default.ReactionTime && !CheckTarget() && ReloadCoolDown <= 0)
-		{
-			int result = 213;
-			for (int i = 0; i < Weapons.Size(); ++i)
-			{
-				if (Weapons[i]){result = Weapons[i].TryReload(Weapons[i].TRF_CHECK);}
-				class<HDAmmo> AType, MType; int MaxMag;
-				[AType, MType, MaxMag] = Weapons[i].GetAmmoType();
-				if (Weapons[i] && (Weapons[i].Mag <= 0 || !MType/* && Weapons[i].Mag <= MaxMag/2*/) && result == FollowerWeapon.RResult_CanReload){Weapons[i].Status = FollowerWeapon.WStatus_Reloading;SelWeapon = Weapons[i];
-				if(GetAmount(MType)<=MaxMag && Weapons[i].Mag+GetAmount(AType)<=MaxMag)PrintMessage(GetResponse("NOAMMO_"..Weapons[i].GetLocalizationTag()), "NoAmmo/"..Weapons[i].GetLocalizationTag(), PMType_Critical); Break;}
-			}
-		}	
+				if(ReactionTime >= Default.ReactionTime && !CheckTarget() && ReloadCoolDown <= 0)
+				{
+					int result = 213;
+					for (int i = 0; i < Weapons.Size(); ++i)
+					{
+						if (Weapons[i]){result = Weapons[i].TryReload(Weapons[i].TRF_CHECK);}
+						class<HDAmmo> AType, MType; int MaxMag;
+						[AType, MType, MaxMag] = Weapons[i].GetAmmoType();
+						if (Weapons[i] && (Weapons[i].Mag <= 0 || !MType/* && Weapons[i].Mag <= MaxMag/2*/) && result == FollowerWeapon.RResult_CanReload){Weapons[i].Status = FollowerWeapon.WStatus_Reloading;SelWeapon = Weapons[i];
+						if(GetAmount(MType)<=MaxMag && Weapons[i].Mag+GetAmount(AType)<=MaxMag)PrintMessage(GetResponse("NOAMMO_"..Weapons[i].GetLocalizationTag()), "NoAmmo/"..Weapons[i].GetLocalizationTag(), PMType_Critical); Break;}
+					}
+				}	
 			}
 			
 			if (SelWeapon && SelWeapon.Status == FollowerWeapon.WStatus_Reloading)
