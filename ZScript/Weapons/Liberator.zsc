@@ -84,7 +84,7 @@ class FW_Liberator : FollowerWeapon
 		{
 			return WPriority_Nope;
 		}
-		if (trgt.bBOSS || trgt is 'PainLord' || trgt is 'PainBringer' || shields > 300 && !multitarget)
+		if (trgt.bBOSS || trgt is 'Baron' || trgt is 'Knave' || shields > 300 && !multitarget)
 		{
 			return WPriority_High;
 		}

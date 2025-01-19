@@ -79,11 +79,11 @@ class FW_RocketLauncher : FollowerWeapon
 		{
 			return WPriority_VeryHigh;
 		}
-		if ((trgt is 'PainLord' || trgt is 'PainBringer' || shields > 300) && !multitarget)
+		if ((trgt is 'Baron' || trgt is 'Knave' || shields > 300) && !multitarget)
 		{
 			return WPriority_VeryHigh;
 		}
-		if (trgt is 'Trilobite' && trgt.Health > trgt.default.Health * 0.5 && !multitarget)
+		if (trgt is 'FlyZapper' && trgt.Health > trgt.default.Health * 0.5 && !multitarget)
 		{
 			return WPriority_Highest;
 		}

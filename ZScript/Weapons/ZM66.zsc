@@ -85,7 +85,7 @@ class FW_ZM66 : FollowerWeapon
 		{
 			return WPriority_High;
 		}
-		if (trgt.bBOSS || trgt is 'PainLord')
+		if (trgt.bBOSS || trgt is 'Baron')
 		{
 			return WPriority_VeryLow;
 		}
@@ -93,7 +93,7 @@ class FW_ZM66 : FollowerWeapon
 		{
 			return WPriority_VeryHigh;
 		}
-		if (trgt is 'PainBringer' || shields > 300)
+		if (trgt is 'Knave' || shields > 300)
 		{
 			return WPriority_Low;
 		}

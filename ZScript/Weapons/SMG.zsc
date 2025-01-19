@@ -68,7 +68,7 @@ class FW_SMG : FollowerWeapon
 		{
 			return WPriority_Low;
 		}
-		if (trgt.bBOSS || trgt is 'PainLord')
+		if (trgt.bBOSS || trgt is 'Baron')
 		{
 			return WPriority_Low;
 		}
@@ -76,7 +76,7 @@ class FW_SMG : FollowerWeapon
 		{
 			return WPriority_Low;
 		}
-		if (trgt is 'PainBringer' || shields > 300)
+		if (trgt is 'Knave' || shields > 300)
 		{
 			return WPriority_Medium;
 		}

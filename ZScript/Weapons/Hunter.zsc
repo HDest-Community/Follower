@@ -139,7 +139,7 @@ class FW_Hunter : FollowerWeapon
 		{
 			return WPriority_Medium;
 		}
-		if (trgt.bBOSS || trgt is 'PainLord')
+		if (trgt.bBOSS || trgt is 'Baron')
 		{
 			return WPriority_Lowest;
 		}
@@ -147,7 +147,7 @@ class FW_Hunter : FollowerWeapon
 		{
 			return WPriority_High;
 		}
-		if (trgt is 'PainBringer' || shields > 300)
+		if (trgt is 'Knave' || shields > 300)
 		{
 			return WPriority_Low;
 		}
