@@ -133,7 +133,8 @@ extend class HDFollower
 		}
 	}
 
-	protected void OnRevive()
+	// FIXME: Override newly added onRevive() function in base Actor.zs instead?
+	protected void OnFollowerRevive()
 	{
 		Bloodloss = 0;
 		BodyDamage = 0; // [Ace] This is technically cheating, but otherwise the follower can get absolutely assblasted and become useless.

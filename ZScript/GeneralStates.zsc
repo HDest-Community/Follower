@@ -97,9 +97,9 @@ extend class HDFollower
 
 		// [Ace] Raise is entered if not explicitly resurrected by the player.
 		// It is important that it exists. To add custom animations for manual resurrections, use Raise.Blood, Raise.Blues, or Raise.Merchant.
-		// Note that all Raise states must call OnRevive or else your follower will crumble into dust after a few deaths from all the accumulated bodydamage.
+		// Note that all Raise states must call OnFollowerRevive or else your follower will crumble into dust after a few deaths from all the accumulated bodydamage.
 		Raise:
-			#### Q 7 OnRevive();
+			#### Q 7 OnFollowerRevive();
 			#### QQP 6;
 			#### O 6 A_Recoil(-0.3);
 			#### N 6;

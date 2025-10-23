@@ -160,7 +160,7 @@ extend class HDFollower
 
 	virtual void Reset()
 	{
-		OnRevive();
+		OnFollowerRevive();
 		ResetDamageCounters();
 		GiveBody(-100);
 
