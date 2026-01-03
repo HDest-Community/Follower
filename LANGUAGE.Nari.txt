@@ -54,6 +54,14 @@ NARI_ORDER_HEAL2_1 = "Ouchie!";
 NARI_ORDER_HEAL2_2 = "This feels just like sewing clothes! Oof.";
 NARI_ORDER_HEAL2_3 = "Oh boy, this is going to hurt.";
 
+NARI_ORDER_HELP4_1 = "You're armor's in the way.";
+NARI_ORDER_HELP4_2 = "I can't get to the wound.";
+NARI_ORDER_HELP4_3 = "Gonna need you to strip, first.";
+
+NARI_ORDER_HELP5_1 = "You'll need more than a sewing needle, I'm afraid.";
+NARI_ORDER_HELP5_2 = "I don't have enough supplies.";
+NARI_ORDER_HELP5_3 = "We'll find a medikit, I'm sure of it.";
+
 NARI_STANCE_AGGRESSIVE1_1 = "I'm already covering your back.";
 NARI_STANCE_AGGRESSIVE1_2 = "Already on it.";
 NARI_STANCE_AGGRESSIVE1_3 = "Stop worrying, nobody is going to shoot you."; // [Ace] And then you get shot.

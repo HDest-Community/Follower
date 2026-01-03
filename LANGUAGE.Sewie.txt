@@ -54,6 +54,14 @@ SEWIE_ORDER_HEAL2_1 = "Ouchie!";
 SEWIE_ORDER_HEAL2_2 = "This feels just like sewing clothes! Oof.";
 SEWIE_ORDER_HEAL2_3 = "Oh boy, this is going to hurt.";
 
+SEWIE_ORDER_HELP4_1 = "You're armor's in the way.";
+SEWIE_ORDER_HELP4_2 = "I can't get to the wound.";
+SEWIE_ORDER_HELP4_3 = "Take off the armor first.";
+
+SEWIE_ORDER_HELP5_1 = "You'll need more than a sewing needle, I'm afraid.";
+SEWIE_ORDER_HELP5_2 = "I don't have enough supplies.";
+SEWIE_ORDER_HELP5_3 = "We'll find a medikit, I'm sure of it.";
+
 SEWIE_STANCE_AGGRESSIVE1_1 = "I'm already covering your back.";
 SEWIE_STANCE_AGGRESSIVE1_2 = "Already on it.";
 SEWIE_STANCE_AGGRESSIVE1_3 = "Stop worrying, nobody is going to shoot you."; // [Ace] And then you get shot.

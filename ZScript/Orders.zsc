@@ -77,6 +77,16 @@ extend class HDFollower
 					PrintMessage(GetResponse("ORDER_HELP3"), "Order/Help3", PMType_Important);
 					return true;
 				}
+				if (LinkedPlayer && LinkedPlayer.FindInventory('HDArmourWorn'))
+				{
+					PrintMessage(GetResponse("ORDER_HELP4"), "Order/Help4", PMType_Important);
+					return true;
+				}
+				if (!SuturesLeft && GetAmount('PortableMedikit') <= 0)
+				{
+					PrintMessage(GetResponse("ORDER_HELP5"), "Order/Help5", PMType_Important);
+					return true;
+				}
 				PrintMessage(GetResponse("ORDER_HELP"..index), "Order/Help"..index, PMType_Important);
 				HaulAss();
 

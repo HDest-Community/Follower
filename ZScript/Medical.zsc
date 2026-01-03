@@ -38,34 +38,68 @@ extend class HDFollower
 
 	protected void PatchPlayerWounds(int amt)
 	{
-		LinkedPlayer.oldwoundcount = max(0, LinkedPlayer.oldwoundcount - amt);
-		LinkedPlayer.aggravateddamage = max(0, LinkedPlayer.aggravateddamage - amt);
-		LinkedPlayer.oldwoundcount += amt;
-		LinkedPlayer.burncount = max(0, LinkedPlayer.burncount - amt * 2);
+		if (LinkedPlayer)
+		{
+			if (!targetWound || targetWound.bleeder != LinkedPlayer) targetWound = HDBleedingWound.findBiggest(LinkedPlayer, HDBW_FINDPATCHED);
+
+			if (targetWound && targetWound.depth <= 0 && targetWound.patched <= 0)
+			{
+				targetWound = null;
+				return;
+			}
+
+			if (targetWound && targetWound.patch(frandom(0.8, 1.2), true))
+			{
+				targetWound.depth += targetWound.patched;
+				targetWound.patched = 0;
+			}
+		}
+	}
+
+	protected void PatchPlayerBurns(int amt)
+	{
+		if (LinkedPlayer && SuturesLeft >= max(MEDIKIT_FLESHGIVE, LinkedPlayer.burnCount))
+		{
+			int fleshGive = MEDIKIT_FLESHGIVE;
+			SuturesLeft -= fleshGive;
+	
+			LinkedPlayer.A_StartSound("medikit/stopper", CHAN_WEAPON);
+			LinkedPlayer.A_StartSound("misc/bulletflesh", CHAN_BODY, CHANF_OVERLAP);
+			LinkedPlayer.A_StartSound("misc/smallslop", CHAN_BODY, CHANF_OVERLAP);
+
+			Actor a = spawn("SecondFleshBeast", self. LinkedPlayer.pos, ALLOW_REPLACE);
+			a.target = LinkedPlayer;
+			a.stamina = fleshGive;
+		}
 	}
 
 	protected bool TryUnwrapMedikit()
 	{
 		if (GetAmount('PortableMedikit') > 0)
 		{
-			//let stim = HDMagAmmo(GiveInventoryType('PortableStimpack'));
-			//stim.SyncAmount();
-			//if (!AddMag(stim, flags: FIF_FORCE))
-			//{
-			Inventory spawned = Inventory(Spawn('PortableStimpack', pos));
-			spawned.Amount = 1;
+			// Give/Drop Stimpack
+			let spawned = Inventory(Spawn('PortableStimpack', pos));
 			if (!AddItem(spawned, 1, flags: FIF_FORCE))
 			{
 				spawned.Destroy();
-				A_DropInventory('PortableStimpack');
+				A_DropItem('PortableStimpack');
 			}
-			
-			//}
-			A_DropItem('SecondBlood');
+
+			// Give/Drop SecondBlood
+			spawned = Inventory(Spawn('SecondBlood', pos));
+			if (!AddItem(spawned, 1, flags: FIF_FORCE))
+			{
+				spawned.Destroy();
+				A_DropItem('PortableStimpack');
+			}
+
+			// Take Medikit & add sutures
 			TakeInvItem(Find('PortableMedikit'), FIF_FORCE | FIF_REMOVE);
-			SuturesLeft = MaxSutures;
+			SuturesLeft = MEDIKIT_MAXFLESH;
+
 			return true;
 		}
+
 		return false;
 	}
 
@@ -73,9 +107,25 @@ extend class HDFollower
 	// INFORMATION
 	// --------------------------------------------------
 
+	clearscope bool CanPatchWounds()
+	{
+		return GetAmount('PortableMedikit') > 0 || SuturesLeft > 0;
+	}
+
+	clearscope bool CanPatchBurns()
+	{
+		return GetAmount('PortableMedikit') > 0 || SuturesLeft > MEDIKIT_FLESHGIVE;
+	}
+
+	clearscope bool CanApplyBlood()
+	{
+		return LinkedPlayer && getAmount('SecondBlood') > 0 && !LinkedPlayer.countInv('BloodBagWorn');
+	}
+
 	clearscope bool CanApplyStim()
 	{
-		return LinkedPlayer && LinkedPlayer.CountInv('HDStim') <= HDStim.HDSTIM_MAX - HDStim.HDSTIM_DOSE && GetAmount('PortableStimpack') > 0 && LinkedPlayer.CountInv('HealingMagic') <= 15 && LinkedPlayer.Health < 40; // [Ace] Don't stim player unless it's necessary.
+		// [Ace] Don't stim player unless it's necessary.
+		return LinkedPlayer && LinkedPlayer.CountInv('HDStim') <= HDStim.HDSTIM_MAX - HDStim.HDSTIM_DOSE && GetAmount('PortableStimpack') > 0 && LinkedPlayer.CountInv('HealingMagic') <= 15 && LinkedPlayer.Health < 40;
 	}
 
 	clearscope bool CanHealSelf()
@@ -90,12 +140,40 @@ extend class HDFollower
 
 	clearscope bool PlayerIsIncapped()
 	{
-		return LinkedPlayer && LinkedPlayer.incapacitated >= 20 && (LinkedPlayer.incaptimer > MinIncap || LinkedPlayer.Health < 15); // [Ace] Player can't get up if lying on the floor at < 15 health, even if timer is 0.
+		// [Ace] Player can't get up if lying on the floor at < 15 health, even if timer is 0.
+		return LinkedPlayer && LinkedPlayer.incapacitated >= 20 && (LinkedPlayer.incaptimer > MinIncap || LinkedPlayer.Health < 15);
 	}
 
 	clearscope bool PlayerNeedsMedic()
 	{
-		return LinkedPlayer && (LinkedPlayer.oldwoundcount > 0 || LinkedPlayer.aggravateddamage > 0 || LinkedPlayer.burncount > 0) && !LinkedPlayer.FindInventory('HDArmourWorn') && ((GetAmount('PortableMedikit') > 0 || SuturesLeft > 0) || CanApplyStim());
+		return LinkedPlayer
+			&& (
+				CanApplyStim()
+				|| (PlayerHasBleedingWound() && CanPatchWounds())
+				|| (PlayerHasBurns() && CanPatchBurns())
+				|| (PlayerHasLostBlood() && CanApplyBlood())
+			);
+	}
+
+	clearscope bool PlayerHasBleedingWound()
+	{
+		if (LinkedPlayer)
+		{
+			let wnd = HDBleedingWound.findBiggest(LinkedPlayer);
+			return wnd && (wnd.depth > 0 || wnd.patched > 0);
+		}
+
+		return false;
+	}
+
+	clearscope bool PlayerHasLostBlood()
+	{
+		return LinkedPlayer && LinkedPlayer.bloodLoss > HDCONST_BLOODBAGAMOUNT * 4;
+	}
+
+	clearscope bool PlayerHasBurns()
+	{
+		return LinkedPlayer && LinkedPlayer.burncount > 0;
 	}
 
 	// --------------------------------------------------
@@ -104,6 +182,7 @@ extend class HDFollower
 
 	const MinIncap = 40;
 
+	HDBleedingWound targetWound;
 	int SuturesLeft;
 	const MaxSutures = 42;
 
@@ -135,19 +214,14 @@ extend class HDFollower
 			#### JK 5;
 			#### L 5
 			{
+				// If player is too far or is ordered to stop, stop.
 				if (DistanceToPlayer > HDCONST_ONEMETRE * 1.2 || Order != FOrder_ComeAndHelp)
 				{
 					StopHealing();
 					return;
 				}
 
-				if (CanApplyStim())
-				{
-					TakeInvItem(Find('PortableStimpack'), true);
-					SetStateLabel('ApplyStim');
-					return;
-				}
-
+				// If player no longer requires medical attention, stop.
 				if (!PNeedsMedic)
 				{
 					ClearGoal();
@@ -155,8 +229,10 @@ extend class HDFollower
 					return;
 				}
 
+				// If player requires medical attention, attempt to unwrap a medikit.
 				if (SuturesLeft == 0)
 				{
+					// If the follower can't, stop.
 					if (!TryUnwrapMedikit())
 					{
 						StopHealing();
@@ -164,6 +240,29 @@ extend class HDFollower
 					}
 				}
 
+				// First, apply a stimpack if possible.
+				if (CanApplyStim())
+				{
+					TakeInvItem(Find('PortableStimpack'), true);
+					SetStateLabel('ApplyStim');
+					return;
+				}
+
+				// Next, if the player has no immediately open wounds, but has burns, treat them.
+				if (!PlayerHasBleedingWound() && PlayerHasBurns())
+				{
+					SetStateLabel('ApplySecondFlesh');
+					return;
+				}
+
+				// Finally, if the player has lost a significant amount of blood, give them a bloodbag.
+				if (PlayerHasLostBlood() && CanApplyBlood())
+				{
+					SetStateLabel('ApplyBlood');
+					return;
+				}
+
+				// Otherwise, treat the open wounds
 				A_Face(LinkedPlayer);
 				A_StartSound("medikit/stopper", CHAN_WEAPON, CHANF_OVERLAP);
 				A_StartSound("misc/bulletflesh", CHAN_BODY, CHANF_OVERLAP);
@@ -186,7 +285,7 @@ extend class HDFollower
 				}
 				LinkedPlayer.GiveBody(1);
 				LinkedPlayer.DamageMobj(invoker, null, 1, 'staples', DMG_FORCED);
-				LinkedPlayer.A_GiveInventory('SecondFlesh', 1);
+				HDF.give(LinkedPlayer, 'SecondFlesh', 1);
 			}
 		PatchUpEnd:
 			#### J 10
@@ -238,6 +337,25 @@ extend class HDFollower
 			}
 			Goto StapleOwnAss;
 
+		ApplyBlood:
+			#### J 25 A_Face(LinkedPlayer);
+			#### J 20
+			{
+				// if(patient)invoker.weaponstatus[SBS_INJECTCOUNTER]++;else{
+				// 	invoker.weaponstatus[SBS_INJECTCOUNTER]=0;
+				// 	return;
+				// }
+				// if(invoker.weaponstatus[SBS_INJECTCOUNTER]>30){
+				HDF.give(LinkedPlayer, 'BloodBagWorn', 1);
+				A_StartSound("bloodpack/inject", CHAN_WEAPON, CHANF_OVERLAP);
+				LinkedPlayer.A_SetBlend("7a 3a 18", 0.1, 4);
+				// LinkedPlayer.A_MuzzleClimb(0,2, wepdot: false);
+				// invoker.weaponstatus[0]|=INJECTF_SPENT;
+				// A_FistNope();
+				// }
+			}
+			Goto StapleHumptyDumptyBackTogetherAgain;
+
 		ApplyStim:
 			#### J 25 A_Face(LinkedPlayer);
 			#### J 20
@@ -257,6 +375,15 @@ extend class HDFollower
 				b.A_StartSound("weapons/grenopen", 8);
 			}
 			#### J 0 PrintMessage(GetResponse("MEDIC_STIMMED"), "Medic/Stimmed", PMType_General);
+			Goto StapleHumptyDumptyBackTogetherAgain;
+
+		ApplySecondFlesh:
+			#### J 25 A_Face(LinkedPlayer);
+			#### J 20
+			{
+
+				PatchPlayerBurns(1);
+			}
 			Goto StapleHumptyDumptyBackTogetherAgain;
 	}
 }

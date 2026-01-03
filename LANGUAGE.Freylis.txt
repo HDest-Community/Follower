@@ -39,6 +39,14 @@ FREYLIS_ORDER_HELP3_1 = "You look okay to me.";
 FREYLIS_ORDER_HELP3_2 = "I don't need to do that.";
 FREYLIS_ORDER_HELP3_3 = "You'll be just fine.";
 
+FREYLIS_ORDER_HELP4_1 = "You're armor's in the way.";
+FREYLIS_ORDER_HELP4_2 = "I can't get to the wound.";
+FREYLIS_ORDER_HELP4_3 = "Take off the armor first.";
+
+FREYLIS_ORDER_HELP5_1 = "I'm out of sutures.";
+FREYLIS_ORDER_HELP5_2 = "You're just gonna have to hope for the best.";
+FREYLIS_ORDER_HELP5_3 = "I don't suppose you have an extra, do you?";
+
 FREYLIS_ORDER_HEAL_NOSUPPLIES_1 = "I don't really have anything to do that with.";
 FREYLIS_ORDER_HEAL_NOSUPPLIES_2 = "That's great and all, but I don't have a medikit.";
 FREYLIS_ORDER_HEAL_NOSUPPLIES_3 = "I would if you give me supplies.";

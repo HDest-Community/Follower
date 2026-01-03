@@ -38,6 +38,14 @@ DAINA_ORDER_HELP3_1 = "I don't see anything wrong.";
 DAINA_ORDER_HELP3_2 = "Are you sure you need help?";
 DAINA_ORDER_HELP3_3 = "If you want me to come, there are easier ways to do that.";
 
+DAINA_ORDER_HELP4_1 = "You're armor's in the way.";
+DAINA_ORDER_HELP4_2 = "I can't get to the wound.";
+DAINA_ORDER_HELP4_3 = "The armor, strip.";
+
+DAINA_ORDER_HELP5_1 = "You'll need more than a sewing needle, I'm afraid.";
+DAINA_ORDER_HELP5_2 = "I don't have enough supplies.";
+DAINA_ORDER_HELP5_3 = "We'll find a medikit, I'm sure of it.";
+
 DAINA_ORDER_HEAL_NOSUPPLIES_1 = "I'm all out of supplies.";
 DAINA_ORDER_HEAL_NOSUPPLIES_2 = "Would you mind tossing me a medikit?";
 DAINA_ORDER_HEAL_NOSUPPLIES_3 = "Oops! Looks like I'm all out of staples!";

@@ -54,6 +54,14 @@ MARINE_ORDER_HEAL2_1 = "That's a brilliant idea, commander.";
 MARINE_ORDER_HEAL2_2 = "I wouldn't say no to that.";
 MARINE_ORDER_HEAL2_3 = "I sure wouldn't want to die now, commander.";
 
+MARINE_ORDER_HELP4_1 = "You're armor's in the way, commander.";
+MARINE_ORDER_HELP4_2 = "I can't get to the wound, commander.";
+MARINE_ORDER_HELP4_3 = "Take off the armor first, commander.";
+
+MARINE_ORDER_HELP5_1 = "I'm out of medikits, commander.";
+MARINE_ORDER_HELP5_2 = "Can you spare a medikit, commander?";
+MARINE_ORDER_HELP5_3 = "We'll need to find a medikit, commander.";
+
 MARINE_STANCE_AGGRESSIVE1_1 = "Your back is already safe, commander.";
 MARINE_STANCE_AGGRESSIVE1_2 = "Already on it, commander.";
 MARINE_STANCE_AGGRESSIVE1_3 = "If I see anything, I'll shoot it, commander.";
