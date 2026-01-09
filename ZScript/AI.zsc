@@ -458,7 +458,7 @@ extend class HDFollower
 				Int RandVel = frandom(5.4, 6);
 				Int OldAngle = Angle;
 				Angle = AngleTo(FirBal) + Direction;
-				A_ChangeVelocity(RandVel, 0, Vel.Z + Random(1.5, 2.2), CVF_RELATIVE | CVF_REPLACE);
+				A_ChangeVelocity(RandVel, 0, Vel.Z + FRandom(1.5, 2.2), CVF_RELATIVE | CVF_REPLACE);
 				Angle = OldAngle;
 			}
 			else
@@ -471,7 +471,7 @@ extend class HDFollower
 				Int RandVel = frandom(5.4, 6);
 				Int OldAngle = Angle;
 				Angle = AngleTo(BalDirect) + 180;
-				A_ChangeVelocity(RandVel, 0, Vel.Z + Random(1.5, 2.2), CVF_RELATIVE | CVF_REPLACE);
+				A_ChangeVelocity(RandVel, 0, Vel.Z + FRandom(1.5, 2.2), CVF_RELATIVE | CVF_REPLACE);
 				Angle = OldAngle;
 				BalDirect.Destroy();
 				}

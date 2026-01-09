@@ -110,6 +110,10 @@ extend class HDFollower
 			let FoundBackpack = HDBackpack(tracer);
 			let WornBackpack = HDBackpack(FindInventory('HDBackpack'));
 
+			CheckProximity('Shieldcore', radius + 24, 1, CPXF_CLOSEST | CPXF_SETTRACER);
+			let FoundShield = Shieldcore(tracer);
+			let WornShield = HDMagicShield(FindInventory('HDMagicShield'));
+
 			if (FoundArmor)
 			{
 				string ATag = GetTag();
@@ -142,6 +146,7 @@ extend class HDFollower
 				FoundArmor.ActualPickup(self);
 				UseInventory(FindInventory("HDArmour"));
 				Status = FStatus_None;
+				return;
 			}
 			else if (FoundBackpack)
 			{
@@ -156,8 +161,48 @@ extend class HDFollower
 				}
 
 				FoundBackpack.ActualPickup(self);
-				// UseInventory(FindInventory("HDBackpack"));
 				Status = FStatus_None;
+				return;
+			}
+			else if (FoundShield)
+			{
+				string STag = GetTag();
+				if (WornShield)
+				{
+					if (FoundShield.amount > WornShield.amount)
+					{
+						PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_BETTERDURABILITY"), WearableInfo.SoundPrefix.."/BetterDurability", PMType_General);
+						
+						A_DropInventory(WornShield.GetClass());
+					}
+					else
+					{
+						PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_NOTHANKS"), WearableInfo.SoundPrefix.."/NoThanks", PMType_Important);
+						Status = FStatus_None;
+						tracer = null;
+						return;
+					}
+				}
+				else
+				{
+					PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_NONE"), WearableInfo.SoundPrefix.."/None", PMType_General);
+				}
+
+				A_GiveInventory("HDMagicShield");
+				let sss = HDPickup(FindInventory("HDMagicShield"));
+				if (sss)
+				{
+					sss.amount = 1;
+					sss.maxamount = FoundShield.mags[FoundShield.mags.size() - 1];
+					sss.bulk = FoundShield.magBulk;
+					sss.mass = FoundShield.amount - 1;
+
+					if (sss.amount > 0) HDMagicShield.FlashSparks(self);
+				}
+
+				FoundShield.destroy();
+				Status = FStatus_None;
+				return;
 			}
 			else
 			{
