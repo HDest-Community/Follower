@@ -110,6 +110,7 @@ class FW_Liberator : FollowerWeapon
 		if (wpn.WeaponStatus[LIBS_FLAGS] & LIBF_GRENADELOADED)
 		{
 			Owner.A_DropItem('HDRocketAmmo', 1);
+			Owner.A_StartSound("weapons/grenopen",CHAN_WEAPON);
 		}
 		
 		nogl = wpn.WeaponStatus[LIBS_FLAGS] & LIBF_NOLAUNCHER? 1 : 0;
