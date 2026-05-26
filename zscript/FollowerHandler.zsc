@@ -88,7 +88,7 @@ class FollowerHandler : EventHandler
 		while (Followers.Size() > 0)
 		{
 			HDFollower flw = Followers[0];
-			if (flw.IsDeadOrMissing())
+			if (!flw || flw.IsDeadOrMissing())
 			{
 				RemoveFollower(flw, true);
 			}

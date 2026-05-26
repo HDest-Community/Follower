@@ -65,18 +65,21 @@ extend class FollowerHandler
 
 	void RemoveFollower(HDFollower flw, bool permanent = false, bool noDestroy = false)
 	{
-		int Index = Followers.Find(flw);
-		if (Index != Followers.Size())
+		if (flw)
 		{
-			if (permanent && flw.MissingClass && players[Net_Arbitrator].mo)
+			int Index = Followers.Find(flw);
+			if (Index != Followers.Size())
 			{
-				players[Net_Arbitrator].mo.A_GiveInventory(flw.MissingClass);
+				if (permanent && flw.MissingClass && players[Net_Arbitrator].mo)
+				{
+					players[Net_Arbitrator].mo.A_GiveInventory(flw.MissingClass);
+				}
+				if (!noDestroy)
+				{
+					flw.Destroy();
+				}
+				Followers.Delete(Index);
 			}
-			if (!noDestroy)
-			{
-				flw.Destroy();
-			}
-			Followers.Delete(Index);
 		}
 	}
 
