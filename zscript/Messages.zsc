@@ -41,7 +41,7 @@ extend class HDFollower
 
 	private void ResetCommentTimer()
 	{
-		CommentTimer = random(35 * 15, 35 * 50);
+		CommentTimer = random(TICRATE * 15, TICRATE * 50);
 	}
 
 	protected void PlayIdleComment()

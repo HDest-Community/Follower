@@ -923,8 +923,9 @@ extend class FollowerHandler
 
 		if (wearable is 'HDArmourWorn')
 		{
-			sb.DrawImage(HDArmourWorn(wearable).mega?"ARMCA0":"ARMSA0", pos + size / 2, flags | sb.DI_ITEM_CENTER, box: size - (3, 3));
-			sb.DrawString(fnt, (HDArmourWorn(wearable).Mega ? "\c[Blue]" : "\c[DarkGreen]")..HDArmourWorn(wearable).Durability, pos + size - (4, 10), flags | sb.DI_TEXT_ALIGN_RIGHT);
+			// TODO: Fix Translation being the player's
+			sb.DrawImage(""..HDArmourWorn(wearable).armoursprite, pos + size / 2, flags | sb.DI_ITEM_CENTER /* | sb.DI_TRANSLATABLE */, box: size - (3, 3));
+			sb.DrawString(fnt, "\c[White]"..HDArmourWorn(wearable).durability, pos + size - (4, 10), flags | sb.DI_TEXT_ALIGN_RIGHT);
 		}
 
 		if (wearable is 'HDMagicShield')
@@ -1798,9 +1799,8 @@ extend class FollowerHandler
 
 		if (cmd.IndexOf("hdf_wearablecommand") != -1)
 		{
-		
-			static const Name worldItemClasses[] = { 'HDArmour', 'PortableRadsuit', 'HDBackpack', 'HDPersonalShieldGenerator', 'ShieldCore' };
-			static const Name wornItemClasses[] = { 'HDArmourWorn', 'WornRadsuit', 'HDBackpack', 'HDPersonalShieldGenerator', 'HDMagicShield' };
+			static const Name worldItemClasses[] = { 'HDArmour', 'PortableRadsuit', 'HDStorageItem', 'HDPersonalShieldGenerator', 'ShieldCore' };
+			static const Name wornItemClasses[] = { 'HDArmourWorn', 'WornRadsuit', 'HDStorageItem', 'HDPersonalShieldGenerator', 'HDMagicShield' };
 			static const string languagePrefixex[] = { "ARMORGIVE", "RADSUITGIVE", "BACKPACKGIVE", "PSGGIVE", "SHIELDCOREGIVE" };
 			static const string soundPrefixes[] = { "ArmorGive", "RadsuitGive", "BackpackGive", "PSGGive", "ShieldCoreGive" };
 

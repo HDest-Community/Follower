@@ -117,9 +117,8 @@ extend class FollowerHandler
 		let Armor = HDArmourWorn(m.FindInventory('HDArmourWorn'));
 		if (Armor)
 		{
-			let NewArmor = HDArmourWorn(recruit.GiveInventoryType('HDArmourWorn'));
+			let NewArmor = HDArmourWorn(recruit.GiveInventoryType(Armor.GetClassName()));
 			NewArmor.Durability = Armor.Durability;
-			NewArmor.Mega = Armor.Mega;
 		}
 
 		if (m.InStateSequence(m.CurState, m.FindState('Falldown')))
