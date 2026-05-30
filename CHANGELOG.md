@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v1.1.1] - 2026-05-30
+
+### Changed
+
+-   Fix ZScript include paths.
+-   Add extension-less LANGUAGE to build script.
+
 ## [v1.1.0] - 2026-05-30
 
 ### Added
@@ -30,7 +37,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   Initial Release.  Originally created by Accensus, now maintained by the community.
 
-[Unreleased]: https://github.com/HDest-Community/Follower/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/HDest-Community/Follower/compare/v1.1.1...HEAD
+
+[v1.1.1]: https://github.com/HDest-Community/Follower/compare/v1.1.0...v1.1.1
 
 [v1.1.0]: https://github.com/HDest-Community/Follower/compare/v1.0.0...v1.1.0
 
