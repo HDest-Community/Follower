@@ -923,8 +923,11 @@ extend class FollowerHandler
 
 		if (wearable is 'HDArmourWorn')
 		{
-			// TODO: Fix Translation being the player's
-			sb.DrawImage(""..HDArmourWorn(wearable).armoursprite, pos + size / 2, flags | sb.DI_ITEM_CENTER /* | sb.DI_TRANSLATABLE */, box: size - (3, 3));
+			if (wearable.bDROPTRANSLATION) {
+				sb.DrawImage(""..HDArmourWorn(wearable).armoursprite, pos + size / 2, flags | sb.DI_ITEM_CENTER | sb.DI_TRANSLATABLE, box: size - (3, 3), translation: wearable.owner.translation);
+			} else {
+				sb.DrawImage(""..HDArmourWorn(wearable).armoursprite, pos + size / 2, flags | sb.DI_ITEM_CENTER, box: size - (3, 3));
+			}
 			sb.DrawString(fnt, "\c[White]"..HDArmourWorn(wearable).durability, pos + size - (4, 10), flags | sb.DI_TEXT_ALIGN_RIGHT);
 		}
 
