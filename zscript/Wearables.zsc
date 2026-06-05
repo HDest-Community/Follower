@@ -173,7 +173,7 @@ extend class HDFollower
 				{
 					if (WornShield)
 					{
-						if (FoundShield.amount > WornShield.amount)
+						if (FoundShield.mags[FoundShield.mags.size() - 1] > WornShield.amount)
 						{
 							PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_BETTERDURABILITY"), WearableInfo.SoundPrefix.."/BetterDurability", PMType_General);
 							
