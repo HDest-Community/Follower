@@ -1802,10 +1802,10 @@ extend class FollowerHandler
 
 		if (cmd.IndexOf("hdf_wearablecommand") != -1)
 		{
-			static const Name worldItemClasses[] = { 'HDArmour', 'PortableRadsuit', 'HDStorageItem', 'HDPersonalShieldGenerator', 'ShieldCore' };
-			static const Name wornItemClasses[] = { 'HDArmourWorn', 'WornRadsuit', 'HDStorageItem', 'HDPersonalShieldGenerator', 'HDMagicShield' };
-			static const string languagePrefixex[] = { "ARMORGIVE", "RADSUITGIVE", "BACKPACKGIVE", "PSGGIVE", "SHIELDCOREGIVE" };
-			static const string soundPrefixes[] = { "ArmorGive", "RadsuitGive", "BackpackGive", "PSGGive", "ShieldCoreGive" };
+			static const Name worldItemClasses[]   = { 'HDArmour',     'PortableRadsuit', 'HDStorageItem', 'HDPersonalShieldGenerator', 'ShieldCore'     };
+			static const Name wornItemClasses[]    = { 'HDArmourWorn', 'WornRadsuit',     'HDStorageItem', 'HDPersonalShieldGenerator', 'HDMagicShield'  };
+			static const string languagePrefixex[] = { "ARMORGIVE",    "RADSUITGIVE",     "BACKPACKGIVE",  "PSGGIVE",                   "SHIELDCOREGIVE" };
+			static const string soundPrefixes[]    = { "ArmorGive",    "RadsuitGive",     "BackpackGive",  "PSGGive",                   "ShieldCoreGive" };
 
 			lastFol.WearableInfo.WorldItemCls = worldItemClasses[e.Args[0]];
 			lastFol.WearableInfo.WornItemCls = wornItemClasses[e.Args[0]];
