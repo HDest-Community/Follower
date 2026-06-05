@@ -113,8 +113,8 @@ extend class HDFollower
 				let FoundBackpack = HDStorageItem(tracer);
 				let WornBackpack = HDStorageItem(FindInventory('HDStorageItem', true));
 
-				CheckProximity('Shieldcore', radius + 24, 1, CPXF_CLOSEST|CPXF_SETTRACER);
-				let FoundShield = Shieldcore(tracer);
+				CheckProximity('ShieldCore', radius + 24, 1, CPXF_CLOSEST|CPXF_SETTRACER);
+				let FoundShield = ShieldCore(tracer);
 				let WornShield = HDMagicShield(FindInventory('HDMagicShield'));
 
 				if (FoundArmor)
