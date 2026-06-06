@@ -224,9 +224,9 @@ extend class HDFollower
 			{
 				HDCore.log("Follower."..getClassName(), LOGGING_DEBUG, "Giving HDPickup Wearble.");
 
-				let cls = hm.getClass();
+				let cls = hp.getClass();
 				hp.ActualPickup(self);
-				if (!UseInventory(FindInventory(cls))) HDCore.log("Follower."..getClassName(), LOGGING_WARN, "Failed to wear '"..(hm ? hm.getClassName() : cls.getClassName()).."'.");
+				if (!UseInventory(FindInventory(cls))) HDCore.log("Follower."..getClassName(), LOGGING_WARN, "Failed to wear '"..(hp ? hp.getClassName() : cls.getClassName()).."'.");
 			}
 			Status = FStatus_None;
 		}
