@@ -23,8 +23,12 @@ extend class HDFollower
 
 	private void LookForWearable()
 	{
+		HDCore.log("Follower."..getClassName(), LOGGING_DEBUG, "Looking For Wearable...");
+
 		if (!WearableInfo.GetWorldItem() || !WearableInfo.GetWornItem())
 		{
+			HDCore.log("Follower."..getClassName(), LOGGING_WARN, "Invalid WorldItem or WornItem.");
+
 			return;
 		}
 
@@ -36,31 +40,82 @@ extend class HDFollower
 			return;
 		}
 
-		CheckProximity(WearableInfo.worldItemCls, radius + MaxSearchRange, 1, CPXF_CLOSEST | CPXF_SETTRACER);
+		CheckProximity(WearableInfo.worldItemCls, radius + MaxSearchRange, 1, CPXF_ANCESTOR|CPXF_CLOSEST|CPXF_SETTRACER);
 		let foundWearable = Inventory(tracer);
-		let wornWearable = FindInventory(WearableInfo.WornItemCls);
+		let wornWearable = FindInventory(WearableInfo.WornItemCls, true);
 
 		if (foundWearable)
 		{
+			HDCore.log("Follower."..getClassName(), LOGGING_DEBUG, "Found Wearable: '"..foundWearable.getClassName().."'");
+
+			let ha = HDArmour(foundWearable);
+			let hm = HDMagAmmo(foundWearable);
+
+			int haWornLayer;
+
+			if (ha) {
+				let haWornCls  = (Class<Actor>)(ha.wornName());
+				let haWornDefs = GetDefaultByType(haWornCls);
+				haWornLayer    = HDArmourWorn(haWornDefs).wornlayer;
+			}
+
 			if (!wornWearable)
 			{
 				PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_NONE"), WearableInfo.SoundPrefix.."/None", PMType_General);
 			}
-			else if (WearableInfo.GetWornItem() is 'HDArmourWorn')
+			else if (HDCore.isChildClass(wornWearable.getClass(), 'HDMagicShield'))
 			{
-				let foundArmor = HDArmour(foundWearable);
-				let wornArmor = HDArmourWorn(wornWearable);
-
-				// [Ace] 1030 because mega armor's durability is calculated as 1000 + actual durability. Only while on the ground, though.
-				if (!wornArmor.Mega && foundArmor.Mega && foundArmor.Mags[0] >= 1020 || wornArmor.Mega && wornArmor.Durability < 20 && !foundArmor.Mega && foundArmor.Mags[0] > 60)
+				if (wornWearable.amount < hm.mags[hm.mags.size() - 1])
 				{
-					PrintMessage(GetResponse("ARMORGIVE_UPGRADE"), "ArmorGive/Upgrade", PMType_General);
-				}
-				else if (foundArmor.Mega == wornArmor.Mega && wornArmor.Durability < foundArmor.Mags[0] % 1000)
-				{
-					PrintMessage(GetResponse("ARMORGIVE_BETTERDURABILITY"), "ArmorGive/BetterDurability", PMType_General);
+					PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_BETTERDURABILITY"), WearableInfo.SoundPrefix.."/BetterDurability", PMType_General);
 				}
 				else
+				{
+					PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_NOTHANKS"), WearableInfo.SoundPrefix.."/NoThanks", PMType_Important);
+					Status = FStatus_None;
+					tracer = null;
+					return;
+				}
+			}
+			else if (HDCore.isChildClass(wornWearable.getClass(), 'HDArmourWorn'))
+			{
+				HDCore.log("Follower."..getClassName(), LOGGING_DEBUG, "Wearing Armor: '"..wornWearable.getClassName().."'");
+
+				// Loop through all possible instances of HDArmourWorn,
+				// in case the order in which they're in the Follower's inventory
+				// causes HHelmet to be selected first before any others,
+				// invalidating the checks below
+				HDArmourWorn wearableSameWornLayer;
+				HDArmourWorn wearableHighestLayer;
+				for (let i = inv; i; i = i.inv)
+				{
+					if (HDCore.isChildClass(i.getClass(), 'HDArmourWorn'))
+					{
+						let w = HDArmourWorn(i);
+
+						if (w.wornLayer > 0)
+						{
+							if (w.wornLayer == haWornLayer) wearableSameWornLayer = w;
+
+							if (!wearableHighestLayer || w.wornLayer > wearableHighestLayer.wornLayer) wearableHighestLayer = w;
+						}
+					}
+
+					if (wearableSameWornLayer && wearableHighestLayer) break;
+				}
+
+				if (wearableSameWornLayer) HDCore.log("Follower."..getClassName(), LOGGING_DEBUG, "Wearing '"..wearableSameWornLayer.getClassName().."' on same layer ("..wearableSameWornLayer.wornlayer..")...");
+				if (wearableHighestLayer)  HDCore.log("Follower."..getClassName(), LOGGING_DEBUG, "Wearing '"..wearableHighestLayer.getClassName().."' at outermost layer ("..wearableHighestLayer.wornlayer..")...");
+
+				if (wearableHighestLayer && haWornLayer > wearableHighestLayer.wornLayer)
+				{
+					PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_WORNOVER"), WearableInfo.SoundPrefix.."/WornOver", PMType_General);
+				}
+				else if (wearableSameWornLayer && ((1.0 * wearableSameWornLayer.Durability) / wearableSameWornLayer.default.Durability) < ((1.0 * ha.Mags[ha.Mags.Size() - 1]) / ha.maxperunit))
+				{
+					PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_BETTERDURABILITY"), WearableInfo.SoundPrefix.."/BetterDurability", PMType_General);
+				}
+				else if (ha.wornLayer > 0)
 				{
 					PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_NOTHANKS"), WearableInfo.SoundPrefix.."/NoThanks", PMType_Important);
 					Status = FStatus_None;
@@ -76,17 +131,72 @@ extend class HDFollower
 				return;
 			}
 
-			//while (HDPlayerPawn.CheckStrip(self, foundWearable) != CSResult_Nothing);
-			while (HDPlayerPawn.CheckStrip(self, foundWearable));
-			
-			if (HDWeapon(foundWearable))
-			{
-				HDWeapon(foundWearable).ActualPickup(self);
+			let hw = HDWeapon(foundWearable);
+			let hp = HDPickup(foundWearable);
+
+			if ((ha && haWornLayer > 0) || (hp && hp.wornlayer > 0) || (hw && hw.wornlayer > 0)) {
+				let tempWornLayer = ha ? ha.wornLayer : 1;
+
+				if (ha && haWornLayer != tempWornLayer) ha.wornLayer = haWornLayer;
+
+				while (!HDPlayerPawn.CheckStrip(self, foundWearable)) HDCore.log("Follower."..getClassName(), LOGGING_DEBUG, "Stripping Wearable.");
+
+				if (ha) ha.wornLayer = tempWornLayer;
 			}
-			else if (HDPickup(foundWearable))
+			
+			if (hw)
 			{
-				HDPickup(foundWearable).ActualPickup(self);
-				UseInventory(FindInventory(foundWearable.GetClass()));
+				HDCore.log("Follower."..getClassName(), LOGGING_DEBUG, "Giving HDWeapon Wearable.");
+				hw.ActualPickup(self);
+			}
+			else if (hm)
+			{
+				if (HDCore.isChildClass(hm.getClass(), 'ShieldCore'))
+				{
+					HDCore.log("Follower."..getClassName(), LOGGING_DEBUG, "Giving ShieldCore.");
+
+					HDF.Give(self, "HDMagicShield");
+					let sss = HDPickup(FindInventory("HDMagicShield"));
+					if (sss)
+					{
+						sss.amount = 1;
+						sss.maxamount = hm.mags[hm.mags.size() - 1];
+						sss.bulk = hm.magBulk;
+						sss.mass = sss.maxAmount - 1;
+						sss.bQUICKTORETALIATE = false;
+
+						if (sss.amount > 0) HDMagicShield.FlashSparks(self);
+					}
+
+					hm.destroy();
+				}
+				else if (HDCore.isChildClass(hm.getClass(), 'HDArmour'))
+				{
+					HDCore.log("Follower."..getClassName(), LOGGING_DEBUG, "Giving HDArmour Wearable.");
+
+					let wornName = HDArmour(hm).wornName();
+					HDF.Give(self, wornName);
+					let worn = HDArmourWorn(FindInventory(wornName));
+					worn.Durability = hm.mags[hm.mags.size() - 1];
+
+					hm.destroy();
+				}
+				else
+				{
+					HDCore.log("Follower."..getClassName(), LOGGING_DEBUG, "Giving HDMagAmmo Wearable.");
+
+					let cls = hm.getClass();
+					hm.ActualPickup(self);
+					if (!UseInventory(FindInventory(cls))) HDCore.log("Follower."..getClassName(), LOGGING_WARN, "Failed to wear '"..(hm ? hm.getClassName() : cls.getClassName()).."'.");
+				}
+			}
+			else if (hp)
+			{
+				HDCore.log("Follower."..getClassName(), LOGGING_DEBUG, "Giving HDPickup Wearble.");
+
+				let cls = hm.getClass();
+				hp.ActualPickup(self);
+				if (!UseInventory(FindInventory(cls))) HDCore.log("Follower."..getClassName(), LOGGING_WARN, "Failed to wear '"..(hm ? hm.getClassName() : cls.getClassName()).."'.");
 			}
 			Status = FStatus_None;
 		}
@@ -95,127 +205,31 @@ extend class HDFollower
 	
 	void TryUseWearable()
 	{
-		if (Status == FStatus_InactiveOrDead || !WearableInfo.GetWorldItem() || !WearableInfo.GetWornItem())
+		HDCore.log("Follower."..getClassName(), LOGGING_DEBUG, "Trying to use Wearable...");
+
+		if (!WearableInfo.GetWorldItem() || !WearableInfo.GetWornItem())
 		{
+			HDCore.log("Follower."..getClassName(), LOGGING_WARN, "Invalid WorldItem or WornItem.");
 			return;
 		}
-		
-		if (Status == FStatus_WaitingForWearable)
-		{
-			CheckProximity('HDArmour', radius + 24, 1, CPXF_CLOSEST | CPXF_SETTRACER);
-			let FoundArmor = HDArmour(tracer);
-			let WornArmor = HDArmourWorn(FindInventory('HDArmourWorn'));
 
-			CheckProximity('HDBackpack', radius + 24, 1, CPXF_CLOSEST | CPXF_SETTRACER);
-			let FoundBackpack = HDBackpack(tracer);
-			let WornBackpack = HDBackpack(FindInventory('HDBackpack'));
+		switch (Status) {
+			case FStatus_InactiveOrDead:
+				HDCore.log("Follower."..getClassName(), LOGGING_DEBUG, "Can't use, am ded.");
+				break;
+			case FStatus_WaitingForWearable:
+				HDCore.log("Follower."..getClassName(), LOGGING_DEBUG, "Cancelling waiting for Wearable...");
 
-			CheckProximity('Shieldcore', radius + 24, 1, CPXF_CLOSEST | CPXF_SETTRACER);
-			let FoundShield = Shieldcore(tracer);
-			let WornShield = HDMagicShield(FindInventory('HDMagicShield'));
-
-			if (FoundArmor)
-			{
-				string ATag = GetTag();
-				if (WornArmor)
-				{
-					// [Ace] 1030 because mega armor's durability is calculated as 1000 + actual durability. Only while on the ground, though.
-					if (!WornArmor.Mega && FoundArmor.Mega && FoundArmor.Mags[0] >= 1030 || WornArmor.Mega && WornArmor.Durability < 20 && !FoundArmor.Mega && FoundArmor.Mags[0] > 60)
-					{
-						PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_UPGRADE"), WearableInfo.SoundPrefix.."/Upgrade", PMType_General);
-					}
-					else if (FoundArmor.Mega == WornArmor.Mega && WornArmor.Durability < FoundArmor.Mags[0] % 1000)
-					{
-						PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_BETTERDURABILITY"), WearableInfo.SoundPrefix.."/BetterDurability", PMType_General);
-					}
-					else
-					{
-						PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_NOTHANKS"), WearableInfo.SoundPrefix.."/NoThanks", PMType_Important);
-						Status = FStatus_None;
-						tracer = null;
-						return;
-					}
-	
-					A_DropInventory(WornArmor.GetClass());
-				}
-				else
-				{
-					PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_NONE"), WearableInfo.SoundPrefix.."/None", PMType_General);
-				}
-
-				FoundArmor.ActualPickup(self);
-				UseInventory(FindInventory("HDArmour"));
-				Status = FStatus_None;
-				return;
-			}
-			else if (FoundBackpack)
-			{
-				string BTag = GetTag();
-				if (WornBackpack)
-				{
-					PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_CANCEL"), WearableInfo.SoundPrefix.."/Cancel", PMType_Important);
-				}
-				else
-				{
-					PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_NONE"), WearableInfo.SoundPrefix.."/None", PMType_General);
-				}
-
-				FoundBackpack.ActualPickup(self);
-				Status = FStatus_None;
-				return;
-			}
-			else if (FoundShield)
-			{
-				string STag = GetTag();
-				if (WornShield)
-				{
-					if (FoundShield.amount > WornShield.amount)
-					{
-						PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_BETTERDURABILITY"), WearableInfo.SoundPrefix.."/BetterDurability", PMType_General);
-						
-						A_DropInventory(WornShield.GetClass());
-					}
-					else
-					{
-						PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_NOTHANKS"), WearableInfo.SoundPrefix.."/NoThanks", PMType_Important);
-						Status = FStatus_None;
-						tracer = null;
-						return;
-					}
-				}
-				else
-				{
-					PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_NONE"), WearableInfo.SoundPrefix.."/None", PMType_General);
-				}
-
-				A_GiveInventory("HDMagicShield");
-				let sss = HDPickup(FindInventory("HDMagicShield"));
-				if (sss)
-				{
-					sss.amount = 1;
-					sss.maxamount = FoundShield.mags[FoundShield.mags.size() - 1];
-					sss.bulk = FoundShield.magBulk;
-					sss.mass = FoundShield.amount - 1;
-
-					if (sss.amount > 0) HDMagicShield.FlashSparks(self);
-				}
-
-				FoundShield.destroy();
-				Status = FStatus_None;
-				return;
-			}
-			else
-			{
 				PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_CANCEL"), WearableInfo.SoundPrefix.."/Cancel", PMType_Important);
-			}
+				Status = FStatus_None;
+				break;
+			default:
+				HDCore.log("Follower."..getClassName(), LOGGING_DEBUG, "Going to wait for Wearable...");
 
-			tracer = null;
-			Status = FStatus_None;
-			return;
+				Status = FStatus_WaitingForWearable;
+				PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_INIT"), WearableInfo.SoundPrefix.."/Init", PMType_Important);
+				break;
 		}
-
-		Status = FStatus_WaitingForWearable;
-		PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_INIT"), WearableInfo.SoundPrefix.."/Init", PMType_Important);
 	}
 
 	void DropWearable()
@@ -225,10 +239,10 @@ extend class HDFollower
 			return;
 		}
 
-		let wornItem = FindInventory(WearableInfo.WornItemCls);
+		let wornItem = FindInventory(WearableInfo.WornItemCls, true);
 		if (wornItem)
 		{
-			A_DropInventory(WearableInfo.WornItemCls);
+			A_DropInventory(wornItem.getClass());
 			PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_STRIP"), WearableInfo.SoundPrefix.."/Strip", PMType_General);
 			Status = FStatus_None;
 		}

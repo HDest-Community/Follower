@@ -148,6 +148,10 @@ FREYLIS_ARMORGIVE_UPGRADE_1 = "Thank you, this one is much better.";
 FREYLIS_ARMORGIVE_UPGRADE_2 = "I really appreciate your concern for my well-being.";
 FREYLIS_ARMORGIVE_UPGRADE_3 = "Great stuff. Thanks.";
 
+FREYLIS_ARMORGIVE_WORNOVER_1 = "I hope it comes with more pocket space.";
+FREYLIS_ARMORGIVE_WORNOVER_2 = "I'm just glad it fits.";
+FREYLIS_ARMORGIVE_WORNOVER_3 = "Another one couldn't hurt.";
+
 FREYLIS_ARMORGIVE_BETTERDURABILITY_1 = "Better than the old one, that's for sure.";
 FREYLIS_ARMORGIVE_BETTERDURABILITY_2 = "Has fewer dents than the old one.";
 FREYLIS_ARMORGIVE_BETTERDURABILITY_3 = "Definitely sturdier than what I have.";

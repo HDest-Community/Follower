@@ -69,12 +69,11 @@ extend class HDFollower
 				SetStateLabel('StapleOwnAss');
 			}
 
-			if (Status <= FStatus_WaitingForWeapon)
-			//if (Status >= FStatus_WaitingForWearable && Status <= FStatus_WaitingForWeapon)
+			if (Status >= FStatus_WaitingForWearable && Status <= FStatus_WaitingForWeapon)
 			{
 				switch (Status)
 				{
-					//case FStatus_WaitingForWearable: LookForWearable(); break;
+					case FStatus_WaitingForWearable: LookForWearable(); break;
 					case FStatus_WaitingForWeapon: LookForWeapon(); break;
 				}
 				A_Face(LinkedPlayer, 15);

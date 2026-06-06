@@ -48,12 +48,14 @@ class FollowerData play
 
 	int SuturesLeft;
 
+	name ArmorCls;
 	int ArmorDurability;
-	bool ArmorMega;
 
 	bool HasRadsuit;
 
-	ItemStorage Storage;
+	name StorageCls;
+	Array<String> StorageContents;
+	int StorageBulk;
 
 	Array<HDWeaponData> WeaponData;
 	Array<HDShieldData> ShieldData;
@@ -141,19 +143,21 @@ extend class HDFollower
 
 		data.SuturesLeft = SuturesLeft;
 
-		let armor = HDArmourWorn(FindInventory("HDArmourWorn"));
+		let armor = HDArmourWorn(FindInventory('HDArmourWorn', true));
 		if (armor)
 		{
-			data.ArmorDurability = Armor.Durability;
-			data.ArmorMega = Armor.Mega;
+			data.ArmorCls = armor.GetClassName();
+			data.ArmorDurability = armor.Durability;
 		}
 
 		data.HasRadsuit = FindInventory('WornRadsuit') != null;
 
-		let bpack = HDBackpack(FindInventory('HDBackpack'));
+		let bpack = HDStorageItem(FindInventory('HDStorageItem', true));
 		if (bpack)
 		{
-			data.Storage = bpack.Storage;
+			data.StorageCls = bpack.GetClassName();
+			data.StorageContents.copy(bpack.items);
+			data.StorageBulk = bpack.weaponBulk();
 		}
 
 		for (Inventory next = Inv; next != null; next = Next.Inv)
@@ -167,7 +171,7 @@ extend class HDFollower
 				{
 					wepData.WeaponStatus[i] = wpn.WeaponStatus[i];
 				}
-				Console.Printf(wpn.GetClassName());
+				// Console.Printf(wpn.GetClassName());
 				data.WeaponData.Push(wepData);
 			}
 
@@ -225,7 +229,7 @@ class FollowerBody : HDPickup abstract
 		double total = 0;
 		for (int i = 0; i < Data.Size(); ++i)
 		{
-			total += default.Bulk + (Data[i].Storage != null ? 100 + Data[i].Storage.TotalBulk * 0.7 : 0);
+			total += default.Bulk + Data[i].StorageBulk;
 		}
 		return total;
 	}
@@ -254,25 +258,19 @@ class FollowerBody : HDPickup abstract
 			{
 				FollowerData data = invoker.Data[invoker.Data.Size() - 1];
 
+				bool forced = invoker.FromIncap || HDCore.isPreSpawn();
 				bool ReturnValue = false;
 				for (int i = 0; i < 100; ++i)
 				{
 					Actor a; bool success;
 
 					int Distance = random(20, 48);
-					int RandAngle = invoker.FromIncap || level.time < 2 ? random(0, 359) : 0;
+					int RandAngle = forced ? random(0, 359) : 0;
 					vector3 dest = Vec3Angle(Distance, angle + RandAngle);
-					Sector sec = level.PointInSector(dest.xy);
-					if (sec && pos.z - sec.NextLowestFloorAt(dest.x, dest.y, dest.z) > GetDefaultByType(data.FollowerClass).MaxStepHeight || !level.IsPointInLevel(dest))
+					Sector sec = Level.PointInSector(dest.xy);
+					if (sec && pos.z - sec.NextLowestFloorAt(dest.x, dest.y, dest.z) > GetDefaultByType(data.FollowerClass).MaxStepHeight || !Level.IsPointInLevel(dest))
 					{
-						if (invoker.FromIncap || level.time < 2)
-						{
-							continue;
-						}
-						else
-						{
-							break;
-						}
+						if (forced) continue; else break;
 					}
 
 					[success, a] = A_SpawnItemEx(data.FollowerClass, Distance, 0, random(8, 16), angle: RandAngle);
@@ -320,9 +318,9 @@ class FollowerBody : HDPickup abstract
 
 						if (data.ArmorDurability > 0)
 						{
-							let armor = HDArmourWorn(fol.GiveInventoryType('HDArmourWorn'));
+							let armor = HDArmourWorn(fol.GiveInventoryType(data.ArmorCls));
 							armor.Durability = data.ArmorDurability;
-							armor.Mega = data.ArmorMega;
+							// armor.Mega = data.ArmorMega;
 						}
 
 						if (data.HasRadsuit)
@@ -331,10 +329,11 @@ class FollowerBody : HDPickup abstract
 							fol.GiveInventoryType('PortableRadsuit');
 						}
 
-						if (data.Storage != null)
+						if (data.StorageCls != 'None')
 						{
-							let bpack = HDBackpack(fol.GiveInventoryType('HDBackpack'));
-							bpack.Storage = data.Storage;
+							let bpack = HDStorageItem(fol.GiveInventoryType(data.StorageCls));
+							bpack.items.copy(data.StorageContents);
+							bpack.RecalculateBulk();
 						}
 
 						for (int j = 0; j < data.WeaponData.Size(); ++j)

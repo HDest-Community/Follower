@@ -218,6 +218,10 @@ DAINA_ARMORGIVE_UPGRADE_1 = "I needed that upgrade. Thank you.";
 DAINA_ARMORGIVE_UPGRADE_2 = "Wonderful!";
 DAINA_ARMORGIVE_UPGRADE_3 = "Awesome.";
 
+DAINA_ARMORGIVE_WORNOVER_1 = "Thanks, this will go great with the rest of my outfit.";
+DAINA_ARMORGIVE_WORNOVER_2 = "Ooh, another one!";
+DAINA_ARMORGIVE_WORNOVER_3 = "This gives me more chances for flair! Thanks.";
+
 DAINA_ARMORGIVE_BETTERDURABILITY_1 = "Thanks, this will last much longer than my old armor.";
 DAINA_ARMORGIVE_BETTERDURABILITY_2 = "Much better!";
 DAINA_ARMORGIVE_BETTERDURABILITY_3 = "This gives me a much better sense of security. Thanks.";

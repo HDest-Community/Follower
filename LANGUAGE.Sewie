@@ -146,6 +146,10 @@ SEWIE_ARMORGIVE_UPGRADE_1 = "I needed that upgrade. Thank you.";
 SEWIE_ARMORGIVE_UPGRADE_2 = "Wonderful!";
 SEWIE_ARMORGIVE_UPGRADE_3 = "Awesome.";
 
+SEWIE_ARMORGIVE_WORNOVER_1 = "Thanks, this will go great with the rest of my outfit.";
+SEWIE_ARMORGIVE_WORNOVER_2 = "Ooh, another one!";
+SEWIE_ARMORGIVE_WORNOVER_3 = "This gives me more chances for flair! Thanks.";
+
 SEWIE_ARMORGIVE_BETTERDURABILITY_1 = "Thanks, this will last much longer than my old armor.";
 SEWIE_ARMORGIVE_BETTERDURABILITY_2 = "Much better!";
 SEWIE_ARMORGIVE_BETTERDURABILITY_3 = "This gives me a much better sense of security. Thanks.";

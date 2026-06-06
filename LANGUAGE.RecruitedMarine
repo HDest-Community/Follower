@@ -138,6 +138,10 @@ MARINE_ARMORGIVE_UPGRADE_1 = "Thank you, commander.";
 MARINE_ARMORGIVE_UPGRADE_2 = "Awesome.";
 MARINE_ARMORGIVE_UPGRADE_3 = "Good stuff, commander.";
 
+MARINE_ARMORGIVE_WORNOVER_1 = "I'll put it to good use, commander.";
+MARINE_ARMORGIVE_WORNOVER_2 = "Does it come with more pockets, commander?";
+MARINE_ARMORGIVE_WORNOVER_3 = "Another layer of protection.";
+
 MARINE_ARMORGIVE_BETTERDURABILITY_1 = "Much obliged, commander.";
 MARINE_ARMORGIVE_BETTERDURABILITY_2 = "Bless you, commander.";
 MARINE_ARMORGIVE_BETTERDURABILITY_3 = "This will last much longer.";

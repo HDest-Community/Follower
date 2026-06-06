@@ -14,24 +14,20 @@ extend class HDFollower
 
 		for (int i = 0; i < lines.Size(); ++i)
 		{
-			int amt = lines[i].Mid(3).ToInt();
-			if (amt == 0)
-			{
-				amt = 1;
-			}
-			string ref = lines[i].Left(3);
+			int amt = max(1, lines[i].Mid(3).ToInt());
 
-			class<Inventory> cls = HDBackpack.FindByRefId(ref);
-			if (!cls)
-			{
-				Continue;
-			}
+			class<Inventory> cls = HDHandlers.ParseRefID(lines[i].Left(3));
+			if (!cls) Continue;
 
-			if (cls is 'GarrisonArmour' || cls is 'GarrisonArmourWorn' || cls is 'BattleArmour' || cls is 'BattleArmourWorn')
+			if (cls is 'HDArmour')
 			{
-				bool mega = cls == 'BattleArmour' || cls == 'BattleArmourWorn';
-				GiveArmour(1.0, mega ? 1.0 : 0, amt);
+				HDF.Give(self, cls);
+				UseInventory(FindInventory(cls));
 				continue;
+			}
+			else if (cls is 'HDArmourWorn')
+			{
+				HDF.Give(self, cls);
 			}
 
 			if (cls is 'HDWeapon' && !GetDefaultByType((class<HDWeapon>)(cls)).bWIMPY_WEAPON)
@@ -68,10 +64,10 @@ extend class HDFollower
 				}
 				else
 				{
-					if (cls is 'HDBackpack')
+					if (cls is 'HDStorageItem')
 					{
-						let bp = HDBackpack(GiveInventoryType('HDBackpack'));
-						bp.LoadoutConfigure(input.Mid(input.IndexOf("bak") + 3));
+						let bp = HDStorageItem(GiveInventoryType(cls));
+						bp.LoadoutConfigure(input.Mid(input.IndexOf(lines[i].Left(3)) + 3));
 					}
 					else if (cls is 'PortableRadsuit')
 					{

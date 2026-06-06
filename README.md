@@ -1,5 +1,6 @@
 # Hideous Destructor Followers
 _Originally made by Accensus, now maintained by the community._  
+_Requires [HDCoreLib](https://github.com/HDest-Community/hdest-core-lib)._
 
 **NOTE: *Freylis's sprites are not for public use. Please do not use them anywhere. Thank you.***
 
