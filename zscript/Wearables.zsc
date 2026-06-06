@@ -63,7 +63,14 @@ extend class HDFollower
 			{
 				PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_NONE"), WearableInfo.SoundPrefix.."/None", PMType_General);
 			}
-			else if (HDCore.isChildClass(wornWearable.getClass(), 'HDMagicShield'))
+			else if (HDCore.isChildClass(foundWearable.getClass(), 'VirShieldBadge') && HDCore.isChildClass(wornWearable.getClass(), 'VirWeakShields'))
+			{
+				PrintMessage(GetResponse(WearableInfo.LanguagePrefix.."_NOTHANKS"), WearableInfo.SoundPrefix.."/NoThanks", PMType_Important);
+				Status = FStatus_None;
+				tracer = null;
+				return;
+			}
+			else if (HDCore.isChildClass(foundWearable.getClass(), 'ShieldCore') && HDCore.isChildClass(wornWearable.getClass(), 'HDMagicShield'))
 			{
 				if (wornWearable.amount < hm.mags[hm.mags.size() - 1])
 				{
@@ -151,7 +158,30 @@ extend class HDFollower
 			}
 			else if (hm)
 			{
-				if (HDCore.isChildClass(hm.getClass(), 'ShieldCore'))
+				if (HDCore.isChildClass(hm.getClass(), 'VirShieldBadge'))
+				{
+					HDCore.log("Follower."..getClassName(), LOGGING_DEBUG, "Giving Shield Badge.");
+
+
+					
+
+					HDF.Give(self, "VirWeakShields");
+					let sss = HDPickup(FindInventory("VirWeakShields"));
+					if (sss)
+					{
+						sss.amount = 1;
+						sss.maxamount = hm.mags[hm.mags.size() - 1];
+						sss.bulk = hm.magBulk;
+						sss.mass = sss.maxAmount - 1;
+						sss.bQUICKTORETALIATE = false;
+
+						// if (sss.amount > 0) VirWeakShields.FlashSparks(self);
+						if (sss.amount > 0) HDMagicShield.FlashSparks(self);
+					}
+
+					hm.destroy();
+				}
+				else if (HDCore.isChildClass(hm.getClass(), 'ShieldCore'))
 				{
 					HDCore.log("Follower."..getClassName(), LOGGING_DEBUG, "Giving ShieldCore.");
 
