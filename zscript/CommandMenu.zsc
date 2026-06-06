@@ -915,21 +915,23 @@ extend class FollowerHandler
 		sb.Fill(col, pos.x, pos.y, size.x, size.y, flags);
 		sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 
-		if (wearable is 'HDStorageItem')
+		let wearableCls = wearable.getClass();
+
+		if (HDCore.isChildClass(wearableCls, 'HDStorageItem'))
 		{
 			if (!(Level.time % TICRATE)) HDCore.log("Follower."..getClassName(), LOGGING_DEBUG, "Drawing HDStorageItem Wearable: '"..wearable.getClassName().."'...");
 
 			sb.DrawImage(""..wearable.Icon, pos + size / 2, flags | sb.DI_ITEM_CENTER, box: size - (3, 3));
 			sb.DrawString(fnt, "\c[Olive]"..sb.FormatNumber(HDStorageItem(wearable).GetSBarNum(), 1, 4), pos + size - (4, 10), flags | sb.DI_TEXT_ALIGN_RIGHT);
 		}
-		else if (wearable is 'HDWeapon')
+		else if (HDCore.isChildClass(wearableCls, 'HDWeapon'))
 		{
 			if (!(Level.time % TICRATE)) HDCore.log("Follower."..getClassName(), LOGGING_DEBUG, "Drawing HDWeapon Wearable: '"..wearable.getClassName().."'...");
 
 			sb.DrawImage(""..wearable.Icon, pos + size / 2, flags | sb.DI_ITEM_CENTER, box: size - (3, 3));
 			sb.DrawString(fnt, sb.FormatNumber(HDWeapon(wearable).GetSBarNum(), 1, 4), pos + size - (4, 10), flags | sb.DI_TEXT_ALIGN_RIGHT, sb.SavedColour);
 		}
-		else if (wearable is 'HDArmourWorn')
+		else if (HDCore.isChildClass(wearableCls, 'HDArmourWorn'))
 		{
 			if (!(Level.time % TICRATE)) HDCore.log("Follower."..getClassName(), LOGGING_DEBUG, "Drawing HDArmourWorn Wearable: '"..wearable.getClassName().."'...");
 
@@ -940,12 +942,25 @@ extend class FollowerHandler
 			}
 			sb.DrawString(fnt, "\c[White]"..HDArmourWorn(wearable).durability, pos + size - (4, 10), flags | sb.DI_TEXT_ALIGN_RIGHT);
 		}
-		else if (wearable is 'HDMagicShield')
+		else if (HDCore.isChildClass(wearableCls, 'VirWeakShields'))
+		{
+			if (!(Level.time % TICRATE)) HDCore.log("Follower."..getClassName(), LOGGING_DEBUG, "Drawing VirWeakShields Wearable: '"..wearable.getClassName().."'...");
+
+			sb.DrawImage(""..wearable.Icon, pos + size / 2, flags | sb.DI_ITEM_CENTER, box: size - (3, 3));
+			sb.DrawString(fnt, "\c[Ice]"..wearable.amount, pos + size - (4, 10), flags | sb.DI_TEXT_ALIGN_RIGHT);
+		}
+		else if (HDCore.isChildClass(wearableCls, 'HDMagicShield'))
 		{
 			if (!(Level.time % TICRATE)) HDCore.log("Follower."..getClassName(), LOGGING_DEBUG, "Drawing HDMagicShield Wearable: '"..wearable.getClassName().."'...");
 
 			sb.DrawImage(""..wearable.Icon, pos + size / 2, flags | sb.DI_ITEM_CENTER, box: size - (3, 3));
-			sb.DrawString(fnt, "\c[Cyan]"..HDMagicShield(wearable).amount, pos + size - (4, 10), flags | sb.DI_TEXT_ALIGN_RIGHT);
+			sb.DrawString(fnt, "\c[Cyan]"..wearable.amount, pos + size - (4, 10), flags | sb.DI_TEXT_ALIGN_RIGHT);
+		}
+		else if (HDCore.isChildClass(wearableCls, 'PortableRadsuit'))
+		{
+			if (!(Level.time % TICRATE)) HDCore.log("Follower."..getClassName(), LOGGING_WARN, "Drawing PortableRadsuit Wearable: '"..wearable.getClassName().."'...");
+
+			sb.DrawImage(""..wearable.Icon, pos + size / 2, flags | sb.DI_ITEM_CENTER, box: size - (3, 3));
 		}
 		else 
 		{
