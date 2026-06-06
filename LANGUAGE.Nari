@@ -142,6 +142,10 @@ NARI_ARMORGIVE_UPGRADE_1 = "I needed that upgrade. Thank you.";
 NARI_ARMORGIVE_UPGRADE_2 = "Wonderful!";
 NARI_ARMORGIVE_UPGRADE_3 = "Awesome.";
 
+NARI_ARMORGIVE_WORNOVER_1 = "Thanks, this will go great with the rest of my outfit.";
+NARI_ARMORGIVE_WORNOVER_2 = "Ooh, another one!";
+NARI_ARMORGIVE_WORNOVER_3 = "This gives me more chances for flair! Thanks.";
+
 NARI_ARMORGIVE_BETTERDURABILITY_1 = "Thanks, this will last much longer than my old armor.";
 NARI_ARMORGIVE_BETTERDURABILITY_2 = "Much better!";
 NARI_ARMORGIVE_BETTERDURABILITY_3 = "This gives me a much better sense of security. Thanks.";

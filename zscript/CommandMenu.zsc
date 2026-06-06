@@ -915,26 +915,44 @@ extend class FollowerHandler
 		sb.Fill(col, pos.x, pos.y, size.x, size.y, flags);
 		sb.Fill(Color(DarkAlpha, 0, 0, 0), pos.x + 1, pos.y + 1, size.x - 2, size.y - 2, flags);
 
-		if (wearable is 'HDWeapon')
+		if (wearable is 'HDStorageItem')
 		{
+			if (!(Level.time % TICRATE)) HDCore.log("Follower."..getClassName(), LOGGING_DEBUG, "Drawing HDStorageItem Wearable: '"..wearable.getClassName().."'...");
+
+			sb.DrawImage(""..wearable.Icon, pos + size / 2, flags | sb.DI_ITEM_CENTER, box: size - (3, 3));
+			sb.DrawString(fnt, "\c[Olive]"..sb.FormatNumber(HDStorageItem(wearable).GetSBarNum(), 1, 4), pos + size - (4, 10), flags | sb.DI_TEXT_ALIGN_RIGHT);
+		}
+		else if (wearable is 'HDWeapon')
+		{
+			if (!(Level.time % TICRATE)) HDCore.log("Follower."..getClassName(), LOGGING_DEBUG, "Drawing HDWeapon Wearable: '"..wearable.getClassName().."'...");
+
 			sb.DrawImage(""..wearable.Icon, pos + size / 2, flags | sb.DI_ITEM_CENTER, box: size - (3, 3));
 			sb.DrawString(fnt, sb.FormatNumber(HDWeapon(wearable).GetSBarNum(), 1, 4), pos + size - (4, 10), flags | sb.DI_TEXT_ALIGN_RIGHT, sb.SavedColour);
 		}
-
-		if (wearable is 'HDArmourWorn')
+		else if (wearable is 'HDArmourWorn')
 		{
-			if (wearable.bDROPTRANSLATION) {
+			if (!(Level.time % TICRATE)) HDCore.log("Follower."..getClassName(), LOGGING_DEBUG, "Drawing HDArmourWorn Wearable: '"..wearable.getClassName().."'...");
+
+			if (HDArmourWorn(wearable).bDROPTRANSLATION) {
 				sb.DrawImage(""..HDArmourWorn(wearable).armoursprite, pos + size / 2, flags | sb.DI_ITEM_CENTER | sb.DI_TRANSLATABLE, box: size - (3, 3), translation: wearable.owner.translation);
 			} else {
 				sb.DrawImage(""..HDArmourWorn(wearable).armoursprite, pos + size / 2, flags | sb.DI_ITEM_CENTER, box: size - (3, 3));
 			}
 			sb.DrawString(fnt, "\c[White]"..HDArmourWorn(wearable).durability, pos + size - (4, 10), flags | sb.DI_TEXT_ALIGN_RIGHT);
 		}
-
-		if (wearable is 'HDMagicShield')
+		else if (wearable is 'HDMagicShield')
 		{
+			if (!(Level.time % TICRATE)) HDCore.log("Follower."..getClassName(), LOGGING_DEBUG, "Drawing HDMagicShield Wearable: '"..wearable.getClassName().."'...");
+
 			sb.DrawImage(""..wearable.Icon, pos + size / 2, flags | sb.DI_ITEM_CENTER, box: size - (3, 3));
 			sb.DrawString(fnt, "\c[Cyan]"..HDMagicShield(wearable).amount, pos + size - (4, 10), flags | sb.DI_TEXT_ALIGN_RIGHT);
+		}
+		else 
+		{
+			if (!(Level.time % TICRATE)) HDCore.log("Follower."..getClassName(), LOGGING_WARN, "Attempting to Draw Unknown Wearable: '"..wearable.getClassName().."'...");
+
+			sb.DrawImage(""..wearable.Icon, pos + size / 2, flags | sb.DI_ITEM_CENTER, box: size - (3, 3));
+			sb.DrawString(fnt, "\c[DarkGray]"..wearable.amount, pos + size - (4, 10), flags | sb.DI_TEXT_ALIGN_RIGHT);
 		}
 	}
 
