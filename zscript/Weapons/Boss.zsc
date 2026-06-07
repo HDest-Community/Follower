@@ -224,6 +224,15 @@ class FW_Boss : FollowerWeapon
 		Mag = 0;
 	}
 
+	override void OnRecruit()
+	{
+		Mag = random(0, 10);
+		ChamberedRound = random(0, 2);
+
+		frontreticle = random(0, 2);
+		customchamb  = !random(0, 3);
+	}
+
 	override void OnTransfer(HDWeapon wpn)
 	{
 		Mag = wpn.WeaponStatus[BOSSS_MAG];
