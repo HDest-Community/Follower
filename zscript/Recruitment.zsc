@@ -99,19 +99,47 @@ extend class FollowerHandler
 		recruit.Translation = m.Translation;
 		recruit.voicepitch = m.voicepitch;
 
+		FollowerWeapon fw;
+
 		switch (m.wep)
 		{
 			case HDOperator.HDMW_SMG:
-			case -HDOperator.HDMW_SMG: FollowerWeapon.CreateAndAdd('FW_SMG', recruit); break;
+			case -HDOperator.HDMW_SMG: fw = FollowerWeapon.CreateAndAdd('FW_SMG', recruit); break;
 
 			case HDOperator.HDMW_HUNTER:
-			case -HDOperator.HDMW_HUNTER: FollowerWeapon.CreateAndAdd('FW_Hunter', recruit); break;
+			case -HDOperator.HDMW_HUNTER: fw = FollowerWeapon.CreateAndAdd('FW_Hunter', recruit); break;
 
 			case HDOperator.HDMW_ZM66:
-			case -HDOperator.HDMW_ZM66: FollowerWeapon.CreateAndAdd('FW_ZM66', recruit); break;
+			case -HDOperator.HDMW_ZM66: fw = FollowerWeapon.CreateAndAdd('FW_ZM66', recruit); break;
 
 			case HDOperator.HDMW_ROCKET:
-			case -HDOperator.HDMW_ROCKET: FollowerWeapon.CreateAndAdd('FW_RocketLauncher', recruit); break;
+			case -HDOperator.HDMW_ROCKET: fw = FollowerWeapon.CreateAndAdd('FW_RocketLauncher', recruit); break;
+		}
+
+		if (fw) {
+			fw.OnRecruit();
+
+			class<HDAmmo>    fwAmmo;
+			class<HDMagAmmo> fwMag;
+			int              fwAmt;
+
+			[fwAmmo, fwMag, fwAmt] = fw.GetAmmoType();
+
+			let numMags = random(0, 5);
+			let numAmmo = random(0, fwAmt * numMags);
+			if (fwMag) {
+				for (let i = 0; i < numMags; i++) {
+					let spawned = HDMagAmmo(Actor.Spawn(fwMag, recruit.pos));
+					spawned.SyncAmount();
+
+					if (!recruit.AddMag(spawned, flags: HDFollower.FIF_FORCE)) spawned.destroy();
+				}
+			} else if (fwAmmo) {
+				for (let i = 0; i < numAmmo; i++) {
+					let spawned = HDAmmo(Actor.Spawn(fwAmmo, recruit.pos));
+					if (!recruit.AddItem(spawned, flags: HDFollower.FIF_FORCE)) spawned.destroy();
+				}
+			}
 		}
 
 		let Armor = HDArmourWorn(m.FindInventory('HDArmourWorn'));

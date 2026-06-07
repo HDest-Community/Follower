@@ -103,6 +103,19 @@ class FW_Liberator : FollowerWeapon
 		return WPriority_Medium;
 	}
 
+	override void OnRecruit()
+	{
+		Mag = random(0, 30);
+		ChamberedRound = random(0, 2);
+
+		nogl         = !random(0, 2);
+		nobull       = !random(0, 3);
+		noauto       = !random(0, 5);
+		lefty        = !random(0, 5);
+		altreticle   = !random(0, 2);
+		frontreticle = !random(0, 2);
+	}
+
 	override void OnTransfer(HDWeapon wpn)
 	{
 		Mag = wpn.WeaponStatus[LIBS_MAG];

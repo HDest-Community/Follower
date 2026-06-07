@@ -87,6 +87,11 @@ class FW_Bronto : FollowerWeapon
 		return ChamberedRound == CRType_Chambered ? RResult_MagFull : Super.TryReload(flags);
 	}
 
+	override void OnRecruit()
+	{
+		ChamberedRound = random(0, 2);
+	}
+
 	override void OnTransfer(HDWeapon wpn)
 	{
 		ChamberedRound = wpn.WeaponStatus[BRONS_CHAMBER];
