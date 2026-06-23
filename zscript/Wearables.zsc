@@ -162,9 +162,6 @@ extend class HDFollower
 				{
 					HDCore.log("Follower."..getClassName(), LOGGING_DEBUG, "Giving Shield Badge.");
 
-
-					
-
 					HDF.Give(self, "VirWeakShields");
 					let sss = HDPickup(FindInventory("VirWeakShields"));
 					if (sss)
