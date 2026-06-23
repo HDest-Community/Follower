@@ -308,8 +308,9 @@ extend class HDFollower
 			CrouchFactor = max(CrouchFactor - 0.10, 0);
 		}
 
-		scale.y = default.scale.y * (1.0 - CrouchFactor);
-		A_SetSize(-1, default.Height * (1.0 - CrouchFactor));
+		A_SetScale(baseScale.x, baseScale.y * (1.0 - CrouchFactor));
+		A_SetSize(-1, baseSize.y * (1.0 - CrouchFactor));
+
 		cameraheight=GetDefaultByType("HDMobBase").CameraHeight * (1.0 - CrouchFactor);
 		gunheight=cameraheight-1.5;
 

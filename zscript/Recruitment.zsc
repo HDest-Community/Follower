@@ -98,6 +98,8 @@ extend class FollowerHandler
 		recruit.SetTag(GetUniqueMarineName(gender));
 		recruit.Translation = m.Translation;
 		recruit.voicepitch = m.voicepitch;
+		recruit.baseSize = (m.radius, m.height);
+		recruit.baseScale = m.scale;
 
 		FollowerWeapon fw;
 
