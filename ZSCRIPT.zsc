@@ -240,6 +240,9 @@ class HDFollower : HDHumanoid abstract
 		Handler = FollowerHandler(EventHandler.Find('FollowerHandler'));
 
 		Super.BeginPlay();
+
+		baseScale = scale;
+		baseSize = (radius, height);
 	}
 
 	override void PostBeginPlay()
@@ -290,6 +293,9 @@ class HDFollower : HDHumanoid abstract
 	int MissPlayer;
 	property MissPlayer : MissPlayer;
 	int DodgeTimer;
+
+	Vector2 baseScale;
+	Vector2 baseSize;
 	
 	Default
 	{

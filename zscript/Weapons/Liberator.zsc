@@ -120,18 +120,18 @@ class FW_Liberator : FollowerWeapon
 	{
 		Mag = wpn.WeaponStatus[LIBS_MAG];
 		ChamberedRound = wpn.WeaponStatus[LIBS_CHAMBER];
-		if (wpn.WeaponStatus[LIBS_FLAGS] & LIBF_GRENADELOADED)
+		if (wpn.WeaponStatus[0] & LIBF_GRENADELOADED)
 		{
 			Owner.A_DropItem('HDRocketAmmo', 1);
 			Owner.A_StartSound("weapons/grenopen",CHAN_WEAPON);
 		}
 		
-		nogl = wpn.WeaponStatus[LIBS_FLAGS] & LIBF_NOLAUNCHER? 1 : 0;
-		nobull = wpn.WeaponStatus[LIBS_FLAGS] & LIBF_NOBULLPUP? 1 : 0;
-		noauto = wpn.WeaponStatus[LIBS_FLAGS] & LIBF_NOAUTO? 1 : 0;
-		lefty = wpn.WeaponStatus[LIBS_FLAGS] & LIBF_LEFTY? 1 : 0;
-		altreticle = wpn.WeaponStatus[LIBS_FLAGS] & LIBF_ALTRETICLE? 1 : 0;
-		frontreticle = wpn.WeaponStatus[LIBS_FLAGS] & LIBF_FRONTRETICLE? 1 : 0;
+		nogl = wpn.WeaponStatus[0] & LIBF_NOLAUNCHER? 1 : 0;
+		nobull = wpn.WeaponStatus[0] & LIBF_NOBULLPUP? 1 : 0;
+		noauto = wpn.WeaponStatus[0] & LIBF_NOAUTO? 1 : 0;
+		lefty = wpn.WeaponStatus[0] & LIBF_LEFTY? 1 : 0;
+		altreticle = wpn.WeaponStatus[0] & LIBF_ALTRETICLE? 1 : 0;
+		frontreticle = wpn.WeaponStatus[0] & LIBF_FRONTRETICLE? 1 : 0;
 		Crossdot = wpn.weaponstatus[LIBS_DOT];
 	}
 	
@@ -139,26 +139,26 @@ class FW_Liberator : FollowerWeapon
 	{
 		wpn.WeaponStatus[LIBS_MAG] = Mag;
 		wpn.WeaponStatus[LIBS_CHAMBER] = ChamberedRound;
-		wpn.weaponstatus[LIBS_FLAGS]&=~LIBF_GRENADELOADED;
+		wpn.weaponstatus[0]&=~LIBF_GRENADELOADED;
 		
 		
-		if(nogl>0)wpn.WeaponStatus[LIBS_FLAGS]|=LIBF_NOLAUNCHER;
-		else wpn.WeaponStatus[LIBS_FLAGS]&=~LIBF_NOLAUNCHER;
+		if(nogl>0)wpn.WeaponStatus[0]|=LIBF_NOLAUNCHER;
+		else wpn.WeaponStatus[0]&=~LIBF_NOLAUNCHER;
 		
-		if(nobull>0)wpn.WeaponStatus[LIBS_FLAGS]|=LIBF_NOBULLPUP;
-		else wpn.WeaponStatus[LIBS_FLAGS]&=~LIBF_NOBULLPUP;
+		if(nobull>0)wpn.WeaponStatus[0]|=LIBF_NOBULLPUP;
+		else wpn.WeaponStatus[0]&=~LIBF_NOBULLPUP;
 		
-		if(noauto>0)wpn.WeaponStatus[LIBS_FLAGS]|=LIBF_NOAUTO;
-		else wpn.WeaponStatus[LIBS_FLAGS]&=~LIBF_NOAUTO;
+		if(noauto>0)wpn.WeaponStatus[0]|=LIBF_NOAUTO;
+		else wpn.WeaponStatus[0]&=~LIBF_NOAUTO;
 		
-		if(lefty>0)wpn.WeaponStatus[LIBS_FLAGS]|=LIBF_LEFTY;
-		else wpn.WeaponStatus[LIBS_FLAGS]&=~LIBF_LEFTY;
+		if(lefty>0)wpn.WeaponStatus[0]|=LIBF_LEFTY;
+		else wpn.WeaponStatus[0]&=~LIBF_LEFTY;
 		
-		if(altreticle>0)wpn.WeaponStatus[LIBS_FLAGS]|=LIBF_ALTRETICLE;
-		else wpn.WeaponStatus[LIBS_FLAGS]&=~LIBF_ALTRETICLE;
+		if(altreticle>0)wpn.WeaponStatus[0]|=LIBF_ALTRETICLE;
+		else wpn.WeaponStatus[0]&=~LIBF_ALTRETICLE;
 		
-		if(frontreticle>0)wpn.WeaponStatus[LIBS_FLAGS]|=LIBF_FRONTRETICLE;
-		else wpn.WeaponStatus[LIBS_FLAGS]&=~LIBF_FRONTRETICLE;
+		if(frontreticle>0)wpn.WeaponStatus[0]|=LIBF_FRONTRETICLE;
+		else wpn.WeaponStatus[0]&=~LIBF_FRONTRETICLE;
 		
 		
 		wpn.weaponstatus[LIBS_DOT] = Crossdot;
