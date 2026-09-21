@@ -120,15 +120,15 @@ class FW_ZM66 : FollowerWeapon
 	override void OnTransfer(HDWeapon wpn)
 	{
 		Mag = wpn.WeaponStatus[ZM66S_MAG];
-		ChamberedRound = wpn.WeaponStatus[ZM66S_FLAGS] & ZM66F_CHAMBER ? 2 : 0;
+		ChamberedRound = wpn.WeaponStatus[0] & ZM66F_CHAMBER ? 2 : 0;
 		if (wpn.WeaponStatus[0] & ZM66F_GRENADELOADED)
 		{
 			Owner.A_DropItem('HDRocketAmmo', 1);
 			Owner.A_StartSound("weapons/grenopen",CHAN_WEAPON);
 		}
 		
-		nogl = wpn.WeaponStatus[ZM66S_FLAGS] & ZM66F_NOLAUNCHER? 1 : 0;
-		noauto = wpn.WeaponStatus[ZM66S_FLAGS] & ZM66F_NOFIRESELECT? 1 : 0;
+		nogl = wpn.WeaponStatus[0] & ZM66F_NOLAUNCHER? 1 : 0;
+		noauto = wpn.WeaponStatus[0] & ZM66F_NOFIRESELECT? 1 : 0;
 		Crossdot = wpn.weaponstatus[ZM66S_DOT];
 	}
 	
@@ -136,16 +136,16 @@ class FW_ZM66 : FollowerWeapon
 	{
 		wpn.WeaponStatus[ZM66S_MAG] = Mag;
 		
-		wpn.weaponstatus[ZM66S_FLAGS]&=~ZM66F_GRENADELOADED;
+		wpn.weaponstatus[0]&=~ZM66F_GRENADELOADED;
 		
-		if(ChamberedRound > 0)wpn.weaponstatus[ZM66S_FLAGS]|=ZM66F_CHAMBER;
-		else wpn.weaponstatus[ZM66S_FLAGS]&=~ZM66F_CHAMBER;
+		if(ChamberedRound > 0)wpn.weaponstatus[0]|=ZM66F_CHAMBER;
+		else wpn.weaponstatus[0]&=~ZM66F_CHAMBER;
 		
-		if(nogl>0)wpn.WeaponStatus[ZM66S_FLAGS]|=ZM66F_NOLAUNCHER;
-		else wpn.WeaponStatus[ZM66S_FLAGS]&=~ZM66F_NOLAUNCHER;
+		if(nogl>0)wpn.WeaponStatus[0]|=ZM66F_NOLAUNCHER;
+		else wpn.WeaponStatus[0]&=~ZM66F_NOLAUNCHER;
 		
-		if(noauto>0)wpn.WeaponStatus[ZM66S_FLAGS]|=ZM66F_NOFIRESELECT;
-		else wpn.WeaponStatus[ZM66S_FLAGS]&=~ZM66F_NOFIRESELECT;
+		if(noauto>0)wpn.WeaponStatus[0]|=ZM66F_NOFIRESELECT;
+		else wpn.WeaponStatus[0]&=~ZM66F_NOFIRESELECT;
 		
 		wpn.weaponstatus[ZM66S_DOT] = Crossdot;
 	}
